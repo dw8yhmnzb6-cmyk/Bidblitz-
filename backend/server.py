@@ -688,10 +688,308 @@ async def seed_data(admin: dict = Depends(get_admin_user)):
     
     return {"message": "Seed data created", "products_added": len(products)}
 
+# ==================== VOUCHER SYSTEM ====================
+
+@api_router.post("/admin/vouchers")
+async def create_voucher(voucher: VoucherCreate, admin: dict = Depends(get_admin_user)):
+    # Check if code already exists
+    existing = await db.vouchers.find_one({"code": voucher.code.upper()})
+    if existing:
+        raise HTTPException(status_code=400, detail="Voucher code already exists")
+    
+    voucher_doc = {
+        "id": str(uuid.uuid4()),
+        "code": voucher.code.upper(),
+        "bids": voucher.bids,
+        "max_uses": voucher.max_uses,
+        "times_used": 0,
+        "used_by": [],
+        "expires_at": voucher.expires_at,
+        "is_active": True,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_by": admin["id"]
+    }
+    await db.vouchers.insert_one(voucher_doc)
+    return {"message": "Voucher created", "voucher": {**voucher_doc, "_id": None}}
+
+@api_router.get("/admin/vouchers")
+async def get_all_vouchers(admin: dict = Depends(get_admin_user)):
+    vouchers = await db.vouchers.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return vouchers
+
+@api_router.delete("/admin/vouchers/{voucher_id}")
+async def delete_voucher(voucher_id: str, admin: dict = Depends(get_admin_user)):
+    result = await db.vouchers.delete_one({"id": voucher_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    return {"message": "Voucher deleted"}
+
+@api_router.put("/admin/vouchers/{voucher_id}/toggle")
+async def toggle_voucher(voucher_id: str, admin: dict = Depends(get_admin_user)):
+    voucher = await db.vouchers.find_one({"id": voucher_id}, {"_id": 0})
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    
+    new_status = not voucher.get("is_active", True)
+    await db.vouchers.update_one({"id": voucher_id}, {"$set": {"is_active": new_status}})
+    return {"message": f"Voucher active status set to {new_status}"}
+
+@api_router.post("/vouchers/redeem")
+async def redeem_voucher(data: VoucherRedeem, user: dict = Depends(get_current_user)):
+    code = data.code.upper().strip()
+    
+    # Find voucher
+    voucher = await db.vouchers.find_one({"code": code}, {"_id": 0})
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Gutscheincode nicht gefunden")
+    
+    # Check if active
+    if not voucher.get("is_active", True):
+        raise HTTPException(status_code=400, detail="Dieser Gutschein ist nicht mehr gültig")
+    
+    # Check expiry
+    if voucher.get("expires_at"):
+        expiry = datetime.fromisoformat(voucher["expires_at"].replace('Z', '+00:00'))
+        if datetime.now(timezone.utc) > expiry:
+            raise HTTPException(status_code=400, detail="Dieser Gutschein ist abgelaufen")
+    
+    # Check max uses
+    if voucher["times_used"] >= voucher["max_uses"]:
+        raise HTTPException(status_code=400, detail="Dieser Gutschein wurde bereits vollständig eingelöst")
+    
+    # Check if user already used this voucher
+    if user["id"] in voucher.get("used_by", []):
+        raise HTTPException(status_code=400, detail="Sie haben diesen Gutschein bereits verwendet")
+    
+    # Redeem voucher
+    await db.vouchers.update_one(
+        {"id": voucher["id"]},
+        {
+            "$inc": {"times_used": 1},
+            "$push": {"used_by": user["id"]}
+        }
+    )
+    
+    # Add bids to user
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$inc": {"bids_balance": voucher["bids"]}}
+    )
+    
+    return {
+        "message": f"Gutschein eingelöst! {voucher['bids']} Gebote wurden Ihrem Konto gutgeschrieben.",
+        "bids_added": voucher["bids"]
+    }
+
+# ==================== AUTOBIDDER SYSTEM ====================
+
+@api_router.post("/autobidder/create")
+async def create_autobidder(data: AutobidderCreate, user: dict = Depends(get_current_user)):
+    # Check if auction exists and is active
+    auction = await db.auctions.find_one({"id": data.auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    if auction["status"] != "active":
+        raise HTTPException(status_code=400, detail="Auction is not active")
+    
+    # Check if user already has autobidder for this auction
+    existing = await db.autobidders.find_one({
+        "user_id": user["id"],
+        "auction_id": data.auction_id,
+        "is_active": True
+    })
+    if existing:
+        # Update existing autobidder
+        await db.autobidders.update_one(
+            {"id": existing["id"]},
+            {"$set": {"max_price": data.max_price}}
+        )
+        return {"message": "Autobidder updated", "max_price": data.max_price}
+    
+    # Create new autobidder
+    autobidder = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "user_name": user["name"],
+        "auction_id": data.auction_id,
+        "max_price": data.max_price,
+        "is_active": True,
+        "bids_placed": 0,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.autobidders.insert_one(autobidder)
+    
+    return {"message": "Autobidder created", "autobidder_id": autobidder["id"]}
+
+@api_router.get("/autobidder/my")
+async def get_my_autobidders(user: dict = Depends(get_current_user)):
+    autobidders = await db.autobidders.find(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    
+    # Enrich with auction data
+    for ab in autobidders:
+        auction = await db.auctions.find_one({"id": ab["auction_id"]}, {"_id": 0})
+        if auction:
+            product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+            ab["auction"] = auction
+            ab["product"] = product
+    
+    return autobidders
+
+@api_router.delete("/autobidder/{autobidder_id}")
+async def delete_autobidder(autobidder_id: str, user: dict = Depends(get_current_user)):
+    result = await db.autobidders.delete_one({"id": autobidder_id, "user_id": user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Autobidder not found")
+    return {"message": "Autobidder deleted"}
+
+@api_router.put("/autobidder/{autobidder_id}/toggle")
+async def toggle_autobidder(autobidder_id: str, user: dict = Depends(get_current_user)):
+    autobidder = await db.autobidders.find_one({"id": autobidder_id, "user_id": user["id"]}, {"_id": 0})
+    if not autobidder:
+        raise HTTPException(status_code=404, detail="Autobidder not found")
+    
+    new_status = not autobidder.get("is_active", True)
+    await db.autobidders.update_one({"id": autobidder_id}, {"$set": {"is_active": new_status}})
+    return {"message": f"Autobidder active status set to {new_status}", "is_active": new_status}
+
+# Function to process autobidders after a bid is placed
+async def process_autobidders(auction_id: str, last_bidder_id: str):
+    """Process all active autobidders for an auction after a bid"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction or auction["status"] != "active":
+        return
+    
+    # Get all active autobidders for this auction except the last bidder
+    autobidders = await db.autobidders.find({
+        "auction_id": auction_id,
+        "is_active": True,
+        "user_id": {"$ne": last_bidder_id}
+    }, {"_id": 0}).to_list(100)
+    
+    for ab in autobidders:
+        # Check if max price allows another bid
+        next_price = auction["current_price"] + auction["bid_increment"]
+        if next_price <= ab["max_price"]:
+            # Check user's bid balance
+            user = await db.users.find_one({"id": ab["user_id"]}, {"_id": 0})
+            if user and user.get("bids_balance", 0) >= 1 and not user.get("is_blocked", False):
+                # Place automatic bid
+                await db.users.update_one(
+                    {"id": user["id"]},
+                    {"$inc": {"bids_balance": -1, "total_bids_placed": 1}}
+                )
+                
+                new_end_time = datetime.now(timezone.utc) + timedelta(seconds=15)
+                await db.auctions.update_one(
+                    {"id": auction_id},
+                    {
+                        "$set": {
+                            "current_price": next_price,
+                            "end_time": new_end_time.isoformat(),
+                            "last_bidder_id": user["id"],
+                            "last_bidder_name": user["name"]
+                        },
+                        "$inc": {"total_bids": 1},
+                        "$push": {
+                            "bid_history": {
+                                "user_id": user["id"],
+                                "user_name": user["name"],
+                                "price": next_price,
+                                "timestamp": datetime.now(timezone.utc).isoformat(),
+                                "is_autobid": True
+                            }
+                        }
+                    }
+                )
+                
+                # Update autobidder stats
+                await db.autobidders.update_one(
+                    {"id": ab["id"]},
+                    {"$inc": {"bids_placed": 1}}
+                )
+                
+                logger.info(f"Autobid placed by {user['name']} on auction {auction_id}")
+                break  # Only one autobid per round
+        else:
+            # Deactivate autobidder if max price reached
+            await db.autobidders.update_one(
+                {"id": ab["id"]},
+                {"$set": {"is_active": False}}
+            )
+
+# ==================== EDIT ENDPOINTS ====================
+
+@api_router.put("/admin/products/{product_id}")
+async def update_product(product_id: str, data: ProductUpdate, admin: dict = Depends(get_admin_user)):
+    product = await db.products.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    
+    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.products.update_one({"id": product_id}, {"$set": update_data})
+    
+    updated = await db.products.find_one({"id": product_id}, {"_id": 0})
+    return {"message": "Product updated", "product": updated}
+
+@api_router.put("/admin/auctions/{auction_id}")
+async def update_auction(auction_id: str, data: AuctionUpdate, admin: dict = Depends(get_admin_user)):
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    update_data = {}
+    
+    if data.duration_seconds:
+        # Extend auction time
+        new_end_time = datetime.now(timezone.utc) + timedelta(seconds=data.duration_seconds)
+        update_data["end_time"] = new_end_time.isoformat()
+    
+    if data.status:
+        update_data["status"] = data.status
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.auctions.update_one({"id": auction_id}, {"$set": update_data})
+    
+    updated = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    return {"message": "Auction updated", "auction": updated}
+
+@api_router.put("/admin/users/{user_id}")
+async def update_user(user_id: str, data: UserUpdate, admin: dict = Depends(get_admin_user)):
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    
+    # Check if email is being changed and if it's already in use
+    if "email" in update_data and update_data["email"] != user["email"]:
+        existing = await db.users.find_one({"email": update_data["email"]})
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already in use")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    await db.users.update_one({"id": user_id}, {"$set": update_data})
+    
+    updated = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    return {"message": "User updated", "user": updated}
+
 # Root endpoint
 @api_router.get("/")
 async def root():
-    return {"message": "BidBlitz Auction API", "version": "1.0.0"}
+    return {"message": "BidBlitz Auction API", "version": "2.0.0"}
 
 # Include the router
 app.include_router(api_router)
