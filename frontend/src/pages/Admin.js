@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { 
   LayoutDashboard, Package, Gavel, Users, Plus, Trash2, 
-  Settings, BarChart3, Zap, RefreshCw, Play, Square, UserPlus
+  Settings, BarChart3, Zap, RefreshCw, Square, UserPlus,
+  Ban, CheckCircle, DollarSign, Globe, MapPin
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -16,6 +18,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Admin() {
   const { token, isAdmin } = useAuth();
+  const { t } = useLanguage();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [stats, setStats] = useState(null);
@@ -156,7 +159,19 @@ export default function Admin() {
     }
   };
 
-  const handleAddBids = async (userId, bids) => {
+  const handleToggleBlock = async (userId, currentStatus) => {
+    try {
+      await axios.put(`${API}/admin/users/${userId}/toggle-block`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(currentStatus ? 'Benutzer entsperrt' : 'Benutzer gesperrt');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Ändern');
+    }
+  };
+
+  const handleAddBids = async (userId) => {
     const amount = prompt('Anzahl der Gebote hinzufügen:', '10');
     if (!amount) return;
     try {
@@ -186,10 +201,10 @@ export default function Admin() {
     return (
       <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Kein Zugriff</h2>
-          <p className="text-[#94A3B8] mb-4">Sie benötigen Admin-Rechte für diese Seite.</p>
+          <h2 className="text-2xl font-bold text-white mb-4">{t('admin.noAccess')}</h2>
+          <p className="text-[#94A3B8] mb-4">{t('admin.needAdmin')}</p>
           <Link to="/">
-            <Button className="btn-primary">Zur Startseite</Button>
+            <Button className="btn-primary">{t('admin.toHome')}</Button>
           </Link>
         </div>
       </div>
@@ -197,10 +212,10 @@ export default function Admin() {
   }
 
   const tabs = [
-    { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-    { id: 'products', label: 'Produkte', icon: <Package className="w-5 h-5" /> },
-    { id: 'auctions', label: 'Auktionen', icon: <Gavel className="w-5 h-5" /> },
-    { id: 'users', label: 'Benutzer', icon: <Users className="w-5 h-5" /> }
+    { id: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard className="w-5 h-5" /> },
+    { id: 'products', label: t('admin.products'), icon: <Package className="w-5 h-5" /> },
+    { id: 'auctions', label: t('admin.auctions'), icon: <Gavel className="w-5 h-5" /> },
+    { id: 'users', label: t('admin.users'), icon: <Users className="w-5 h-5" /> }
   ];
 
   return (
@@ -211,7 +226,7 @@ export default function Admin() {
           <div className="px-4 mb-6">
             <h2 className="text-lg font-bold text-white flex items-center gap-2">
               <Settings className="w-5 h-5 text-[#7C3AED]" />
-              Admin Panel
+              {t('admin.panel')}
             </h2>
           </div>
           <nav className="space-y-1 px-2">
@@ -240,7 +255,7 @@ export default function Admin() {
               data-testid="seed-data-btn"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Testdaten erstellen
+              {t('admin.seedData')}
             </Button>
           </div>
         </aside>
@@ -251,10 +266,10 @@ export default function Admin() {
           {activeTab === 'dashboard' && (
             <div className="space-y-8">
               <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+                <h1 className="text-2xl font-bold text-white">{t('admin.dashboard')}</h1>
                 <Button onClick={fetchData} variant="outline" className="border-white/10 text-white">
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  Aktualisieren
+                  {t('admin.refresh')}
                 </Button>
               </div>
 
@@ -266,7 +281,7 @@ export default function Admin() {
                         <Users className="w-6 h-6 text-[#7C3AED]" />
                       </div>
                       <div>
-                        <p className="text-[#94A3B8] text-sm">Benutzer</p>
+                        <p className="text-[#94A3B8] text-sm">{t('admin.totalUsers')}</p>
                         <p className="text-2xl font-bold text-white">{stats.total_users}</p>
                       </div>
                     </div>
@@ -277,7 +292,7 @@ export default function Admin() {
                         <Gavel className="w-6 h-6 text-[#06B6D4]" />
                       </div>
                       <div>
-                        <p className="text-[#94A3B8] text-sm">Aktive Auktionen</p>
+                        <p className="text-[#94A3B8] text-sm">{t('admin.activeAuctions')}</p>
                         <p className="text-2xl font-bold text-white">{stats.active_auctions}</p>
                       </div>
                     </div>
@@ -288,7 +303,7 @@ export default function Admin() {
                         <Package className="w-6 h-6 text-[#10B981]" />
                       </div>
                       <div>
-                        <p className="text-[#94A3B8] text-sm">Produkte</p>
+                        <p className="text-[#94A3B8] text-sm">{t('admin.totalProducts')}</p>
                         <p className="text-2xl font-bold text-white">{stats.total_products}</p>
                       </div>
                     </div>
@@ -299,7 +314,7 @@ export default function Admin() {
                         <BarChart3 className="w-6 h-6 text-[#F59E0B]" />
                       </div>
                       <div>
-                        <p className="text-[#94A3B8] text-sm">Transaktionen</p>
+                        <p className="text-[#94A3B8] text-sm">{t('admin.transactions')}</p>
                         <p className="text-2xl font-bold text-white">{stats.completed_transactions}</p>
                       </div>
                     </div>
@@ -312,14 +327,14 @@ export default function Admin() {
           {/* Products Tab */}
           {activeTab === 'products' && (
             <div className="space-y-8">
-              <h1 className="text-2xl font-bold text-white">Produkte verwalten</h1>
+              <h1 className="text-2xl font-bold text-white">{t('admin.manageProducts')}</h1>
 
               {/* Add Product Form */}
               <div className="glass-card rounded-xl p-6">
-                <h3 className="text-lg font-bold text-white mb-4">Neues Produkt</h3>
+                <h3 className="text-lg font-bold text-white mb-4">{t('admin.newProduct')}</h3>
                 <form onSubmit={handleCreateProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-white">Name</Label>
+                    <Label className="text-white">{t('admin.productName')}</Label>
                     <Input
                       value={newProduct.name}
                       onChange={(e) => setNewProduct({...newProduct, name: e.target.value})}
@@ -329,7 +344,7 @@ export default function Admin() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">Kategorie</Label>
+                    <Label className="text-white">{t('admin.category')}</Label>
                     <Input
                       value={newProduct.category}
                       onChange={(e) => setNewProduct({...newProduct, category: e.target.value})}
@@ -338,7 +353,7 @@ export default function Admin() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">Bild-URL</Label>
+                    <Label className="text-white">{t('admin.imageUrl')}</Label>
                     <Input
                       value={newProduct.image_url}
                       onChange={(e) => setNewProduct({...newProduct, image_url: e.target.value})}
@@ -347,7 +362,7 @@ export default function Admin() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">UVP (€)</Label>
+                    <Label className="text-white">{t('admin.rrp')}</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -358,7 +373,7 @@ export default function Admin() {
                     />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <Label className="text-white">Beschreibung</Label>
+                    <Label className="text-white">{t('admin.description')}</Label>
                     <Input
                       value={newProduct.description}
                       onChange={(e) => setNewProduct({...newProduct, description: e.target.value})}
@@ -369,7 +384,7 @@ export default function Admin() {
                   <div className="md:col-span-2">
                     <Button type="submit" className="btn-primary" data-testid="create-product-btn">
                       <Plus className="w-4 h-4 mr-2" />
-                      Produkt erstellen
+                      {t('admin.createProduct')}
                     </Button>
                   </div>
                 </form>
@@ -381,11 +396,11 @@ export default function Admin() {
                   <table className="w-full">
                     <thead className="bg-[#181824]">
                       <tr>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Bild</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Name</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Kategorie</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">UVP</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Aktionen</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.image')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.productName')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.category')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.rrp')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.actions')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
@@ -419,20 +434,20 @@ export default function Admin() {
           {/* Auctions Tab */}
           {activeTab === 'auctions' && (
             <div className="space-y-8">
-              <h1 className="text-2xl font-bold text-white">Auktionen verwalten</h1>
+              <h1 className="text-2xl font-bold text-white">{t('admin.manageAuctions')}</h1>
 
               {/* Add Auction Form */}
               <div className="glass-card rounded-xl p-6">
-                <h3 className="text-lg font-bold text-white mb-4">Neue Auktion</h3>
+                <h3 className="text-lg font-bold text-white mb-4">{t('admin.newAuction')}</h3>
                 <form onSubmit={handleCreateAuction} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-white">Produkt</Label>
+                    <Label className="text-white">{t('admin.product')}</Label>
                     <Select
                       value={newAuction.product_id}
                       onValueChange={(value) => setNewAuction({...newAuction, product_id: value})}
                     >
                       <SelectTrigger className="bg-[#181824] border-white/10 text-white" data-testid="product-select">
-                        <SelectValue placeholder="Produkt wählen" />
+                        <SelectValue placeholder={t('admin.selectProduct')} />
                       </SelectTrigger>
                       <SelectContent className="bg-[#181824] border-white/10">
                         {products.map((product) => (
@@ -444,7 +459,7 @@ export default function Admin() {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">Startpreis (€)</Label>
+                    <Label className="text-white">{t('admin.startPrice')}</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -455,7 +470,7 @@ export default function Admin() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">Gebot-Inkrement (€)</Label>
+                    <Label className="text-white">{t('admin.bidIncrement')}</Label>
                     <Input
                       type="number"
                       step="0.01"
@@ -466,7 +481,7 @@ export default function Admin() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">Dauer (Sekunden)</Label>
+                    <Label className="text-white">{t('admin.duration')}</Label>
                     <Input
                       type="number"
                       value={newAuction.duration_seconds}
@@ -478,7 +493,7 @@ export default function Admin() {
                   <div className="md:col-span-2">
                     <Button type="submit" className="btn-primary" data-testid="create-auction-btn">
                       <Plus className="w-4 h-4 mr-2" />
-                      Auktion erstellen
+                      {t('admin.createAuction')}
                     </Button>
                   </div>
                 </form>
@@ -490,11 +505,11 @@ export default function Admin() {
                   <table className="w-full">
                     <thead className="bg-[#181824]">
                       <tr>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Produkt</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Preis</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Gebote</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Status</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Aktionen</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.product')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.price')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.bids')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.status')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.actions')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
@@ -509,7 +524,7 @@ export default function Admin() {
                                 ? 'bg-[#10B981]/20 text-[#10B981]' 
                                 : 'bg-[#EF4444]/20 text-[#EF4444]'
                             }`}>
-                              {auction.status === 'active' ? 'Aktiv' : 'Beendet'}
+                              {auction.status === 'active' ? t('admin.active') : t('admin.ended')}
                             </span>
                           </td>
                           <td className="px-4 py-3">
@@ -546,23 +561,26 @@ export default function Admin() {
           {/* Users Tab */}
           {activeTab === 'users' && (
             <div className="space-y-8">
-              <h1 className="text-2xl font-bold text-white">Benutzer verwalten</h1>
+              <h1 className="text-2xl font-bold text-white">{t('admin.manageUsers')}</h1>
 
               <div className="glass-card rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead className="bg-[#181824]">
                       <tr>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Name</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">E-Mail</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Gebote</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Admin</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Aktionen</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('dashboard.name')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('dashboard.email')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.bids')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.deposits')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.source')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.status')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.isAdmin')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.actions')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
                       {users.map((user) => (
-                        <tr key={user.id} className="hover:bg-white/5">
+                        <tr key={user.id} className={`hover:bg-white/5 ${user.is_blocked ? 'opacity-50' : ''}`}>
                           <td className="px-4 py-3 text-white">{user.name}</td>
                           <td className="px-4 py-3 text-[#94A3B8]">{user.email}</td>
                           <td className="px-4 py-3">
@@ -572,29 +590,64 @@ export default function Admin() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
+                            <span className="flex items-center gap-1 text-[#10B981]">
+                              <DollarSign className="w-4 h-4" />
+                              €{(user.total_deposits || 0).toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className="flex items-center gap-1 text-[#94A3B8]">
+                              <Globe className="w-4 h-4" />
+                              {user.source || 'direct'}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                              user.is_blocked 
+                                ? 'bg-[#EF4444]/20 text-[#EF4444]' 
+                                : 'bg-[#10B981]/20 text-[#10B981]'
+                            }`}>
+                              {user.is_blocked ? t('admin.blocked') : t('admin.active')}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
                             <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                               user.is_admin 
                                 ? 'bg-[#F59E0B]/20 text-[#F59E0B]' 
                                 : 'bg-white/10 text-[#94A3B8]'
                             }`}>
-                              {user.is_admin ? 'Ja' : 'Nein'}
+                              {user.is_admin ? t('admin.yes') : t('admin.no')}
                             </span>
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
+                              {/* Block/Unblock */}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className={user.is_blocked ? "text-[#10B981] hover:bg-[#10B981]/10" : "text-[#EF4444] hover:bg-[#EF4444]/10"}
+                                onClick={() => handleToggleBlock(user.id, user.is_blocked)}
+                                title={user.is_blocked ? t('admin.unblock') : t('admin.block')}
+                              >
+                                {user.is_blocked ? <CheckCircle className="w-4 h-4" /> : <Ban className="w-4 h-4" />}
+                              </Button>
+                              {/* Toggle Admin */}
                               <Button
                                 size="sm"
                                 variant="ghost"
                                 className="text-[#7C3AED] hover:bg-[#7C3AED]/10"
                                 onClick={() => handleToggleAdmin(user.id)}
+                                title="Admin-Status ändern"
                               >
                                 <UserPlus className="w-4 h-4" />
                               </Button>
+                              {/* Add Bids */}
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                className="text-[#10B981] hover:bg-[#10B981]/10"
+                                className="text-[#06B6D4] hover:bg-[#06B6D4]/10"
                                 onClick={() => handleAddBids(user.id)}
+                                title={t('admin.addBids')}
                               >
                                 <Plus className="w-4 h-4" />
                               </Button>
