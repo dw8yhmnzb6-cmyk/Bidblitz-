@@ -157,10 +157,15 @@ async def get_admin_user(user: dict = Depends(get_current_user)):
 # ==================== AUTH ENDPOINTS ====================
 
 @api_router.post("/auth/register", response_model=dict)
-async def register(user_data: UserCreate):
+async def register(user_data: UserCreate, request: Request):
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Get user's IP and referrer for tracking
+    client_ip = request.client.host if request.client else "unknown"
+    referrer = request.headers.get("referer", "direct")
+    user_agent = request.headers.get("user-agent", "unknown")
     
     user_id = str(uuid.uuid4())
     user = {
@@ -170,9 +175,16 @@ async def register(user_data: UserCreate):
         "name": user_data.name,
         "bids_balance": 10,  # Free starting bids
         "is_admin": False,
+        "is_blocked": False,  # New field for blocking users
         "created_at": datetime.now(timezone.utc).isoformat(),
         "won_auctions": [],
-        "total_bids_placed": 0
+        "total_bids_placed": 0,
+        "total_deposits": 0.0,  # Track total money deposited
+        "source": user_data.source or "direct",  # Registration source
+        "ip_address": client_ip,
+        "referrer": referrer,
+        "user_agent": user_agent,
+        "country": "Unknown"  # Can be filled by IP geolocation
     }
     await db.users.insert_one(user)
     
