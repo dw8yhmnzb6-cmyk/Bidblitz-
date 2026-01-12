@@ -192,7 +192,21 @@ export const translations = {
       toHome: "Zur Startseite",
       block: "Sperren",
       unblock: "Entsperren",
-      addBids: "Gebote hinzufügen"
+      addBids: "Gebote hinzufügen",
+      vouchers: "Gutscheine",
+      manageVouchers: "Gutscheine verwalten",
+      newVoucher: "Neuer Gutschein",
+      voucherCode: "Gutscheincode",
+      voucherBids: "Gebote",
+      maxUses: "Max. Verwendungen",
+      expiresAt: "Gültig bis",
+      timesUsed: "Verwendet",
+      createVoucher: "Gutschein erstellen",
+      editProduct: "Produkt bearbeiten",
+      editAuction: "Auktion bearbeiten",
+      editUser: "Benutzer bearbeiten",
+      extendTime: "Zeit verlängern",
+      update: "Aktualisieren"
     },
     // Payment
     payment: {
