@@ -1,11 +1,25 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Zap, User, LogOut, Shield, Menu, X } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { Zap, User, LogOut, Shield, Menu, X, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+
+const languageNames = {
+  de: { name: 'Deutsch', flag: '🇩🇪' },
+  en: { name: 'English', flag: '🇬🇧' },
+  sq: { name: 'Shqip', flag: '🇦🇱' }
+};
 
 export const Navbar = () => {
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const { t, language, changeLanguage, languages } = useLanguage();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -35,14 +49,14 @@ export const Navbar = () => {
               className="text-[#94A3B8] hover:text-white transition-colors font-medium"
               data-testid="nav-auctions"
             >
-              Auktionen
+              {t('nav.auctions')}
             </Link>
             <Link 
               to="/buy-bids" 
               className="text-[#94A3B8] hover:text-white transition-colors font-medium"
               data-testid="nav-buy-bids"
             >
-              Gebote kaufen
+              {t('nav.buyBids')}
             </Link>
             {isAuthenticated && (
               <Link 
@@ -50,7 +64,7 @@ export const Navbar = () => {
                 className="text-[#94A3B8] hover:text-white transition-colors font-medium"
                 data-testid="nav-dashboard"
               >
-                Dashboard
+                {t('nav.dashboard')}
               </Link>
             )}
             {isAdmin && (
@@ -60,13 +74,34 @@ export const Navbar = () => {
                 data-testid="nav-admin"
               >
                 <Shield className="w-4 h-4" />
-                Admin
+                {t('nav.admin')}
               </Link>
             )}
           </div>
 
           {/* Right side */}
           <div className="hidden md:flex items-center gap-4">
+            {/* Language Selector */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="text-[#94A3B8] hover:text-white hover:bg-white/10" data-testid="language-selector">
+                  <Globe className="w-4 h-4 mr-2" />
+                  {languageNames[language]?.flag} {languageNames[language]?.name}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-[#181824] border-white/10">
+                {languages.map((lang) => (
+                  <DropdownMenuItem 
+                    key={lang} 
+                    onClick={() => changeLanguage(lang)}
+                    className={`text-white hover:bg-white/10 cursor-pointer ${language === lang ? 'bg-white/5' : ''}`}
+                  >
+                    {languageNames[lang]?.flag} {languageNames[lang]?.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             {isAuthenticated ? (
               <>
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#181824] border border-white/10">
@@ -74,7 +109,7 @@ export const Navbar = () => {
                   <span className="font-mono font-bold text-[#06B6D4]" data-testid="bids-balance">
                     {user?.bids_balance || 0}
                   </span>
-                  <span className="text-[#94A3B8] text-sm">Gebote</span>
+                  <span className="text-[#94A3B8] text-sm">{t('nav.bids')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-[#94A3B8]" data-testid="user-name">{user?.name}</span>
@@ -93,12 +128,12 @@ export const Navbar = () => {
               <>
                 <Link to="/login">
                   <Button variant="ghost" className="text-[#94A3B8] hover:text-white" data-testid="login-btn">
-                    Anmelden
+                    {t('nav.login')}
                   </Button>
                 </Link>
                 <Link to="/register">
                   <Button className="btn-primary" data-testid="register-btn">
-                    Registrieren
+                    {t('nav.register')}
                   </Button>
                 </Link>
               </>
@@ -120,19 +155,32 @@ export const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-[#0F0F16] border-t border-white/10">
           <div className="px-4 py-4 space-y-3">
+            {/* Language selector mobile */}
+            <div className="flex gap-2 pb-3 border-b border-white/10">
+              {languages.map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => changeLanguage(lang)}
+                  className={`px-3 py-1 rounded-full text-sm ${language === lang ? 'bg-[#7C3AED] text-white' : 'bg-white/10 text-[#94A3B8]'}`}
+                >
+                  {languageNames[lang]?.flag}
+                </button>
+              ))}
+            </div>
+            
             <Link 
               to="/auctions" 
               className="block text-[#94A3B8] hover:text-white py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Auktionen
+              {t('nav.auctions')}
             </Link>
             <Link 
               to="/buy-bids" 
               className="block text-[#94A3B8] hover:text-white py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
-              Gebote kaufen
+              {t('nav.buyBids')}
             </Link>
             {isAuthenticated && (
               <>
@@ -141,7 +189,7 @@ export const Navbar = () => {
                   className="block text-[#94A3B8] hover:text-white py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
                 {isAdmin && (
                   <Link 
@@ -155,23 +203,23 @@ export const Navbar = () => {
                 <div className="flex items-center gap-2 py-2">
                   <Zap className="w-4 h-4 text-[#06B6D4]" />
                   <span className="font-mono font-bold text-[#06B6D4]">{user?.bids_balance || 0}</span>
-                  <span className="text-[#94A3B8] text-sm">Gebote</span>
+                  <span className="text-[#94A3B8] text-sm">{t('nav.bids')}</span>
                 </div>
                 <button 
                   onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
                   className="block text-[#EF4444] py-2"
                 >
-                  Abmelden
+                  {t('nav.logout')}
                 </button>
               </>
             )}
             {!isAuthenticated && (
               <div className="flex gap-2 pt-2">
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="text-white">Anmelden</Button>
+                  <Button variant="ghost" className="text-white">{t('nav.login')}</Button>
                 </Link>
                 <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="btn-primary">Registrieren</Button>
+                  <Button className="btn-primary">{t('nav.register')}</Button>
                 </Link>
               </div>
             )}

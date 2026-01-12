@@ -1,6 +1,7 @@
 import "@/index.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import { Navbar } from "./components/Navbar";
 import { Toaster } from "./components/ui/sonner";
 
@@ -88,9 +89,11 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
