@@ -141,6 +141,17 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     bids_balance: Optional[int] = None
 
+# Admin Bot Models
+class BotCreate(BaseModel):
+    name: str  # Bot display name (e.g., "Maria K.", "Thomas M.")
+    
+class BotBidRequest(BaseModel):
+    auction_id: str
+    bot_id: str
+    target_price: Optional[float] = None  # Target price to reach
+    num_bids: Optional[int] = None  # Number of bids to place
+    delay_seconds: Optional[int] = 2  # Delay between bids
+
 # Fixed bid packages (server-side only)
 BID_PACKAGES = {
     "starter": BidPackage(id="starter", name="Starter Pack", bids=50, price=30.00),
