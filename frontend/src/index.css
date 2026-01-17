@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,11 +8,16 @@
   --bg-default: #050509;
   --bg-paper: #0F0F16;
   --bg-subtle: #181824;
-  --primary: #7C3AED;
-  --primary-light: #A78BFA;
-  --primary-dark: #5B21B6;
-  --secondary: #06B6D4;
-  --secondary-light: #67E8F9;
+  --primary: #111111;
+  --primary-light: #333333;
+  --primary-dark: #000000;
+  --secondary: #FFD700;
+  --secondary-light: #FFDF33;
+  --secondary-dark: #E6C200;
+  --accent: #FF4D4D;
+  --accent-light: #FF6666;
+  --cyan: #06B6D4;
+  --purple: #7C3AED;
   --urgency: #EF4444;
   --warning: #F59E0B;
   --success: #10B981;
