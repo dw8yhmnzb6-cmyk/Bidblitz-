@@ -979,6 +979,16 @@ async def end_auction(auction_id: str, admin: dict = Depends(get_admin_user)):
         }}
     )
     
+    # Broadcast auction ended via WebSocket
+    try:
+        await broadcast_auction_ended(
+            auction_id=auction_id,
+            winner_name=winner_name or "Kein Gewinner",
+            final_price=auction.get("current_price", 0)
+        )
+    except Exception as e:
+        logger.error(f"WebSocket broadcast error: {e}")
+    
     # Add to winner's won auctions and send notification email
     if winner_id:
         await db.users.update_one(
