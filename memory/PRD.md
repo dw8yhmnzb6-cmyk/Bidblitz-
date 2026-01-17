@@ -26,6 +26,20 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] **Profilverwaltung (Name, Email ändern)**
 - [x] **Passwort ändern**
 
+### Öffentliche Seiten (2.1)
+- [x] **Startseite** (Hero, Live-Auktionen, Countdown, Call-to-Action)
+- [x] **Auktionsübersicht** mit Filter, Sortierung, Kategorien (snipster-Stil)
+- [x] **Auktionsdetailseite** mit Timer und Bieten
+- [x] **Login / Registrierung**
+- [x] **Passwort vergessen**
+- [x] **Impressum / Datenschutz / AGB**
+
+### Nutzerbereich (2.2)
+- [x] **Dashboard** (Aktive Auktionen, Guthaben, Historie, Autobidder)
+- [x] **Profilverwaltung**
+- [x] **Gebots-Historie**
+- [x] **Gekaufte Gebotspakete**
+
 ### Produkt-Management
 - [x] CRUD für Produkte
 - [x] Kategorien-System
