@@ -80,11 +80,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Glow effects */
 .glow-primary {
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 .glow-primary:hover {
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
 }
 
 .glow-secondary {
@@ -103,19 +103,19 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Button styles */
 .btn-primary {
-  background: var(--primary);
-  color: white;
+  background: linear-gradient(135deg, #FFD700, #FF4D4D);
+  color: #111111;
   border-radius: 9999px;
   padding: 0.75rem 2rem;
   font-weight: 700;
-  font-family: 'Outfit', sans-serif;
-  box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
 }
 
 .btn-primary:active {
@@ -123,8 +123,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-bid {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
+  background: linear-gradient(135deg, #FFD700, #FF4D4D);
+  color: #111111;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
