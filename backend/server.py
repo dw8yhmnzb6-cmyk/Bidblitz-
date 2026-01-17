@@ -299,8 +299,186 @@ async def get_me(user: dict = Depends(get_current_user)):
         "bids_balance": user["bids_balance"],
         "is_admin": user.get("is_admin", False),
         "won_auctions": user.get("won_auctions", []),
-        "total_bids_placed": user.get("total_bids_placed", 0)
+        "total_bids_placed": user.get("total_bids_placed", 0),
+        "created_at": user.get("created_at", datetime.now(timezone.utc).isoformat())
     }
+
+# ==================== PASSWORD RESET ENDPOINTS ====================
+
+# In-memory store for reset codes (in production, use Redis or database)
+password_reset_codes = {}
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    user = await db.users.find_one({"email": request.email}, {"_id": 0})
+    
+    # Always return success to prevent email enumeration
+    if not user:
+        return {"message": "If an account exists, a reset code has been sent"}
+    
+    # Generate 6-character code
+    import random
+    import string
+    code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    
+    # Store code with expiration (15 minutes)
+    password_reset_codes[request.email] = {
+        "code": code,
+        "expires": datetime.now(timezone.utc) + timedelta(minutes=15)
+    }
+    
+    # In production, send email here
+    # For demo, log the code
+    logger.info(f"Password reset code for {request.email}: {code}")
+    
+    # Store in database for persistence
+    await db.password_resets.update_one(
+        {"email": request.email},
+        {"$set": {
+            "code": code,
+            "expires": (datetime.now(timezone.utc) + timedelta(minutes=15)).isoformat(),
+            "used": False
+        }},
+        upsert=True
+    )
+    
+    return {"message": "Reset code sent", "demo_code": code}  # Remove demo_code in production
+
+@api_router.post("/auth/verify-reset-code")
+async def verify_reset_code(request: VerifyResetCodeRequest):
+    reset = await db.password_resets.find_one({
+        "email": request.email,
+        "code": request.code.upper(),
+        "used": False
+    }, {"_id": 0})
+    
+    if not reset:
+        raise HTTPException(status_code=400, detail="Invalid or expired code")
+    
+    # Check expiration
+    expires = datetime.fromisoformat(reset["expires"].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) > expires:
+        raise HTTPException(status_code=400, detail="Code expired")
+    
+    return {"message": "Code verified", "valid": True}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    reset = await db.password_resets.find_one({
+        "email": request.email,
+        "code": request.code.upper(),
+        "used": False
+    }, {"_id": 0})
+    
+    if not reset:
+        raise HTTPException(status_code=400, detail="Invalid or expired code")
+    
+    # Check expiration
+    expires = datetime.fromisoformat(reset["expires"].replace('Z', '+00:00'))
+    if datetime.now(timezone.utc) > expires:
+        raise HTTPException(status_code=400, detail="Code expired")
+    
+    # Hash new password
+    hashed = bcrypt.hashpw(request.new_password.encode('utf-8'), bcrypt.gensalt())
+    
+    # Update user password
+    result = await db.users.update_one(
+        {"email": request.email},
+        {"$set": {"hashed_password": hashed.decode('utf-8')}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Mark reset code as used
+    await db.password_resets.update_one(
+        {"email": request.email, "code": request.code.upper()},
+        {"$set": {"used": True}}
+    )
+    
+    return {"message": "Password reset successfully"}
+
+# ==================== USER PROFILE ENDPOINTS ====================
+
+@api_router.put("/user/profile")
+async def update_profile(data: UpdateProfileRequest, user: dict = Depends(get_current_user)):
+    update_data = {}
+    
+    if data.name:
+        update_data["name"] = data.name
+    
+    if data.email and data.email != user["email"]:
+        # Check if email is already taken
+        existing = await db.users.find_one({"email": data.email, "id": {"$ne": user["id"]}})
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already in use")
+        update_data["email"] = data.email
+    
+    if not update_data:
+        return {"message": "No changes", "user": user}
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.users.update_one({"id": user["id"]}, {"$set": update_data})
+    
+    updated_user = await db.users.find_one({"id": user["id"]}, {"_id": 0, "hashed_password": 0})
+    
+    return {"message": "Profile updated", "user": updated_user}
+
+@api_router.put("/user/change-password")
+async def change_password(data: ChangePasswordRequest, user: dict = Depends(get_current_user)):
+    # Get user with password
+    full_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    
+    # Verify current password
+    if not bcrypt.checkpw(data.current_password.encode('utf-8'), full_user["hashed_password"].encode('utf-8')):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Hash new password
+    hashed = bcrypt.hashpw(data.new_password.encode('utf-8'), bcrypt.gensalt())
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "hashed_password": hashed.decode('utf-8'),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {"message": "Password changed successfully"}
+
+@api_router.get("/user/bid-history")
+async def get_bid_history(user: dict = Depends(get_current_user)):
+    # Get all auctions where user has bid
+    auctions = await db.auctions.find({}, {"_id": 0}).to_list(1000)
+    
+    bid_history = []
+    for auction in auctions:
+        for bid in auction.get("bid_history", []):
+            if bid.get("user_id") == user["id"]:
+                product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+                bid_history.append({
+                    "auction_id": auction["id"],
+                    "product": product,
+                    "price": bid.get("price"),
+                    "timestamp": bid.get("timestamp"),
+                    "won": auction.get("winner_id") == user["id"],
+                    "auction_ended": auction.get("status") == "ended"
+                })
+    
+    # Sort by timestamp descending
+    bid_history.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+    
+    return bid_history[:100]  # Limit to last 100
+
+@api_router.get("/user/purchases")
+async def get_purchases(user: dict = Depends(get_current_user)):
+    purchases = await db.payment_transactions.find(
+        {"user_id": user["id"], "status": "paid"},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return purchases
 
 # ==================== PRODUCT ENDPOINTS ====================
 
