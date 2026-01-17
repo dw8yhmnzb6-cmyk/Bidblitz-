@@ -447,7 +447,17 @@ export default function AuctionDetail() {
                 </div>
               )}
 
-              {!isAuthenticated && (
+              {/* Scheduled auction message */}
+              {isScheduled && (
+                <div className="p-4 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/30">
+                  <p className="text-[#F59E0B] text-center font-medium">
+                    Diese Auktion ist geplant und startet am{' '}
+                    {auction.start_time && new Date(auction.start_time).toLocaleString('de-DE', {dateStyle: 'medium', timeStyle: 'short'})}
+                  </p>
+                </div>
+              )}
+
+              {!isAuthenticated && !isScheduled && (
                 <p className="text-center text-[#94A3B8] text-sm">
                   <Link to="/login" className="text-[#7C3AED] hover:underline">{t('nav.login')}</Link> um zu bieten
                 </p>
