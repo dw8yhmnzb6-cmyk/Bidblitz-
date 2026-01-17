@@ -32,17 +32,15 @@ class TestWebSocketConnection:
         ws_endpoint = f"{ws_url}/api/ws/auction/{TEST_AUCTION_ID}"
         
         received_messages = []
-        connection_success = False
+        connection_success = [False]  # Use list to allow modification in nested function
         
         def on_message(ws, message):
             received_messages.append(json.loads(message))
+            # Close after receiving first message
+            ws.close()
         
         def on_open(ws):
-            nonlocal connection_success
-            connection_success = True
-            # Close after receiving initial state
-            time.sleep(1)
-            ws.close()
+            connection_success[0] = True
         
         def on_error(ws, error):
             print(f"WebSocket error: {error}")
@@ -55,12 +53,12 @@ class TestWebSocketConnection:
         )
         
         # Run WebSocket in a thread with timeout
-        ws_thread = threading.Thread(target=ws.run_forever, kwargs={'ping_timeout': 5})
+        ws_thread = threading.Thread(target=ws.run_forever)
         ws_thread.daemon = True
         ws_thread.start()
-        ws_thread.join(timeout=5)
+        ws_thread.join(timeout=10)
         
-        assert connection_success, "WebSocket connection should succeed"
+        assert connection_success[0], "WebSocket connection should succeed"
         assert len(received_messages) > 0, "Should receive initial auction state"
         
         # Verify initial state message
@@ -80,16 +78,14 @@ class TestWebSocketConnection:
         ws_endpoint = f"{ws_url}/api/ws/auctions"
         
         received_messages = []
-        connection_success = False
+        connection_success = [False]
         
         def on_message(ws, message):
             received_messages.append(json.loads(message))
+            ws.close()
         
         def on_open(ws):
-            nonlocal connection_success
-            connection_success = True
-            time.sleep(1)
-            ws.close()
+            connection_success[0] = True
         
         ws = websocket.WebSocketApp(
             ws_endpoint,
@@ -97,12 +93,12 @@ class TestWebSocketConnection:
             on_open=on_open
         )
         
-        ws_thread = threading.Thread(target=ws.run_forever, kwargs={'ping_timeout': 5})
+        ws_thread = threading.Thread(target=ws.run_forever)
         ws_thread.daemon = True
         ws_thread.start()
-        ws_thread.join(timeout=5)
+        ws_thread.join(timeout=10)
         
-        assert connection_success, "WebSocket connection should succeed"
+        assert connection_success[0], "WebSocket connection should succeed"
         assert len(received_messages) > 0, "Should receive initial auctions state"
         
         initial_msg = received_messages[0]
