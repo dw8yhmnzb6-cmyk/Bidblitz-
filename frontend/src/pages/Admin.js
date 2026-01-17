@@ -264,6 +264,36 @@ export default function Admin() {
     }
   };
 
+  const handleRestartAuction = async (auctionId) => {
+    const duration = prompt('Dauer in Minuten:', '10');
+    if (!duration) return;
+    
+    const botPrice = prompt('Bot-Mindestpreis (€) - leer für keine Bots:', '');
+    
+    try {
+      const params = new URLSearchParams();
+      params.append('duration_seconds', parseInt(duration) * 60);
+      if (botPrice && parseFloat(botPrice) > 0) {
+        params.append('bot_target_price', parseFloat(botPrice));
+      }
+      
+      const response = await axios.post(
+        `${API}/admin/auctions/${auctionId}/restart?${params.toString()}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.bot_bidding) {
+        toast.success(`Auktion neu gestartet! Bots haben ${response.data.bot_bidding.bids_placed} Gebote platziert.`);
+      } else {
+        toast.success('Auktion neu gestartet!');
+      }
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Neustarten');
+    }
+  };
+
   const handleDeleteAuction = async (auctionId) => {
     if (!confirm('Auktion wirklich löschen?')) return;
     try {
