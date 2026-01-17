@@ -997,9 +997,21 @@ async def update_auction(auction_id: str, data: AuctionUpdate, admin: dict = Dep
     update_data = {}
     
     if data.duration_seconds:
-        # Extend auction time
+        # Extend auction time from now
         new_end_time = datetime.now(timezone.utc) + timedelta(seconds=data.duration_seconds)
         update_data["end_time"] = new_end_time.isoformat()
+    
+    if data.start_time:
+        # Update start time (for scheduled auctions)
+        update_data["start_time"] = data.start_time
+        # If start_time is in the future, set status to scheduled
+        start = datetime.fromisoformat(data.start_time.replace('Z', '+00:00'))
+        if start > datetime.now(timezone.utc):
+            update_data["status"] = "scheduled"
+    
+    if data.end_time:
+        # Explicitly set end time
+        update_data["end_time"] = data.end_time
     
     if data.status:
         update_data["status"] = data.status
