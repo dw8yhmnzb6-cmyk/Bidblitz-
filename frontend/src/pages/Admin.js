@@ -495,6 +495,8 @@ export default function Admin() {
                   <RefreshCw className="w-4 h-4 mr-2" />{t('admin.refresh')}
                 </Button>
               </div>
+              
+              {/* Summary Stats Cards */}
               {stats && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                   <div className="glass-card rounded-xl p-6">
@@ -541,6 +543,178 @@ export default function Admin() {
                       </div>
                     </div>
                   </div>
+                </div>
+              )}
+
+              {/* Charts Section */}
+              {detailedStats && (
+                <>
+                  {/* Revenue & Summary Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="glass-card rounded-xl p-6 border-l-4 border-[#10B981]">
+                      <p className="text-[#94A3B8] text-sm mb-1">Gesamtumsatz</p>
+                      <p className="text-3xl font-bold text-[#10B981]">€{detailedStats.summary?.total_revenue?.toFixed(2) || '0.00'}</p>
+                    </div>
+                    <div className="glass-card rounded-xl p-6 border-l-4 border-[#FFD700]">
+                      <p className="text-[#94A3B8] text-sm mb-1">Verkaufte Gebote</p>
+                      <p className="text-3xl font-bold text-[#FFD700]">{detailedStats.summary?.total_bids_sold || 0}</p>
+                    </div>
+                    <div className="glass-card rounded-xl p-6 border-l-4 border-[#06B6D4]">
+                      <p className="text-[#94A3B8] text-sm mb-1">Platzierte Gebote</p>
+                      <p className="text-3xl font-bold text-[#06B6D4]">{detailedStats.summary?.total_bids_placed || 0}</p>
+                    </div>
+                    <div className="glass-card rounded-xl p-6 border-l-4 border-[#7C3AED]">
+                      <p className="text-[#94A3B8] text-sm mb-1">Ø Gebote/Auktion</p>
+                      <p className="text-3xl font-bold text-[#7C3AED]">{detailedStats.summary?.avg_bids_per_auction || 0}</p>
+                    </div>
+                  </div>
+
+                  {/* Charts Row 1 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Revenue Chart */}
+                    <div className="glass-card rounded-xl p-6">
+                      <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <TrendingUp className="w-5 h-5 text-[#10B981]" />
+                        Umsatz (7 Tage)
+                      </h3>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={detailedStats.charts?.revenue_by_day || []}>
+                            <defs>
+                              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="5%" stopColor={CHART_COLORS.success} stopOpacity={0.3}/>
+                                <stop offset="95%" stopColor={CHART_COLORS.success} stopOpacity={0}/>
+                              </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                            <XAxis dataKey="date" stroke="#94A3B8" fontSize={12} />
+                            <YAxis stroke="#94A3B8" fontSize={12} tickFormatter={(v) => `€${v}`} />
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: '#181824', border: '1px solid #374151', borderRadius: '8px' }}
+                              labelStyle={{ color: '#fff' }}
+                              formatter={(value) => [`€${value.toFixed(2)}`, 'Umsatz']}
+                            />
+                            <Area type="monotone" dataKey="revenue" stroke={CHART_COLORS.success} fillOpacity={1} fill="url(#colorRevenue)" strokeWidth={2} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    {/* Bids Chart */}
+                    <div className="glass-card rounded-xl p-6">
+                      <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <Activity className="w-5 h-5 text-[#FFD700]" />
+                        Gebote (7 Tage)
+                      </h3>
+                      <div className="h-64">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={detailedStats.charts?.bids_by_day || []}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                            <XAxis dataKey="date" stroke="#94A3B8" fontSize={12} />
+                            <YAxis stroke="#94A3B8" fontSize={12} />
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: '#181824', border: '1px solid #374151', borderRadius: '8px' }}
+                              labelStyle={{ color: '#fff' }}
+                              formatter={(value) => [value, 'Gebote']}
+                            />
+                            <Bar dataKey="bids" fill={CHART_COLORS.primary} radius={[4, 4, 0, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Charts Row 2 */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* New Users Chart */}
+                    <div className="glass-card rounded-xl p-6">
+                      <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <Users className="w-5 h-5 text-[#7C3AED]" />
+                        Neue Nutzer (7 Tage)
+                      </h3>
+                      <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={detailedStats.charts?.users_by_day || []}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                            <XAxis dataKey="date" stroke="#94A3B8" fontSize={11} />
+                            <YAxis stroke="#94A3B8" fontSize={11} />
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: '#181824', border: '1px solid #374151', borderRadius: '8px' }}
+                              labelStyle={{ color: '#fff' }}
+                              formatter={(value) => [value, 'Nutzer']}
+                            />
+                            <Line type="monotone" dataKey="users" stroke={CHART_COLORS.purple} strokeWidth={2} dot={{ fill: CHART_COLORS.purple, strokeWidth: 2 }} />
+                          </LineChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    {/* Auction Status Pie Chart */}
+                    <div className="glass-card rounded-xl p-6">
+                      <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <Gavel className="w-5 h-5 text-[#06B6D4]" />
+                        Auktionsstatus
+                      </h3>
+                      <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={[
+                                { name: 'Aktiv', value: detailedStats.charts?.status_distribution?.active || 0 },
+                                { name: 'Geplant', value: detailedStats.charts?.status_distribution?.scheduled || 0 },
+                                { name: 'Beendet', value: detailedStats.charts?.status_distribution?.ended || 0 }
+                              ]}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={40}
+                              outerRadius={70}
+                              paddingAngle={5}
+                              dataKey="value"
+                            >
+                              {[0, 1, 2].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={PIE_COLORS[index]} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              contentStyle={{ backgroundColor: '#181824', border: '1px solid #374151', borderRadius: '8px' }}
+                              formatter={(value, name) => [value, name]}
+                            />
+                            <Legend 
+                              formatter={(value) => <span className="text-[#94A3B8]">{value}</span>}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+
+                    {/* Top Products */}
+                    <div className="glass-card rounded-xl p-6">
+                      <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <Package className="w-5 h-5 text-[#F59E0B]" />
+                        Top Produkte
+                      </h3>
+                      <div className="space-y-3">
+                        {(detailedStats.charts?.top_products || []).map((product, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-[#181824]">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[#FFD700] font-bold text-sm">#{index + 1}</span>
+                              <span className="text-white text-sm truncate max-w-[140px]">{product.name}</span>
+                            </div>
+                            <span className="text-[#06B6D4] font-mono text-sm">{product.bids} Gebote</span>
+                          </div>
+                        ))}
+                        {(!detailedStats.charts?.top_products || detailedStats.charts.top_products.length === 0) && (
+                          <p className="text-[#94A3B8] text-center py-4">Noch keine Daten</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {loading && !stats && (
+                <div className="flex items-center justify-center py-12">
+                  <RefreshCw className="w-8 h-8 text-[#7C3AED] animate-spin" />
                 </div>
               )}
             </div>
