@@ -935,6 +935,18 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
         }
     )
     
+    # Broadcast bid update via WebSocket
+    try:
+        await broadcast_bid_update(auction_id, {
+            "current_price": new_price,
+            "end_time": new_end_time.isoformat(),
+            "last_bidder_name": user["name"],
+            "total_bids": auction.get("total_bids", 0) + 1,
+            "bidder_message": f"{user['name']} hat geboten!"
+        })
+    except Exception as e:
+        logger.error(f"WebSocket broadcast error: {e}")
+    
     # Trigger autobidders (in background)
     try:
         await process_autobidders(auction_id, user["id"])
