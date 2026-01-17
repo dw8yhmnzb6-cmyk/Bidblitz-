@@ -82,7 +82,8 @@ const CompactAuctionCard = ({ auction, onBid, isAuthenticated }) => {
   const isActive = auction.status === 'active';
   const isPaused = timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 && isActive;
   const activityLevel = Math.min(auction.total_bids || 0, 10);
-  const lastSoldPrice = (Math.random() * 30 + 5).toFixed(2);
+  // Use a deterministic "last sold price" based on auction id hash
+  const lastSoldPrice = ((auction.id?.charCodeAt(0) || 65) % 30 + 5).toFixed(2);
   const formatTime = (num) => String(num).padStart(2, '0');
 
   return (
