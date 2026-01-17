@@ -2129,6 +2129,7 @@ async def websocket_auction(websocket: WebSocket, auction_id: str):
         ws_manager.disconnect(websocket)
 
 @app.websocket("/ws/auctions")
+@app.websocket("/api/ws/auctions")
 async def websocket_all_auctions(websocket: WebSocket):
     """WebSocket endpoint for all auction updates (auction list page)"""
     await ws_manager.connect(websocket, "all_auctions")
