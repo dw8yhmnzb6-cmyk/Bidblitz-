@@ -925,6 +925,83 @@ async def get_admin_stats(admin: dict = Depends(get_admin_user)):
         "completed_transactions": total_transactions
     }
 
+# ==================== PAYMENT & LOGS ADMIN ENDPOINTS ====================
+
+@api_router.get("/admin/payments")
+async def get_admin_payments(admin: dict = Depends(get_admin_user)):
+    payments = await db.payment_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    
+    # Enrich with user data
+    for payment in payments:
+        if payment.get("user_id"):
+            user = await db.users.find_one({"id": payment["user_id"]}, {"_id": 0, "name": 1, "email": 1})
+            if user:
+                payment["user_name"] = user.get("name")
+                payment["user_email"] = user.get("email")
+    
+    return payments
+
+@api_router.get("/admin/logs")
+async def get_admin_logs(admin: dict = Depends(get_admin_user)):
+    # Collect logs from various sources
+    logs = []
+    
+    # Get recent bids
+    auctions = await db.auctions.find({}, {"_id": 0}).to_list(100)
+    for auction in auctions:
+        for bid in auction.get("bid_history", [])[-20:]:  # Last 20 bids per auction
+            logs.append({
+                "type": "bid",
+                "message": f"Gebot auf {auction.get('product', {}).get('name', 'Auktion')}: €{bid.get('price', 0):.2f}",
+                "timestamp": bid.get("timestamp"),
+                "user_email": bid.get("user_name"),
+                "auction_id": auction["id"]
+            })
+    
+    # Get recent payments
+    payments = await db.payment_transactions.find({}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    for payment in payments:
+        user = await db.users.find_one({"id": payment.get("user_id")}, {"_id": 0, "email": 1})
+        logs.append({
+            "type": "payment",
+            "message": f"Zahlung: {payment.get('package_name', 'Gebotspaket')} - €{payment.get('amount', 0):.2f}",
+            "timestamp": payment.get("created_at"),
+            "user_email": user.get("email") if user else None,
+            "status": payment.get("status")
+        })
+    
+    # Get recent user registrations
+    users = await db.users.find({}, {"_id": 0, "hashed_password": 0}).sort("created_at", -1).to_list(50)
+    for user in users:
+        if user.get("created_at"):
+            logs.append({
+                "type": "user",
+                "message": f"Neuer Benutzer registriert: {user.get('name')}",
+                "timestamp": user.get("created_at"),
+                "user_email": user.get("email")
+            })
+    
+    # Get auction events
+    for auction in auctions:
+        logs.append({
+            "type": "auction",
+            "message": f"Auktion erstellt: {auction.get('product', {}).get('name', 'Unbekannt')}",
+            "timestamp": auction.get("created_at"),
+            "auction_id": auction["id"]
+        })
+        if auction.get("status") == "ended":
+            logs.append({
+                "type": "auction",
+                "message": f"Auktion beendet: Gewinner {auction.get('winner_name', 'N/A')}",
+                "timestamp": auction.get("updated_at", auction.get("end_time")),
+                "auction_id": auction["id"]
+            })
+    
+    # Sort by timestamp descending
+    logs.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+    
+    return logs[:200]  # Return last 200 logs
+
 # ==================== SEED DATA ====================
 
 @api_router.post("/admin/seed")
