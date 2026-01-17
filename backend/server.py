@@ -371,6 +371,25 @@ async def create_auction(auction: AuctionCreate, admin: dict = Depends(get_admin
 
 @api_router.get("/auctions", response_model=List[AuctionResponse])
 async def get_auctions(status: Optional[str] = None):
+    # First, check and update scheduled auctions that should now be active
+    now = datetime.now(timezone.utc)
+    await db.auctions.update_many(
+        {
+            "status": "scheduled",
+            "start_time": {"$lte": now.isoformat()}
+        },
+        {"$set": {"status": "active"}}
+    )
+    
+    # Also check and end auctions that have passed their end_time
+    await db.auctions.update_many(
+        {
+            "status": "active",
+            "end_time": {"$lte": now.isoformat()}
+        },
+        {"$set": {"status": "ended"}}
+    )
+    
     query = {}
     if status:
         query["status"] = status
