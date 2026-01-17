@@ -150,7 +150,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .auction-card:hover {
-  border-color: rgba(124, 58, 237, 0.5);
+  border-color: rgba(255, 215, 0, 0.5);
 }
 
 /* Timer styles */
