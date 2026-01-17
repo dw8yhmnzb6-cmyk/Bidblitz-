@@ -146,14 +146,34 @@ export default function Admin() {
   const handleCreateAuction = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API}/admin/auctions`, {
+      const auctionData = {
         product_id: newAuction.product_id,
         starting_price: parseFloat(newAuction.starting_price),
-        bid_increment: parseFloat(newAuction.bid_increment),
-        duration_seconds: parseInt(newAuction.duration_seconds)
-      }, { headers: { Authorization: `Bearer ${token}` } });
+        bid_increment: parseFloat(newAuction.bid_increment)
+      };
+
+      // Handle scheduling modes
+      if (newAuction.scheduling_mode === 'immediate') {
+        auctionData.duration_seconds = parseInt(newAuction.duration_seconds);
+      } else if (newAuction.scheduling_mode === 'scheduled') {
+        // Scheduled start with duration
+        if (newAuction.start_time) {
+          auctionData.start_time = new Date(newAuction.start_time).toISOString();
+          auctionData.duration_seconds = parseInt(newAuction.duration_seconds);
+        }
+      } else if (newAuction.scheduling_mode === 'custom') {
+        // Custom start and end times
+        if (newAuction.start_time) {
+          auctionData.start_time = new Date(newAuction.start_time).toISOString();
+        }
+        if (newAuction.end_time) {
+          auctionData.end_time = new Date(newAuction.end_time).toISOString();
+        }
+      }
+
+      await axios.post(`${API}/admin/auctions`, auctionData, { headers: { Authorization: `Bearer ${token}` } });
       toast.success('Auktion erstellt');
-      setNewAuction({ product_id: '', starting_price: '0.01', bid_increment: '0.02', duration_seconds: '300' });
+      setNewAuction({ product_id: '', starting_price: '0.01', bid_increment: '0.02', duration_seconds: '300', start_time: '', end_time: '', scheduling_mode: 'immediate' });
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Fehler');
