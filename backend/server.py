@@ -502,8 +502,6 @@ async def forgot_password(request: ForgotPasswordRequest):
         "expires": datetime.now(timezone.utc) + timedelta(minutes=15)
     }
     
-    # In production, send email here
-    # For demo, log the code
     logger.info(f"Password reset code for {request.email}: {code}")
     
     # Store in database for persistence
@@ -517,7 +515,18 @@ async def forgot_password(request: ForgotPasswordRequest):
         upsert=True
     )
     
-    return {"message": "Reset code sent", "demo_code": code}  # Remove demo_code in production
+    # Send reset email
+    try:
+        email_result = await send_password_reset_email(
+            to_email=request.email,
+            reset_code=code,
+            user_name=user.get("name", "Nutzer")
+        )
+        logger.info(f"Password reset email sent: {email_result}")
+    except Exception as e:
+        logger.error(f"Failed to send reset email: {e}")
+    
+    return {"message": "Reset code sent", "demo_code": code}  # demo_code for testing
 
 @api_router.post("/auth/verify-reset-code")
 async def verify_reset_code(request: VerifyResetCodeRequest):
