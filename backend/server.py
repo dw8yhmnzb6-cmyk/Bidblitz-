@@ -2076,7 +2076,9 @@ async def bot_bid_to_price(auction_id: str, target_price: float, admin: dict = D
 
 # ==================== WEBSOCKET ENDPOINTS ====================
 
+# WebSocket endpoints (both with and without /api prefix for compatibility)
 @app.websocket("/ws/auction/{auction_id}")
+@app.websocket("/api/ws/auction/{auction_id}")
 async def websocket_auction(websocket: WebSocket, auction_id: str):
     """WebSocket endpoint for real-time auction updates"""
     await ws_manager.connect(websocket, auction_id)
