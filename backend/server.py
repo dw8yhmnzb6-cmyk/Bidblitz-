@@ -430,17 +430,19 @@ async def change_password(data: ChangePasswordRequest, user: dict = Depends(get_
     # Get user with password
     full_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
     
-    # Verify current password
-    if not bcrypt.checkpw(data.current_password.encode('utf-8'), full_user["hashed_password"].encode('utf-8')):
+    # Verify current password - check both 'password' and 'hashed_password' fields for compatibility
+    stored_password = full_user.get("password") or full_user.get("hashed_password")
+    if not stored_password or not bcrypt.checkpw(data.current_password.encode('utf-8'), stored_password.encode('utf-8')):
         raise HTTPException(status_code=400, detail="Current password is incorrect")
     
     # Hash new password
     hashed = bcrypt.hashpw(data.new_password.encode('utf-8'), bcrypt.gensalt())
     
+    # Update password field (consistent with registration and login)
     await db.users.update_one(
         {"id": user["id"]},
         {"$set": {
-            "hashed_password": hashed.decode('utf-8'),
+            "password": hashed.decode('utf-8'),
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
