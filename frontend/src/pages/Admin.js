@@ -1037,6 +1037,166 @@ export default function Admin() {
               </div>
             </div>
           )}
+
+          {/* Payments Tab */}
+          {activeTab === 'payments' && (
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold text-white">Zahlungsübersicht</h1>
+                  <p className="text-[#94A3B8]">Alle Transaktionen im Überblick</p>
+                </div>
+                <Button onClick={fetchData} variant="outline" className="border-white/10 text-white">
+                  <RefreshCw className="w-4 h-4 mr-2" />Aktualisieren
+                </Button>
+              </div>
+
+              {/* Payment Stats */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="glass-card rounded-xl p-5">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981]/20 flex items-center justify-center">
+                      <DollarSign className="w-6 h-6 text-[#10B981]" />
+                    </div>
+                    <div>
+                      <p className="text-[#94A3B8] text-sm">Umsatz gesamt</p>
+                      <p className="text-2xl font-bold text-white">€{payments.reduce((sum, p) => sum + (p.amount || 0), 0).toFixed(2)}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="glass-card rounded-xl p-5">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/20 flex items-center justify-center">
+                      <CheckCircle className="w-6 h-6 text-[#7C3AED]" />
+                    </div>
+                    <div>
+                      <p className="text-[#94A3B8] text-sm">Transaktionen</p>
+                      <p className="text-2xl font-bold text-white">{payments.length}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="glass-card rounded-xl p-5">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#FFD700]/20 flex items-center justify-center">
+                      <Zap className="w-6 h-6 text-[#FFD700]" />
+                    </div>
+                    <div>
+                      <p className="text-[#94A3B8] text-sm">Gebote verkauft</p>
+                      <p className="text-2xl font-bold text-white">{payments.reduce((sum, p) => sum + (p.bids || 0), 0)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payments Table */}
+              <div className="glass-card rounded-xl overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-[#181824]">
+                      <tr>
+                        <th className="px-6 py-4 text-left text-[#94A3B8] font-medium">Datum</th>
+                        <th className="px-6 py-4 text-left text-[#94A3B8] font-medium">Kunde</th>
+                        <th className="px-6 py-4 text-left text-[#94A3B8] font-medium">Paket</th>
+                        <th className="px-6 py-4 text-left text-[#94A3B8] font-medium">Gebote</th>
+                        <th className="px-6 py-4 text-left text-[#94A3B8] font-medium">Betrag</th>
+                        <th className="px-6 py-4 text-left text-[#94A3B8] font-medium">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10">
+                      {payments.map((payment, index) => (
+                        <tr key={index} className="hover:bg-white/5">
+                          <td className="px-6 py-4 text-white">
+                            {new Date(payment.created_at).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="text-white">{payment.user_name || 'N/A'}</p>
+                            <p className="text-[#94A3B8] text-sm">{payment.user_email}</p>
+                          </td>
+                          <td className="px-6 py-4 text-white">{payment.package_name}</td>
+                          <td className="px-6 py-4 text-[#FFD700] font-bold">{payment.bids}</td>
+                          <td className="px-6 py-4 text-[#10B981] font-mono font-bold">€{payment.amount?.toFixed(2)}</td>
+                          <td className="px-6 py-4">
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                              payment.status === 'paid' ? 'bg-[#10B981]/20 text-[#10B981]' :
+                              payment.status === 'pending' ? 'bg-[#F59E0B]/20 text-[#F59E0B]' :
+                              'bg-[#EF4444]/20 text-[#EF4444]'
+                            }`}>
+                              {payment.status === 'paid' ? 'Bezahlt' : payment.status === 'pending' ? 'Ausstehend' : 'Fehlgeschlagen'}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {payments.length === 0 && (
+                  <p className="text-center text-[#94A3B8] py-12">Noch keine Zahlungen erfasst</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Logs Tab */}
+          {activeTab === 'logs' && (
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-2xl font-bold text-white">Systemlogs</h1>
+                  <p className="text-[#94A3B8]">Aktivitäten und Ereignisse</p>
+                </div>
+                <Button onClick={fetchData} variant="outline" className="border-white/10 text-white">
+                  <RefreshCw className="w-4 h-4 mr-2" />Aktualisieren
+                </Button>
+              </div>
+
+              {/* Log Entries */}
+              <div className="glass-card rounded-xl overflow-hidden">
+                <div className="divide-y divide-white/10 max-h-[600px] overflow-y-auto">
+                  {logs.map((log, index) => (
+                    <div key={index} className="p-4 hover:bg-white/5 transition-colors">
+                      <div className="flex items-start gap-4">
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                          log.type === 'bid' ? 'bg-[#FFD700]/20' :
+                          log.type === 'payment' ? 'bg-[#10B981]/20' :
+                          log.type === 'user' ? 'bg-[#7C3AED]/20' :
+                          log.type === 'auction' ? 'bg-[#06B6D4]/20' :
+                          log.type === 'error' ? 'bg-[#EF4444]/20' :
+                          'bg-white/10'
+                        }`}>
+                          {log.type === 'bid' && <Zap className="w-5 h-5 text-[#FFD700]" />}
+                          {log.type === 'payment' && <DollarSign className="w-5 h-5 text-[#10B981]" />}
+                          {log.type === 'user' && <Users className="w-5 h-5 text-[#7C3AED]" />}
+                          {log.type === 'auction' && <Gavel className="w-5 h-5 text-[#06B6D4]" />}
+                          {log.type === 'error' && <Ban className="w-5 h-5 text-[#EF4444]" />}
+                          {!['bid', 'payment', 'user', 'auction', 'error'].includes(log.type) && <BarChart3 className="w-5 h-5 text-white" />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white font-medium">{log.message}</p>
+                          <div className="flex items-center gap-4 mt-1">
+                            <span className="text-[#94A3B8] text-sm">
+                              {new Date(log.timestamp).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'medium'})}
+                            </span>
+                            {log.user_email && (
+                              <span className="text-[#7C3AED] text-sm">{log.user_email}</span>
+                            )}
+                          </div>
+                        </div>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          log.type === 'error' ? 'bg-[#EF4444]/20 text-[#EF4444]' :
+                          'bg-white/10 text-[#94A3B8]'
+                        }`}>
+                          {log.type?.toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {logs.length === 0 && (
+                  <p className="text-center text-[#94A3B8] py-12">Keine Logs vorhanden</p>
+                )}
+              </div>
+            </div>
+          )}
         </main>
       </div>
     </div>
