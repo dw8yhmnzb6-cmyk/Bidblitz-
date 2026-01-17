@@ -533,7 +533,7 @@ export default function AuctionDetail() {
 
       {/* Mobile Sticky Bid Bar */}
       {!isEnded && !isScheduled && (
-        <div className="fixed bottom-0 left-0 right-0 lg:hidden glass border-t border-white/10 p-4 z-40">
+        <div className="fixed bottom-16 left-0 right-0 lg:hidden glass border-t border-white/10 p-4 z-40">
           <div className="flex items-center justify-between gap-4 max-w-6xl mx-auto">
             <div className="flex-1">
               <p className="text-[#94A3B8] text-xs">Aktueller Preis</p>
