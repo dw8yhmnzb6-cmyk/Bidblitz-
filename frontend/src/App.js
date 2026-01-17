@@ -49,57 +49,61 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 
 function AppContent() {
   return (
-    <div className="App bg-[#050509] min-h-screen">
+    <div className="App bg-[#050509] min-h-screen flex flex-col">
       {/* Noise overlay */}
       <div className="noise-overlay" />
       
       <Navbar />
       
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auctions" element={<Auctions />} />
-        <Route path="/auctions/:id" element={<AuctionDetail />} />
-        <Route path="/buy-bids" element={<BuyBids />} />
-        <Route path="/payment/success" element={
-          <ProtectedRoute>
-            <PaymentSuccess />
-          </ProtectedRoute>
-        } />
-        <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/admin" element={
-          <ProtectedRoute requireAdmin>
-            <Admin />
-          </ProtectedRoute>
-        } />
-        {/* Public Legal Pages */}
-        <Route path="/impressum" element={<Impressum />} />
-        <Route path="/datenschutz" element={<Datenschutz />} />
-        <Route path="/agb" element={<AGB />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        {/* Protected User Pages */}
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        } />
-        <Route path="/bid-history" element={
-          <ProtectedRoute>
-            <BidHistory />
-          </ProtectedRoute>
-        } />
-        <Route path="/purchases" element={
-          <ProtectedRoute>
-            <Purchases />
-          </ProtectedRoute>
-        } />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <main className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auctions" element={<Auctions />} />
+          <Route path="/auctions/:id" element={<AuctionDetail />} />
+          <Route path="/buy-bids" element={<BuyBids />} />
+          <Route path="/payment/success" element={
+            <ProtectedRoute>
+              <PaymentSuccess />
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin" element={
+            <ProtectedRoute requireAdmin>
+              <Admin />
+            </ProtectedRoute>
+          } />
+          {/* Public Legal Pages */}
+          <Route path="/impressum" element={<Impressum />} />
+          <Route path="/datenschutz" element={<Datenschutz />} />
+          <Route path="/agb" element={<AGB />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          {/* Protected User Pages */}
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/bid-history" element={
+            <ProtectedRoute>
+              <BidHistory />
+            </ProtectedRoute>
+          } />
+          <Route path="/purchases" element={
+            <ProtectedRoute>
+              <Purchases />
+            </ProtectedRoute>
+          } />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+      
+      <Footer />
       
       <Toaster 
         position="top-right"
