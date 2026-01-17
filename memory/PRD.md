@@ -164,7 +164,7 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 
 ### P1 (High Priority)
 - [x] E-Mail-Benachrichtigungen (Gewinner, Passwort-Reset) - Resend Integration
-- [ ] WebSockets für Echtzeit-Updates
+- [x] **WebSockets für Echtzeit-Updates (17.01.2026)** - Live-Gebote, Viewer-Zähler, Toast-Benachrichtigungen
 - [ ] "Sofort Kaufen" Feature
 - [ ] Gebotsverlauf auf Auktionsseite
 
