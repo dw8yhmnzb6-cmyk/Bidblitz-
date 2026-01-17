@@ -406,9 +406,30 @@ async def get_auctions(status: Optional[str] = None):
 
 @api_router.get("/auctions/{auction_id}", response_model=AuctionResponse)
 async def get_auction(auction_id: str):
+    # Check if this auction should be activated or ended
+    now = datetime.now(timezone.utc)
     auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0, "bid_history": 0})
+    
     if not auction:
         raise HTTPException(status_code=404, detail="Auction not found")
+    
+    # Update status if needed
+    if auction.get("status") == "scheduled" and auction.get("start_time"):
+        start_time = datetime.fromisoformat(auction["start_time"].replace('Z', '+00:00'))
+        if start_time <= now:
+            await db.auctions.update_one({"id": auction_id}, {"$set": {"status": "active"}})
+            auction["status"] = "active"
+    
+    if auction.get("status") == "active" and auction.get("end_time"):
+        end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
+        if end_time <= now:
+            # Set winner info
+            update_data = {"status": "ended"}
+            if auction.get("last_bidder_id"):
+                update_data["winner_id"] = auction["last_bidder_id"]
+                update_data["winner_name"] = auction.get("last_bidder_name")
+            await db.auctions.update_one({"id": auction_id}, {"$set": update_data})
+            auction.update(update_data)
     
     product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
     return AuctionResponse(**auction, product=product)
