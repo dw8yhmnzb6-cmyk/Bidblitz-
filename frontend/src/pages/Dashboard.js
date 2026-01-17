@@ -5,47 +5,71 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { Zap, Trophy, Target, TrendingUp, ArrowRight, User, Mail, Ticket, Bot, Trash2, Power } from 'lucide-react';
+import { 
+  Zap, Trophy, Target, TrendingUp, ArrowRight, User, Mail, 
+  Ticket, Bot, Trash2, Power, Clock, Package, CreditCard,
+  History, Settings, ChevronRight, Gift, Calendar, Eye,
+  Timer, CheckCircle, XCircle
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Dashboard() {
-  const { user, token, refreshUser } = useAuth();
+  const { user, token, refreshUser, updateBidsBalance } = useAuth();
   const { t } = useLanguage();
+  const [activeAuctions, setActiveAuctions] = useState([]);
+  const [myBidAuctions, setMyBidAuctions] = useState([]);
   const [wonAuctions, setWonAuctions] = useState([]);
   const [autobidders, setAutobidders] = useState([]);
+  const [recentBids, setRecentBids] = useState([]);
+  const [purchases, setPurchases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [voucherCode, setVoucherCode] = useState('');
   const [redeemingVoucher, setRedeemingVoucher] = useState(false);
 
   useEffect(() => {
-    fetchData();
+    if (user) fetchData();
   }, [user]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch won auctions
-      if (user?.won_auctions?.length) {
-        const auctions = await Promise.all(
-          user.won_auctions.slice(0, 5).map(async (auctionId) => {
-            try {
-              const response = await axios.get(`${API}/auctions/${auctionId}`);
-              return response.data;
-            } catch {
-              return null;
-            }
-          })
-        );
-        setWonAuctions(auctions.filter(Boolean));
-      }
-
-      // Fetch autobidders
-      const autobiddersRes = await axios.get(`${API}/autobidder/my`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const headers = { Authorization: `Bearer ${token}` };
+      
+      // Fetch all data in parallel
+      const [auctionsRes, autobiddersRes, bidHistoryRes, purchasesRes] = await Promise.all([
+        axios.get(`${API}/auctions`),
+        axios.get(`${API}/autobidder/my`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/user/bid-history`, { headers }).catch(() => ({ data: [] })),
+        axios.get(`${API}/user/purchases`, { headers }).catch(() => ({ data: [] }))
+      ]);
+      
+      const allAuctions = auctionsRes.data;
+      
+      // Active auctions where user has bid
+      const myBids = bidHistoryRes.data;
+      const myAuctionIds = [...new Set(myBids.map(b => b.auction_id))];
+      const myActiveAuctions = allAuctions.filter(a => 
+        myAuctionIds.includes(a.id) && a.status === 'active'
+      );
+      setMyBidAuctions(myActiveAuctions);
+      
+      // Active auctions (general)
+      setActiveAuctions(allAuctions.filter(a => a.status === 'active').slice(0, 4));
+      
+      // Won auctions
+      setWonAuctions(allAuctions.filter(a => a.winner_id === user?.id));
+      
+      // Autobidders
       setAutobidders(autobiddersRes.data);
+      
+      // Recent bids
+      setRecentBids(myBids.slice(0, 10));
+      
+      // Purchases
+      setPurchases(purchasesRes.data.slice(0, 5));
+      
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -56,7 +80,6 @@ export default function Dashboard() {
   const handleRedeemVoucher = async (e) => {
     e.preventDefault();
     if (!voucherCode.trim()) return;
-
     setRedeemingVoucher(true);
     try {
       const response = await axios.post(
@@ -76,11 +99,7 @@ export default function Dashboard() {
 
   const handleToggleAutobidder = async (autobidderId, currentStatus) => {
     try {
-      await axios.put(
-        `${API}/autobidder/${autobidderId}/toggle`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.put(`${API}/autobidder/${autobidderId}/toggle`, {}, { headers: { Authorization: `Bearer ${token}` } });
       toast.success(currentStatus ? 'Autobidder deaktiviert' : 'Autobidder aktiviert');
       fetchData();
     } catch (error) {
@@ -90,9 +109,7 @@ export default function Dashboard() {
 
   const handleDeleteAutobidder = async (autobidderId) => {
     try {
-      await axios.delete(`${API}/autobidder/${autobidderId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.delete(`${API}/autobidder/${autobidderId}`, { headers: { Authorization: `Bearer ${token}` } });
       toast.success('Autobidder gelöscht');
       fetchData();
     } catch (error) {
@@ -100,258 +117,394 @@ export default function Dashboard() {
     }
   };
 
-  const stats = [
-    {
-      icon: <Zap className="w-6 h-6" />,
-      label: t('dashboard.availableBids'),
-      value: user?.bids_balance || 0,
-      color: 'text-[#06B6D4]',
-      bgColor: 'bg-[#06B6D4]/20'
-    },
-    {
-      icon: <Trophy className="w-6 h-6" />,
-      label: t('dashboard.wonAuctions'),
-      value: user?.won_auctions?.length || 0,
-      color: 'text-[#10B981]',
-      bgColor: 'bg-[#10B981]/20'
-    },
-    {
-      icon: <Target className="w-6 h-6" />,
-      label: t('dashboard.placedBids'),
-      value: user?.total_bids_placed || 0,
-      color: 'text-[#7C3AED]',
-      bgColor: 'bg-[#7C3AED]/20'
+  const handleQuickBid = async (auctionId) => {
+    try {
+      const response = await axios.post(
+        `${API}/auctions/${auctionId}/bid`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success('Gebot platziert!');
+      updateBidsBalance(response.data.bids_remaining);
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Bieten');
     }
-  ];
+  };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#FFD700] border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4" data-testid="dashboard-page">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-            {t('dashboard.welcome')}, {user?.name}!
-          </h1>
-          <p className="text-[#94A3B8]">{t('dashboard.manage')}</p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="glass-card rounded-xl p-6">
-              <div className="flex items-center gap-4">
-                <div className={`w-14 h-14 rounded-xl ${stat.bgColor} flex items-center justify-center ${stat.color}`}>
-                  {stat.icon}
-                </div>
-                <div>
-                  <p className="text-[#94A3B8] text-sm">{stat.label}</p>
-                  <p className={`text-3xl font-bold ${stat.color} font-mono`}>{stat.value}</p>
-                </div>
+      <div className="max-w-7xl mx-auto">
+        {/* Header with User Info */}
+        <div className="glass-card rounded-2xl p-6 mb-8">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FFD700] to-[#FF4D4D] flex items-center justify-center text-2xl font-bold text-black">
+                {user.name?.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">Willkommen, {user.name}!</h1>
+                <p className="text-[#94A3B8]">{user.email}</p>
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-          <Link to="/buy-bids" className="block">
-            <div className="glass-card rounded-xl p-6 hover:border-[#7C3AED]/50 transition-colors group">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center">
-                    <Zap className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{t('dashboard.buyBids')}</h3>
-                    <p className="text-[#94A3B8] text-sm">{t('dashboard.moreBids')}</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 text-[#94A3B8] group-hover:text-[#7C3AED] transition-colors" />
-              </div>
-            </div>
-          </Link>
-          
-          <Link to="/auctions" className="block">
-            <div className="glass-card rounded-xl p-6 hover:border-[#06B6D4]/50 transition-colors group">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#06B6D4] to-[#10B981] flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-white">{t('dashboard.liveAuctions')}</h3>
-                    <p className="text-[#94A3B8] text-sm">{t('dashboard.bidAndWin')}</p>
-                  </div>
-                </div>
-                <ArrowRight className="w-5 h-5 text-[#94A3B8] group-hover:text-[#06B6D4] transition-colors" />
-              </div>
-            </div>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column */}
-          <div className="space-y-8">
-            {/* Voucher Redemption */}
-            <div className="glass-card rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <Ticket className="w-6 h-6 text-[#F59E0B]" />
-                <h2 className="text-xl font-bold text-white">{t('voucher.title') || 'Gutschein einlösen'}</h2>
-              </div>
-              <form onSubmit={handleRedeemVoucher} className="flex gap-3">
-                <Input
-                  value={voucherCode}
-                  onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
-                  placeholder={t('voucher.placeholder') || 'Gutscheincode eingeben'}
-                  className="flex-1 bg-[#181824] border-white/10 text-white uppercase font-mono"
-                  data-testid="voucher-input"
-                />
-                <Button 
-                  type="submit" 
-                  disabled={redeemingVoucher || !voucherCode.trim()}
-                  className="btn-primary"
-                  data-testid="redeem-voucher-btn"
-                >
-                  {redeemingVoucher ? '...' : (t('voucher.redeem') || 'Einlösen')}
+            <div className="flex flex-wrap gap-3">
+              <Link to="/profile">
+                <Button variant="outline" className="border-white/10 text-white hover:bg-white/10">
+                  <Settings className="w-4 h-4 mr-2" />Profil
                 </Button>
-              </form>
+              </Link>
+              <Link to="/buy-bids">
+                <Button className="btn-primary">
+                  <Zap className="w-4 h-4 mr-2" />Gebote kaufen
+                </Button>
+              </Link>
             </div>
+          </div>
+        </div>
 
-            {/* Profile Info */}
-            <div className="glass-card rounded-xl p-6">
-              <h2 className="text-xl font-bold text-white mb-6">{t('dashboard.profile')}</h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 rounded-lg bg-[#181824]">
-                  <User className="w-5 h-5 text-[#7C3AED]" />
-                  <div>
-                    <p className="text-[#94A3B8] text-sm">{t('dashboard.name')}</p>
-                    <p className="text-white font-medium">{user?.name}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 p-4 rounded-lg bg-[#181824]">
-                  <Mail className="w-5 h-5 text-[#06B6D4]" />
-                  <div>
-                    <p className="text-[#94A3B8] text-sm">{t('dashboard.email')}</p>
-                    <p className="text-white font-medium">{user?.email}</p>
-                  </div>
-                </div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="glass-card rounded-xl p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#FFD700]/20 flex items-center justify-center">
+                <Zap className="w-6 h-6 text-[#FFD700]" />
+              </div>
+              <div>
+                <p className="text-[#94A3B8] text-sm">Guthaben</p>
+                <p className="text-2xl font-bold text-white">{user.bids_balance || 0}</p>
+                <p className="text-[#FFD700] text-xs">Gebote</p>
               </div>
             </div>
           </div>
-
-          {/* Right Column */}
-          <div className="space-y-8">
-            {/* Autobidders */}
-            <div className="glass-card rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-6">
-                <Bot className="w-6 h-6 text-[#7C3AED]" />
-                <h2 className="text-xl font-bold text-white">{t('autobidder.title') || 'Autobidder'}</h2>
+          
+          <div className="glass-card rounded-xl p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#10B981]/20 flex items-center justify-center">
+                <Trophy className="w-6 h-6 text-[#10B981]" />
               </div>
-              
-              {loading ? (
-                <div className="space-y-4">
-                  {[...Array(2)].map((_, i) => (
-                    <div key={i} className="h-16 bg-[#181824] rounded-lg animate-pulse" />
+              <div>
+                <p className="text-[#94A3B8] text-sm">Gewonnen</p>
+                <p className="text-2xl font-bold text-white">{wonAuctions.length}</p>
+                <p className="text-[#10B981] text-xs">Auktionen</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="glass-card rounded-xl p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/20 flex items-center justify-center">
+                <Target className="w-6 h-6 text-[#7C3AED]" />
+              </div>
+              <div>
+                <p className="text-[#94A3B8] text-sm">Aktive Gebote</p>
+                <p className="text-2xl font-bold text-white">{myBidAuctions.length}</p>
+                <p className="text-[#7C3AED] text-xs">Auktionen</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="glass-card rounded-xl p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-[#06B6D4]/20 flex items-center justify-center">
+                <Bot className="w-6 h-6 text-[#06B6D4]" />
+              </div>
+              <div>
+                <p className="text-[#94A3B8] text-sm">Autobidder</p>
+                <p className="text-2xl font-bold text-white">{autobidders.filter(a => a.is_active).length}</p>
+                <p className="text-[#06B6D4] text-xs">Aktiv</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content - Left 2/3 */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Meine aktiven Auktionen */}
+            {myBidAuctions.length > 0 && (
+              <div className="glass-card rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Target className="w-5 h-5 text-[#FFD700]" />
+                    Meine aktiven Auktionen
+                  </h2>
+                  <Link to="/auctions" className="text-[#FFD700] text-sm hover:underline flex items-center gap-1">
+                    Alle anzeigen <ChevronRight className="w-4 h-4" />
+                  </Link>
+                </div>
+                <div className="space-y-3">
+                  {myBidAuctions.map((auction) => (
+                    <div key={auction.id} className="flex items-center gap-4 p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors">
+                      <img 
+                        src={auction.product?.image_url || 'https://via.placeholder.com/60'} 
+                        alt="" 
+                        className="w-14 h-14 rounded-lg object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-medium truncate">{auction.product?.name}</p>
+                        <p className="text-[#06B6D4] font-mono font-bold">€{auction.current_price?.toFixed(2)}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[#94A3B8] text-xs">Letzter Bieter</p>
+                        <p className={`text-sm font-medium ${auction.last_bidder_id === user.id ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                          {auction.last_bidder_name || '-'}
+                        </p>
+                      </div>
+                      <Button 
+                        size="sm" 
+                        onClick={() => handleQuickBid(auction.id)}
+                        className="bg-[#FFD700] hover:bg-[#E6C200] text-black font-bold"
+                      >
+                        <Zap className="w-4 h-4" />
+                      </Button>
+                    </div>
                   ))}
                 </div>
-              ) : autobidders.length > 0 ? (
-                <div className="space-y-4">
-                  {autobidders.map((ab) => (
-                    <div key={ab.id} className={`p-4 rounded-lg bg-[#181824] ${!ab.is_active ? 'opacity-50' : ''}`}>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={ab.product?.image_url}
-                            alt=""
-                            className="w-10 h-10 rounded-lg object-cover"
-                          />
-                          <div>
-                            <p className="text-white font-medium text-sm">{ab.product?.name}</p>
-                            <p className="text-[#94A3B8] text-xs">Max: €{ab.max_price?.toFixed(2)}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${ab.is_active ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/20 text-[#EF4444]'}`}>
-                            {ab.is_active ? (t('autobidder.active') || 'Aktiv') : (t('autobidder.inactive') || 'Inaktiv')}
-                          </span>
+              </div>
+            )}
+
+            {/* Live-Auktionen entdecken */}
+            <div className="glass-card rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Timer className="w-5 h-5 text-[#FF4D4D]" />
+                  Live-Auktionen entdecken
+                </h2>
+                <Link to="/auctions" className="text-[#FFD700] text-sm hover:underline flex items-center gap-1">
+                  Alle anzeigen <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {activeAuctions.map((auction) => (
+                  <Link 
+                    key={auction.id} 
+                    to={`/auctions/${auction.id}`}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors"
+                  >
+                    <img 
+                      src={auction.product?.image_url || 'https://via.placeholder.com/50'} 
+                      alt="" 
+                      className="w-12 h-12 rounded-lg object-cover"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white font-medium truncate text-sm">{auction.product?.name}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#06B6D4] font-mono font-bold text-sm">€{auction.current_price?.toFixed(2)}</span>
+                        <span className="text-[#94A3B8] text-xs">• {auction.total_bids} Gebote</span>
+                      </div>
+                    </div>
+                    <Eye className="w-4 h-4 text-[#94A3B8]" />
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Gebots-Historie */}
+            <div className="glass-card rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <History className="w-5 h-5 text-[#7C3AED]" />
+                  Gebots-Historie
+                </h2>
+                <Link to="/bid-history" className="text-[#FFD700] text-sm hover:underline flex items-center gap-1">
+                  Alle anzeigen <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+              {recentBids.length === 0 ? (
+                <p className="text-[#94A3B8] text-center py-4">Noch keine Gebote abgegeben</p>
+              ) : (
+                <div className="space-y-2">
+                  {recentBids.slice(0, 5).map((bid, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-[#181824]">
+                      <div className="flex items-center gap-3">
+                        <img 
+                          src={bid.product?.image_url || 'https://via.placeholder.com/40'} 
+                          alt="" 
+                          className="w-10 h-10 rounded object-cover"
+                        />
+                        <div>
+                          <p className="text-white text-sm truncate max-w-[200px]">{bid.product?.name}</p>
+                          <p className="text-[#94A3B8] text-xs">€{bid.price?.toFixed(2)}</p>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-[#94A3B8] text-xs">
-                          {t('autobidder.bidsPlaced') || 'Gebote platziert'}: <span className="text-[#06B6D4] font-bold">{ab.bids_placed}</span>
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className={ab.is_active ? "text-[#F59E0B] hover:bg-[#F59E0B]/10" : "text-[#10B981] hover:bg-[#10B981]/10"}
-                            onClick={() => handleToggleAutobidder(ab.id, ab.is_active)}
-                          >
-                            <Power className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-[#EF4444] hover:bg-[#EF4444]/10"
-                            onClick={() => handleDeleteAutobidder(ab.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
+                      <div className="flex items-center gap-2">
+                        {bid.won ? (
+                          <span className="flex items-center gap-1 text-[#10B981] text-xs">
+                            <CheckCircle className="w-3 h-3" />Gewonnen
+                          </span>
+                        ) : bid.auction_ended ? (
+                          <span className="flex items-center gap-1 text-[#EF4444] text-xs">
+                            <XCircle className="w-3 h-3" />Verloren
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1 text-[#F59E0B] text-xs">
+                            <Clock className="w-3 h-3" />Aktiv
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sidebar - Right 1/3 */}
+          <div className="space-y-6">
+            {/* Guthaben & Voucher */}
+            <div className="glass-card rounded-2xl p-6">
+              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-[#FFD700]" />
+                Guthaben
+              </h2>
+              <div className="text-center py-4 mb-4 rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-[#FF4D4D]/20 border border-[#FFD700]/30">
+                <p className="text-5xl font-bold text-[#FFD700] font-mono">{user.bids_balance || 0}</p>
+                <p className="text-[#94A3B8] text-sm">Gebote verfügbar</p>
+              </div>
+              <Link to="/buy-bids">
+                <Button className="w-full btn-primary mb-4">
+                  <CreditCard className="w-4 h-4 mr-2" />Gebote kaufen
+                </Button>
+              </Link>
+              
+              {/* Voucher einlösen */}
+              <div className="border-t border-white/10 pt-4">
+                <p className="text-white text-sm mb-2 flex items-center gap-2">
+                  <Ticket className="w-4 h-4 text-[#FFD700]" />
+                  Gutschein einlösen
+                </p>
+                <form onSubmit={handleRedeemVoucher} className="flex gap-2">
+                  <Input
+                    value={voucherCode}
+                    onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                    placeholder="CODE"
+                    className="bg-[#181824] border-white/10 text-white uppercase"
+                  />
+                  <Button type="submit" disabled={redeemingVoucher} className="bg-[#10B981] hover:bg-[#059669]">
+                    <Gift className="w-4 h-4" />
+                  </Button>
+                </form>
+              </div>
+            </div>
+
+            {/* Gewonnene Auktionen */}
+            {wonAuctions.length > 0 && (
+              <div className="glass-card rounded-2xl p-6">
+                <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <Trophy className="w-5 h-5 text-[#10B981]" />
+                  Gewonnen ({wonAuctions.length})
+                </h2>
+                <div className="space-y-2">
+                  {wonAuctions.slice(0, 3).map((auction) => (
+                    <div key={auction.id} className="flex items-center gap-3 p-2 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30">
+                      <img 
+                        src={auction.product?.image_url || 'https://via.placeholder.com/40'} 
+                        alt="" 
+                        className="w-10 h-10 rounded object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm truncate">{auction.product?.name}</p>
+                        <p className="text-[#10B981] font-bold text-sm">€{auction.current_price?.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Autobidder */}
+            <div className="glass-card rounded-2xl p-6">
+              <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <Bot className="w-5 h-5 text-[#06B6D4]" />
+                Meine Autobidder
+              </h2>
+              {autobidders.length === 0 ? (
+                <p className="text-[#94A3B8] text-sm text-center py-4">
+                  Keine aktiven Autobidder. Erstellen Sie einen auf der Auktionsdetailseite!
+                </p>
               ) : (
-                <div className="text-center py-6">
-                  <Bot className="w-10 h-10 text-[#475569] mx-auto mb-3" />
-                  <p className="text-[#94A3B8] text-sm">{t('autobidder.noAutobidders') || 'Keine aktiven Autobidder'}</p>
-                  <Link to="/auctions">
-                    <Button variant="link" className="text-[#7C3AED] mt-2 text-sm">
-                      Autobidder bei Auktion aktivieren
-                    </Button>
-                  </Link>
+                <div className="space-y-2">
+                  {autobidders.map((ab) => (
+                    <div key={ab.id} className="flex items-center justify-between p-3 rounded-lg bg-[#181824]">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm truncate">{ab.auction_name || 'Auktion'}</p>
+                        <p className="text-[#94A3B8] text-xs">Max: €{ab.max_price?.toFixed(2)}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => handleToggleAutobidder(ab.id, ab.is_active)}
+                          className={ab.is_active ? 'text-[#10B981]' : 'text-[#94A3B8]'}
+                        >
+                          <Power className="w-4 h-4" />
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => handleDeleteAutobidder(ab.id)}
+                          className="text-[#EF4444]"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Won Auctions */}
-            <div className="glass-card rounded-xl p-6">
-              <h2 className="text-xl font-bold text-white mb-6">{t('dashboard.wonAuctions')}</h2>
-              {loading ? (
-                <div className="space-y-4">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-[#181824] rounded-lg animate-pulse" />
-                  ))}
+            {/* Letzte Käufe */}
+            {purchases.length > 0 && (
+              <div className="glass-card rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Package className="w-5 h-5 text-[#FFD700]" />
+                    Letzte Käufe
+                  </h2>
+                  <Link to="/purchases" className="text-[#FFD700] text-sm hover:underline">
+                    Alle
+                  </Link>
                 </div>
-              ) : wonAuctions.length > 0 ? (
-                <div className="space-y-4">
-                  {wonAuctions.map((auction) => (
-                    <div key={auction.id} className="flex items-center gap-4 p-3 rounded-lg bg-[#181824]">
-                      <img
-                        src={auction.product?.image_url}
-                        alt={auction.product?.name}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-white font-medium truncate">{auction.product?.name}</p>
-                        <p className="text-[#10B981] text-sm font-mono">€{auction.current_price?.toFixed(2)}</p>
+                <div className="space-y-2">
+                  {purchases.map((purchase, index) => (
+                    <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-[#181824]">
+                      <div>
+                        <p className="text-white text-sm">{purchase.package_name || 'Gebotspaket'}</p>
+                        <p className="text-[#94A3B8] text-xs">{purchase.bids} Gebote</p>
                       </div>
-                      <Trophy className="w-5 h-5 text-[#F59E0B] flex-shrink-0" />
+                      <p className="text-[#10B981] font-bold">€{purchase.amount?.toFixed(2)}</p>
                     </div>
                   ))}
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Trophy className="w-12 h-12 text-[#475569] mx-auto mb-3" />
-                  <p className="text-[#94A3B8]">{t('dashboard.noWonAuctions')}</p>
-                  <Link to="/auctions">
-                    <Button variant="link" className="text-[#7C3AED] mt-2">
-                      {t('dashboard.bidNow')}
-                    </Button>
-                  </Link>
-                </div>
-              )}
+              </div>
+            )}
+
+            {/* Quick Links */}
+            <div className="glass-card rounded-2xl p-6">
+              <h2 className="text-lg font-bold text-white mb-4">Schnellzugriff</h2>
+              <div className="space-y-2">
+                <Link to="/profile" className="flex items-center justify-between p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors">
+                  <span className="flex items-center gap-2 text-white"><User className="w-4 h-4 text-[#94A3B8]" />Profil bearbeiten</span>
+                  <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
+                </Link>
+                <Link to="/bid-history" className="flex items-center justify-between p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors">
+                  <span className="flex items-center gap-2 text-white"><History className="w-4 h-4 text-[#94A3B8]" />Gebots-Historie</span>
+                  <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
+                </Link>
+                <Link to="/purchases" className="flex items-center justify-between p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors">
+                  <span className="flex items-center gap-2 text-white"><Package className="w-4 h-4 text-[#94A3B8]" />Meine Käufe</span>
+                  <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
