@@ -360,6 +360,28 @@ export default function AuctionDetail() {
               )}
             </div>
 
+            {/* Live Status & Viewers */}
+            {!isEnded && !isScheduled && (
+              <div className="flex items-center justify-between p-3 rounded-lg bg-[#181824]">
+                <div className="flex items-center gap-2">
+                  {isConnected ? (
+                    <Wifi className="w-4 h-4 text-[#10B981]" />
+                  ) : (
+                    <WifiOff className="w-4 h-4 text-[#EF4444]" />
+                  )}
+                  <span className={`text-sm ${isConnected ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                    {isConnected ? 'Live verbunden' : 'Verbinde...'}
+                  </span>
+                </div>
+                {viewerCount > 0 && (
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-[#94A3B8]" />
+                    <span className="text-[#94A3B8] text-sm">{viewerCount} Zuschauer</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Price & Stats */}
             <div className="glass-card p-6 rounded-xl space-y-6">
               <div className="flex items-center justify-between">
