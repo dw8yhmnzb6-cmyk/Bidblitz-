@@ -167,7 +167,8 @@ export default function AuctionDetail() {
   }
 
   const product = auction.product || {};
-  const isEnded = auction.status === 'ended' || (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0);
+  const isEnded = auction.status === 'ended' || (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 && auction.status !== 'scheduled');
+  const isScheduled = auction.status === 'scheduled';
   const formatTime = (num) => String(num).padStart(2, '0');
   const savings = product.retail_price ? ((product.retail_price - auction.current_price) / product.retail_price * 100).toFixed(0) : 0;
 
