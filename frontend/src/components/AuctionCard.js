@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Timer, Users, Zap } from 'lucide-react';
+import { Timer, Users, Zap, Calendar } from 'lucide-react';
 import { Button } from './ui/button';
 
 export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
+  const [startTimeLeft, setStartTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isUrgent, setIsUrgent] = useState(false);
 
   useEffect(() => {
@@ -24,25 +25,48 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
       return { hours, minutes, seconds };
     };
 
+    const calculateStartTimeLeft = () => {
+      if (!auction.start_time || auction.status !== 'scheduled') {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+      const startTime = new Date(auction.start_time);
+      const now = new Date();
+      const diff = startTime - now;
+
+      if (diff <= 0) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      return { days, hours, minutes, seconds };
+    };
+
     const timer = setInterval(() => {
       const newTime = calculateTimeLeft();
       setTimeLeft(newTime);
       setIsUrgent(newTime.hours === 0 && newTime.minutes === 0 && newTime.seconds <= 10);
+      setStartTimeLeft(calculateStartTimeLeft());
     }, 1000);
 
     setTimeLeft(calculateTimeLeft());
+    setStartTimeLeft(calculateStartTimeLeft());
 
     return () => clearInterval(timer);
-  }, [auction.end_time]);
+  }, [auction.end_time, auction.start_time, auction.status]);
 
   const product = auction.product || {};
-  const isEnded = auction.status === 'ended' || (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0);
+  const isEnded = auction.status === 'ended' || (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 && auction.status !== 'scheduled');
+  const isScheduled = auction.status === 'scheduled';
 
   const formatTime = (num) => String(num).padStart(2, '0');
 
   return (
     <div 
-      className={`auction-card group relative ${isUrgent && !isEnded ? 'glow-urgency' : ''}`}
+      className={`auction-card group relative ${isUrgent && !isEnded && !isScheduled ? 'glow-urgency' : ''}`}
       data-testid={`auction-card-${auction.id}`}
     >
       {/* Product Image */}
@@ -59,6 +83,10 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
         {isEnded ? (
           <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-[#EF4444]/90 text-white text-xs font-bold uppercase">
             Beendet
+          </div>
+        ) : isScheduled ? (
+          <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-[#F59E0B]/90 text-white text-xs font-bold uppercase">
+            Geplant
           </div>
         ) : (
           <div className="absolute top-3 right-3 px-3 py-1 rounded-full bg-[#10B981]/90 text-white text-xs font-bold uppercase">
@@ -80,21 +108,35 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
         </h3>
 
         {/* Timer */}
-        <div className={`flex items-center justify-center gap-2 py-3 rounded-lg bg-[#181824] ${isUrgent && !isEnded ? 'timer-urgent' : ''}`}>
-          <Timer className="w-5 h-5" />
-          {isEnded ? (
-            <span className="font-mono text-xl font-bold text-[#EF4444]">BEENDET</span>
+        <div className={`flex items-center justify-center gap-2 py-3 rounded-lg bg-[#181824] ${isUrgent && !isEnded && !isScheduled ? 'timer-urgent' : ''}`}>
+          {isScheduled ? (
+            <>
+              <Calendar className="w-5 h-5 text-[#F59E0B]" />
+              <span className="font-mono text-lg font-bold tracking-wider text-[#F59E0B]">
+                {startTimeLeft.days > 0 && `${startTimeLeft.days}T `}
+                {formatTime(startTimeLeft.hours)}:{formatTime(startTimeLeft.minutes)}:{formatTime(startTimeLeft.seconds)}
+              </span>
+            </>
           ) : (
-            <span className="font-mono text-xl font-bold tracking-wider">
-              {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:{formatTime(timeLeft.seconds)}
-            </span>
+            <>
+              <Timer className="w-5 h-5" />
+              {isEnded ? (
+                <span className="font-mono text-xl font-bold text-[#EF4444]">BEENDET</span>
+              ) : (
+                <span className="font-mono text-xl font-bold tracking-wider">
+                  {formatTime(timeLeft.hours)}:{formatTime(timeLeft.minutes)}:{formatTime(timeLeft.seconds)}
+                </span>
+              )}
+            </>
           )}
         </div>
 
         {/* Current Price */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[#94A3B8] text-xs uppercase tracking-wider">Aktueller Preis</p>
+            <p className="text-[#94A3B8] text-xs uppercase tracking-wider">
+              {isScheduled ? 'Startpreis' : 'Aktueller Preis'}
+            </p>
             <p className="text-2xl font-bold text-[#06B6D4] font-mono">
               €{auction.current_price?.toFixed(2)}
             </p>
@@ -109,9 +151,16 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
         </div>
 
         {/* Last bidder */}
-        {auction.last_bidder_name && (
+        {auction.last_bidder_name && !isScheduled && (
           <p className="text-sm text-[#94A3B8] text-center">
             Letzter Bieter: <span className="text-[#A78BFA] font-medium">{auction.last_bidder_name}</span>
+          </p>
+        )}
+
+        {/* Scheduled start time info */}
+        {isScheduled && auction.start_time && (
+          <p className="text-sm text-[#F59E0B] text-center">
+            Startet: {new Date(auction.start_time).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}
           </p>
         )}
 
@@ -135,7 +184,7 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
               Details
             </Button>
           </Link>
-          {!isEnded && (
+          {!isEnded && !isScheduled && (
             <Button 
               onClick={() => onBid && onBid(auction.id)}
               disabled={!isAuthenticated}
