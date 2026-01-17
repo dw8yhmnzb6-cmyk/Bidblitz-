@@ -15,13 +15,16 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 
 ---
 
-## What's Been Implemented
+## What's Been Implemented (17.01.2026)
 
 ### Authentifizierung & Benutzer
 - [x] JWT-basierte Registrierung und Login
 - [x] Admin- und Kundenrollen
 - [x] Benutzer sperren/entsperren
 - [x] Gebote-Guthaben System
+- [x] **Passwort vergessen (3-Schritt-Prozess)**
+- [x] **Profilverwaltung (Name, Email ändern)**
+- [x] **Passwort ändern**
 
 ### Produkt-Management
 - [x] CRUD für Produkte
@@ -31,40 +34,52 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 
 ### Auktions-System
 - [x] Penny-Auktionen mit Timer
-- [x] **Auktions-Terminplanung (NEU - 17.01.2026)**
-  - Sofort starten (traditionell)
-  - Geplanter Start mit Dauer
-  - Benutzerdefinierte Start-/Endzeit
+- [x] Auktions-Terminplanung (3 Modi)
 - [x] Live-Countdown
-- [x] Automatische Status-Updates (scheduled → active → ended)
-- [x] Bieten nur bei aktiven Auktionen möglich
+- [x] Automatische Status-Updates
+- [x] Bieten nur bei aktiven Auktionen
 
 ### Admin-Panel
 - [x] Dashboard mit Statistiken
-- [x] Produkt-Verwaltung (Erstellen, Bearbeiten, Löschen)
+- [x] Produkt-Verwaltung
 - [x] Auktions-Verwaltung mit Scheduling
-- [x] Benutzer-Verwaltung (Sperren, Gebote hinzufügen)
+- [x] Benutzer-Verwaltung
 - [x] Voucher/Gutschein-System
-- [x] Admin-Bot-System (Preiserhöhung)
+- [x] Admin-Bot-System
+- [x] **Zahlungsübersicht (Umsatz, Transaktionen)**
+- [x] **Systemlogs (Aktivitäten-Tracking)**
 
 ### Kunden-Features
 - [x] Bieten auf aktive Auktionen
-- [x] Autobidder (automatisches Bieten bis Limit)
+- [x] Autobidder
 - [x] Gutschein einlösen
-- [x] Gebotspaket-Kauf (Stripe-Integration)
+- [x] Gebotspaket-Kauf
+- [x] **Gebots-Historie**
+- [x] **Gekaufte Gebotspakete**
+
+### Öffentliche Seiten
+- [x] **Impressum** (§ 5 TMG, Kontakt, Register)
+- [x] **Datenschutz** (DSGVO, Cookies, Stripe)
+- [x] **AGB** (Auktionsregeln, Widerrufsrecht)
+
+### UI/UX
+- [x] **Cookie-Consent Banner**
+- [x] **Footer mit rechtlichen Links**
+- [x] **Neues Farbschema** (Gold #FFD700, Rot #FF4D4D)
+- [x] **Inter/Poppins Fonts**
+- [x] Multi-Sprachen (DE, EN, AL)
 
 ### Internationalisierung
 - [x] Deutsch (DE)
 - [x] Englisch (EN)
 - [x] Albanisch (SQ)
-- [x] Sprachwechsler in Navbar
 
 ---
 
 ## Technical Architecture
 
 ### Backend (FastAPI)
-- `/app/backend/server.py` - Monolithische API
+- `/app/backend/server.py` - API-Endpoints
 - MongoDB für Datenpersistenz
 - JWT für Authentifizierung
 
@@ -78,33 +93,74 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - `products` - Produktkatalog
 - `auctions` - Auktionen mit Scheduling
 - `vouchers` - Gutscheincodes
-- `autobidders` - Auto-Bieter Konfigurationen
-- `bots` - Admin-kontrollierte Bots
+- `autobidders` - Auto-Bieter
+- `bots` - Admin-Bots
 - `payment_transactions` - Zahlungen
+- `password_resets` - Reset-Codes
+
+---
+
+## API Endpoints
+
+### Auth
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/verify-reset-code`
+- `POST /api/auth/reset-password`
+
+### User
+- `PUT /api/user/profile`
+- `PUT /api/user/change-password`
+- `GET /api/user/bid-history`
+- `GET /api/user/purchases`
+
+### Auctions
+- `GET /api/auctions`
+- `GET /api/auctions/{id}`
+- `POST /api/auctions/{id}/bid`
+
+### Admin
+- `GET /api/admin/stats`
+- `GET /api/admin/users`
+- `GET /api/admin/payments`
+- `GET /api/admin/logs`
+- `POST /api/admin/products`
+- `POST /api/admin/auctions`
+- `POST /api/admin/vouchers`
+- `POST /api/admin/bots`
 
 ---
 
 ## Prioritized Backlog
 
-### P0 (Critical) - COMPLETED
+### P0 (Critical) - COMPLETED ✅
 - [x] Auktions-Terminplanung
+- [x] Öffentliche Seiten (Impressum, Datenschutz, AGB)
+- [x] Passwort vergessen
+- [x] Profilverwaltung
+- [x] Gebots-Historie & Käufe
+- [x] Admin Zahlungsübersicht & Logs
+- [x] Cookie-Consent
+- [x] Design-Anpassung
 
 ### P1 (High Priority)
-- [ ] Gewinner-Benachrichtigungen (Email/Push)
+- [ ] E-Mail-Benachrichtigungen (Gewinner, Passwort-Reset)
+- [ ] WebSockets für Echtzeit-Updates
 - [ ] "Sofort Kaufen" Feature
-- [ ] Gebotsverlauf auf Auktions-Seite
-- [ ] MongoDB-Migration (In-Memory → MongoDB für alle Daten)
+- [ ] Gebotsverlauf auf Auktionsseite
 
 ### P2 (Medium Priority)
-- [ ] Admin-Statistiken & Berichte
+- [ ] Admin-Statistiken & Berichte (Charts)
 - [ ] Kategorien-Filter auf Auktionsseite
 - [ ] Gewinner-Galerie (Social Proof)
 - [ ] Referral-System
+- [ ] PayPal Integration
 
 ### P3 (Low Priority)
-- [ ] Impressum & AGB
 - [ ] Two-Factor Authentication
-- [ ] WebSocket für Echtzeit-Updates
+- [ ] PDF-Rechnungen
 
 ---
 
@@ -114,34 +170,19 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 
 ---
 
-## API Endpoints Reference
+## Test Reports
+- `/app/test_reports/iteration_1.json` - Neue Features Tests (22 bestanden)
+- `/app/test_reports/pytest/pytest_results.xml` - Auktions-Scheduling Tests
+- `/app/tests/test_new_features.py` - Test-Suite für neue Features
+- `/app/tests/test_auction_scheduling.py` - Test-Suite für Scheduling
 
-### Auth
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/me`
+---
 
-### Products
-- `GET /api/products`
-- `POST /api/admin/products`
-- `PUT /api/admin/products/{id}`
-- `DELETE /api/admin/products/{id}`
-
-### Auctions
-- `GET /api/auctions`
-- `GET /api/auctions/{id}`
-- `POST /api/admin/auctions` (mit start_time, end_time)
-- `PUT /api/admin/auctions/{id}`
-- `POST /api/auctions/{id}/bid`
-
-### Admin
-- `GET /api/admin/users`
-- `PUT /api/admin/users/{id}/toggle-block`
-- `POST /api/admin/vouchers`
-- `POST /api/admin/bots`
-- `POST /api/admin/bots/bid-to-price`
+## Mocked APIs
+- **E-Mail-Versand**: Passwort-Reset-Code wird in API-Response (demo_code) zurückgegeben
+- **Stripe**: Test-Key vorhanden, Platzhalter-Endpoints
 
 ---
 
 ## Last Updated
-17.01.2026 - Auktions-Terminplanung implementiert und getestet
+17.01.2026 - Vollständige Implementation aller Seiten und Features aus Spezifikation
