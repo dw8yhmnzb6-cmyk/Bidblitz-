@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useAuctionWebSocket } from '../hooks/useAuctionWebSocket';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
@@ -9,7 +10,7 @@ import {
   Zap, Timer, Users, RefreshCw, Pause, Play, Trophy,
   CreditCard, Shield, Lock, ChevronRight, Eye, Filter,
   SortAsc, SortDesc, Grid3X3, List, Search, X, Tv,
-  Smartphone, Home as HomeIcon, Car, Gift, Shirt
+  Smartphone, Home as HomeIcon, Car, Gift, Shirt, Wifi, WifiOff
 } from 'lucide-react';
 import { toast } from 'sonner';
 
