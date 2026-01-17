@@ -888,16 +888,34 @@ async def end_auction(auction_id: str, admin: dict = Depends(get_admin_user)):
         {"$set": {
             "status": "ended",
             "winner_id": winner_id,
-            "winner_name": winner_name
+            "winner_name": winner_name,
+            "ended_at": datetime.now(timezone.utc).isoformat()
         }}
     )
     
-    # Add to winner's won auctions
+    # Add to winner's won auctions and send notification email
     if winner_id:
         await db.users.update_one(
             {"id": winner_id},
             {"$push": {"won_auctions": auction_id}}
         )
+        
+        # Send winner notification email
+        try:
+            winner = await db.users.find_one({"id": winner_id}, {"_id": 0})
+            product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+            if winner and product:
+                await send_winner_notification(
+                    winner_email=winner["email"],
+                    winner_name=winner.get("name", "Gewinner"),
+                    product_name=product.get("name", "Produkt"),
+                    final_price=auction.get("current_price", 0),
+                    retail_price=product.get("retail_price", 0),
+                    auction_id=auction_id
+                )
+                logger.info(f"Winner notification sent to {winner['email']} for auction {auction_id}")
+        except Exception as e:
+            logger.error(f"Failed to send winner notification: {e}")
     
     return {"message": "Auction ended", "winner_id": winner_id, "winner_name": winner_name}
 
