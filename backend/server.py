@@ -1021,6 +1021,111 @@ async def end_auction(auction_id: str, admin: dict = Depends(get_admin_user)):
     
     return {"message": "Auction ended", "winner_id": winner_id, "winner_name": winner_name}
 
+@api_router.post("/admin/auctions/{auction_id}/restart")
+async def restart_auction(
+    auction_id: str, 
+    duration_seconds: int = 600,  # Default 10 minutes
+    bot_target_price: Optional[float] = None,
+    admin: dict = Depends(get_admin_user)
+):
+    """Restart an ended auction with the same product"""
+    # Get the ended auction
+    old_auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not old_auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    if old_auction["status"] != "ended":
+        raise HTTPException(status_code=400, detail="Only ended auctions can be restarted")
+    
+    # Create new auction with same product
+    now = datetime.now(timezone.utc)
+    end_time = now + timedelta(seconds=duration_seconds)
+    
+    new_auction = {
+        "id": str(uuid.uuid4()),
+        "product_id": old_auction["product_id"],
+        "starting_price": 0.01,
+        "current_price": 0.01,
+        "bid_increment": old_auction.get("bid_increment", 0.01),
+        "start_time": now.isoformat(),
+        "end_time": end_time.isoformat(),
+        "status": "active",
+        "total_bids": 0,
+        "last_bidder_id": None,
+        "last_bidder_name": None,
+        "winner_id": None,
+        "winner_name": None,
+        "bid_history": [],
+        "created_at": now.isoformat(),
+        "created_by": admin["id"],
+        "restarted_from": auction_id
+    }
+    
+    await db.auctions.insert_one(new_auction)
+    
+    # If bot target price specified, start bot bidding
+    bots_result = None
+    if bot_target_price and bot_target_price > 0.01:
+        import random
+        bots = await db.bots.find({"is_active": True}, {"_id": 0}).to_list(100)
+        if bots:
+            current_price = 0.01
+            increment = new_auction["bid_increment"]
+            bids_placed = 0
+            last_bot = None
+            
+            while current_price < bot_target_price:
+                available_bots = [b for b in bots if b["id"] != (last_bot["id"] if last_bot else None)]
+                if not available_bots:
+                    available_bots = bots
+                bot = random.choice(available_bots)
+                last_bot = bot
+                
+                new_price = round(current_price + increment, 2)
+                new_end_time = datetime.now(timezone.utc) + timedelta(seconds=15)
+                
+                await db.auctions.update_one(
+                    {"id": new_auction["id"]},
+                    {
+                        "$set": {
+                            "current_price": new_price,
+                            "end_time": new_end_time.isoformat(),
+                            "last_bidder_id": f"bot_{bot['id']}",
+                            "last_bidder_name": bot["name"]
+                        },
+                        "$inc": {"total_bids": 1},
+                        "$push": {
+                            "bid_history": {
+                                "user_id": f"bot_{bot['id']}",
+                                "user_name": bot["name"],
+                                "price": new_price,
+                                "timestamp": datetime.now(timezone.utc).isoformat(),
+                                "is_bot": True
+                            }
+                        }
+                    }
+                )
+                
+                await db.bots.update_one({"id": bot["id"]}, {"$inc": {"total_bids_placed": 1}})
+                current_price = new_price
+                bids_placed += 1
+                
+                if bids_placed >= 1000:
+                    break
+            
+            bots_result = {"bids_placed": bids_placed, "final_price": current_price}
+    
+    # Get product info for response
+    product = await db.products.find_one({"id": new_auction["product_id"]}, {"_id": 0})
+    new_auction["product"] = product
+    new_auction.pop("_id", None)
+    
+    return {
+        "message": "Auction restarted",
+        "auction": new_auction,
+        "bot_bidding": bots_result
+    }
+
 @api_router.delete("/admin/auctions/{auction_id}")
 async def delete_auction(auction_id: str, admin: dict = Depends(get_admin_user)):
     result = await db.auctions.delete_one({"id": auction_id})
