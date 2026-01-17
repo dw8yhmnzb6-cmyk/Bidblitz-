@@ -68,6 +68,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -78,6 +82,7 @@ export const AuthProvider = ({ children }) => {
       logout, 
       updateBidsBalance,
       refreshUser,
+      updateUser,
       isAuthenticated: !!user,
       isAdmin: user?.is_admin || false
     }}>
