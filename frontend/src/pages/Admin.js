@@ -38,7 +38,8 @@ export default function Admin() {
     name: '', description: '', image_url: '', retail_price: '', category: ''
   });
   const [newAuction, setNewAuction] = useState({
-    product_id: '', starting_price: '0.01', bid_increment: '0.02', duration_seconds: '300'
+    product_id: '', starting_price: '0.01', bid_increment: '0.02', duration_seconds: '300',
+    start_time: '', end_time: '', scheduling_mode: 'immediate' // immediate, scheduled, custom
   });
   const [newVoucher, setNewVoucher] = useState({
     code: '', bids: '10', max_uses: '1', expires_at: ''
