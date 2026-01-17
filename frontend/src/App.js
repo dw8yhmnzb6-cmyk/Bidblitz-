@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { Navbar } from "./components/Navbar";
+import { Footer } from "./components/Footer";
 import { Toaster } from "./components/ui/sonner";
 
 // Pages
@@ -15,6 +16,13 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
+import ForgotPassword from "./pages/ForgotPassword";
+import Impressum from "./pages/Impressum";
+import Datenschutz from "./pages/Datenschutz";
+import AGB from "./pages/AGB";
+import Profile from "./pages/Profile";
+import BidHistory from "./pages/BidHistory";
+import Purchases from "./pages/Purchases";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
