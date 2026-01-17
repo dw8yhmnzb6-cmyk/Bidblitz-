@@ -167,14 +167,27 @@ class TestUserProfileManagement:
         print(f"Wrong password handled: {data['detail']}")
     
     def test_change_password_success(self):
-        """Test successful password change"""
+        """Test successful password change - uses password reset to ensure clean state"""
+        # First, ensure password is in known state using reset flow
+        response = requests.post(f"{BASE_URL}/api/auth/forgot-password", json={
+            "email": CUSTOMER_EMAIL
+        })
+        if response.status_code == 200:
+            code = response.json().get("demo_code")
+            if code:
+                requests.post(f"{BASE_URL}/api/auth/reset-password", json={
+                    "email": CUSTOMER_EMAIL,
+                    "code": code,
+                    "new_password": CUSTOMER_PASSWORD
+                })
+        
         # Get fresh token
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
             "email": CUSTOMER_EMAIL,
             "password": CUSTOMER_PASSWORD
         })
         if response.status_code != 200:
-            pytest.skip("Customer login failed")
+            pytest.skip("Customer login failed - password may be in unknown state")
         token = response.json().get("token")
         headers = {"Authorization": f"Bearer {token}"}
         
