@@ -19,8 +19,8 @@ ADMIN_PASSWORD = "Admin123!"
 CUSTOMER_EMAIL = "kunde@bidblitz.de"
 CUSTOMER_PASSWORD = "Kunde123!"
 
-# Test auction ID
-TEST_AUCTION_ID = "1f2ac6dc-922c-4ca4-afe5-40485c0e3de6"
+# Test auction ID - use the newly created active auction
+TEST_AUCTION_ID = "6effc833-994b-4810-9f7d-08d7cd414245"
 
 
 class TestWebSocketConnection:
