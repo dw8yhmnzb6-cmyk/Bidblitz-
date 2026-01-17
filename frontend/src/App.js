@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
+import { CookieConsent } from "./components/CookieConsent";
 import { Toaster } from "./components/ui/sonner";
 
 // Pages
