@@ -175,23 +175,32 @@ export default function Admin() {
   const handleCreateAuction = async (e) => {
     e.preventDefault();
     try {
+      // Calculate duration in seconds based on unit
+      let durationSeconds = parseInt(newAuction.duration_value);
+      if (newAuction.duration_unit === 'minutes') {
+        durationSeconds = durationSeconds * 60;
+      } else if (newAuction.duration_unit === 'hours') {
+        durationSeconds = durationSeconds * 60 * 60;
+      } else if (newAuction.duration_unit === 'days') {
+        durationSeconds = durationSeconds * 60 * 60 * 24;
+      }
+
       const auctionData = {
         product_id: newAuction.product_id,
         starting_price: parseFloat(newAuction.starting_price),
-        bid_increment: parseFloat(newAuction.bid_increment)
+        bid_increment: parseFloat(newAuction.bid_increment),
+        bot_target_price: newAuction.bot_target_price ? parseFloat(newAuction.bot_target_price) : null
       };
 
       // Handle scheduling modes
       if (newAuction.scheduling_mode === 'immediate') {
-        auctionData.duration_seconds = parseInt(newAuction.duration_seconds);
+        auctionData.duration_seconds = durationSeconds;
       } else if (newAuction.scheduling_mode === 'scheduled') {
-        // Scheduled start with duration
         if (newAuction.start_time) {
           auctionData.start_time = new Date(newAuction.start_time).toISOString();
-          auctionData.duration_seconds = parseInt(newAuction.duration_seconds);
+          auctionData.duration_seconds = durationSeconds;
         }
       } else if (newAuction.scheduling_mode === 'custom') {
-        // Custom start and end times
         if (newAuction.start_time) {
           auctionData.start_time = new Date(newAuction.start_time).toISOString();
         }
@@ -200,9 +209,29 @@ export default function Admin() {
         }
       }
 
-      await axios.post(`${API}/admin/auctions`, auctionData, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await axios.post(`${API}/admin/auctions`, auctionData, { headers: { Authorization: `Bearer ${token}` } });
       toast.success('Auktion erstellt');
-      setNewAuction({ product_id: '', starting_price: '0.01', bid_increment: '0.02', duration_seconds: '300', start_time: '', end_time: '', scheduling_mode: 'immediate' });
+      
+      // If bot target price is set, automatically start bot bidding
+      if (newAuction.bot_target_price && parseFloat(newAuction.bot_target_price) > 0) {
+        try {
+          await axios.post(
+            `${API}/admin/bots/bid-to-price?auction_id=${response.data.id}&target_price=${newAuction.bot_target_price}`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          toast.success(`Bots bieten bis €${newAuction.bot_target_price}`);
+        } catch (botError) {
+          toast.error('Bot-Bieten fehlgeschlagen - Bots erstellen?');
+        }
+      }
+      
+      setNewAuction({ 
+        product_id: '', starting_price: '0.01', bid_increment: '0.01', 
+        duration_value: '10', duration_unit: 'minutes',
+        start_time: '', end_time: '', scheduling_mode: 'immediate',
+        bot_target_price: ''
+      });
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Fehler');
