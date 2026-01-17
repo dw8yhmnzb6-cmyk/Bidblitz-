@@ -732,6 +732,7 @@ export default function Admin() {
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.product')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.price')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.bids')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Zeit</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.status')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.actions')}</th>
                       </tr>
@@ -742,10 +743,32 @@ export default function Admin() {
                           <td className="px-4 py-3 text-white">{auction.product?.name || 'N/A'}</td>
                           <td className="px-4 py-3 text-[#06B6D4] font-mono">€{auction.current_price?.toFixed(2)}</td>
                           <td className="px-4 py-3 text-white">{auction.total_bids}</td>
-                          <td className="px-4 py-3"><span className={`px-2 py-1 rounded-full text-xs font-bold ${auction.status === 'active' ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/20 text-[#EF4444]'}`}>{auction.status === 'active' ? t('admin.active') : t('admin.ended')}</span></td>
+                          <td className="px-4 py-3 text-[#94A3B8] text-sm">
+                            {auction.start_time && (
+                              <div className="flex items-center gap-1">
+                                <span className="text-[#7C3AED]">Start:</span>
+                                <span>{new Date(auction.start_time).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-1">
+                              <span className="text-[#EF4444]">Ende:</span>
+                              <span>{new Date(auction.end_time).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}</span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                              auction.status === 'active' ? 'bg-[#10B981]/20 text-[#10B981]' : 
+                              auction.status === 'scheduled' ? 'bg-[#F59E0B]/20 text-[#F59E0B]' : 
+                              'bg-[#EF4444]/20 text-[#EF4444]'
+                            }`}>
+                              {auction.status === 'active' ? t('admin.active') : 
+                               auction.status === 'scheduled' ? 'Geplant' : 
+                               t('admin.ended')}
+                            </span>
+                          </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2">
-                              {auction.status === 'active' && (
+                              {(auction.status === 'active' || auction.status === 'scheduled') && (
                                 <>
                                   <Button size="sm" variant="ghost" className="text-[#06B6D4] hover:bg-[#06B6D4]/10" onClick={() => handleExtendAuction(auction.id)} title="Zeit verlängern"><RefreshCw className="w-4 h-4" /></Button>
                                   <Button size="sm" variant="ghost" className="text-[#F59E0B] hover:bg-[#F59E0B]/10" onClick={() => handleEndAuction(auction.id)} title="Beenden"><Square className="w-4 h-4" /></Button>
