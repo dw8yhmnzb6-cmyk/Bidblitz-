@@ -1726,6 +1726,9 @@ async def stripe_webhook(request: Request):
                 commission = await process_affiliate_commission(transaction["user_id"], transaction["amount"])
                 if commission:
                     logger.info(f"Webhook: Affiliate commission €{commission} for user {transaction['user_id']}")
+                
+                # Process referral reward if user qualifies (€5+ deposit)
+                await process_referral_after_deposit(transaction["user_id"], transaction["amount"])
         
         return {"status": "ok"}
     except Exception as e:
