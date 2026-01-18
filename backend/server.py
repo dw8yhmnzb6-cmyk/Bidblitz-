@@ -1279,6 +1279,11 @@ async def get_checkout_status(session_id: str, http_request: Request, user: dict
             }
         )
         
+        # Process affiliate commission if this user was referred
+        commission = await process_affiliate_commission(transaction["user_id"], transaction["amount"])
+        if commission:
+            logger.info(f"Affiliate commission €{commission} processed for user {transaction['user_id']}")
+        
         return {"status": "complete", "payment_status": "paid", "bids_added": transaction["bids"]}
     
     return {
@@ -1313,6 +1318,11 @@ async def stripe_webhook(request: Request):
                         }
                     }
                 )
+                
+                # Process affiliate commission
+                commission = await process_affiliate_commission(transaction["user_id"], transaction["amount"])
+                if commission:
+                    logger.info(f"Webhook: Affiliate commission €{commission} for user {transaction['user_id']}")
         
         return {"status": "ok"}
     except Exception as e:
