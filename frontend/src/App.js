@@ -29,6 +29,7 @@ import Affiliate from "./pages/Affiliate";
 import InviteFriends from "./pages/InviteFriends";
 import Winners from "./pages/Winners";
 import Achievements from "./pages/Achievements";
+import Wishlist from "./pages/Wishlist";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
