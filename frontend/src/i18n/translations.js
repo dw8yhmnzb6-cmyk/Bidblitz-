@@ -20,7 +20,8 @@ export const translations = {
       readyToWin: "Bereit zu gewinnen?",
       freeRegister: "Kostenlos registrieren"
     },
-    auctions: { title: "Alle Auktionen", filter: "Filter", all: "Alle", active: "Aktiv", ended: "Beendet", currentPrice: "Aktueller Preis", bids: "Gebote", bid: "Bieten", live: "Live" },
+    auctions: { title: "Alle Auktionen", filter: "Filter", all: "Alle", active: "Aktiv", ended: "Beendet", currentPrice: "Aktueller Preis", bids: "Gebote", bid: "Bieten", live: "Live", lastBidder: "Letzter Bieter", winner: "Gewinner", rrp: "UVP" },
+    autobidder: { title: "Autobidder", description: "Bietet automatisch für Sie bis zu Ihrem Limit", maxPrice: "Maximaler Preis (€)", activate: "Aktivieren" },
     buyBids: { title: "Gebote kaufen", popular: "Beliebt", bids: "Gebote", buyNow: "Jetzt kaufen" },
     winners: { title: "Gewinner", totalSaved: "Gesamt gespart", avgSavings: "Durchschnittliche Ersparnis", winners: "Gewinner" },
     auth: { login: "Anmelden", register: "Registrieren", email: "E-Mail", password: "Passwort", name: "Name", noAccount: "Noch kein Konto?", haveAccount: "Bereits ein Konto?" },
