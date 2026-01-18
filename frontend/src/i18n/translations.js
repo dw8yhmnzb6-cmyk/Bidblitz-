@@ -25,7 +25,8 @@ export const translations = {
     buyBids: { title: "Gebote kaufen", popular: "Beliebt", bids: "Gebote", buyNow: "Jetzt kaufen" },
     winners: { title: "Gewinner", totalSaved: "Gesamt gespart", avgSavings: "Durchschnittliche Ersparnis", winners: "Gewinner" },
     auth: { login: "Anmelden", register: "Registrieren", email: "E-Mail", password: "Passwort", name: "Name", noAccount: "Noch kein Konto?", haveAccount: "Bereits ein Konto?" },
-    common: { loading: "Lädt...", error: "Fehler", success: "Erfolg", save: "Speichern", cancel: "Abbrechen" }
+    common: { loading: "Lädt...", error: "Fehler", success: "Erfolg", save: "Speichern", cancel: "Abbrechen", back: "Zurück" },
+    admin: { category: "Kategorie" }
   },
   en: {
     nav: { auctions: "Auctions", buyBids: "Buy Bids", dashboard: "Dashboard", admin: "Admin", login: "Login", register: "Register", logout: "Logout", bids: "Bids" },
