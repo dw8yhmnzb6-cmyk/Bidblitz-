@@ -114,20 +114,20 @@ export default function Home() {
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#181824] border border-white/10 mb-8">
               <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-              <span className="text-sm text-[#94A3B8]">10 kostenlose Gebote bei Registrierung</span>
+              <span className="text-sm text-[#94A3B8]">{t('home.badge')}</span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6">
-              <span className="text-white">Gewinnen Sie </span>
+              <span className="text-white">{t('home.heroTitle1')} </span>
               <span className="bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] bg-clip-text text-transparent">
-                Premium-Produkte
+                {t('home.heroTitle2')}
               </span>
               <br />
-              <span className="text-white">für Centbeträge</span>
+              <span className="text-white">{t('home.heroTitle3')}</span>
             </h1>
             
             <p className="text-lg sm:text-xl text-[#94A3B8] mb-10 max-w-2xl mx-auto">
-              Die aufregendste Penny-Auktionsplattform Deutschlands. Bieten, gewinnen und sparen Sie bis zu 90% auf Top-Marken.
+              {t('home.heroSubtitle')}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
