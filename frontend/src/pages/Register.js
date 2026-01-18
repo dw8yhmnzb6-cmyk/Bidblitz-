@@ -1,21 +1,50 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Zap, Mail, Lock, Eye, EyeOff, User, Gift } from 'lucide-react';
+import { Zap, Mail, Lock, Eye, EyeOff, User, Gift, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import axios from 'axios';
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  // Referral code from URL
+  const [referralCode, setReferralCode] = useState('');
+  const [referralValid, setReferralValid] = useState(null);
+  const [affiliateName, setAffiliateName] = useState('');
+
+  useEffect(() => {
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      setReferralCode(refCode);
+      validateReferralCode(refCode);
+    }
+  }, [searchParams]);
+
+  const validateReferralCode = async (code) => {
+    try {
+      const response = await axios.get(`${API}/affiliates/referral/${code}`);
+      setReferralValid(response.data.valid);
+      if (response.data.valid) {
+        setAffiliateName(response.data.affiliate_name);
+      }
+    } catch (error) {
+      setReferralValid(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +62,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register(name, email, password);
+      await register(name, email, password, referralValid ? referralCode : null);
       toast.success('Konto erfolgreich erstellt! Sie haben 10 kostenlose Gebote erhalten.');
       navigate('/dashboard');
     } catch (error) {
