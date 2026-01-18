@@ -2348,26 +2348,36 @@ async def update_user(user_id: str, data: UserUpdate, admin: dict = Depends(get_
 
 # ==================== USER REFERRAL SYSTEM (Free Bids) ====================
 
-# Reward tiers for inviting friends
+# Configuration for referral rewards
+REFERRAL_MIN_DEPOSIT = 5.00  # €5 minimum deposit required from referred friend
+REFERRAL_REWARD_BIDS = 10    # Bids given to both referrer AND referee when qualified
+
+# Reward tiers for inviting friends (based on QUALIFIED friends who deposited €5+)
 REFERRAL_REWARDS = [
-    {"friends": 1, "bids": 5},
-    {"friends": 3, "bids": 20},
-    {"friends": 5, "bids": 40},
-    {"friends": 10, "bids": 100},
-    {"friends": 25, "bids": 300},
-    {"friends": 50, "bids": 750},
+    {"friends": 1, "bids": 10},   # Updated: 10 bids for first qualified friend
+    {"friends": 3, "bids": 35},   # 10 + 10 + 15
+    {"friends": 5, "bids": 60},   # + 25
+    {"friends": 10, "bids": 120}, # + 60
+    {"friends": 25, "bids": 350}, # + 230
+    {"friends": 50, "bids": 800}, # + 450
 ]
 
 @api_router.get("/users/referrals")
 async def get_user_referrals(user: dict = Depends(get_current_user)):
     """Get user's referral stats and link"""
-    # Generate referral code from user ID
     referral_code = user["id"][:8].upper()
     
-    # Count invited friends
-    invited_count = await db.users.count_documents({"referred_by_user": user["id"]})
+    # Count ALL invited friends
+    all_referred = await db.users.find(
+        {"referred_by_user": user["id"]},
+        {"_id": 0, "id": 1, "name": 1, "created_at": 1, "total_deposits": 1}
+    ).to_list(length=100)
     
-    # Get user's referral stats
+    invited_count = len(all_referred)
+    
+    # Count QUALIFIED friends (who deposited at least €5)
+    qualified_count = sum(1 for u in all_referred if u.get("total_deposits", 0) >= REFERRAL_MIN_DEPOSIT)
+    
     user_data = await db.users.find_one({"id": user["id"]}, {"_id": 0})
     bids_earned = user_data.get("referral_bids_earned", 0)
     
@@ -2375,26 +2385,40 @@ async def get_user_referrals(user: dict = Depends(get_current_user)):
         "referral_code": referral_code,
         "referral_link": f"https://bidblitz.de/register?ref={referral_code}",
         "invited_friends": invited_count,
+        "qualified_friends": qualified_count,
         "bids_earned": bids_earned,
-        "reward_tiers": REFERRAL_REWARDS
+        "min_deposit_required": REFERRAL_MIN_DEPOSIT,
+        "reward_per_referral": REFERRAL_REWARD_BIDS,
+        "reward_tiers": REFERRAL_REWARDS,
+        "referred_users": [
+            {
+                "name": u.get("name", "Unbekannt"),
+                "created_at": u.get("created_at"),
+                "qualified": u.get("total_deposits", 0) >= REFERRAL_MIN_DEPOSIT,
+                "deposit_progress": min(u.get("total_deposits", 0) / REFERRAL_MIN_DEPOSIT * 100, 100)
+            }
+            for u in all_referred
+        ]
     }
 
 async def process_user_referral_reward(referrer_id: str):
-    """Check and award referral rewards based on friend count"""
-    # Count total referred friends who registered
-    friend_count = await db.users.count_documents({"referred_by_user": referrer_id})
+    """Check and award referral rewards based on QUALIFIED friend count (€5+ deposited)"""
+    # Count QUALIFIED referred friends (those who deposited at least €5)
+    qualified_count = await db.users.count_documents({
+        "referred_by_user": referrer_id,
+        "total_deposits": {"$gte": REFERRAL_MIN_DEPOSIT}
+    })
     
     referrer = await db.users.find_one({"id": referrer_id})
     if not referrer:
-        return
+        return 0
     
     current_earned = referrer.get("referral_bids_earned", 0)
-    current_tier_reached = referrer.get("referral_tier_reached", 0)
     
-    # Calculate total bids that should be earned
+    # Calculate total bids based on qualified friends
     total_bids = 0
     for tier in REFERRAL_REWARDS:
-        if friend_count >= tier["friends"]:
+        if qualified_count >= tier["friends"]:
             total_bids = tier["bids"]
     
     # Award new bids if we reached a new tier
@@ -2406,13 +2430,42 @@ async def process_user_referral_reward(referrer_id: str):
                 "$inc": {"bids_balance": new_bids},
                 "$set": {
                     "referral_bids_earned": total_bids,
-                    "referral_tier_reached": friend_count
+                    "referral_tier_reached": qualified_count
                 }
             }
         )
-        logger.info(f"Referral reward: {new_bids} bids for user {referrer_id} (total friends: {friend_count})")
+        logger.info(f"Referral reward: {new_bids} bids for user {referrer_id} (qualified friends: {qualified_count})")
     
     return new_bids
+
+async def process_referral_after_deposit(user_id: str, deposit_amount: float):
+    """Called after a successful payment to check and award referral rewards"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        return
+    
+    old_total = user.get("total_deposits", 0)
+    new_total = old_total + deposit_amount
+    
+    # Update total deposits
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"total_deposits": new_total}}
+    )
+    
+    # Check if this is the first time crossing the €5 threshold
+    if old_total < REFERRAL_MIN_DEPOSIT and new_total >= REFERRAL_MIN_DEPOSIT:
+        referred_by = user.get("referred_by_user")
+        if referred_by:
+            # Award bonus to the new user who just qualified
+            await db.users.update_one(
+                {"id": user_id},
+                {"$inc": {"bids_balance": REFERRAL_REWARD_BIDS}}
+            )
+            logger.info(f"New user {user_id} qualified for referral bonus: +{REFERRAL_REWARD_BIDS} bids")
+            
+            # Process reward tiers for the referrer
+            await process_user_referral_reward(referred_by)
 
 # ==================== AFFILIATE SYSTEM ====================
 
