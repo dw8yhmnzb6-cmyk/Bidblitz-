@@ -21,6 +21,20 @@ export const translations = {
       freeRegister: "Kostenlos registrieren"
     },
     auctions: { title: "Alle Auktionen", filter: "Filter", all: "Alle", active: "Aktiv", ended: "Beendet", currentPrice: "Aktueller Preis", bids: "Gebote", bid: "Bieten", live: "Live", lastBidder: "Letzter Bieter", winner: "Gewinner", rrp: "UVP" },
+    auctionPage: {
+      searchPlaceholder: "Angebote suchen...",
+      categories: { all: "Alle", electronics: "Elektronik", smartphones: "Smartphones", household: "Haushalt", emobility: "E-Mobilität", gifts: "Geschenke", fashion: "Mode" },
+      active: "Aktiv", scheduled: "Geplant", all: "Alle",
+      offersFound: "Angebote gefunden",
+      noOffers: "Keine Angebote gefunden",
+      tryAnother: "Versuchen Sie eine andere Kategorie oder Suche",
+      priceNote: "Vergleichspreis = UVP des Herstellers"
+    },
+    auctionCard: {
+      liveNow: "LIVE JETZT", comingSoon: "DEMNÄCHST", ended: "BEENDET",
+      retailPrice: "Vergleichspreis*", startPrice: "Startpreis", bidNow: "BIETEN",
+      end: "ENDE", activity: "Aktivität", lastSold: "Zuletzt versteigert für"
+    },
     autobidder: { title: "Autobidder", description: "Bietet automatisch für Sie bis zu Ihrem Limit", maxPrice: "Maximaler Preis (€)", activate: "Aktivieren" },
     buyBids: { title: "Gebote kaufen", popular: "Beliebt", bids: "Gebote", buyNow: "Jetzt kaufen" },
     winners: { title: "Gewinner", totalSaved: "Gesamt gespart", avgSavings: "Durchschnittliche Ersparnis", winners: "Gewinner" },
@@ -49,6 +63,20 @@ export const translations = {
       freeRegister: "Register for free"
     },
     auctions: { title: "All Auctions", filter: "Filter", all: "All", active: "Active", ended: "Ended", currentPrice: "Current Price", bids: "Bids", bid: "Bid", live: "Live", lastBidder: "Last Bidder", winner: "Winner", rrp: "RRP" },
+    auctionPage: {
+      searchPlaceholder: "Search offers...",
+      categories: { all: "All", electronics: "Electronics", smartphones: "Smartphones", household: "Household", emobility: "E-Mobility", gifts: "Gifts", fashion: "Fashion" },
+      active: "Active", scheduled: "Scheduled", all: "All",
+      offersFound: "offers found",
+      noOffers: "No offers found",
+      tryAnother: "Try another category or search",
+      priceNote: "Retail price = Manufacturer's RRP"
+    },
+    auctionCard: {
+      liveNow: "LIVE NOW", comingSoon: "COMING SOON", ended: "ENDED",
+      retailPrice: "Retail price*", startPrice: "Starting price", bidNow: "BID NOW",
+      end: "END", activity: "Activity", lastSold: "Last sold for"
+    },
     autobidder: { title: "Autobidder", description: "Automatically bids for you up to your limit", maxPrice: "Maximum Price (€)", activate: "Activate" },
     buyBids: { title: "Buy Bids", popular: "Popular", bids: "Bids", buyNow: "Buy now" },
     winners: { title: "Winners", totalSaved: "Total saved", avgSavings: "Average savings", winners: "Winners" },
