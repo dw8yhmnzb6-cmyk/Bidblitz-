@@ -32,7 +32,7 @@ export default function Wishlist() {
       const [wishlistRes, productsRes, categoriesRes] = await Promise.all([
         axios.get(`${API}/wishlist`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/products`),
-        axios.get(`${API}/auctions/categories`)
+        axios.get(`${API}/categories`)
       ]);
       setWishlist(wishlistRes.data);
       setProducts(productsRes.data);
