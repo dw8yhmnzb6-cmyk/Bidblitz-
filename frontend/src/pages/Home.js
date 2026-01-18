@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { languageList } from '../i18n/translations';
 import { AuctionCard } from '../components/AuctionCard';
+import { AuctionOfTheDay } from '../components/AuctionOfTheDay';
 import { Button } from '../components/ui/button';
 import { Zap, Trophy, Clock, Shield, ArrowRight, Sparkles, Globe } from 'lucide-react';
 import { toast } from 'sonner';
