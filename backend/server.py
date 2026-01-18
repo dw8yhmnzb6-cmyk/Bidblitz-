@@ -508,6 +508,33 @@ async def get_admin_user(user: dict = Depends(get_current_user)):
 
 # ==================== AUTH ENDPOINTS ====================
 
+# Known VPN/Proxy/Datacenter IP ranges and detection
+async def check_vpn_proxy(ip_address: str) -> dict:
+    """Check if IP is a VPN, proxy, or datacenter IP using free API"""
+    if not ip_address or ip_address in ["unknown", "127.0.0.1", "localhost"]:
+        return {"is_vpn": False, "is_proxy": False, "is_datacenter": False}
+    
+    try:
+        # Use ip-api.com free service for VPN/proxy detection
+        import httpx
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            # First check with ip-api.com (free, 45 req/min)
+            response = await client.get(f"http://ip-api.com/json/{ip_address}?fields=status,proxy,hosting")
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("status") == "success":
+                    is_proxy = data.get("proxy", False)
+                    is_hosting = data.get("hosting", False)  # Datacenter/VPN
+                    return {
+                        "is_vpn": is_hosting,
+                        "is_proxy": is_proxy,
+                        "is_datacenter": is_hosting
+                    }
+    except Exception as e:
+        logger.warning(f"VPN check failed for {ip_address}: {e}")
+    
+    return {"is_vpn": False, "is_proxy": False, "is_datacenter": False}
+
 @api_router.post("/auth/register", response_model=dict)
 async def register(user_data: UserCreate, request: Request):
     existing = await db.users.find_one({"email": user_data.email})
@@ -526,6 +553,15 @@ async def register(user_data: UserCreate, request: Request):
     real_ip = request.headers.get("x-real-ip")
     if real_ip:
         client_ip = real_ip.strip()
+    
+    # VPN/Proxy Detection - Block VPN users
+    vpn_check = await check_vpn_proxy(client_ip)
+    if vpn_check.get("is_vpn") or vpn_check.get("is_proxy") or vpn_check.get("is_datacenter"):
+        logger.warning(f"VPN/Proxy blocked registration attempt from IP: {client_ip}")
+        raise HTTPException(
+            status_code=403, 
+            detail="VPN, Proxy oder Datacenter-Verbindungen sind nicht erlaubt. Bitte deaktivieren Sie Ihren VPN und versuchen Sie es erneut."
+        )
     
     # IP restriction - check if this IP already has an account
     if client_ip and client_ip != "unknown" and client_ip != "127.0.0.1":
