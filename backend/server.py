@@ -842,7 +842,151 @@ async def get_me(user: dict = Depends(get_current_user)):
         "is_admin": user.get("is_admin", False),
         "won_auctions": user.get("won_auctions", []),
         "total_bids_placed": user.get("total_bids_placed", 0),
-        "created_at": user.get("created_at", datetime.now(timezone.utc).isoformat())
+        "created_at": user.get("created_at", datetime.now(timezone.utc).isoformat()),
+        "two_factor_enabled": user.get("two_factor_enabled", False),
+        "last_login": user.get("last_login")
+    }
+
+# ==================== 2FA ENDPOINTS ====================
+
+@api_router.post("/auth/2fa/setup")
+async def setup_2fa(user: dict = Depends(get_current_user)):
+    """Generate a new 2FA secret and QR code"""
+    if user.get("two_factor_enabled"):
+        raise HTTPException(status_code=400, detail="2FA ist bereits aktiviert")
+    
+    secret = generate_2fa_secret()
+    qr_code = generate_2fa_qr_code(user["email"], secret)
+    
+    # Store secret temporarily (not enabled yet)
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {"two_factor_secret_temp": secret}}
+    )
+    
+    return {
+        "secret": secret,
+        "qr_code": qr_code,
+        "message": "Scannen Sie den QR-Code mit Ihrer Authenticator-App"
+    }
+
+@api_router.post("/auth/2fa/enable")
+async def enable_2fa(code: str, user: dict = Depends(get_current_user), request: Request = None):
+    """Enable 2FA by verifying the first code"""
+    client_ip = request.client.host if request and request.client else "unknown"
+    
+    # Get temporary secret
+    current_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    temp_secret = current_user.get("two_factor_secret_temp")
+    
+    if not temp_secret:
+        raise HTTPException(status_code=400, detail="Bitte starten Sie die 2FA-Einrichtung zuerst")
+    
+    # Verify the code
+    if not verify_2fa_code(temp_secret, code):
+        raise HTTPException(status_code=400, detail="Ungültiger Code. Bitte versuchen Sie es erneut.")
+    
+    # Enable 2FA
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$set": {
+                "two_factor_enabled": True,
+                "two_factor_secret": temp_secret
+            },
+            "$unset": {"two_factor_secret_temp": ""}
+        }
+    )
+    
+    # Log security event
+    await log_security_event("2fa_enabled", user["id"], {"method": "TOTP"}, client_ip)
+    
+    return {"message": "2FA erfolgreich aktiviert", "two_factor_enabled": True}
+
+@api_router.post("/auth/2fa/disable")
+async def disable_2fa(password: str, code: str, user: dict = Depends(get_current_user), request: Request = None):
+    """Disable 2FA with password and current code verification"""
+    client_ip = request.client.host if request and request.client else "unknown"
+    
+    current_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    
+    # Verify password
+    if not verify_password(password, current_user["password"]):
+        raise HTTPException(status_code=401, detail="Falsches Passwort")
+    
+    # Verify 2FA code
+    if not current_user.get("two_factor_enabled") or not current_user.get("two_factor_secret"):
+        raise HTTPException(status_code=400, detail="2FA ist nicht aktiviert")
+    
+    if not verify_2fa_code(current_user["two_factor_secret"], code):
+        raise HTTPException(status_code=401, detail="Ungültiger 2FA-Code")
+    
+    # Disable 2FA
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$set": {"two_factor_enabled": False},
+            "$unset": {"two_factor_secret": ""}
+        }
+    )
+    
+    # Log security event
+    await log_security_event("2fa_disabled", user["id"], {}, client_ip)
+    
+    return {"message": "2FA deaktiviert", "two_factor_enabled": False}
+
+# ==================== SECURITY LOG ENDPOINTS (Admin) ====================
+
+@api_router.get("/admin/security-logs")
+async def get_security_logs(
+    limit: int = 100,
+    event_type: Optional[str] = None,
+    admin: dict = Depends(get_admin_user)
+):
+    """Get security logs (admin only)"""
+    query = {}
+    if event_type:
+        query["event_type"] = event_type
+    
+    logs = await db.security_logs.find(query, {"_id": 0}).sort("timestamp", -1).limit(limit).to_list(limit)
+    return logs
+
+@api_router.get("/admin/security-stats")
+async def get_security_stats(admin: dict = Depends(get_admin_user)):
+    """Get security statistics (admin only)"""
+    now = datetime.now(timezone.utc)
+    last_24h = (now - timedelta(hours=24)).isoformat()
+    last_7d = (now - timedelta(days=7)).isoformat()
+    
+    # Count events
+    logins_24h = await db.security_logs.count_documents({"event_type": "login_success", "timestamp": {"$gte": last_24h}})
+    failed_24h = await db.security_logs.count_documents({"event_type": "login_failed", "timestamp": {"$gte": last_24h}})
+    registrations_24h = await db.security_logs.count_documents({"event_type": "registration", "timestamp": {"$gte": last_24h}})
+    blocked_vpn_24h = await db.security_logs.count_documents({"event_type": "registration_blocked_vpn", "timestamp": {"$gte": last_24h}})
+    
+    logins_7d = await db.security_logs.count_documents({"event_type": "login_success", "timestamp": {"$gte": last_7d}})
+    failed_7d = await db.security_logs.count_documents({"event_type": "login_failed", "timestamp": {"$gte": last_7d}})
+    
+    # Users with 2FA
+    users_with_2fa = await db.users.count_documents({"two_factor_enabled": True})
+    total_users = await db.users.count_documents({})
+    
+    return {
+        "last_24h": {
+            "successful_logins": logins_24h,
+            "failed_logins": failed_24h,
+            "registrations": registrations_24h,
+            "vpn_blocks": blocked_vpn_24h
+        },
+        "last_7d": {
+            "successful_logins": logins_7d,
+            "failed_logins": failed_7d
+        },
+        "users": {
+            "total": total_users,
+            "with_2fa": users_with_2fa,
+            "2fa_percentage": round((users_with_2fa / total_users * 100) if total_users > 0 else 0, 1)
+        }
     }
 
 # ==================== PASSWORD RESET ENDPOINTS ====================
