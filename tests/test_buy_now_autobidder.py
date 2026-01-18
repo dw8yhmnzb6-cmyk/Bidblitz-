@@ -19,8 +19,8 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 TEST_USER = {"email": "test_buyer@bidblitz.de", "password": "Test123!"}
 ADMIN_USER = {"email": "admin@bidblitz.de", "password": "Admin123!"}
 
-# Active auction for testing
-ACTIVE_AUCTION_ID = "995452f0-3c34-4e80-b8e5-6ad5e9e1a05d"
+# Active auction for testing (created fresh for testing)
+ACTIVE_AUCTION_ID = "733e8568-869b-40a1-a350-8e169e427a27"
 
 
 class TestAuthentication:
