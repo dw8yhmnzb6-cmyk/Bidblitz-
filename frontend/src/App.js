@@ -115,6 +115,8 @@ function AppContent() {
       
       <CookieConsent />
       
+      <ScrollToTop />
+      
       <Toaster 
         position="top-right"
         toastOptions={{
