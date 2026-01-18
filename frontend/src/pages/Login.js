@@ -24,7 +24,7 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
-    if (!email || !password) return;
+    if (!email || !password || loading) return;
     setLoading(true);
 
     try {
@@ -43,11 +43,15 @@ export default function Login() {
       }
 
       // Login successful
-      const { token, user } = response.data;
+      const { token } = response.data;
       localStorage.setItem('token', token);
       await refreshUser();
       toast.success('Erfolgreich angemeldet!');
-      navigate('/dashboard');
+      
+      // Force navigation with window.location as fallback
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 100);
     } catch (error) {
       const errorMsg = error.response?.data?.detail || 'Anmeldung fehlgeschlagen';
       toast.error(errorMsg);
