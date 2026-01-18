@@ -165,6 +165,7 @@ class AuctionCreate(BaseModel):
     duration_seconds: Optional[int] = None  # Optional if start_time and end_time are provided
     start_time: Optional[str] = None  # ISO datetime string for scheduled start
     end_time: Optional[str] = None  # ISO datetime string for scheduled end
+    bot_target_price: Optional[float] = None  # Price up to which bots will bid in last seconds
 
 class AuctionResponse(BaseModel):
     id: str
@@ -181,6 +182,7 @@ class AuctionResponse(BaseModel):
     last_bidder_id: Optional[str] = None
     last_bidder_name: Optional[str] = None
     created_at: str
+    bot_target_price: Optional[float] = None
 
 class BidRequest(BaseModel):
     auction_id: str
