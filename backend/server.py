@@ -1904,6 +1904,252 @@ async def update_user(user_id: str, data: UserUpdate, admin: dict = Depends(get_
     updated = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
     return {"message": "User updated", "user": updated}
 
+# ==================== AFFILIATE SYSTEM ====================
+
+def get_affiliate_tier(leads_this_month: int) -> dict:
+    """Get the current commission tier based on leads this month"""
+    for tier_name, tier in AFFILIATE_COMMISSIONS.items():
+        if tier["min_leads"] <= leads_this_month <= tier["max_leads"]:
+            return {"tier": tier_name, "commission": tier["commission"]}
+    return {"tier": "tier1", "commission": AFFILIATE_COMMISSIONS["tier1"]["commission"]}
+
+@api_router.post("/affiliates/register")
+async def register_affiliate(data: AffiliateRegister, user: dict = Depends(get_current_user)):
+    """Register as an affiliate partner"""
+    # Check if user is already an affiliate
+    existing = await db.affiliates.find_one({"user_id": user["id"]})
+    if existing:
+        raise HTTPException(status_code=400, detail="Sie sind bereits als Affiliate registriert")
+    
+    # Generate unique referral code
+    import random
+    import string
+    referral_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
+    
+    affiliate = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "user_email": user["email"],
+        "name": data.name,
+        "email": data.email,
+        "referral_code": referral_code,
+        "payment_method": data.payment_method,
+        "payment_details": data.payment_details,
+        "total_referrals": 0,
+        "converted_leads": 0,  # Users who bought a package
+        "pending_commission": 0.0,
+        "paid_commission": 0.0,
+        "referrals": [],  # List of referred user IDs
+        "commissions": [],  # List of commission records
+        "status": "active",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.affiliates.insert_one(affiliate)
+    affiliate.pop("_id", None)
+    
+    return {
+        "message": "Erfolgreich als Affiliate registriert",
+        "referral_code": referral_code,
+        "referral_link": f"https://bidblitz.de/register?ref={referral_code}",
+        "affiliate": affiliate
+    }
+
+@api_router.get("/affiliates/me")
+async def get_my_affiliate_stats(user: dict = Depends(get_current_user)):
+    """Get affiliate stats for current user"""
+    affiliate = await db.affiliates.find_one({"user_id": user["id"]}, {"_id": 0})
+    if not affiliate:
+        raise HTTPException(status_code=404, detail="Sie sind nicht als Affiliate registriert")
+    
+    # Get leads this month
+    now = datetime.now(timezone.utc)
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    
+    leads_this_month = await db.affiliate_leads.count_documents({
+        "affiliate_id": affiliate["id"],
+        "converted": True,
+        "converted_at": {"$gte": month_start.isoformat()}
+    })
+    
+    tier_info = get_affiliate_tier(leads_this_month)
+    
+    return {
+        "affiliate": affiliate,
+        "leads_this_month": leads_this_month,
+        "current_tier": tier_info["tier"],
+        "commission_rate": tier_info["commission"],
+        "commission_tiers": AFFILIATE_COMMISSIONS
+    }
+
+@api_router.get("/affiliates/referral/{code}")
+async def validate_referral_code(code: str):
+    """Validate a referral code"""
+    affiliate = await db.affiliates.find_one({"referral_code": code, "status": "active"}, {"_id": 0})
+    if not affiliate:
+        return {"valid": False}
+    
+    return {
+        "valid": True,
+        "affiliate_name": affiliate["name"]
+    }
+
+@api_router.post("/affiliates/track-referral")
+async def track_referral(referral_code: str, referred_user_id: str):
+    """Track a new referral (called internally when user registers with ref code)"""
+    affiliate = await db.affiliates.find_one({"referral_code": referral_code})
+    if not affiliate:
+        return {"tracked": False}
+    
+    # Create lead record
+    lead = {
+        "id": str(uuid.uuid4()),
+        "affiliate_id": affiliate["id"],
+        "user_id": referred_user_id,
+        "referral_code": referral_code,
+        "converted": False,
+        "conversion_amount": 0,
+        "commission_earned": 0,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "converted_at": None
+    }
+    
+    await db.affiliate_leads.insert_one(lead)
+    
+    # Update affiliate stats
+    await db.affiliates.update_one(
+        {"id": affiliate["id"]},
+        {
+            "$inc": {"total_referrals": 1},
+            "$push": {"referrals": referred_user_id}
+        }
+    )
+    
+    # Store referral code on user
+    await db.users.update_one(
+        {"id": referred_user_id},
+        {"$set": {"referred_by": referral_code, "affiliate_id": affiliate["id"]}}
+    )
+    
+    return {"tracked": True, "affiliate_id": affiliate["id"]}
+
+async def process_affiliate_commission(user_id: str, purchase_amount: float):
+    """Process affiliate commission when a referred user makes a purchase"""
+    user = await db.users.find_one({"id": user_id})
+    if not user or not user.get("affiliate_id"):
+        return None
+    
+    affiliate_id = user["affiliate_id"]
+    affiliate = await db.affiliates.find_one({"id": affiliate_id})
+    if not affiliate:
+        return None
+    
+    # Check if this is the first purchase (conversion)
+    lead = await db.affiliate_leads.find_one({
+        "affiliate_id": affiliate_id,
+        "user_id": user_id,
+        "converted": False
+    })
+    
+    if not lead:
+        # Already converted or not a lead
+        return None
+    
+    # Get current month's leads for tier calculation
+    now = datetime.now(timezone.utc)
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    
+    leads_this_month = await db.affiliate_leads.count_documents({
+        "affiliate_id": affiliate_id,
+        "converted": True,
+        "converted_at": {"$gte": month_start.isoformat()}
+    })
+    
+    tier_info = get_affiliate_tier(leads_this_month + 1)
+    commission = max(AFFILIATE_BASE_COMMISSION, tier_info["commission"])
+    
+    # Update lead as converted
+    await db.affiliate_leads.update_one(
+        {"id": lead["id"]},
+        {"$set": {
+            "converted": True,
+            "conversion_amount": purchase_amount,
+            "commission_earned": commission,
+            "converted_at": now.isoformat()
+        }}
+    )
+    
+    # Update affiliate stats
+    await db.affiliates.update_one(
+        {"id": affiliate_id},
+        {
+            "$inc": {
+                "converted_leads": 1,
+                "pending_commission": commission
+            },
+            "$push": {
+                "commissions": {
+                    "id": str(uuid.uuid4()),
+                    "lead_id": lead["id"],
+                    "user_id": user_id,
+                    "amount": commission,
+                    "purchase_amount": purchase_amount,
+                    "tier": tier_info["tier"],
+                    "status": "pending",
+                    "created_at": now.isoformat()
+                }
+            }
+        }
+    )
+    
+    logger.info(f"Affiliate commission: €{commission} for affiliate {affiliate_id}, lead {user_id}")
+    return commission
+
+# Admin: View all affiliates
+@api_router.get("/admin/affiliates")
+async def get_all_affiliates(admin: dict = Depends(get_admin_user)):
+    """Get all affiliates (admin only)"""
+    affiliates = await db.affiliates.find({}, {"_id": 0}).to_list(1000)
+    return affiliates
+
+# Admin: Payout affiliate commission
+@api_router.post("/admin/affiliates/{affiliate_id}/payout")
+async def payout_affiliate(affiliate_id: str, amount: float, admin: dict = Depends(get_admin_user)):
+    """Mark affiliate commission as paid"""
+    affiliate = await db.affiliates.find_one({"id": affiliate_id})
+    if not affiliate:
+        raise HTTPException(status_code=404, detail="Affiliate not found")
+    
+    if amount > affiliate["pending_commission"]:
+        raise HTTPException(status_code=400, detail="Amount exceeds pending commission")
+    
+    # Record payout
+    payout = {
+        "id": str(uuid.uuid4()),
+        "affiliate_id": affiliate_id,
+        "amount": amount,
+        "payment_method": affiliate["payment_method"],
+        "payment_details": affiliate["payment_details"],
+        "status": "completed",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "processed_by": admin["id"]
+    }
+    
+    await db.affiliate_payouts.insert_one(payout)
+    
+    # Update affiliate balance
+    await db.affiliates.update_one(
+        {"id": affiliate_id},
+        {
+            "$inc": {
+                "pending_commission": -amount,
+                "paid_commission": amount
+            }
+        }
+    )
+    
+    return {"message": f"€{amount:.2f} ausgezahlt", "payout": payout}
+
 # ==================== ADMIN BOT SYSTEM ====================
 
 # Default bot names (German names)
