@@ -22,6 +22,11 @@ export default function AuctionDetail() {
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [isUrgent, setIsUrgent] = useState(false);
   
+  // Bid history state
+  const [bidHistory, setBidHistory] = useState([]);
+  const [showBidHistory, setShowBidHistory] = useState(true);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  
   // Autobidder state
   const [showAutobidder, setShowAutobidder] = useState(false);
   const [maxPrice, setMaxPrice] = useState('');
@@ -37,6 +42,31 @@ export default function AuctionDetail() {
     viewerCount, 
     bidNotification 
   } = useAuctionWebSocket(id);
+
+  // Fetch bid history
+  const fetchBidHistory = async () => {
+    setLoadingHistory(true);
+    try {
+      const response = await axios.get(`${API}/auctions/${id}/bid-history?limit=20`);
+      setBidHistory(response.data);
+    } catch (error) {
+      console.error('Error fetching bid history:', error);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchBidHistory();
+  }, [id]);
+
+  // Refresh bid history when there's a new bid
+  useEffect(() => {
+    if (bidNotification) {
+      fetchBidHistory();
+    }
+  }, [bidNotification]);
 
   // Update auction from WebSocket data
   useEffect(() => {
