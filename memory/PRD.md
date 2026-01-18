@@ -224,16 +224,17 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - `/app/test_reports/iteration_3.json` - WebSocket Real-time Tests (13 bestanden)
 - `/app/test_reports/iteration_4.json` - Full Features Tests (20 bestanden)
 - `/app/test_reports/iteration_5.json` - New Features v2 Tests (13 bestanden)
-- `/app/tests/test_new_features_v2.py` - Test-Suite für Gebotsverlauf, Winners, Categories
+- `/app/test_reports/iteration_6.json` - **Buy It Now + Autobidder Tests (15 bestanden)**
+- `/app/tests/test_buy_now_autobidder.py` - Test-Suite für Sofort Kaufen und Autobidder
 
 ---
 
 ## Mocked APIs
-- **E-Mail-Versand**: Passwort-Reset-Code wird in API-Response (demo_code) zurückgegeben
+- **E-Mail-Versand**: Passwort-Reset-Code wird in API-Response (demo_code) zurückgegeben. RESEND_API_KEY ist Platzhalter
 - **Stripe**: Test-Key (sk_test_emergent) - echte Zahlungen nicht möglich
 - **Admin Payments/Logs**: Mock-Daten für Demo
 
 ---
 
 ## Last Updated
-18.01.2026 - Gebotsverlauf, Gewinner-Galerie, Kategorien-Filter implementiert
+18.01.2026 - "Sofort Kaufen" (Buy It Now) Feature implementiert mit Gebots-Guthaben-System
