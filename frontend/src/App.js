@@ -5,6 +5,7 @@ import { LanguageProvider } from "./context/LanguageContext";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { CookieConsent } from "./components/CookieConsent";
+import { ScrollToTop } from "./components/ScrollToTop";
 import { Toaster } from "./components/ui/sonner";
 
 // Pages
