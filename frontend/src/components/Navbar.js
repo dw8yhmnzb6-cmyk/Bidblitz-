@@ -59,7 +59,7 @@ export const Navbar = () => {
               data-testid="nav-winners"
             >
               <Trophy className="w-4 h-4" />
-              Gewinner
+              {t('nav.winners')}
             </Link>
             <Link 
               to="/invite" 
@@ -67,7 +67,7 @@ export const Navbar = () => {
               data-testid="nav-invite"
             >
               <Gift className="w-4 h-4" />
-              Freunde werben
+              {t('nav.inviteFriends')}
             </Link>
             {isAuthenticated && (
               <>
@@ -77,7 +77,7 @@ export const Navbar = () => {
                   data-testid="nav-wishlist"
                 >
                   <Heart className="w-4 h-4" />
-                  Wunschliste
+                  {t('nav.wishlist')}
                 </Link>
                 <Link 
                   to="/dashboard" 
@@ -209,7 +209,7 @@ export const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               <Trophy className="w-4 h-4" />
-              Gewinner
+              {t('nav.winners')}
             </Link>
             <Link 
               to="/invite" 
@@ -217,7 +217,7 @@ export const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               <Gift className="w-4 h-4" />
-              Freunde werben
+              {t('nav.inviteFriends')}
             </Link>
             {isAuthenticated && (
               <>
