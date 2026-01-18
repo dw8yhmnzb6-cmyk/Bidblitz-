@@ -114,10 +114,10 @@ const SnipsterCard = ({ auction, t }) => {
 
         <div className="flex gap-2">
           {/* Left side */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1">
             {/* Current Price - More prominent & colorful */}
             <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-lg p-1.5 mb-1.5">
-              <p className="text-lg font-bold text-teal-600 font-mono leading-none whitespace-nowrap">
+              <p className="text-base sm:text-lg font-bold text-teal-600 font-mono leading-none">
                 € {auction.current_price?.toFixed(2).replace('.', ',')}
               </p>
             </div>
@@ -131,7 +131,7 @@ const SnipsterCard = ({ auction, t }) => {
             <Link to={`/auctions/${auction.id}`}>
               <button 
                 data-testid={`bid-button-${auction.id}`}
-                className={`mt-1.5 w-full font-bold py-1.5 px-3 rounded-lg text-[11px] uppercase shadow-md transition-all ${
+                className={`mt-1.5 w-full font-bold py-1.5 px-2 rounded-lg text-[10px] uppercase shadow-md transition-all ${
                   isEnded 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                     : 'bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500 hover:from-emerald-500 hover:via-teal-600 hover:to-cyan-600 text-white hover:shadow-lg hover:shadow-teal-200'
@@ -144,7 +144,7 @@ const SnipsterCard = ({ auction, t }) => {
           </div>
 
           {/* Right side - Image & Timer */}
-          <div className="w-20 flex flex-col items-center">
+          <div className="w-16 sm:w-20 flex flex-col items-center flex-shrink-0">
             {/* Timer - More colorful */}
             <div className={`w-full text-center py-1 px-1 rounded-lg text-white text-[10px] font-mono font-bold shadow-sm ${
               isUrgent ? 'bg-gradient-to-r from-red-500 to-rose-500 animate-pulse' : 
