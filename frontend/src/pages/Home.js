@@ -80,33 +80,27 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" data-testid="home-page">
-      {/* Language Bar - Always visible at top */}
+      {/* Language Bar - Horizontal Scrollable */}
       <div className="fixed top-16 left-0 right-0 z-40 bg-gradient-to-r from-[#181824] via-[#1a1a2e] to-[#181824] border-b border-white/10 py-2">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-center gap-2 flex-wrap">
-            <Globe className="w-4 h-4 text-[#94A3B8] mr-2" />
-            {Object.entries(languageList).slice(0, showAllLanguages ? 20 : 10).map(([code, lang]) => (
-              <button
-                key={code}
-                onClick={() => changeLanguage(code)}
-                className={`px-3 py-1 rounded-full text-sm transition-all ${
-                  language === code 
-                    ? 'bg-[#7C3AED] text-white' 
-                    : 'bg-white/5 text-[#94A3B8] hover:bg-white/10 hover:text-white'
-                }`}
-                data-testid={`lang-btn-${code}`}
-              >
-                {lang.flag} {lang.name}
-              </button>
-            ))}
-            {!showAllLanguages && Object.keys(languageList).length > 10 && (
-              <button
-                onClick={() => setShowAllLanguages(true)}
-                className="px-3 py-1 rounded-full text-sm bg-white/5 text-[#06B6D4] hover:bg-white/10"
-              >
-                +{Object.keys(languageList).length - 10} mehr
-              </button>
-            )}
+          <div className="flex items-center">
+            <Globe className="w-4 h-4 text-[#94A3B8] mr-3 flex-shrink-0" />
+            <div className="overflow-x-auto scrollbar-hide flex gap-2 pb-1" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              {Object.entries(languageList).map(([code, lang]) => (
+                <button
+                  key={code}
+                  onClick={() => changeLanguage(code)}
+                  className={`px-3 py-1 rounded-full text-sm transition-all whitespace-nowrap flex-shrink-0 ${
+                    language === code 
+                      ? 'bg-[#7C3AED] text-white' 
+                      : 'bg-white/5 text-[#94A3B8] hover:bg-white/10 hover:text-white'
+                  }`}
+                  data-testid={`lang-btn-${code}`}
+                >
+                  {lang.flag} {lang.name}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
