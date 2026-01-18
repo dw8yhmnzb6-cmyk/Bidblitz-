@@ -516,6 +516,26 @@ async def register(user_data: UserCreate, request: Request):
     
     # Get user's IP and referrer for tracking
     client_ip = request.client.host if request.client else "unknown"
+    
+    # Get real IP from X-Forwarded-For header (behind proxy/load balancer)
+    forwarded_for = request.headers.get("x-forwarded-for")
+    if forwarded_for:
+        client_ip = forwarded_for.split(",")[0].strip()
+    
+    # Also check X-Real-IP header
+    real_ip = request.headers.get("x-real-ip")
+    if real_ip:
+        client_ip = real_ip.strip()
+    
+    # IP restriction - check if this IP already has an account
+    if client_ip and client_ip != "unknown" and client_ip != "127.0.0.1":
+        existing_ip_user = await db.users.find_one({"ip_address": client_ip, "is_admin": False})
+        if existing_ip_user:
+            raise HTTPException(
+                status_code=400, 
+                detail="Von dieser IP-Adresse wurde bereits ein Konto erstellt. Nur ein Konto pro Haushalt erlaubt."
+            )
+    
     referrer = request.headers.get("referer", "direct")
     user_agent = request.headers.get("user-agent", "unknown")
     
