@@ -502,8 +502,6 @@ export default function Admin() {
     );
   }
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const tabs = [
     { id: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard className="w-5 h-5" /> },
     { id: 'products', label: t('admin.products'), icon: <Package className="w-5 h-5" /> },
