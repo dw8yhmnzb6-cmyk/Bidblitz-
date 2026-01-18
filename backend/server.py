@@ -227,7 +227,32 @@ class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
 
-# ==================== NEW MODELS ====================
+# ==================== NEW FEATURE MODELS ====================
+
+class BuyNowRequest(BaseModel):
+    auction_id: str
+
+class WishlistRequest(BaseModel):
+    product_id: Optional[str] = None
+    category: Optional[str] = None
+
+class AchievementType:
+    FIRST_WIN = "first_win"
+    WINS_10 = "wins_10"
+    WINS_50 = "wins_50"
+    NIGHT_OWL = "night_owl"
+    EARLY_BIRD = "early_bird"
+    BIG_SPENDER = "big_spender"
+    STREAK_7 = "streak_7"
+    STREAK_30 = "streak_30"
+    SOCIAL_SHARER = "social_sharer"
+
+class VIPSubscription(BaseModel):
+    plan: str  # monthly, yearly
+    
+class ChatMessage(BaseModel):
+    message: str
+    auction_id: Optional[str] = None
 
 class VoucherCreate(BaseModel):
     code: str
