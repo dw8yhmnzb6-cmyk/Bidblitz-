@@ -559,6 +559,97 @@ export default function AuctionDetail() {
             </div>
           </div>
         </div>
+
+        {/* Bid History Section */}
+        <div className="mt-8 glass-card rounded-xl overflow-hidden" data-testid="bid-history-section">
+          <button
+            onClick={() => setShowBidHistory(!showBidHistory)}
+            className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <History className="w-5 h-5 text-[#7C3AED]" />
+              <span className="text-white font-bold">Gebotsverlauf</span>
+              <span className="text-[#94A3B8] text-sm">({bidHistory.length} Gebote)</span>
+            </div>
+            {showBidHistory ? (
+              <ChevronUp className="w-5 h-5 text-[#94A3B8]" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-[#94A3B8]" />
+            )}
+          </button>
+          
+          {showBidHistory && (
+            <div className="border-t border-white/10">
+              {loadingHistory ? (
+                <div className="p-6 text-center">
+                  <div className="w-8 h-8 border-2 border-[#7C3AED] border-t-transparent rounded-full animate-spin mx-auto" />
+                </div>
+              ) : bidHistory.length === 0 ? (
+                <div className="p-6 text-center text-[#94A3B8]">
+                  <History className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                  <p>Noch keine Gebote abgegeben</p>
+                </div>
+              ) : (
+                <div className="max-h-80 overflow-y-auto">
+                  <table className="w-full">
+                    <thead className="bg-[#0F0F16] sticky top-0">
+                      <tr>
+                        <th className="text-left text-[#94A3B8] text-xs font-medium p-3">Bieter</th>
+                        <th className="text-right text-[#94A3B8] text-xs font-medium p-3">Preis</th>
+                        <th className="text-right text-[#94A3B8] text-xs font-medium p-3 hidden sm:table-cell">Zeit</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {bidHistory.map((bid, index) => (
+                        <tr 
+                          key={index} 
+                          className={`border-t border-white/5 ${index === 0 ? 'bg-[#7C3AED]/10' : ''}`}
+                          data-testid={`bid-history-row-${index}`}
+                        >
+                          <td className="p-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center">
+                                <User className="w-4 h-4 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-white text-sm font-medium">
+                                  {bid.user_name}
+                                  {bid.is_autobid && (
+                                    <Bot className="w-3 h-3 inline ml-1 text-[#F59E0B]" />
+                                  )}
+                                </p>
+                                {index === 0 && (
+                                  <p className="text-[#10B981] text-xs">Aktueller Höchstbieter</p>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-3 text-right">
+                            <span className={`font-mono font-bold ${index === 0 ? 'text-[#06B6D4]' : 'text-white'}`}>
+                              €{bid.price?.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="p-3 text-right hidden sm:table-cell">
+                            <div className="flex items-center justify-end gap-1 text-[#94A3B8] text-xs">
+                              <Clock className="w-3 h-3" />
+                              <span>
+                                {new Date(bid.timestamp).toLocaleTimeString('de-DE', {
+                                  hour: '2-digit',
+                                  minute: '2-digit',
+                                  second: '2-digit'
+                                })}
+                              </span>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Mobile Sticky Bid Bar */}
