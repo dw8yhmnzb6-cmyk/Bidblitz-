@@ -7,6 +7,9 @@ import logging
 import asyncio
 import json
 import random
+import re
+import base64
+import io
 from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict, Any, Set
@@ -15,6 +18,8 @@ from datetime import datetime, timezone, timedelta
 import bcrypt
 import jwt
 import resend
+import pyotp
+import qrcode
 from emergentintegrations.payments.stripe.checkout import (
     StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 )
