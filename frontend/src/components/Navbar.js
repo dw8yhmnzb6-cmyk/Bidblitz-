@@ -206,6 +206,14 @@ export const Navbar = () => {
               <Trophy className="w-4 h-4" />
               Gewinner
             </Link>
+            <Link 
+              to="/invite" 
+              className="block text-[#10B981] hover:text-[#34D399] py-2 flex items-center gap-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Gift className="w-4 h-4" />
+              Freunde werben
+            </Link>
             {isAuthenticated && (
               <>
                 <Link 
