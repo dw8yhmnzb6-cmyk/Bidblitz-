@@ -165,7 +165,7 @@ export const translations = {
     common: { loading: "Cargando...", error: "Error", success: "Éxito", save: "Guardar", cancel: "Cancelar" }
   },
   it: {
-    nav: { auctions: "Aste", buyBids: "Compra offerte", dashboard: "Pannello", admin: "Admin", login: "Accedi", register: "Registrati", logout: "Esci", bids: "Offerte" },
+    nav: { auctions: "Aste", buyBids: "Compra offerte", dashboard: "Pannello", admin: "Admin", login: "Accedi", register: "Registrati", logout: "Esci", bids: "Offerte", winners: "Vincitori", inviteFriends: "Invita amici", wishlist: "Lista desideri" },
     home: {
       badge: "10 offerte gratis alla registrazione",
       heroTitle1: "Vinci",
@@ -185,13 +185,27 @@ export const translations = {
       freeRegister: "Registrati gratis"
     },
     auctions: { title: "Tutte le aste", filter: "Filtra", all: "Tutto", active: "Attivo", ended: "Terminato", currentPrice: "Prezzo attuale", bids: "Offerte", bid: "Offri", live: "Live" },
+    auctionPage: {
+      searchPlaceholder: "Cerca offerte...",
+      categories: { all: "Tutto", electronics: "Elettronica", smartphones: "Smartphones", household: "Casa", emobility: "E-Mobilità", gifts: "Regali", fashion: "Moda" },
+      active: "Attivo", scheduled: "Programmato", all: "Tutto",
+      offersFound: "offerte trovate",
+      noOffers: "Nessuna offerta trovata",
+      tryAnother: "Prova un'altra categoria o ricerca",
+      priceNote: "Prezzo di confronto = Prezzo al dettaglio"
+    },
+    auctionCard: {
+      liveNow: "LIVE ORA", comingSoon: "PROSSIMAMENTE", ended: "TERMINATO",
+      retailPrice: "Prezzo rif.*", startPrice: "Prezzo iniziale", bidNow: "OFFRI",
+      end: "FINE", activity: "Attività", lastSold: "Ultima vendita per"
+    },
     buyBids: { title: "Compra offerte", popular: "Popolare", bids: "Offerte", buyNow: "Compra" },
     winners: { title: "Vincitori", totalSaved: "Totale risparmiato", avgSavings: "Risparmio medio", winners: "Vincitori" },
     auth: { login: "Accedi", register: "Registrati", email: "Email", password: "Password", name: "Nome", noAccount: "Non hai un account?", haveAccount: "Hai già un account?" },
     common: { loading: "Caricamento...", error: "Errore", success: "Successo", save: "Salva", cancel: "Annulla" }
   },
   pt: {
-    nav: { auctions: "Leilões", buyBids: "Comprar lances", dashboard: "Painel", admin: "Admin", login: "Entrar", register: "Registrar", logout: "Sair", bids: "Lances" },
+    nav: { auctions: "Leilões", buyBids: "Comprar lances", dashboard: "Painel", admin: "Admin", login: "Entrar", register: "Registrar", logout: "Sair", bids: "Lances", winners: "Vencedores", inviteFriends: "Convidar amigos", wishlist: "Lista de desejos" },
     home: {
       badge: "10 lances grátis no registro",
       heroTitle1: "Ganhe",
@@ -211,13 +225,27 @@ export const translations = {
       freeRegister: "Registrar grátis"
     },
     auctions: { title: "Todos os leilões", filter: "Filtrar", all: "Tudo", active: "Ativo", ended: "Encerrado", currentPrice: "Preço atual", bids: "Lances", bid: "Lance", live: "Ao vivo" },
+    auctionPage: {
+      searchPlaceholder: "Pesquisar ofertas...",
+      categories: { all: "Tudo", electronics: "Eletrônicos", smartphones: "Smartphones", household: "Casa", emobility: "E-Mobilidade", gifts: "Presentes", fashion: "Moda" },
+      active: "Ativo", scheduled: "Agendado", all: "Tudo",
+      offersFound: "ofertas encontradas",
+      noOffers: "Nenhuma oferta encontrada",
+      tryAnother: "Tente outra categoria ou pesquisa",
+      priceNote: "Preço de referência = Preço sugerido"
+    },
+    auctionCard: {
+      liveNow: "AO VIVO", comingSoon: "EM BREVE", ended: "ENCERRADO",
+      retailPrice: "Preço ref.*", startPrice: "Preço inicial", bidNow: "LANCE",
+      end: "FIM", activity: "Atividade", lastSold: "Última venda por"
+    },
     buyBids: { title: "Comprar lances", popular: "Popular", bids: "Lances", buyNow: "Comprar" },
     winners: { title: "Vencedores", totalSaved: "Total economizado", avgSavings: "Economia média", winners: "Vencedores" },
     auth: { login: "Entrar", register: "Registrar", email: "Email", password: "Senha", name: "Nome", noAccount: "Não tem conta?", haveAccount: "Já tem conta?" },
     common: { loading: "Carregando...", error: "Erro", success: "Sucesso", save: "Salvar", cancel: "Cancelar" }
   },
   nl: {
-    nav: { auctions: "Veilingen", buyBids: "Biedingen kopen", dashboard: "Dashboard", admin: "Admin", login: "Inloggen", register: "Registreren", logout: "Uitloggen", bids: "Biedingen" },
+    nav: { auctions: "Veilingen", buyBids: "Biedingen kopen", dashboard: "Dashboard", admin: "Admin", login: "Inloggen", register: "Registreren", logout: "Uitloggen", bids: "Biedingen", winners: "Winnaars", inviteFriends: "Vrienden uitnodigen", wishlist: "Verlanglijst" },
     home: {
       badge: "10 gratis biedingen bij registratie",
       heroTitle1: "Win",
@@ -237,6 +265,20 @@ export const translations = {
       freeRegister: "Gratis registreren"
     },
     auctions: { title: "Alle veilingen", filter: "Filter", all: "Alles", active: "Actief", ended: "Beëindigd", currentPrice: "Huidige prijs", bids: "Biedingen", bid: "Bieden", live: "Live" },
+    auctionPage: {
+      searchPlaceholder: "Zoek aanbiedingen...",
+      categories: { all: "Alles", electronics: "Elektronica", smartphones: "Smartphones", household: "Huishouden", emobility: "E-Mobiliteit", gifts: "Cadeaus", fashion: "Mode" },
+      active: "Actief", scheduled: "Gepland", all: "Alles",
+      offersFound: "aanbiedingen gevonden",
+      noOffers: "Geen aanbiedingen gevonden",
+      tryAnother: "Probeer een andere categorie of zoekopdracht",
+      priceNote: "Vergelijkingsprijs = Adviesprijs fabrikant"
+    },
+    auctionCard: {
+      liveNow: "LIVE NU", comingSoon: "BINNENKORT", ended: "BEËINDIGD",
+      retailPrice: "Ref. prijs*", startPrice: "Startprijs", bidNow: "BIEDEN",
+      end: "EINDE", activity: "Activiteit", lastSold: "Laatst verkocht voor"
+    },
     buyBids: { title: "Biedingen kopen", popular: "Populair", bids: "Biedingen", buyNow: "Nu kopen" },
     winners: { title: "Winnaars", totalSaved: "Totaal bespaard", avgSavings: "Gemiddelde besparing", winners: "Winnaars" },
     auth: { login: "Inloggen", register: "Registreren", email: "E-mail", password: "Wachtwoord", name: "Naam", noAccount: "Geen account?", haveAccount: "Al een account?" },
@@ -269,7 +311,7 @@ export const translations = {
     common: { loading: "Ładowanie...", error: "Błąd", success: "Sukces", save: "Zapisz", cancel: "Anuluj" }
   },
   tr: {
-    nav: { auctions: "Müzayedeler", buyBids: "Teklif satın al", dashboard: "Panel", admin: "Yönetici", login: "Giriş", register: "Kayıt ol", logout: "Çıkış", bids: "Teklifler" },
+    nav: { auctions: "Müzayedeler", buyBids: "Teklif satın al", dashboard: "Panel", admin: "Yönetici", login: "Giriş", register: "Kayıt ol", logout: "Çıkış", bids: "Teklifler", winners: "Kazananlar", inviteFriends: "Arkadaşları davet et", wishlist: "İstek listesi" },
     home: {
       badge: "Kayıtta 10 ücretsiz teklif",
       heroTitle1: "Kazan",
@@ -289,6 +331,20 @@ export const translations = {
       freeRegister: "Ücretsiz kayıt ol"
     },
     auctions: { title: "Tüm müzayedeler", filter: "Filtrele", all: "Tümü", active: "Aktif", ended: "Bitti", currentPrice: "Güncel fiyat", bids: "Teklifler", bid: "Teklif ver", live: "Canlı" },
+    auctionPage: {
+      searchPlaceholder: "Teklifleri ara...",
+      categories: { all: "Tümü", electronics: "Elektronik", smartphones: "Akıllı Telefonlar", household: "Ev", emobility: "E-Mobilite", gifts: "Hediyeler", fashion: "Moda" },
+      active: "Aktif", scheduled: "Planlanmış", all: "Tümü",
+      offersFound: "teklif bulundu",
+      noOffers: "Teklif bulunamadı",
+      tryAnother: "Başka bir kategori veya arama deneyin",
+      priceNote: "Karşılaştırma fiyatı = Üreticinin önerdiği fiyat"
+    },
+    auctionCard: {
+      liveNow: "CANLI", comingSoon: "YAKINDA", ended: "BİTTİ",
+      retailPrice: "Ref. fiyat*", startPrice: "Başlangıç fiyatı", bidNow: "TEKLİF VER",
+      end: "SON", activity: "Aktivite", lastSold: "Son satış fiyatı"
+    },
     buyBids: { title: "Teklif satın al", popular: "Popüler", bids: "Teklifler", buyNow: "Şimdi al" },
     winners: { title: "Kazananlar", totalSaved: "Toplam tasarruf", avgSavings: "Ortalama tasarruf", winners: "Kazananlar" },
     auth: { login: "Giriş", register: "Kayıt ol", email: "E-posta", password: "Şifre", name: "İsim", noAccount: "Hesabın yok mu?", haveAccount: "Zaten hesabın var mı?" },
