@@ -268,11 +268,21 @@ class MultiBotBidRequest(BaseModel):
 
 # Fixed bid packages (server-side only) - €0.50 per bid
 BID_PACKAGES = {
+    "mini": BidPackage(id="mini", name="Mini Pack", bids=20, price=10.00),  # Minimum für Affiliate
     "starter": BidPackage(id="starter", name="Starter Pack", bids=50, price=25.00),
     "popular": BidPackage(id="popular", name="Popular Pack", bids=150, price=75.00, popular=True),
     "pro": BidPackage(id="pro", name="Pro Pack", bids=300, price=150.00),
     "elite": BidPackage(id="elite", name="Elite Pack", bids=500, price=250.00),
 }
+
+# Affiliate Commission Structure (per lead/month)
+AFFILIATE_COMMISSIONS = {
+    "tier1": {"min_leads": 1, "max_leads": 5, "commission": 3.00},
+    "tier2": {"min_leads": 6, "max_leads": 20, "commission": 5.00},
+    "tier3": {"min_leads": 21, "max_leads": 50, "commission": 7.00},
+    "tier4": {"min_leads": 51, "max_leads": float('inf'), "commission": 9.00},
+}
+AFFILIATE_BASE_COMMISSION = 8.00  # Minimum €8 per lead who buys
 
 # ==================== AUTH HELPERS ====================
 
