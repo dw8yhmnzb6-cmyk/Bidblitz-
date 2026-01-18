@@ -154,6 +154,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Auction of the Day */}
+      <section className="py-12 px-4">
+        <div className="max-w-7xl mx-auto">
+          <AuctionOfTheDay />
+        </div>
+      </section>
+
       {/* Live Auctions */}
       <section className="py-20 px-4" data-testid="live-auctions-section">
         <div className="max-w-7xl mx-auto">
