@@ -88,7 +88,7 @@ export default function Login() {
             </p>
           </div>
 
-          <form ref={formRef} onSubmit={handleSubmit} className="space-y-6" autoComplete="on">
+          <form onSubmit={handleSubmit} className="space-y-6" autoComplete="on">
             {!requires2FA ? (
               <>
                 <div className="space-y-2">
