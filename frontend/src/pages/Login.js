@@ -65,48 +65,13 @@ export default function Login() {
     }
   };
 
-  // Auto-login when browser auto-fills credentials
+  // Redirect if already logged in
   useEffect(() => {
-    const checkAutoFill = () => {
-      if (hasAutoLoginAttempted.current) return;
-      
-      const emailInput = formRef.current?.querySelector('input[type="email"]');
-      const passwordInput = formRef.current?.querySelector('input[type="password"]');
-      
-      if (emailInput && passwordInput) {
-        // Check if browser has auto-filled the fields
-        const autoFilledEmail = emailInput.value || email;
-        const autoFilledPassword = passwordInput.value || password;
-        
-        if (autoFilledEmail && autoFilledPassword && autoFilledEmail !== email) {
-          setEmail(autoFilledEmail);
-          setPassword(autoFilledPassword);
-          hasAutoLoginAttempted.current = true;
-          // Auto-submit after a short delay
-          setTimeout(() => {
-            handleSubmit();
-          }, 500);
-        }
-      }
-    };
-
-    // Check after a short delay to allow browser autofill
-    const timer = setTimeout(checkAutoFill, 800);
-    
-    // Also listen for input events (some browsers trigger these on autofill)
-    const handleInput = (e) => {
-      if (e.target.matches('input[type="email"], input[type="password"]')) {
-        setTimeout(checkAutoFill, 100);
-      }
-    };
-    
-    document.addEventListener('input', handleInput);
-    
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('input', handleInput);
-    };
-  }, [email, password]);
+    const token = localStorage.getItem('token');
+    if (token) {
+      window.location.href = '/dashboard';
+    }
+  }, []);
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center" data-testid="login-page">
