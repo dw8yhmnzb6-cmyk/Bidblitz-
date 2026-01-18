@@ -36,7 +36,9 @@ export default function Wishlist() {
       ]);
       setWishlist(wishlistRes.data);
       setProducts(productsRes.data);
-      setCategories(categoriesRes.data);
+      // Extract category names from the API response
+      const cats = categoriesRes.data.map(c => c.name || c);
+      setCategories(cats);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
