@@ -3559,6 +3559,150 @@ async def admin_reply_chat(user_id: str, message: str, admin: dict = Depends(get
     
     return {"message": "Antwort gesendet", "id": chat_msg["id"]}
 
+# ==================== PDF INVOICE GENERATION ====================
+
+def generate_invoice_pdf(purchase: dict, user: dict) -> io.BytesIO:
+    """Generate a PDF invoice for a purchase"""
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm)
+    
+    styles = getSampleStyleSheet()
+    title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=24, textColor=colors.HexColor('#FFD700'), alignment=TA_CENTER)
+    normal_style = styles['Normal']
+    right_style = ParagraphStyle('Right', parent=styles['Normal'], alignment=TA_RIGHT)
+    
+    elements = []
+    
+    # Header
+    elements.append(Paragraph("BidBlitz", title_style))
+    elements.append(Spacer(1, 0.5*cm))
+    elements.append(Paragraph("RECHNUNG / INVOICE", ParagraphStyle('Subtitle', fontSize=14, textColor=colors.grey, alignment=TA_CENTER)))
+    elements.append(Spacer(1, 1*cm))
+    
+    # Invoice Details
+    invoice_date = datetime.fromisoformat(purchase.get("created_at", datetime.now(timezone.utc).isoformat()).replace("Z", "+00:00"))
+    invoice_number = f"INV-{invoice_date.strftime('%Y%m%d')}-{purchase.get('id', 'XXX')[:8].upper()}"
+    
+    invoice_data = [
+        ["Rechnungsnummer:", invoice_number],
+        ["Rechnungsdatum:", invoice_date.strftime("%d.%m.%Y")],
+        ["Kunde:", user.get("name", "Unbekannt")],
+        ["E-Mail:", user.get("email", "")],
+    ]
+    
+    invoice_table = Table(invoice_data, colWidths=[5*cm, 10*cm])
+    invoice_table.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+    ]))
+    elements.append(invoice_table)
+    elements.append(Spacer(1, 1*cm))
+    
+    # Line Items
+    package_name = purchase.get("package_name", "Gebotspaket")
+    bids = purchase.get("bids", 0)
+    amount = purchase.get("amount", 0)
+    
+    # Calculate net and VAT (19% German VAT)
+    vat_rate = 0.19
+    net_amount = amount / (1 + vat_rate)
+    vat_amount = amount - net_amount
+    
+    items_data = [
+        ["Beschreibung", "Menge", "Einzelpreis", "Gesamt"],
+        [f"{package_name}\n({bids} Gebote)", "1", f"€{net_amount:.2f}", f"€{net_amount:.2f}"],
+    ]
+    
+    items_table = Table(items_data, colWidths=[8*cm, 2*cm, 3*cm, 3*cm])
+    items_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#181824')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+        ('TOPPADDING', (0, 0), (-1, -1), 10),
+    ]))
+    elements.append(items_table)
+    elements.append(Spacer(1, 0.5*cm))
+    
+    # Totals
+    totals_data = [
+        ["", "", "Nettobetrag:", f"€{net_amount:.2f}"],
+        ["", "", "MwSt. (19%):", f"€{vat_amount:.2f}"],
+        ["", "", "Gesamtbetrag:", f"€{amount:.2f}"],
+    ]
+    
+    totals_table = Table(totals_data, colWidths=[8*cm, 2*cm, 3*cm, 3*cm])
+    totals_table.setStyle(TableStyle([
+        ('ALIGN', (2, 0), (-1, -1), 'RIGHT'),
+        ('FONTNAME', (2, -1), (-1, -1), 'Helvetica-Bold'),
+        ('LINEABOVE', (2, -1), (-1, -1), 1, colors.black),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+    ]))
+    elements.append(totals_table)
+    elements.append(Spacer(1, 2*cm))
+    
+    # Footer
+    footer_text = """
+    <para align="center">
+    <font size="9" color="grey">
+    BidBlitz GmbH • Musterstraße 123 • 10115 Berlin<br/>
+    USt-IdNr.: DE123456789 • Handelsregister: HRB 12345<br/>
+    support@bidblitz.de • www.bidblitz.de
+    </font>
+    </para>
+    """
+    elements.append(Paragraph(footer_text, styles['Normal']))
+    
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer
+
+@api_router.get("/invoices/{purchase_id}/download")
+async def download_invoice(purchase_id: str, user: dict = Depends(get_current_user)):
+    """Download PDF invoice for a purchase"""
+    purchase = await db.purchases.find_one({"id": purchase_id, "user_id": user["id"]}, {"_id": 0})
+    
+    if not purchase:
+        raise HTTPException(status_code=404, detail="Kauf nicht gefunden")
+    
+    pdf_buffer = generate_invoice_pdf(purchase, user)
+    
+    invoice_date = datetime.fromisoformat(purchase.get("created_at", datetime.now(timezone.utc).isoformat()).replace("Z", "+00:00"))
+    filename = f"BidBlitz_Rechnung_{invoice_date.strftime('%Y%m%d')}_{purchase_id[:8]}.pdf"
+    
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@api_router.get("/invoices")
+async def get_user_invoices(user: dict = Depends(get_current_user)):
+    """Get all user's invoices"""
+    purchases = await db.purchases.find(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    invoices = []
+    for p in purchases:
+        invoice_date = datetime.fromisoformat(p.get("created_at", datetime.now(timezone.utc).isoformat()).replace("Z", "+00:00"))
+        invoices.append({
+            "id": p["id"],
+            "invoice_number": f"INV-{invoice_date.strftime('%Y%m%d')}-{p['id'][:8].upper()}",
+            "date": p.get("created_at"),
+            "amount": p.get("amount"),
+            "package_name": p.get("package_name"),
+            "bids": p.get("bids"),
+            "download_url": f"/api/invoices/{p['id']}/download"
+        })
+    
+    return invoices
+
 # ==================== SOCIAL SHARING ====================
 
 @api_router.post("/share/win/{auction_id}")
