@@ -531,6 +531,98 @@ export default function AuctionDetail() {
                     )}
                   </Button>
 
+                  {/* Buy It Now Button */}
+                  {isAuthenticated && product.retail_price && (
+                    <Button
+                      onClick={() => setShowBuyNowModal(true)}
+                      variant="outline"
+                      className="w-full border-[#10B981] text-[#10B981] hover:bg-[#10B981]/10 py-3"
+                      data-testid="buy-now-btn"
+                    >
+                      <ShoppingBag className="w-5 h-5 mr-2" />
+                      Sofort kaufen ab €{buyNowPrice ? buyNowPrice.final_price.toFixed(2) : product.retail_price.toFixed(2)}
+                    </Button>
+                  )}
+
+                  {/* Buy It Now Modal */}
+                  {showBuyNowModal && (
+                    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4" data-testid="buy-now-modal">
+                      <div className="bg-[#181824] rounded-2xl max-w-md w-full p-6 space-y-6 animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-[#10B981]/20 flex items-center justify-center">
+                            <ShoppingBag className="w-6 h-6 text-[#10B981]" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-bold text-white">Sofort kaufen</h3>
+                            <p className="text-[#94A3B8] text-sm">{product.name}</p>
+                          </div>
+                        </div>
+
+                        {buyNowPrice && (
+                          <div className="space-y-4">
+                            <div className="p-4 rounded-lg bg-[#0F0F16] space-y-3">
+                              <div className="flex justify-between">
+                                <span className="text-[#94A3B8]">UVP</span>
+                                <span className="text-white font-mono">€{buyNowPrice.retail_price.toFixed(2)}</span>
+                              </div>
+                              {buyNowPrice.bid_credit > 0 && (
+                                <div className="flex justify-between text-[#10B981]">
+                                  <span className="flex items-center gap-2">
+                                    <Sparkles className="w-4 h-4" />
+                                    Gebots-Guthaben ({buyNowPrice.bids_used} Gebote)
+                                  </span>
+                                  <span className="font-mono">-€{buyNowPrice.bid_credit.toFixed(2)}</span>
+                                </div>
+                              )}
+                              <div className="border-t border-white/10 pt-3 flex justify-between">
+                                <span className="text-white font-bold">Ihr Preis</span>
+                                <span className="text-2xl font-bold text-[#10B981] font-mono">€{buyNowPrice.final_price.toFixed(2)}</span>
+                              </div>
+                            </div>
+
+                            {buyNowPrice.bid_credit > 0 && (
+                              <div className="p-3 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30">
+                                <p className="text-[#10B981] text-sm text-center">
+                                  🎉 Sie sparen €{buyNowPrice.bid_credit.toFixed(2)} durch Ihre {buyNowPrice.bids_used} platzierten Gebote!
+                                </p>
+                              </div>
+                            )}
+
+                            <p className="text-[#94A3B8] text-xs text-center">
+                              Jedes platzierte Gebot wird auf den Kaufpreis als €0,15 Guthaben angerechnet.
+                            </p>
+                          </div>
+                        )}
+
+                        <div className="flex gap-3">
+                          <Button
+                            onClick={() => setShowBuyNowModal(false)}
+                            variant="outline"
+                            className="flex-1 border-white/20 text-white hover:bg-white/10"
+                            disabled={buyingNow}
+                          >
+                            Abbrechen
+                          </Button>
+                          <Button
+                            onClick={handleBuyNow}
+                            className="flex-1 bg-[#10B981] hover:bg-[#059669] text-white"
+                            disabled={buyingNow}
+                            data-testid="confirm-buy-now-btn"
+                          >
+                            {buyingNow ? (
+                              'Wird gekauft...'
+                            ) : (
+                              <>
+                                <CreditCard className="w-5 h-5 mr-2" />
+                                Jetzt kaufen
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Autobidder Section */}
                   {isAuthenticated && (
                     <div className="border-t border-white/10 pt-4">
