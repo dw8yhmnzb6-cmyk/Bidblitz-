@@ -40,6 +40,13 @@ export default function AuctionDetail() {
   // Timer for scheduled auctions
   const [startTimeLeft, setStartTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
+  // Simulated viewer count (minimum 12, based on auction ID for consistency)
+  const [simulatedViewers] = useState(() => {
+    // Generate consistent number based on auction ID
+    const hash = id ? id.split('').reduce((a, b) => a + b.charCodeAt(0), 0) : 0;
+    return 12 + (hash % 25); // 12-36 viewers
+  });
+
   // WebSocket connection
   const { 
     isConnected, 
