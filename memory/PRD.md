@@ -166,13 +166,13 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] E-Mail-Benachrichtigungen (Gewinner, Passwort-Reset) - Resend Integration
 - [x] **WebSockets für Echtzeit-Updates (17.01.2026)** - Live-Gebote, Viewer-Zähler, Toast-Benachrichtigungen
 - [x] **Mobile-Optimierung (17.01.2026)** - Responsive Navigation, Touch-optimierte UI, Sticky Bid-Button
+- [x] **Gebotsverlauf auf Auktionsseite (18.01.2026)** - Live-Tabelle mit Bieter, Preis, Zeit
 - [ ] "Sofort Kaufen" Feature
-- [ ] Gebotsverlauf auf Auktionsseite
 
 ### P2 (Medium Priority)
 - [x] Admin-Statistiken & Berichte (Charts) ✅
-- [ ] Kategorien-Filter auf Auktionsseite
-- [ ] Gewinner-Galerie (Social Proof)
+- [x] **Kategorien-Filter auf Auktionsseite (18.01.2026)** - Quick-Filter Buttons
+- [x] **Gewinner-Galerie (18.01.2026)** - /winners Seite mit Statistiken und Winner-Cards
 - [ ] Referral-System
 - [ ] PayPal Integration
 
@@ -192,20 +192,18 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - `/app/test_reports/iteration_1.json` - Neue Features Tests (22 bestanden)
 - `/app/test_reports/iteration_2.json` - Admin Dashboard Charts Tests (11 bestanden)
 - `/app/test_reports/iteration_3.json` - WebSocket Real-time Tests (13 bestanden)
-- `/app/test_reports/pytest/pytest_results.xml` - Auktions-Scheduling Tests
-- `/app/tests/test_new_features.py` - Test-Suite für neue Features
-- `/app/tests/test_auction_scheduling.py` - Test-Suite für Scheduling
-- `/app/tests/test_admin_dashboard_charts.py` - Test-Suite für Admin Charts
-- `/app/tests/test_websocket_realtime.py` - Test-Suite für WebSocket-Echtzeit
+- `/app/test_reports/iteration_4.json` - Full Features Tests (20 bestanden)
+- `/app/test_reports/iteration_5.json` - New Features v2 Tests (13 bestanden)
+- `/app/tests/test_new_features_v2.py` - Test-Suite für Gebotsverlauf, Winners, Categories
 
 ---
 
 ## Mocked APIs
 - **E-Mail-Versand**: Passwort-Reset-Code wird in API-Response (demo_code) zurückgegeben
-- **Stripe**: Test-Key vorhanden, Platzhalter-Endpoints
+- **Stripe**: Test-Key (sk_test_emergent) - echte Zahlungen nicht möglich
 - **Admin Payments/Logs**: Mock-Daten für Demo
 
 ---
 
 ## Last Updated
-17.01.2026 - Vollständige Implementation aller Seiten und Features aus Spezifikation
+18.01.2026 - Gebotsverlauf, Gewinner-Galerie, Kategorien-Filter implementiert
