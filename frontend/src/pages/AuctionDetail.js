@@ -61,6 +61,43 @@ export default function AuctionDetail() {
     }
   };
 
+  // Fetch Buy It Now price
+  const fetchBuyNowPrice = async () => {
+    if (!isAuthenticated || !token) return;
+    try {
+      const response = await axios.get(`${API}/auctions/${id}/buy-now-price`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setBuyNowPrice(response.data);
+    } catch (error) {
+      console.error('Error fetching buy-now price:', error);
+    }
+  };
+
+  // Handle Buy It Now
+  const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      toast.error('Bitte melden Sie sich an');
+      return;
+    }
+
+    setBuyingNow(true);
+    try {
+      const response = await axios.post(
+        `${API}/auctions/${id}/buy-now`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(response.data.message);
+      setShowBuyNowModal(false);
+      fetchAuction();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Kauf');
+    } finally {
+      setBuyingNow(false);
+    }
+  };
+
   // Initial fetch
   useEffect(() => {
     fetchBidHistory();
