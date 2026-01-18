@@ -32,6 +32,11 @@ export default function AuctionDetail() {
   const [maxPrice, setMaxPrice] = useState('');
   const [settingAutobidder, setSettingAutobidder] = useState(false);
 
+  // Buy It Now state
+  const [buyNowPrice, setBuyNowPrice] = useState(null);
+  const [buyingNow, setBuyingNow] = useState(false);
+  const [showBuyNowModal, setShowBuyNowModal] = useState(false);
+
   // Timer for scheduled auctions
   const [startTimeLeft, setStartTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
