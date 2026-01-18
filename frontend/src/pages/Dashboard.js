@@ -496,6 +496,10 @@ export default function Dashboard() {
             <div className="glass-card rounded-2xl p-6">
               <h2 className="text-lg font-bold text-white mb-4">Schnellzugriff</h2>
               <div className="space-y-2">
+                <Link to="/achievements" className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-[#FFD700]/10 to-[#FF4D4D]/10 border border-[#FFD700]/30 hover:bg-[#FFD700]/20 transition-colors">
+                  <span className="flex items-center gap-2 text-[#FFD700]"><Trophy className="w-4 h-4" />Achievements & Belohnungen</span>
+                  <ChevronRight className="w-4 h-4 text-[#FFD700]" />
+                </Link>
                 <Link to="/profile" className="flex items-center justify-between p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors">
                   <span className="flex items-center gap-2 text-white"><User className="w-4 h-4 text-[#94A3B8]" />Profil bearbeiten</span>
                   <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
@@ -506,6 +510,10 @@ export default function Dashboard() {
                 </Link>
                 <Link to="/purchases" className="flex items-center justify-between p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors">
                   <span className="flex items-center gap-2 text-white"><Package className="w-4 h-4 text-[#94A3B8]" />Meine Käufe</span>
+                  <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
+                </Link>
+                <Link to="/invite" className="flex items-center justify-between p-3 rounded-lg bg-[#181824] hover:bg-white/5 transition-colors">
+                  <span className="flex items-center gap-2 text-white"><Gift className="w-4 h-4 text-[#10B981]" />Freunde einladen</span>
                   <ChevronRight className="w-4 h-4 text-[#94A3B8]" />
                 </Link>
               </div>
