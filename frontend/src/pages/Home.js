@@ -184,11 +184,11 @@ export default function Home() {
               <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
                 {t('home.liveAuctions')}
               </h2>
-              <p className="text-[#94A3B8]">Verpassen Sie nicht Ihre Chance zu gewinnen</p>
+              <p className="text-[#94A3B8]">{t('home.heroSubtitle')}</p>
             </div>
             <Link to="/auctions">
               <Button variant="ghost" className="text-[#7C3AED] hover:text-[#A78BFA]">
-                Alle anzeigen
+                {t('home.viewAll')}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>
