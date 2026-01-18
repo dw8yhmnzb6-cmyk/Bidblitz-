@@ -2966,6 +2966,612 @@ async def bot_bid_to_price(auction_id: str, target_price: float, admin: dict = D
         "target_reached": current_price >= target_price
     }
 
+# ==================== BUY IT NOW (SOFORT KAUFEN) ====================
+
+@api_router.post("/auctions/{auction_id}/buy-now")
+async def buy_now(auction_id: str, user: dict = Depends(get_current_user)):
+    """Buy the product immediately at retail price, with bid credits applied"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
+    
+    if auction["status"] != "active":
+        raise HTTPException(status_code=400, detail="Auktion ist nicht mehr aktiv")
+    
+    product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
+    
+    retail_price = product.get("retail_price", 0)
+    
+    # Calculate bid credits: count user's bids in this auction
+    bid_history = auction.get("bid_history", [])
+    user_bids = [b for b in bid_history if b.get("user_id") == user["id"]]
+    bid_credit = len(user_bids) * 0.15  # Each bid worth €0.15 credit
+    
+    # Final price after bid credit
+    final_price = max(0, retail_price - bid_credit)
+    
+    # Create buy-now order
+    order = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "user_email": user["email"],
+        "auction_id": auction_id,
+        "product_id": product["id"],
+        "product_name": product.get("name"),
+        "retail_price": retail_price,
+        "bid_credit": round(bid_credit, 2),
+        "final_price": round(final_price, 2),
+        "bids_used": len(user_bids),
+        "type": "buy_now",
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.orders.insert_one(order)
+    
+    # End the auction
+    await db.auctions.update_one(
+        {"id": auction_id},
+        {
+            "$set": {
+                "status": "ended",
+                "winner_id": user["id"],
+                "winner_name": user["name"],
+                "buy_now_used": True,
+                "ended_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    return {
+        "order_id": order["id"],
+        "product_name": product.get("name"),
+        "retail_price": retail_price,
+        "bid_credit": round(bid_credit, 2),
+        "bids_used": len(user_bids),
+        "final_price": round(final_price, 2),
+        "message": f"Produkt für €{final_price:.2f} gekauft! (€{bid_credit:.2f} Guthaben aus {len(user_bids)} Geboten)"
+    }
+
+@api_router.get("/auctions/{auction_id}/buy-now-price")
+async def get_buy_now_price(auction_id: str, user: dict = Depends(get_current_user)):
+    """Get the buy-now price with user's bid credits"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
+    
+    product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
+    
+    retail_price = product.get("retail_price", 0)
+    
+    # Calculate bid credits
+    bid_history = auction.get("bid_history", [])
+    user_bids = [b for b in bid_history if b.get("user_id") == user["id"]]
+    bid_credit = len(user_bids) * 0.15
+    final_price = max(0, retail_price - bid_credit)
+    
+    return {
+        "retail_price": retail_price,
+        "bid_credit": round(bid_credit, 2),
+        "bids_used": len(user_bids),
+        "final_price": round(final_price, 2)
+    }
+
+# ==================== AUCTION TYPES ====================
+
+@api_router.get("/auctions/beginner")
+async def get_beginner_auctions():
+    """Get auctions only for beginners (users with < 10 wins)"""
+    auctions = await db.auctions.find({
+        "status": "active",
+        "auction_type": "beginner"
+    }, {"_id": 0}).to_list(50)
+    
+    for auction in auctions:
+        product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+        auction["product"] = product
+    
+    return auctions
+
+@api_router.get("/auctions/night")
+async def get_night_auctions():
+    """Get night auctions (22:00 - 06:00)"""
+    auctions = await db.auctions.find({
+        "status": "active",
+        "auction_type": "night"
+    }, {"_id": 0}).to_list(50)
+    
+    for auction in auctions:
+        product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+        auction["product"] = product
+    
+    return auctions
+
+@api_router.get("/auctions/free")
+async def get_free_auctions():
+    """Get free auctions (no bids needed, just time)"""
+    auctions = await db.auctions.find({
+        "status": "active",
+        "auction_type": "free"
+    }, {"_id": 0}).to_list(50)
+    
+    for auction in auctions:
+        product = await db.products.find_one({"id": auction["product_id"]}, {"_id": 0})
+        auction["product"] = product
+    
+    return auctions
+
+# ==================== WISHLIST & NOTIFICATIONS ====================
+
+@api_router.post("/wishlist/add")
+async def add_to_wishlist(request: WishlistRequest, user: dict = Depends(get_current_user)):
+    """Add product or category to wishlist for notifications"""
+    wishlist_item = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "product_id": request.product_id,
+        "category": request.category,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "notified": False
+    }
+    await db.wishlist.insert_one(wishlist_item)
+    return {"message": "Zur Wunschliste hinzugefügt", "id": wishlist_item["id"]}
+
+@api_router.get("/wishlist")
+async def get_wishlist(user: dict = Depends(get_current_user)):
+    """Get user's wishlist"""
+    items = await db.wishlist.find({"user_id": user["id"]}, {"_id": 0}).to_list(100)
+    
+    # Enrich with product data
+    for item in items:
+        if item.get("product_id"):
+            product = await db.products.find_one({"id": item["product_id"]}, {"_id": 0})
+            item["product"] = product
+    
+    return items
+
+@api_router.delete("/wishlist/{item_id}")
+async def remove_from_wishlist(item_id: str, user: dict = Depends(get_current_user)):
+    """Remove item from wishlist"""
+    result = await db.wishlist.delete_one({"id": item_id, "user_id": user["id"]})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Item nicht gefunden")
+    return {"message": "Von Wunschliste entfernt"}
+
+# ==================== ACHIEVEMENTS & GAMIFICATION ====================
+
+ACHIEVEMENTS = {
+    "first_win": {"name": "Erster Sieg", "description": "Gewinne deine erste Auktion", "icon": "trophy", "points": 10},
+    "wins_10": {"name": "Gewinner", "description": "Gewinne 10 Auktionen", "icon": "star", "points": 50},
+    "wins_50": {"name": "Profi-Bieter", "description": "Gewinne 50 Auktionen", "icon": "crown", "points": 200},
+    "night_owl": {"name": "Nachteule", "description": "Gewinne eine Auktion nach Mitternacht", "icon": "moon", "points": 25},
+    "early_bird": {"name": "Frühaufsteher", "description": "Gewinne eine Auktion vor 7 Uhr", "icon": "sun", "points": 25},
+    "big_spender": {"name": "Großeinkäufer", "description": "Kaufe 500+ Gebote", "icon": "gem", "points": 100},
+    "streak_7": {"name": "Wochenstreak", "description": "7 Tage hintereinander aktiv", "icon": "flame", "points": 50},
+    "streak_30": {"name": "Monatsstreak", "description": "30 Tage hintereinander aktiv", "icon": "fire", "points": 200},
+    "social_sharer": {"name": "Social Star", "description": "Teile einen Gewinn auf Social Media", "icon": "share", "points": 15},
+    "first_bid": {"name": "Einsteiger", "description": "Platziere dein erstes Gebot", "icon": "zap", "points": 5},
+    "bids_100": {"name": "Fleißiger Bieter", "description": "Platziere 100 Gebote", "icon": "target", "points": 30},
+    "referral_1": {"name": "Botschafter", "description": "Lade einen Freund ein", "icon": "users", "points": 20},
+}
+
+@api_router.get("/achievements")
+async def get_achievements(user: dict = Depends(get_current_user)):
+    """Get user's achievements"""
+    user_achievements = await db.achievements.find({"user_id": user["id"]}, {"_id": 0}).to_list(100)
+    unlocked_ids = [a["achievement_id"] for a in user_achievements]
+    
+    result = []
+    for ach_id, ach_data in ACHIEVEMENTS.items():
+        result.append({
+            "id": ach_id,
+            **ach_data,
+            "unlocked": ach_id in unlocked_ids,
+            "unlocked_at": next((a["unlocked_at"] for a in user_achievements if a["achievement_id"] == ach_id), None)
+        })
+    
+    total_points = sum(ACHIEVEMENTS[a]["points"] for a in unlocked_ids if a in ACHIEVEMENTS)
+    
+    return {
+        "achievements": result,
+        "total_points": total_points,
+        "unlocked_count": len(unlocked_ids),
+        "total_count": len(ACHIEVEMENTS)
+    }
+
+async def check_and_award_achievement(user_id: str, achievement_id: str):
+    """Award achievement to user if not already unlocked"""
+    existing = await db.achievements.find_one({"user_id": user_id, "achievement_id": achievement_id})
+    if existing:
+        return None
+    
+    if achievement_id not in ACHIEVEMENTS:
+        return None
+    
+    achievement = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "achievement_id": achievement_id,
+        "unlocked_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.achievements.insert_one(achievement)
+    
+    # Add bonus bids for achievement
+    bonus_bids = ACHIEVEMENTS[achievement_id]["points"] // 10  # 1 bid per 10 points
+    if bonus_bids > 0:
+        await db.users.update_one({"id": user_id}, {"$inc": {"bids_balance": bonus_bids}})
+    
+    return {**ACHIEVEMENTS[achievement_id], "bonus_bids": bonus_bids}
+
+# ==================== DAILY LOGIN REWARDS ====================
+
+@api_router.post("/daily-reward")
+async def claim_daily_reward(user: dict = Depends(get_current_user)):
+    """Claim daily login reward"""
+    today = datetime.now(timezone.utc).date().isoformat()
+    
+    # Check if already claimed today
+    existing = await db.daily_rewards.find_one({
+        "user_id": user["id"],
+        "date": today
+    })
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="Tagesbelohnung bereits abgeholt")
+    
+    # Get user's streak
+    user_data = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    current_streak = user_data.get("login_streak", 0)
+    last_claim = user_data.get("last_daily_claim")
+    
+    # Check if streak continues
+    yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).date().isoformat()
+    if last_claim == yesterday:
+        current_streak += 1
+    else:
+        current_streak = 1
+    
+    # Calculate reward based on streak (1-5 bids)
+    reward_bids = min(5, current_streak)
+    
+    # Bonus for streak milestones
+    bonus = 0
+    if current_streak == 7:
+        bonus = 10  # Week streak bonus
+        await check_and_award_achievement(user["id"], "streak_7")
+    elif current_streak == 30:
+        bonus = 50  # Month streak bonus
+        await check_and_award_achievement(user["id"], "streak_30")
+    
+    total_reward = reward_bids + bonus
+    
+    # Save reward claim
+    await db.daily_rewards.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "date": today,
+        "bids_earned": total_reward,
+        "streak": current_streak
+    })
+    
+    # Update user
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$inc": {"bids_balance": total_reward},
+            "$set": {
+                "login_streak": current_streak,
+                "last_daily_claim": today
+            }
+        }
+    )
+    
+    return {
+        "bids_earned": total_reward,
+        "streak": current_streak,
+        "bonus": bonus,
+        "message": f"+{total_reward} Gebote! Streak: {current_streak} Tage"
+    }
+
+@api_router.get("/daily-reward/status")
+async def get_daily_reward_status(user: dict = Depends(get_current_user)):
+    """Check daily reward status"""
+    today = datetime.now(timezone.utc).date().isoformat()
+    
+    existing = await db.daily_rewards.find_one({
+        "user_id": user["id"],
+        "date": today
+    })
+    
+    user_data = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    current_streak = user_data.get("login_streak", 0)
+    
+    return {
+        "claimed_today": existing is not None,
+        "current_streak": current_streak,
+        "next_reward": min(5, current_streak + 1) if not existing else 0
+    }
+
+# ==================== USER STATISTICS ====================
+
+@api_router.get("/stats/me")
+async def get_user_stats(user: dict = Depends(get_current_user)):
+    """Get detailed user statistics"""
+    user_id = user["id"]
+    
+    # Get all user's bids from auctions
+    all_auctions = await db.auctions.find({}, {"_id": 0, "bid_history": 1, "product_id": 1, "winner_id": 1, "status": 1}).to_list(10000)
+    
+    total_bids = 0
+    bids_by_category = {}
+    wins_by_category = {}
+    bids_by_hour = [0] * 24
+    
+    for auction in all_auctions:
+        bid_history = auction.get("bid_history", [])
+        user_bids = [b for b in bid_history if b.get("user_id") == user_id]
+        total_bids += len(user_bids)
+        
+        # Get product category
+        product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0, "category": 1})
+        category = product.get("category", "Sonstige") if product else "Sonstige"
+        
+        bids_by_category[category] = bids_by_category.get(category, 0) + len(user_bids)
+        
+        # Track wins
+        if auction.get("winner_id") == user_id:
+            wins_by_category[category] = wins_by_category.get(category, 0) + 1
+        
+        # Track bid times
+        for bid in user_bids:
+            try:
+                bid_time = datetime.fromisoformat(bid["timestamp"].replace("Z", "+00:00"))
+                bids_by_hour[bid_time.hour] += 1
+            except:
+                pass
+    
+    # Calculate win rate
+    total_wins = len(user.get("won_auctions", []))
+    auctions_participated = len(set(a["id"] for a in all_auctions if any(b.get("user_id") == user_id for b in a.get("bid_history", [])) for a in [auction]))
+    win_rate = (total_wins / auctions_participated * 100) if auctions_participated > 0 else 0
+    
+    # Best time to bid (hour with most wins)
+    best_hour = bids_by_hour.index(max(bids_by_hour)) if any(bids_by_hour) else 12
+    
+    # Best category
+    best_category = max(wins_by_category, key=wins_by_category.get) if wins_by_category else None
+    
+    return {
+        "total_bids": total_bids,
+        "total_wins": total_wins,
+        "win_rate": round(win_rate, 1),
+        "bids_by_category": bids_by_category,
+        "wins_by_category": wins_by_category,
+        "bids_by_hour": bids_by_hour,
+        "best_hour": best_hour,
+        "best_category": best_category,
+        "member_since": user.get("created_at"),
+        "total_spent": user.get("total_deposits", 0)
+    }
+
+# ==================== VIP MEMBERSHIP ====================
+
+VIP_PLANS = {
+    "monthly": {"price": 9.99, "duration_days": 30, "bid_discount": 10, "free_bids": 20},
+    "yearly": {"price": 79.99, "duration_days": 365, "bid_discount": 15, "free_bids": 300}
+}
+
+@api_router.get("/vip/plans")
+async def get_vip_plans():
+    """Get available VIP plans"""
+    return VIP_PLANS
+
+@api_router.get("/vip/status")
+async def get_vip_status(user: dict = Depends(get_current_user)):
+    """Get user's VIP status"""
+    vip = await db.vip_memberships.find_one({
+        "user_id": user["id"],
+        "status": "active"
+    }, {"_id": 0})
+    
+    if vip:
+        expires = datetime.fromisoformat(vip["expires_at"].replace("Z", "+00:00"))
+        days_left = (expires - datetime.now(timezone.utc)).days
+        return {
+            "is_vip": True,
+            "plan": vip["plan"],
+            "expires_at": vip["expires_at"],
+            "days_left": max(0, days_left),
+            "bid_discount": VIP_PLANS[vip["plan"]]["bid_discount"]
+        }
+    
+    return {"is_vip": False}
+
+@api_router.post("/vip/subscribe")
+async def subscribe_vip(plan: str, user: dict = Depends(get_current_user)):
+    """Subscribe to VIP membership"""
+    if plan not in VIP_PLANS:
+        raise HTTPException(status_code=400, detail="Ungültiger Plan")
+    
+    plan_data = VIP_PLANS[plan]
+    expires_at = datetime.now(timezone.utc) + timedelta(days=plan_data["duration_days"])
+    
+    # Create or extend membership
+    existing = await db.vip_memberships.find_one({"user_id": user["id"], "status": "active"})
+    
+    if existing:
+        # Extend existing
+        current_expires = datetime.fromisoformat(existing["expires_at"].replace("Z", "+00:00"))
+        new_expires = current_expires + timedelta(days=plan_data["duration_days"])
+        await db.vip_memberships.update_one(
+            {"id": existing["id"]},
+            {"$set": {"expires_at": new_expires.isoformat(), "plan": plan}}
+        )
+    else:
+        # Create new
+        membership = {
+            "id": str(uuid.uuid4()),
+            "user_id": user["id"],
+            "plan": plan,
+            "status": "active",
+            "started_at": datetime.now(timezone.utc).isoformat(),
+            "expires_at": expires_at.isoformat(),
+            "price_paid": plan_data["price"]
+        }
+        await db.vip_memberships.insert_one(membership)
+    
+    # Add free bids
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$inc": {"bids_balance": plan_data["free_bids"]}}
+    )
+    
+    return {
+        "message": f"VIP {plan} aktiviert!",
+        "expires_at": expires_at.isoformat(),
+        "free_bids": plan_data["free_bids"],
+        "bid_discount": plan_data["bid_discount"]
+    }
+
+# ==================== LIVE CHAT SUPPORT ====================
+
+@api_router.post("/chat/send")
+async def send_chat_message(message: ChatMessage, user: dict = Depends(get_current_user)):
+    """Send a chat message to support"""
+    chat_msg = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "user_name": user["name"],
+        "user_email": user["email"],
+        "message": message.message,
+        "auction_id": message.auction_id,
+        "is_admin": False,
+        "read": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.chat_messages.insert_one(chat_msg)
+    
+    return {"message": "Nachricht gesendet", "id": chat_msg["id"]}
+
+@api_router.get("/chat/messages")
+async def get_chat_messages(user: dict = Depends(get_current_user)):
+    """Get user's chat messages"""
+    messages = await db.chat_messages.find(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).limit(50).to_list(50)
+    
+    return messages
+
+@api_router.get("/admin/chat/all")
+async def get_all_chat_messages(admin: dict = Depends(get_admin_user)):
+    """Get all chat messages (admin only)"""
+    messages = await db.chat_messages.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).limit(200).to_list(200)
+    
+    return messages
+
+@api_router.post("/admin/chat/reply")
+async def admin_reply_chat(user_id: str, message: str, admin: dict = Depends(get_admin_user)):
+    """Admin reply to chat"""
+    chat_msg = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "user_name": "Support",
+        "user_email": "support@bidblitz.de",
+        "message": message,
+        "is_admin": True,
+        "read": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.chat_messages.insert_one(chat_msg)
+    
+    return {"message": "Antwort gesendet", "id": chat_msg["id"]}
+
+# ==================== SOCIAL SHARING ====================
+
+@api_router.post("/share/win/{auction_id}")
+async def share_win(auction_id: str, platform: str, user: dict = Depends(get_current_user)):
+    """Record social share and award bonus"""
+    auction = await db.auctions.find_one({"id": auction_id, "winner_id": user["id"]}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Gewonnene Auktion nicht gefunden")
+    
+    # Check if already shared
+    existing = await db.social_shares.find_one({
+        "user_id": user["id"],
+        "auction_id": auction_id
+    })
+    
+    if existing:
+        return {"message": "Bereits geteilt", "bonus_bids": 0}
+    
+    # Record share
+    share = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "auction_id": auction_id,
+        "platform": platform,  # facebook, twitter, whatsapp, etc.
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.social_shares.insert_one(share)
+    
+    # Award bonus bids
+    bonus_bids = 3
+    await db.users.update_one({"id": user["id"]}, {"$inc": {"bids_balance": bonus_bids}})
+    
+    # Award achievement
+    await check_and_award_achievement(user["id"], "social_sharer")
+    
+    return {"message": f"Danke fürs Teilen! +{bonus_bids} Bonus-Gebote", "bonus_bids": bonus_bids}
+
+# ==================== LEADERBOARD ====================
+
+@api_router.get("/leaderboard")
+async def get_leaderboard(period: str = "all"):
+    """Get top winners leaderboard"""
+    # Get all users with wins
+    users = await db.users.find(
+        {"is_admin": False},
+        {"_id": 0, "id": 1, "name": 1, "won_auctions": 1, "created_at": 1}
+    ).to_list(1000)
+    
+    # Calculate wins
+    leaderboard = []
+    for user in users:
+        wins = len(user.get("won_auctions", []))
+        if wins > 0:
+            leaderboard.append({
+                "name": user["name"],
+                "wins": wins,
+                "member_since": user.get("created_at", "")[:10]
+            })
+    
+    # Sort by wins
+    leaderboard.sort(key=lambda x: x["wins"], reverse=True)
+    
+    return leaderboard[:50]  # Top 50
+
+# ==================== IMPROVED BID PACKAGES ====================
+
+ENHANCED_BID_PACKAGES = [
+    {"id": "starter", "name": "Starter", "bids": 50, "price": 15.00, "bonus": 0, "per_bid": 0.30, "popular": False},
+    {"id": "popular", "name": "Beliebt", "bids": 100, "price": 25.00, "bonus": 10, "per_bid": 0.23, "popular": True},
+    {"id": "value", "name": "Mehrwert", "bids": 200, "price": 45.00, "bonus": 30, "per_bid": 0.20, "popular": False},
+    {"id": "pro", "name": "Profi", "bids": 500, "price": 99.00, "bonus": 100, "per_bid": 0.17, "popular": False, "best_value": True},
+    {"id": "whale", "name": "VIP", "bids": 1000, "price": 179.00, "bonus": 250, "per_bid": 0.14, "popular": False},
+]
+
+@api_router.get("/bid-packages-enhanced")
+async def get_enhanced_bid_packages():
+    """Get enhanced bid packages with bonuses"""
+    return ENHANCED_BID_PACKAGES
+
 # ==================== WEBSOCKET ENDPOINTS ====================
 
 # WebSocket endpoints (both with and without /api prefix for compatibility)
