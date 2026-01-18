@@ -167,14 +167,14 @@ export const Navbar = () => {
         <div className="md:hidden bg-[#0F0F16] border-t border-white/10">
           <div className="px-4 py-4 space-y-3">
             {/* Language selector mobile */}
-            <div className="flex gap-2 pb-3 border-b border-white/10">
-              {languages.map((lang) => (
+            <div className="flex flex-wrap gap-2 pb-3 border-b border-white/10">
+              {Object.keys(languageList).slice(0, 10).map((lang) => (
                 <button
                   key={lang}
                   onClick={() => changeLanguage(lang)}
                   className={`px-3 py-1 rounded-full text-sm ${language === lang ? 'bg-[#7C3AED] text-white' : 'bg-white/10 text-[#94A3B8]'}`}
                 >
-                  {languageNames[lang]?.flag}
+                  {languageList[lang]?.flag}
                 </button>
               ))}
             </div>
