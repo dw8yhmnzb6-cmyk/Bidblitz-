@@ -285,7 +285,7 @@ export const translations = {
     common: { loading: "Laden...", error: "Fout", success: "Succes", save: "Opslaan", cancel: "Annuleren" }
   },
   pl: {
-    nav: { auctions: "Aukcje", buyBids: "Kup licytacje", dashboard: "Panel", admin: "Admin", login: "Zaloguj", register: "Zarejestruj", logout: "Wyloguj", bids: "Licytacje" },
+    nav: { auctions: "Aukcje", buyBids: "Kup licytacje", dashboard: "Panel", admin: "Admin", login: "Zaloguj", register: "Zarejestruj", logout: "Wyloguj", bids: "Licytacje", winners: "Zwycięzcy", inviteFriends: "Zaproś znajomych", wishlist: "Lista życzeń" },
     home: {
       badge: "10 darmowych licytacji przy rejestracji",
       heroTitle1: "Wygrywaj",
@@ -305,6 +305,20 @@ export const translations = {
       freeRegister: "Zarejestruj się za darmo"
     },
     auctions: { title: "Wszystkie aukcje", filter: "Filtruj", all: "Wszystko", active: "Aktywne", ended: "Zakończone", currentPrice: "Aktualna cena", bids: "Licytacje", bid: "Licytuj", live: "Na żywo" },
+    auctionPage: {
+      searchPlaceholder: "Szukaj ofert...",
+      categories: { all: "Wszystko", electronics: "Elektronika", smartphones: "Smartfony", household: "Dom", emobility: "E-Mobilność", gifts: "Prezenty", fashion: "Moda" },
+      active: "Aktywne", scheduled: "Zaplanowane", all: "Wszystko",
+      offersFound: "ofert znaleziono",
+      noOffers: "Nie znaleziono ofert",
+      tryAnother: "Spróbuj innej kategorii lub wyszukiwania",
+      priceNote: "Cena porównawcza = Sugerowana cena detaliczna"
+    },
+    auctionCard: {
+      liveNow: "NA ŻYWO", comingSoon: "WKRÓTCE", ended: "ZAKOŃCZONE",
+      retailPrice: "Cena ref.*", startPrice: "Cena początkowa", bidNow: "LICYTUJ",
+      end: "KONIEC", activity: "Aktywność", lastSold: "Ostatnio sprzedane za"
+    },
     buyBids: { title: "Kup licytacje", popular: "Popularne", bids: "Licytacje", buyNow: "Kup teraz" },
     winners: { title: "Zwycięzcy", totalSaved: "Łącznie zaoszczędzone", avgSavings: "Średnie oszczędności", winners: "Zwycięzcy" },
     auth: { login: "Zaloguj", register: "Zarejestruj", email: "Email", password: "Hasło", name: "Imię", noAccount: "Nie masz konta?", haveAccount: "Masz już konto?" },
@@ -351,7 +365,7 @@ export const translations = {
     common: { loading: "Yükleniyor...", error: "Hata", success: "Başarılı", save: "Kaydet", cancel: "İptal" }
   },
   ru: {
-    nav: { auctions: "Аукционы", buyBids: "Купить ставки", dashboard: "Панель", admin: "Админ", login: "Войти", register: "Регистрация", logout: "Выйти", bids: "Ставки" },
+    nav: { auctions: "Аукционы", buyBids: "Купить ставки", dashboard: "Панель", admin: "Админ", login: "Войти", register: "Регистрация", logout: "Выйти", bids: "Ставки", winners: "Победители", inviteFriends: "Пригласить друзей", wishlist: "Список желаний" },
     home: {
       badge: "10 бесплатных ставок при регистрации",
       heroTitle1: "Выигрывайте",
@@ -371,6 +385,20 @@ export const translations = {
       freeRegister: "Бесплатная регистрация"
     },
     auctions: { title: "Все аукционы", filter: "Фильтр", all: "Все", active: "Активные", ended: "Завершённые", currentPrice: "Текущая цена", bids: "Ставки", bid: "Ставка", live: "Живой" },
+    auctionPage: {
+      searchPlaceholder: "Поиск предложений...",
+      categories: { all: "Все", electronics: "Электроника", smartphones: "Смартфоны", household: "Дом", emobility: "Э-мобильность", gifts: "Подарки", fashion: "Мода" },
+      active: "Активные", scheduled: "Запланированные", all: "Все",
+      offersFound: "предложений найдено",
+      noOffers: "Предложения не найдены",
+      tryAnother: "Попробуйте другую категорию или поиск",
+      priceNote: "Сравнительная цена = Рекомендованная цена"
+    },
+    auctionCard: {
+      liveNow: "СЕЙЧАС", comingSoon: "СКОРО", ended: "ЗАВЕРШЁН",
+      retailPrice: "Цена реф.*", startPrice: "Начальная цена", bidNow: "СТАВКА",
+      end: "КОНЕЦ", activity: "Активность", lastSold: "Последняя продажа за"
+    },
     buyBids: { title: "Купить ставки", popular: "Популярный", bids: "Ставки", buyNow: "Купить" },
     winners: { title: "Победители", totalSaved: "Всего сэкономлено", avgSavings: "Средняя экономия", winners: "Победители" },
     auth: { login: "Войти", register: "Регистрация", email: "Email", password: "Пароль", name: "Имя", noAccount: "Нет аккаунта?", haveAccount: "Уже есть аккаунт?" },
