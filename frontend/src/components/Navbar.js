@@ -58,6 +58,14 @@ export const Navbar = () => {
             >
               {t('nav.buyBids')}
             </Link>
+            <Link 
+              to="/winners" 
+              className="text-[#FFD700] hover:text-[#FCD34D] transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-winners"
+            >
+              <Trophy className="w-4 h-4" />
+              Gewinner
+            </Link>
             {isAuthenticated && (
               <Link 
                 to="/dashboard" 
