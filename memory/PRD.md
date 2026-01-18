@@ -109,7 +109,9 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] Englisch (EN)
 - [x] Albanisch (SQ)
 - [x] **20 Sprachen vollständig unterstützt (18.01.2026)**
-- [x] **i18n auf Auktionsseite repariert (18.01.2026)**
+- [x] **i18n auf Auktionsseite vollständig repariert (18.01.2026)**
+- [x] **Alle Sprachen haben auctionPage & auctionCard Übersetzungen (18.01.2026)**
+- [x] **Mobile-Sprachauswahl zeigt jetzt alle 20 Sprachen (18.01.2026)**
 
 ---
 
