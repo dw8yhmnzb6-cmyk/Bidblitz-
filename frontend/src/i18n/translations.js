@@ -451,7 +451,7 @@ export const translations = {
     common: { loading: "लोड हो रहा है...", error: "त्रुटि", success: "सफलता", save: "सेव करें", cancel: "रद्द करें" }
   },
   sq: {
-    nav: { auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta" },
+    nav: { auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave" },
     home: {
       badge: "10 oferta falas me regjistrim",
       heroTitle1: "Fito",
@@ -471,6 +471,20 @@ export const translations = {
       freeRegister: "Regjistrohu falas"
     },
     auctions: { title: "Të Gjitha Ankandet", filter: "Filtro", all: "Të gjitha", active: "Aktive", ended: "Përfunduara", currentPrice: "Çmimi Aktual", bids: "Oferta", bid: "Oferoni", live: "Live" },
+    auctionPage: {
+      searchPlaceholder: "Kërko oferta...",
+      categories: { all: "Të gjitha", electronics: "Elektronikë", smartphones: "Smartphones", household: "Shtëpi", emobility: "E-Mobilitet", gifts: "Dhurata", fashion: "Modë" },
+      active: "Aktive", scheduled: "Planifikuara", all: "Të gjitha",
+      offersFound: "oferta u gjetën",
+      noOffers: "Nuk u gjetën oferta",
+      tryAnother: "Provoni një kategori ose kërkim tjetër",
+      priceNote: "Çmimi i krahasimit = MSRP i prodhuesit"
+    },
+    auctionCard: {
+      liveNow: "LIVE TANI", comingSoon: "SË SHPEJTI", ended: "PËRFUNDOI",
+      retailPrice: "Çmimi ref.*", startPrice: "Çmimi fillestar", bidNow: "OFERONI",
+      end: "FUND", activity: "Aktiviteti", lastSold: "Shitur së fundmi për"
+    },
     buyBids: { title: "Bli Oferta", popular: "Popullore", bids: "Oferta", buyNow: "Bli tani" },
     winners: { title: "Fituesit", totalSaved: "Totali i kursyer", avgSavings: "Kursimi mesatar", winners: "Fituesit" },
     auth: { login: "Hyr", register: "Regjistrohu", email: "Email", password: "Fjalëkalimi", name: "Emri", noAccount: "Nuk keni llogari?", haveAccount: "Keni tashmë llogari?" },
