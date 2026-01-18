@@ -2865,6 +2865,115 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ==================== AUTOMATIC BOT BIDDING (LAST SECOND) ====================
+
+import asyncio as async_lib
+
+# Global flag to control the bot task
+bot_task_running = False
+
+async def bot_last_second_bidder():
+    """Background task that makes bots bid in the last seconds of auctions"""
+    global bot_task_running
+    bot_task_running = True
+    
+    logger.info("Bot last-second bidder started")
+    
+    while bot_task_running:
+        try:
+            # Get all active auctions with bot target prices
+            active_auctions = await db.auctions.find({
+                "status": "active",
+                "bot_target_price": {"$gt": 0}
+            }, {"_id": 0}).to_list(100)
+            
+            for auction in active_auctions:
+                try:
+                    end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
+                    now = datetime.now(timezone.utc)
+                    seconds_left = (end_time - now).total_seconds()
+                    
+                    # Only bid in last 1-5 seconds
+                    if 1 <= seconds_left <= 5:
+                        current_price = auction.get("current_price", 0)
+                        target_price = auction.get("bot_target_price", 0)
+                        last_bidder_id = auction.get("last_bidder_id", "")
+                        
+                        # Only bid if:
+                        # 1. Current price is below target
+                        # 2. Last bidder was NOT a bot (so we counter human bids)
+                        if current_price < target_price and not last_bidder_id.startswith("bot_"):
+                            # Get a random active bot
+                            bots = await db.bots.find({"is_active": True}, {"_id": 0}).to_list(100)
+                            if bots:
+                                # Choose random bot (different from last bot if possible)
+                                bot = random.choice(bots)
+                                
+                                # Place the bid
+                                new_price = current_price + auction.get("bid_increment", 0.01)
+                                new_end_time = datetime.now(timezone.utc) + timedelta(seconds=15)
+                                
+                                bid_entry = {
+                                    "user_id": f"bot_{bot['id']}",
+                                    "user_name": bot["name"],
+                                    "price": round(new_price, 2),
+                                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                                    "is_bot": True,
+                                    "is_autobid": True
+                                }
+                                
+                                await db.auctions.update_one(
+                                    {"id": auction["id"], "status": "active"},
+                                    {
+                                        "$set": {
+                                            "current_price": round(new_price, 2),
+                                            "end_time": new_end_time.isoformat(),
+                                            "last_bidder_id": f"bot_{bot['id']}",
+                                            "last_bidder_name": bot["name"]
+                                        },
+                                        "$inc": {"total_bids": 1},
+                                        "$push": {"bid_history": bid_entry}
+                                    }
+                                )
+                                
+                                # Update bot stats
+                                await db.bots.update_one(
+                                    {"id": bot["id"]},
+                                    {"$inc": {"total_bids_placed": 1}}
+                                )
+                                
+                                # Broadcast the bid via WebSocket
+                                await broadcast_bid_update(auction["id"], {
+                                    "current_price": round(new_price, 2),
+                                    "last_bidder_name": bot["name"],
+                                    "last_bidder_id": f"bot_{bot['id']}",
+                                    "total_bids": auction.get("total_bids", 0) + 1,
+                                    "end_time": new_end_time.isoformat(),
+                                    "bidder_message": f"{bot['name']} hat geboten!"
+                                })
+                                
+                                logger.info(f"Bot '{bot['name']}' bid on auction {auction['id']} at €{new_price:.2f} (last second)")
+                                
+                except Exception as e:
+                    logger.error(f"Error in bot bidding for auction {auction.get('id')}: {e}")
+            
+            # Check every 500ms for precise timing
+            await async_lib.sleep(0.5)
+            
+        except Exception as e:
+            logger.error(f"Bot bidder error: {e}")
+            await async_lib.sleep(1)
+    
+    logger.info("Bot last-second bidder stopped")
+
+@app.on_event("startup")
+async def startup_event():
+    """Start background tasks on server startup"""
+    async_lib.create_task(bot_last_second_bidder())
+    logger.info("Background bot bidder task started")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    global bot_task_running
+    bot_task_running = False
     client.close()
