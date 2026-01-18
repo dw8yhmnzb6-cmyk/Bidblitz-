@@ -15,7 +15,7 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 
 ---
 
-## What's Been Implemented (17.01.2026)
+## What's Been Implemented (18.01.2026)
 
 ### Authentifizierung & Benutzer
 - [x] JWT-basierte Registrierung und Login
@@ -25,6 +25,7 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] **Passwort vergessen (3-Schritt-Prozess)**
 - [x] **Profilverwaltung (Name, Email ändern)**
 - [x] **Passwort ändern**
+- [x] **Two-Factor Authentication (2FA)** - TOTP-basiert mit QR-Code
 
 ### Öffentliche Seiten (2.1)
 - [x] **Startseite** (Hero, Live-Auktionen, Countdown, Call-to-Action)
@@ -33,12 +34,14 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] **Login / Registrierung**
 - [x] **Passwort vergessen**
 - [x] **Impressum / Datenschutz / AGB**
+- [x] **Gewinner-Galerie** (/winners) mit Statistiken
 
 ### Nutzerbereich (2.2)
 - [x] **Dashboard** (Aktive Auktionen, Guthaben, Historie, Autobidder)
 - [x] **Profilverwaltung**
 - [x] **Gebots-Historie**
 - [x] **Gekaufte Gebotspakete**
+- [x] **2FA-Verwaltung** - Aktivieren/Deaktivieren
 
 ### Produkt-Management
 - [x] CRUD für Produkte
@@ -52,9 +55,11 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] Live-Countdown
 - [x] Automatische Status-Updates
 - [x] Bieten nur bei aktiven Auktionen
+- [x] **Sofort Kaufen (Buy It Now)** - Mit Gebots-Guthaben (€0.15 pro Gebot)
+- [x] **Autobidder** - Automatisches Bieten bis Maximalpreis
 
 ### Admin-Panel
-- [x] Dashboard mit Statistiken
+- [x] Dashboard mit Statistiken (Charts)
 - [x] Produkt-Verwaltung
 - [x] Auktions-Verwaltung mit Scheduling
 - [x] Benutzer-Verwaltung
@@ -62,6 +67,7 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] Admin-Bot-System
 - [x] **Zahlungsübersicht (Umsatz, Transaktionen)**
 - [x] **Systemlogs (Aktivitäten-Tracking)**
+- [x] **Sicherheits-Dashboard** (Login-Versuche, VPN-Blocks, 2FA-Stats)
 
 ### Kunden-Features
 - [x] Bieten auf aktive Auktionen
@@ -70,6 +76,14 @@ Penny-Auktion-Website ähnlich dealdash.com mit Kunden-App und Admin-Panel.
 - [x] Gebotspaket-Kauf
 - [x] **Gebots-Historie**
 - [x] **Gekaufte Gebotspakete**
+- [x] **Sofort Kaufen** - Mit Modal und Preisberechnung
+
+### Sicherheit
+- [x] **Starke Passwort-Richtlinien** (8+ Zeichen, Groß/Klein, Zahl, Sonderzeichen)
+- [x] **VPN/Proxy-Blockierung** bei Registrierung
+- [x] **IP-Beschränkung** (ein Konto pro Haushalt)
+- [x] **Rate-Limiting** für Login-Versuche
+- [x] **Security-Logs** in MongoDB
 
 ### Öffentliche Seiten
 - [x] **Impressum** (§ 5 TMG, Kontakt, Register)
