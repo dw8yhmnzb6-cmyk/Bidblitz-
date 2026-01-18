@@ -388,6 +388,9 @@ export default function Auctions() {
     bidNotification 
   } = useAuctionWebSocket(null); // null = subscribe to all auctions
 
+  // Auction alarm for ending auctions (60 seconds)
+  const { alarmedAuctions } = useAuctionAlarm(auctions, isAuthenticated);
+
   // Update auctions from WebSocket data
   useEffect(() => {
     if (wsAuctionData && Array.isArray(wsAuctionData)) {
