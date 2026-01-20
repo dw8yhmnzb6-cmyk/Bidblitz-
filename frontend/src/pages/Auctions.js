@@ -80,15 +80,19 @@ const AuctionCard = ({ auction, product }) => {
           <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
             -{discount}%
           </span>
-          <div className={`flex text-[11px] font-mono font-bold ${isUrgent ? 'text-red-400' : 'text-yellow-400'}`}>
-            <span className="bg-black/30 px-1 rounded-l">{pad(timeLeft.h)}</span>
-            <span className="text-white/50">:</span>
-            <span className="bg-black/30 px-1">{pad(timeLeft.m)}</span>
-            <span className="text-white/50">:</span>
-            <span className={`px-1 rounded-r ${isUrgent ? 'bg-red-500 text-white' : 'bg-orange-400 text-black'}`}>
-              {pad(timeLeft.s)}
-            </span>
-          </div>
+          {timeLeft.loading ? (
+            <span className="text-gray-400 text-[11px]">...</span>
+          ) : (
+            <div className={`flex text-[11px] font-mono font-bold ${isUrgent ? 'text-red-400' : 'text-yellow-400'}`}>
+              <span className="bg-black/30 px-1 rounded-l">{pad(timeLeft.h)}</span>
+              <span className="text-white/50">:</span>
+              <span className="bg-black/30 px-1">{pad(timeLeft.m)}</span>
+              <span className="text-white/50">:</span>
+              <span className={`px-1 rounded-r ${isUrgent ? 'bg-red-500 text-white' : 'bg-orange-400 text-black'}`}>
+                {pad(timeLeft.s)}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Content */}
