@@ -117,24 +117,24 @@ const SnipsterCard = ({ auction, t }) => {
         </div>
 
         {/* Price and Timer Row - Fixed Layout */}
-        <div className="flex items-start justify-between gap-2 mb-3">
+        <div className="flex items-center justify-between gap-1 mb-3">
           {/* Left: Price Box */}
-          <div className="flex-shrink-0">
-            <div className="bg-gray-100 rounded-lg px-3 py-2">
-              <p className="text-xl font-black text-gray-900 font-mono whitespace-nowrap">
+          <div className="min-w-0">
+            <div className="bg-gray-100 rounded-lg px-2 py-1.5">
+              <p className="text-lg font-black text-gray-900 font-mono">
                 €{auction.current_price?.toFixed(2).replace('.', ',')}
               </p>
             </div>
-            <p className="text-gray-500 text-[10px] mt-1">
+            <p className="text-gray-500 text-[9px] mt-0.5 truncate">
               {auction.last_bidder_name || 'Startpreis'}
             </p>
           </div>
           
-          {/* Right: Timer */}
-          <div className={`flex-shrink-0 text-center py-2 px-3 rounded-lg text-white text-sm font-mono font-bold ${
+          {/* Right: Timer - Compact */}
+          <div className={`flex-shrink-0 text-center py-1.5 px-2 rounded-lg text-white text-[11px] font-mono font-bold ${
             isUrgent ? 'bg-red-500 animate-pulse' : isEnded ? 'bg-gray-400' : 'bg-blue-500'
           }`}>
-            {isEnded ? t('auctionCard.end') : `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
+            {isEnded ? 'ENDE' : `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
           </div>
         </div>
         
