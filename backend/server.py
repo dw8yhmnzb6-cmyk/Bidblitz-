@@ -323,6 +323,17 @@ class MultiBotBidRequest(BaseModel):
     target_price: float  # Price up to which bots will bid
     min_delay: Optional[float] = 1.0  # Minimum seconds between bids
 
+# Email Marketing Models
+class EmailCampaignCreate(BaseModel):
+    subject: str
+    html_content: str
+    target_group: str = "all"  # all, active, inactive, winners, new_users
+    
+class EmailTestSend(BaseModel):
+    to_email: str
+    subject: str
+    html_content: str
+
 # ==================== SECURITY FUNCTIONS ====================
 
 def validate_password_strength(password: str) -> tuple[bool, str]:
