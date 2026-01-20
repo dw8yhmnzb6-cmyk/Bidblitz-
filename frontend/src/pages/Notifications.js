@@ -50,11 +50,14 @@ export default function Notifications() {
   });
   const [pushSupported, setPushSupported] = useState(false);
   const [pushSubscribed, setPushSubscribed] = useState(false);
+  const [pushLoading, setPushLoading] = useState(false);
+  const [pushPermission, setPushPermission] = useState('default');
 
   useEffect(() => {
     // Check if push notifications are supported
-    if ('Notification' in window && 'serviceWorker' in navigator) {
-      setPushSupported(true);
+    setPushSupported(isPushSupported());
+    if (isPushSupported()) {
+      setPushPermission(getNotificationPermission());
     }
   }, []);
 
