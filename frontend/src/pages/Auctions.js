@@ -27,18 +27,54 @@ const ActivityDots = ({ bids }) => {
   );
 };
 
-// Helper to parse ISO date correctly in all browsers
+// Helper to parse ISO date correctly in all browsers (including Safari/iOS)
 const parseEndTime = (endTimeStr) => {
   if (!endTimeStr) return null;
-  // Handle ISO string with +00:00 timezone - convert to Z format for consistent parsing
-  let normalizedStr = endTimeStr;
-  if (endTimeStr.includes('+00:00')) {
-    normalizedStr = endTimeStr.replace('+00:00', 'Z');
-  } else if (!endTimeStr.endsWith('Z') && !endTimeStr.includes('+') && !endTimeStr.includes('-', 10)) {
-    // If no timezone info, assume UTC
-    normalizedStr = endTimeStr + 'Z';
+  
+  try {
+    // Method 1: Direct parsing (works in most browsers)
+    let date = new Date(endTimeStr);
+    
+    // Check if parsing was successful
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+    
+    // Method 2: Manual parsing for Safari/iOS compatibility
+    // Handle format: "2026-01-20T22:22:48.196591+00:00"
+    const match = endTimeStr.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d+))?(?:Z|([+-])(\d{2}):(\d{2}))?$/);
+    if (match) {
+      const [, year, month, day, hour, minute, second, ms, tzSign, tzHour, tzMin] = match;
+      
+      // Create date in UTC
+      date = new Date(Date.UTC(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day),
+        parseInt(hour),
+        parseInt(minute),
+        parseInt(second),
+        ms ? parseInt(ms.slice(0, 3)) : 0
+      ));
+      
+      // Adjust for timezone offset if present
+      if (tzSign && tzHour && tzMin) {
+        const offsetMs = (parseInt(tzHour) * 60 + parseInt(tzMin)) * 60 * 1000;
+        if (tzSign === '+') {
+          date = new Date(date.getTime() - offsetMs);
+        } else {
+          date = new Date(date.getTime() + offsetMs);
+        }
+      }
+      
+      return date;
+    }
+    
+    return null;
+  } catch (e) {
+    console.error('Date parsing error:', e, endTimeStr);
+    return null;
   }
-  return new Date(normalizedStr);
 };
 
 // Compact Auction Card for Mobile
