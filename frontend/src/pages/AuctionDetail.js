@@ -710,7 +710,7 @@ export default function AuctionDetail() {
                 </div>
               )}
 
-              {!isAuthenticated && !isScheduled && (
+              {!isAuthenticated && !isScheduled && !isEnded && (
                 <p className="text-center text-[#94A3B8] text-sm">
                   <Link to="/login" className="text-[#7C3AED] hover:underline">{t('nav.login')}</Link> um zu bieten
                 </p>
