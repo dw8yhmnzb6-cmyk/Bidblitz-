@@ -148,3 +148,71 @@ async def bid_to_target_price(auction_id: str, target_price: float, admin: dict 
         "current_price": auction.get("current_price", 0),
         "target_price": target_price
     }
+
+@router.put("/target-price/{auction_id}")
+async def update_bot_target_price(auction_id: str, target_price: float, admin: dict = Depends(get_admin_user)):
+    """Update the bot target price for an existing auction.
+    
+    WICHTIG: Der Bot-Mindestpreis ist der Preis, bis zu dem Bots automatisch bieten.
+    Sobald dieser Preis erreicht ist, hören Bots auf und nur echte Kunden können bieten.
+    
+    - Setze target_price auf 0 um Bots zu deaktivieren
+    - Setze target_price auf einen Wert > 0 um Bots bis zu diesem Preis bieten zu lassen
+    """
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
+    
+    old_target = auction.get("bot_target_price", 0)
+    current_price = auction.get("current_price", 0)
+    
+    await db.auctions.update_one(
+        {"id": auction_id},
+        {"$set": {"bot_target_price": target_price}}
+    )
+    
+    # Determine status message
+    if target_price <= 0:
+        status_msg = "Bot-Bieten deaktiviert - nur echte Kunden können bieten"
+    elif current_price >= target_price:
+        status_msg = f"Zielpreis bereits erreicht (€{current_price:.2f}) - nur echte Kunden bieten"
+    else:
+        status_msg = f"Bots werden bis €{target_price:.2f} bieten (aktuell: €{current_price:.2f})"
+    
+    return {
+        "success": True,
+        "message": status_msg,
+        "auction_id": auction_id,
+        "old_target_price": old_target,
+        "new_target_price": target_price,
+        "current_price": current_price,
+        "bot_active": target_price > 0 and current_price < target_price
+    }
+
+@router.get("/status/{auction_id}")
+async def get_bot_status(auction_id: str, admin: dict = Depends(get_admin_user)):
+    """Get the bot bidding status for an auction"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
+    
+    target_price = auction.get("bot_target_price", 0)
+    current_price = auction.get("current_price", 0)
+    
+    # Count bot vs customer bids
+    bid_history = auction.get("bid_history", [])
+    bot_bids = len([b for b in bid_history if b.get("is_bot", False)])
+    customer_bids = len([b for b in bid_history if not b.get("is_bot", False)])
+    
+    return {
+        "auction_id": auction_id,
+        "bot_target_price": target_price,
+        "current_price": current_price,
+        "target_reached": current_price >= target_price if target_price > 0 else True,
+        "bot_bids_count": bot_bids,
+        "customer_bids_count": customer_bids,
+        "total_bids": auction.get("total_bids", 0),
+        "bot_active": target_price > 0 and current_price < target_price and auction.get("status") == "active",
+        "status": auction.get("status")
+    }
+
