@@ -730,6 +730,47 @@ export const translations = {
     winners: { title: "Fituesit", totalSaved: "Totali i kursyer", avgSavings: "Kursimi mesatar", winners: "Fituesit" },
     auth: { login: "Hyr", register: "Regjistrohu", email: "Email", password: "Fjalëkalimi", name: "Emri", noAccount: "Nuk keni llogari?", haveAccount: "Keni tashmë llogari?" },
     common: { loading: "Duke ngarkuar...", error: "Gabim", success: "Sukses", save: "Ruaj", cancel: "Anulo" }
+  },
+  el: {
+    nav: { auctions: "Δημοπρασίες", buyBids: "Αγορά Προσφορών", dashboard: "Πίνακας", admin: "Διαχειριστής", login: "Σύνδεση", register: "Εγγραφή", logout: "Αποσύνδεση", bids: "Προσφορές", winners: "Νικητές", inviteFriends: "Προσκάλεσε Φίλους", wishlist: "Λίστα Επιθυμιών" },
+    home: {
+      badge: "10 δωρεάν προσφορές με εγγραφή",
+      heroTitle1: "Κερδίστε",
+      heroTitle2: "Premium Προϊόντα",
+      heroTitle3: "για λεπτά",
+      heroSubtitle: "Η πιο συναρπαστική πλατφόρμα δημοπρασιών. Κάντε προσφορά, κερδίστε και εξοικονομήστε έως 90%.",
+      ctaBid: "Κάντε προσφορά τώρα",
+      ctaBuyBids: "Αγορά Προσφορών",
+      liveAuctions: "Ζωντανές Δημοπρασίες",
+      viewAll: "Δείτε όλα",
+      noAuctions: "Δεν υπάρχουν ενεργές δημοπρασίες",
+      howItWorks: "Πώς λειτουργεί",
+      step1: "Αγοράστε Προσφορές", step1Desc: "Αγοράστε ένα πακέτο προσφορών σε καλές τιμές",
+      step2: "Κάντε Προσφορά", step2Desc: "Τοποθετήστε την προσφορά σας σε ενεργές δημοπρασίες",
+      step3: "Κερδίστε", step3Desc: "Γίνετε ο τελευταίος πλειοδότης και κερδίστε",
+      readyToWin: "Έτοιμοι να κερδίσετε;",
+      freeRegister: "Δωρεάν εγγραφή"
+    },
+    auctions: { title: "Όλες οι Δημοπρασίες", filter: "Φίλτρο", all: "Όλες", active: "Ενεργές", ended: "Ολοκληρωμένες", currentPrice: "Τρέχουσα Τιμή", bids: "Προσφορές", bid: "Προσφορά", live: "Ζωντανά" },
+    auctionPage: {
+      title: "Ενεργές Δημοπρασίες",
+      searchPlaceholder: "Αναζήτηση προσφορών...",
+      categories: { all: "Όλες", electronics: "Ηλεκτρονικά", smartphones: "Smartphones", household: "Σπίτι", emobility: "E-Κινητικότητα", gifts: "Δώρα", fashion: "Μόδα" },
+      active: "Ενεργές", scheduled: "Προγραμματισμένες", all: "Όλες",
+      offersFound: "προσφορές βρέθηκαν",
+      noOffers: "Δεν βρέθηκαν προσφορές",
+      tryAnother: "Δοκιμάστε άλλη κατηγορία ή αναζήτηση",
+      priceNote: "Τιμή σύγκρισης = RRP κατασκευαστή"
+    },
+    auctionCard: {
+      liveNow: "ΖΩΝΤΑΝΑ ΤΩΡΑ", comingSoon: "ΣΎΝΤΟΜΑ", ended: "ΤΕΛΕΙΩΣΕ",
+      retailPrice: "Τιμή λιαν.*", startPrice: "Αρχική τιμή", bidNow: "ΠΡΟΣΦΟΡΑ",
+      end: "ΤΕΛΟΣ", activity: "Δραστηριότητα", lastSold: "Τελευταία πώληση για"
+    },
+    buyBids: { title: "Αγορά Προσφορών", popular: "Δημοφιλές", bids: "Προσφορές", buyNow: "Αγοράστε τώρα" },
+    winners: { title: "Νικητές", totalSaved: "Συνολική εξοικονόμηση", avgSavings: "Μέση εξοικονόμηση", winners: "Νικητές" },
+    auth: { login: "Σύνδεση", register: "Εγγραφή", email: "Email", password: "Κωδικός", name: "Όνομα", noAccount: "Δεν έχετε λογαριασμό;", haveAccount: "Έχετε ήδη λογαριασμό;" },
+    common: { loading: "Φόρτωση...", error: "Σφάλμα", success: "Επιτυχία", save: "Αποθήκευση", cancel: "Ακύρωση" }
   }
 };
 
