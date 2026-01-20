@@ -137,6 +137,15 @@ export default function Admin() {
       } else if (activeTab === 'logs') {
         const res = await axios.get(`${API}/admin/logs`, { headers });
         setLogs(res.data);
+      } else if (activeTab === 'email') {
+        const [templatesRes, statsRes, campaignsRes] = await Promise.all([
+          axios.get(`${API}/admin/email/templates`, { headers }),
+          axios.get(`${API}/admin/email/user-stats`, { headers }),
+          axios.get(`${API}/admin/email/campaigns`, { headers })
+        ]);
+        setEmailTemplates(templatesRes.data);
+        setEmailUserStats(statsRes.data);
+        setEmailCampaigns(campaignsRes.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
