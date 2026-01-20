@@ -345,11 +345,6 @@ export default function Notifications() {
                 </p>
               )}
             </div>
-                ) : (
-                  <span className="text-gray-500 text-xs">Nicht unterstützt</span>
-                )}
-              </div>
-            </div>
             
             {/* Notification Types */}
             <div className="space-y-2">
