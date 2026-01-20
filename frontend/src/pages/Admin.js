@@ -993,7 +993,7 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
-                      {products.map((product) => (
+                      {(products || []).map((product) => (
                         <tr key={product.id} className="hover:bg-white/5">
                           <td className="px-4 py-3"><img src={product.image_url} alt="" className="w-12 h-12 rounded-lg object-cover" /></td>
                           <td className="px-4 py-3">{editingProduct?.id === product.id ? <Input value={editingProduct.name} onChange={(e) => setEditingProduct({...editingProduct, name: e.target.value})} className="bg-[#181824] border-white/10 text-white h-8" /> : <span className="text-white">{product.name}</span>}</td>
@@ -1036,7 +1036,7 @@ export default function Admin() {
                       <Select value={newAuction.product_id} onValueChange={(value) => setNewAuction({...newAuction, product_id: value})}>
                         <SelectTrigger className="bg-[#181824] border-white/10 text-white"><SelectValue placeholder={t('admin.selectProduct')} /></SelectTrigger>
                         <SelectContent className="bg-[#181824] border-white/10">
-                          {products.map((product) => (<SelectItem key={product.id} value={product.id} className="text-white hover:bg-white/10">{product.name} (€{product.retail_price})</SelectItem>))}
+                          {(products || []).map((product) => (<SelectItem key={product.id} value={product.id} className="text-white hover:bg-white/10">{product.name} (€{product.retail_price})</SelectItem>))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -1190,7 +1190,7 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
-                      {auctions.map((auction) => (
+                      {(auctions || []).map((auction) => (
                         <tr key={auction.id} className="hover:bg-white/5">
                           <td className="px-4 py-3 text-white">{auction.product?.name || 'N/A'}</td>
                           <td className="px-4 py-3 text-[#06B6D4] font-mono">€{auction.current_price?.toFixed(2)}</td>
@@ -1260,7 +1260,7 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
-                      {users.map((user) => (
+                      {(users || []).map((user) => (
                         <tr key={user.id} className={`hover:bg-white/5 ${user.is_blocked ? 'opacity-50' : ''}`}>
                           <td className="px-4 py-3">{editingUser?.id === user.id ? <Input value={editingUser.name} onChange={(e) => setEditingUser({...editingUser, name: e.target.value})} className="bg-[#181824] border-white/10 text-white h-8 w-32" /> : <span className="text-white">{user.name}</span>}</td>
                           <td className="px-4 py-3">{editingUser?.id === user.id ? <Input value={editingUser.email} onChange={(e) => setEditingUser({...editingUser, email: e.target.value})} className="bg-[#181824] border-white/10 text-white h-8" /> : <span className="text-[#94A3B8]">{user.email}</span>}</td>
@@ -1492,7 +1492,7 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
-                      {vouchers.map((voucher) => (
+                      {(vouchers || []).map((voucher) => (
                         <tr key={voucher.id} className={`hover:bg-white/5 ${!voucher.is_active ? 'opacity-50' : ''}`}>
                           <td className="px-4 py-3"><span className="font-mono font-bold text-[#7C3AED] bg-[#7C3AED]/10 px-2 py-1 rounded">{voucher.code}</span></td>
                           <td className="px-4 py-3"><span className="flex items-center gap-1 text-[#06B6D4]"><Zap className="w-4 h-4" />{voucher.bids}</span></td>
@@ -1620,7 +1620,7 @@ export default function Admin() {
                 </div>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                  {bots.map((bot) => (
+                  {(bots || []).map((bot) => (
                     <div key={bot.id} className="flex items-center justify-between p-3 rounded-lg bg-[#181824] group">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center text-white text-xs font-bold">
@@ -1709,7 +1709,7 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
-                      {payments.map((payment, index) => (
+                      {(payments || []).map((payment, index) => (
                         <tr key={index} className="hover:bg-white/5">
                           <td className="px-6 py-4 text-white">
                             {new Date(payment.created_at).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}
@@ -1758,7 +1758,7 @@ export default function Admin() {
               {/* Log Entries */}
               <div className="glass-card rounded-xl overflow-hidden">
                 <div className="divide-y divide-white/10 max-h-[600px] overflow-y-auto">
-                  {logs.map((log, index) => (
+                  {(logs || []).map((log, index) => (
                     <div key={index} className="p-4 hover:bg-white/5 transition-colors">
                       <div className="flex items-start gap-4">
                         <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
@@ -1860,7 +1860,7 @@ export default function Admin() {
                   <div>
                     <Label className="text-white">Vorlage wählen</Label>
                     <div className="grid grid-cols-2 gap-2 mt-2">
-                      {emailTemplates.map(template => (
+                      {(emailTemplates || []).map(template => (
                         <button
                           key={template.id}
                           onClick={() => {
@@ -2006,7 +2006,7 @@ export default function Admin() {
                     {emailCampaigns.length === 0 ? (
                       <p className="text-[#94A3B8] text-center py-8">Noch keine Kampagnen gesendet</p>
                     ) : (
-                      emailCampaigns.map(campaign => (
+                      (emailCampaigns || []).map(campaign => (
                         <div key={campaign.id} className="p-4 rounded-lg bg-[#181824] border border-white/10">
                           <div className="flex items-start justify-between">
                             <div className="flex-1 min-w-0">
