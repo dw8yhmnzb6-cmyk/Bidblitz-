@@ -73,12 +73,8 @@ export default function BuyBids() {
       } else if (paymentMethod === 'crypto') {
         // Coinbase Commerce checkout
         const response = await axios.post(
-          `${API}/checkout/crypto/create`,
-          {
-            package_id: selectedPackage.id,
-            bids: selectedPackage.bids,
-            price: selectedPackage.price
-          },
+          `${API}/checkout/create-crypto-charge?package_id=${selectedPackage.id}&bids=${selectedPackage.bids}&price=${selectedPackage.price}`,
+          {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
         // Redirect to Coinbase Commerce hosted page
