@@ -119,3 +119,32 @@ async def multi_bot_bid(request: MultiBotBidRequest, admin: dict = Depends(get_a
         "message": f"Bots will bid until €{request.target_price:.2f}",
         "auction_id": request.auction_id
     }
+
+@router.post("/bid-to-price")
+async def bid_to_target_price(auction_id: str, target_price: float, admin: dict = Depends(get_admin_user)):
+    """Set bot target price for an auction - bots will automatically bid to this price"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    if auction["status"] != "active":
+        raise HTTPException(status_code=400, detail="Auction is not active")
+    
+    # Get all bots
+    bots = await db.bots.find({}, {"_id": 0}).to_list(100)
+    if len(bots) < 2:
+        raise HTTPException(status_code=400, detail="Need at least 2 bots. Create some first.")
+    
+    # Update auction with target price - the background task will handle bidding
+    await db.auctions.update_one(
+        {"id": auction_id},
+        {"$set": {"bot_target_price": target_price}}
+    )
+    
+    return {
+        "success": True,
+        "message": f"Bots werden bis €{target_price:.2f} bieten",
+        "auction_id": auction_id,
+        "current_price": auction.get("current_price", 0),
+        "target_price": target_price
+    }
