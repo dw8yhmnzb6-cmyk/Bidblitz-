@@ -1,0 +1,264 @@
+import { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
+import { 
+  Mail, 
+  MessageSquare, 
+  Send, 
+  MapPin, 
+  Phone,
+  Clock,
+  CheckCircle
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { toast } from 'sonner';
+
+export default function Contact() {
+  const { t } = useLanguage();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error('Bitte füllen Sie alle Pflichtfelder aus');
+      return;
+    }
+
+    setSubmitting(true);
+    
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    setSubmitting(false);
+    setSubmitted(true);
+    toast.success('Nachricht erfolgreich gesendet!');
+  };
+
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: "E-Mail",
+      value: "support@bidblitz.de",
+      description: "Antwort innerhalb von 24h"
+    },
+    {
+      icon: Phone,
+      title: "Telefon",
+      value: "+49 30 12345678",
+      description: "Mo-Fr 9:00-18:00 Uhr"
+    },
+    {
+      icon: MapPin,
+      title: "Adresse",
+      value: "Musterstraße 123",
+      description: "10115 Berlin, Deutschland"
+    }
+  ];
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#0a1929] to-[#0d2538] pt-20 pb-16">
+        <div className="max-w-xl mx-auto px-4 text-center">
+          <div className="bg-[#1a3a52]/50 rounded-2xl p-12 border border-gray-700/50">
+            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-green-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-4">
+              Nachricht gesendet!
+            </h2>
+            <p className="text-gray-400 mb-6">
+              Vielen Dank für Ihre Nachricht. Wir werden uns innerhalb von 24 Stunden bei Ihnen melden.
+            </p>
+            <Button 
+              onClick={() => setSubmitted(false)}
+              className="bg-[#FFD700] hover:bg-[#FCD34D] text-black font-bold"
+            >
+              Weitere Nachricht senden
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#0a1929] to-[#0d2538] pt-20 pb-16">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="w-16 h-16 rounded-full bg-[#FFD700]/20 flex items-center justify-center mx-auto mb-4">
+            <MessageSquare className="w-8 h-8 text-[#FFD700]" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Kontakt
+          </h1>
+          <p className="text-gray-400 max-w-lg mx-auto">
+            Haben Sie Fragen oder Anregungen? Wir freuen uns auf Ihre Nachricht!
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          
+          {/* Contact Info */}
+          <div className="lg:col-span-1 space-y-4">
+            {contactInfo.map((info, index) => (
+              <div 
+                key={index}
+                className="bg-[#1a3a52]/50 rounded-xl p-5 border border-gray-700/50"
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-lg bg-[#FFD700]/20 flex items-center justify-center flex-shrink-0">
+                    <info.icon className="w-6 h-6 text-[#FFD700]" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-semibold mb-1">{info.title}</h3>
+                    <p className="text-[#FFD700] font-medium">{info.value}</p>
+                    <p className="text-gray-400 text-sm">{info.description}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* Support Hours */}
+            <div className="bg-[#1a3a52]/50 rounded-xl p-5 border border-gray-700/50">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-6 h-6 text-cyan-400" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold mb-2">Öffnungszeiten</h3>
+                  <div className="space-y-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Montag - Freitag</span>
+                      <span className="text-white">9:00 - 18:00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Samstag</span>
+                      <span className="text-white">10:00 - 14:00</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Sonntag</span>
+                      <span className="text-gray-500">Geschlossen</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Contact Form */}
+          <div className="lg:col-span-2">
+            <form onSubmit={handleSubmit} className="bg-[#1a3a52]/50 rounded-2xl p-6 sm:p-8 border border-gray-700/50">
+              <h2 className="text-xl font-bold text-white mb-6">
+                Nachricht senden
+              </h2>
+              
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">
+                    Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
+                    placeholder="Ihr Name"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 text-sm mb-2">
+                    E-Mail <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
+                    placeholder="ihre@email.de"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <label className="block text-gray-400 text-sm mb-2">
+                  Betreff
+                </label>
+                <select
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white focus:outline-none focus:border-[#FFD700]"
+                >
+                  <option value="">Bitte wählen...</option>
+                  <option value="general">Allgemeine Anfrage</option>
+                  <option value="order">Bestellung / Versand</option>
+                  <option value="payment">Zahlung / Gebote</option>
+                  <option value="technical">Technisches Problem</option>
+                  <option value="feedback">Feedback / Vorschlag</option>
+                  <option value="other">Sonstiges</option>
+                </select>
+              </div>
+              
+              <div className="mb-6">
+                <label className="block text-gray-400 text-sm mb-2">
+                  Nachricht <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  rows={5}
+                  className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700] resize-none"
+                  placeholder="Wie können wir Ihnen helfen?"
+                  required
+                />
+              </div>
+              
+              <Button 
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black font-bold py-3 text-lg"
+              >
+                {submitting ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2" />
+                    Wird gesendet...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5 mr-2" />
+                    Nachricht senden
+                  </>
+                )}
+              </Button>
+              
+              <p className="text-gray-500 text-xs mt-4 text-center">
+                Mit dem Absenden stimmen Sie unserer Datenschutzerklärung zu.
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
