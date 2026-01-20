@@ -42,8 +42,9 @@ const parseEndTime = (endTimeStr) => {
 };
 
 // Compact Auction Card for Mobile
-const AuctionCard = ({ auction, product }) => {
+const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn }) => {
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0, ended: false, loading: true });
+  const hasReminder = reminders?.includes(auction.id);
   
   useEffect(() => {
     const calc = () => {
@@ -91,6 +92,14 @@ const AuctionCard = ({ auction, product }) => {
   const discount = product?.retail_price 
     ? Math.round((1 - auction.current_price / product.retail_price) * 100)
     : 99;
+
+  const handleReminderClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onToggleReminder) {
+      onToggleReminder(auction.id, hasReminder);
+    }
+  };
 
   return (
     <Link 
