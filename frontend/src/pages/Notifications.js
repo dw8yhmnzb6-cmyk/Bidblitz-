@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import { Bell, Check, Trash2, Settings, X, Gift, Trophy, AlertCircle, Info, Zap } from 'lucide-react';
+import { Bell, Check, Trash2, Settings, X, Gift, Trophy, AlertCircle, Info, Zap, Send } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
+import { 
+  isPushSupported, 
+  getNotificationPermission, 
+  subscribeToPush, 
+  unsubscribeFromPush, 
+  isSubscribed,
+  sendTestPush 
+} from '../utils/pushNotifications';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
