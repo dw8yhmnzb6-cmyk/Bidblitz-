@@ -152,6 +152,15 @@ export default function Admin() {
         setEmailTemplates(templatesRes.data);
         setEmailUserStats(statsRes.data);
         setEmailCampaigns(campaignsRes.data);
+      } else if (activeTab === 'staff') {
+        const [staffRes, rolesRes, permsRes] = await Promise.all([
+          axios.get(`${API}/admin/staff`, { headers }),
+          axios.get(`${API}/admin/staff/roles`, { headers }),
+          axios.get(`${API}/admin/staff/permissions`, { headers })
+        ]);
+        setStaff(staffRes.data);
+        setRoles(rolesRes.data);
+        setPermissions(permsRes.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
