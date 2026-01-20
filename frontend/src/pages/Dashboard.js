@@ -49,7 +49,7 @@ export default function Dashboard() {
       const allAuctions = auctionsRes.data || [];
       
       // Active auctions where user has bid
-      const myBids = bidHistoryRes.data;
+      const myBids = bidHistoryRes.data || [];
       const myAuctionIds = [...new Set(myBids.map(b => b.auction_id))];
       const myActiveAuctions = allAuctions.filter(a => 
         myAuctionIds.includes(a.id) && a.status === 'active'
