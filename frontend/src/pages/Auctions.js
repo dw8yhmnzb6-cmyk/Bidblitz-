@@ -121,21 +121,21 @@ const SnipsterCard = ({ auction, t }) => {
           <div className="flex-1 min-w-0">
             {/* Current Price - CLEAR & BIG */}
             <div className="bg-gray-100 rounded-lg p-2 mb-2">
-              <p className="text-xl sm:text-2xl font-black text-gray-900 font-mono leading-none">
+              <p className="text-lg sm:text-xl font-black text-gray-900 font-mono leading-none">
                 €{auction.current_price?.toFixed(2).replace('.', ',')}
               </p>
             </div>
             
-            {/* Last Bidder */}
-            <p className="text-gray-600 text-xs truncate mb-2">
-              {auction.last_bidder_name || t('auctionCard.startPrice')}
+            {/* Last Bidder - No truncate on mobile */}
+            <p className="text-gray-600 text-[10px] sm:text-xs mb-2 leading-tight">
+              {auction.last_bidder_name || 'Startpreis'}
             </p>
             
             {/* Bid Button */}
             <Link to={`/auctions/${auction.id}`}>
               <button 
                 data-testid={`bid-button-${auction.id}`}
-                className={`w-full font-bold py-2 px-3 rounded-lg text-xs uppercase transition-all ${
+                className={`w-full font-bold py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs uppercase transition-all ${
                   isEnded 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                     : 'bg-green-500 hover:bg-green-600 text-white shadow-md hover:shadow-lg'
