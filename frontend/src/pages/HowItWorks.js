@@ -151,13 +151,22 @@ export default function HowItWorks() {
           </h2>
           
           <div className="max-w-lg mx-auto">
+            {/* iPhone Image */}
+            <div className="flex justify-center mb-6">
+              <img 
+                src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=300&h=300&fit=crop" 
+                alt="iPhone 17 Pro"
+                className="w-32 h-32 object-cover rounded-xl shadow-lg"
+              />
+            </div>
+            
             <div className="flex justify-between items-center py-3 border-b border-gray-700/50">
-              <span className="text-gray-400">iPhone 15 Pro (UVP)</span>
-              <span className="text-white font-semibold">1.199,00 €</span>
+              <span className="text-gray-400">iPhone 17 Pro (UVP)</span>
+              <span className="text-white font-semibold">1.299,00 €</span>
             </div>
             <div className="flex justify-between items-center py-3 border-b border-gray-700/50">
               <span className="text-gray-400">Auktions-Endpreis</span>
-              <span className="text-[#FFD700] font-semibold">12,47 €</span>
+              <span className="text-[#FFD700] font-semibold">14,87 €</span>
             </div>
             <div className="flex justify-between items-center py-3 border-b border-gray-700/50">
               <span className="text-gray-400">Ihre Gebote (25 Stück)</span>
@@ -165,11 +174,11 @@ export default function HowItWorks() {
             </div>
             <div className="flex justify-between items-center py-3 text-lg">
               <span className="text-white font-bold">Ihr Gesamtpreis</span>
-              <span className="text-green-400 font-bold">24,97 €</span>
+              <span className="text-green-400 font-bold">27,37 €</span>
             </div>
             <div className="text-center mt-4">
               <span className="inline-block bg-green-500/20 text-green-400 px-4 py-2 rounded-full text-sm font-semibold">
-                Sie sparen: 1.174,03 € (98%)
+                Sie sparen: 1.271,63 € (98%)
               </span>
             </div>
           </div>
