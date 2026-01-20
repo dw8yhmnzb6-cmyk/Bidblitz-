@@ -677,6 +677,46 @@ export const translations = {
     winners: { title: "Voittajat", totalSaved: "Yhteensä säästetty", avgSavings: "Keskimääräinen säästö", winners: "Voittajat" },
     auth: { login: "Kirjaudu", register: "Rekisteröidy", email: "Sähköposti", password: "Salasana", name: "Nimi", noAccount: "Ei tiliä?", haveAccount: "Onko jo tili?" },
     common: { loading: "Ladataan...", error: "Virhe", success: "Onnistui", save: "Tallenna", cancel: "Peruuta" }
+  },
+  xk: {
+    nav: { auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave" },
+    home: {
+      badge: "10 oferta falas me regjistrim",
+      heroTitle1: "Fito",
+      heroTitle2: "Produkte Premium",
+      heroTitle3: "për cent",
+      heroSubtitle: "Platforma më emocionuese e ankandeve. Oferoni, fitoni dhe kurseni deri në 90%.",
+      ctaBid: "Oferoni tani",
+      ctaBuyBids: "Bli Oferta",
+      liveAuctions: "Ankande Live",
+      viewAll: "Shiko të gjitha",
+      noAuctions: "Nuk ka ankande aktive",
+      howItWorks: "Si funksionon",
+      step1: "Bli Oferta", step1Desc: "Blini një paketë ofertash me çmime të mira",
+      step2: "Oferoni", step2Desc: "Vendosni ofertën tuaj në ankandet aktive",
+      step3: "Fitoni", step3Desc: "Bëhuni ofertuesi i fundit dhe fitoni",
+      readyToWin: "Gati për të fituar?",
+      freeRegister: "Regjistrohu falas"
+    },
+    auctions: { title: "Të Gjitha Ankandet", filter: "Filtro", all: "Të gjitha", active: "Aktive", ended: "Përfunduara", currentPrice: "Çmimi Aktual", bids: "Oferta", bid: "Oferoni", live: "Live" },
+    auctionPage: {
+      searchPlaceholder: "Kërko oferta...",
+      categories: { all: "Të gjitha", electronics: "Elektronikë", smartphones: "Smartphones", household: "Shtëpi", emobility: "E-Mobilitet", gifts: "Dhurata", fashion: "Modë" },
+      active: "Aktive", scheduled: "Planifikuara", all: "Të gjitha",
+      offersFound: "oferta u gjetën",
+      noOffers: "Nuk u gjetën oferta",
+      tryAnother: "Provoni një kategori ose kërkim tjetër",
+      priceNote: "Çmimi i krahasimit = MSRP i prodhuesit"
+    },
+    auctionCard: {
+      liveNow: "LIVE TANI", comingSoon: "SË SHPEJTI", ended: "PËRFUNDOI",
+      retailPrice: "Çmimi ref.*", startPrice: "Çmimi fillestar", bidNow: "OFERONI",
+      end: "FUND", activity: "Aktiviteti", lastSold: "Shitur së fundmi për"
+    },
+    buyBids: { title: "Bli Oferta", popular: "Popullore", bids: "Oferta", buyNow: "Bli tani" },
+    winners: { title: "Fituesit", totalSaved: "Totali i kursyer", avgSavings: "Kursimi mesatar", winners: "Fituesit" },
+    auth: { login: "Hyr", register: "Regjistrohu", email: "Email", password: "Fjalëkalimi", name: "Emri", noAccount: "Nuk keni llogari?", haveAccount: "Keni tashmë llogari?" },
+    common: { loading: "Duke ngarkuar...", error: "Gabim", success: "Sukses", save: "Ruaj", cancel: "Anulo" }
   }
 };
 
