@@ -20,6 +20,8 @@ import jwt
 import resend
 import pyotp
 import qrcode
+from coinbase_commerce.client import Client as CoinbaseClient
+from coinbase_commerce.error import CoinbaseError
 from emergentintegrations.payments.stripe.checkout import (
     StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 )
@@ -52,6 +54,12 @@ if RESEND_API_KEY:
 
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
+
+# Coinbase Commerce Config
+COINBASE_COMMERCE_API_KEY = os.environ.get('COINBASE_COMMERCE_API_KEY', '')
+coinbase_client = None
+if COINBASE_COMMERCE_API_KEY:
+    coinbase_client = CoinbaseClient(api_key=COINBASE_COMMERCE_API_KEY)
 
 # Create the main app
 app = FastAPI(title="BidBlitz Auction API")
