@@ -251,6 +251,25 @@ async def bot_last_second_bidder():
     
     logger.info("Bot bidder stopped")
 
+
+async def auction_reminder_processor():
+    """Background task - process auction reminders and send push notifications"""
+    global bot_task_running
+    from routers.notifications import process_auction_reminders
+    
+    logger.info("Auction reminder processor started")
+    
+    while bot_task_running:
+        try:
+            await process_auction_reminders()
+            await asyncio.sleep(30)  # Check every 30 seconds
+        except Exception as e:
+            logger.error(f"Reminder processor error: {e}")
+            await asyncio.sleep(60)
+    
+    logger.info("Reminder processor stopped")
+
+
 # ==================== WINNERS GALLERY ====================
 
 @app.get("/api/winners")
