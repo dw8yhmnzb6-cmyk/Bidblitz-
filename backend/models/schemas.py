@@ -1,134 +1,74 @@
-"""Pydantic models for BidBlitz API"""
-from pydantic import BaseModel, Field, EmailStr
-from typing import List, Optional, Dict, Any
+"""Pydantic models for request/response validation"""
+from pydantic import BaseModel, Field
+from typing import Optional, List
+from datetime import datetime
 
-# ==================== USER MODELS ====================
+# ==================== AUTH MODELS ====================
 
-class UserCreate(BaseModel):
-    email: EmailStr
+class UserRegister(BaseModel):
+    email: str
     password: str
     name: str
-    source: Optional[str] = None
     referral_code: Optional[str] = None
 
 class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-    two_factor_code: Optional[str] = None
-
-class UserResponse(BaseModel):
-    id: str
     email: str
-    name: str
-    bids_balance: int
-    is_admin: bool
-    created_at: str
-    two_factor_enabled: bool = False
+    password: str
+    totp_code: Optional[str] = None
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
-    email: Optional[EmailStr] = None
-    bids_balance: Optional[int] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    zip_code: Optional[str] = None
+    country: Optional[str] = None
 
-class UpdateProfileRequest(BaseModel):
-    name: Optional[str] = None
-    email: Optional[EmailStr] = None
+class PasswordReset(BaseModel):
+    email: str
 
-class ChangePasswordRequest(BaseModel):
-    current_password: str
+class PasswordResetConfirm(BaseModel):
+    token: str
     new_password: str
 
-# ==================== PASSWORD RESET MODELS ====================
+class Enable2FA(BaseModel):
+    totp_code: str
 
-class ForgotPasswordRequest(BaseModel):
-    email: EmailStr
-
-class VerifyResetCodeRequest(BaseModel):
-    email: EmailStr
-    code: str
-
-class ResetPasswordRequest(BaseModel):
-    email: EmailStr
-    code: str
-    new_password: str
+class Disable2FA(BaseModel):
+    totp_code: str
 
 # ==================== PRODUCT MODELS ====================
 
 class ProductCreate(BaseModel):
     name: str
     description: str
-    image_url: str
     retail_price: float
-    category: str
-
-class ProductResponse(BaseModel):
-    id: str
-    name: str
-    description: str
     image_url: str
-    retail_price: float
-    category: str
-    created_at: str
+    category: Optional[str] = "Allgemein"
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
     description: Optional[str] = None
-    image_url: Optional[str] = None
     retail_price: Optional[float] = None
+    image_url: Optional[str] = None
     category: Optional[str] = None
 
 # ==================== AUCTION MODELS ====================
 
 class AuctionCreate(BaseModel):
     product_id: str
-    starting_price: float
-    bid_increment: float
-    duration_seconds: Optional[int] = None
+    start_price: float = 0.01
+    price_increment: float = 0.01
+    duration_hours: int = 24
     start_time: Optional[str] = None
-    end_time: Optional[str] = None
-    bot_target_price: Optional[float] = None
-    buy_now_price: Optional[float] = None  # NEW: Buy It Now price
-
-class AuctionResponse(BaseModel):
-    id: str
-    product_id: str
-    product: Optional[Dict[str, Any]] = None
-    current_price: float
-    bid_increment: float
-    start_time: Optional[str] = None
-    end_time: str
-    status: str
-    winner_id: Optional[str] = None
-    winner_name: Optional[str] = None
-    total_bids: int
-    last_bidder_id: Optional[str] = None
-    last_bidder_name: Optional[str] = None
-    created_at: str
-    bot_target_price: Optional[float] = None
-    buy_now_price: Optional[float] = None  # NEW
 
 class AuctionUpdate(BaseModel):
-    duration_seconds: Optional[int] = None
     status: Optional[str] = None
-    start_time: Optional[str] = None
     end_time: Optional[str] = None
 
-class BidRequest(BaseModel):
+class BidPlace(BaseModel):
     auction_id: str
-
-# ==================== PAYMENT MODELS ====================
-
-class BidPackage(BaseModel):
-    id: str
-    name: str
-    bids: int
-    price: float
-    popular: bool = False
-    bonus_bids: int = 0  # NEW: Bonus bids
-
-class CheckoutRequest(BaseModel):
-    package_id: str
-    origin_url: str
 
 # ==================== VOUCHER MODELS ====================
 
@@ -136,29 +76,10 @@ class VoucherCreate(BaseModel):
     code: str
     bids: int
     max_uses: int = 1
-    expires_at: Optional[str] = None
+    valid_until: Optional[str] = None
 
 class VoucherRedeem(BaseModel):
     code: str
-
-# ==================== AUTOBIDDER MODELS ====================
-
-class AutobidderCreate(BaseModel):
-    auction_id: str
-    max_bids: int = 10  # Maximum number of bids to place
-    max_price: Optional[float] = None  # Maximum price willing to pay
-    bid_in_last_seconds: int = 5  # Bid when timer reaches this many seconds
-
-class AutobidderResponse(BaseModel):
-    id: str
-    auction_id: str
-    user_id: str
-    max_bids: int
-    bids_used: int
-    max_price: Optional[float]
-    bid_in_last_seconds: int
-    is_active: bool
-    created_at: str
 
 # ==================== BOT MODELS ====================
 
@@ -176,52 +97,50 @@ class MultiBotBidRequest(BaseModel):
     auction_id: str
     target_price: float
     min_delay: Optional[float] = 1.0
-    max_delay: Optional[float] = 5.0
+
+# ==================== CHECKOUT MODELS ====================
+
+class CheckoutCreate(BaseModel):
+    package_id: str
+    origin_url: str
+
+class CryptoCheckoutRequest(BaseModel):
+    package_id: str
+    bids: int
+    price: float
+
+# ==================== EMAIL MODELS ====================
+
+class EmailCampaignCreate(BaseModel):
+    subject: str
+    html_content: str
+    target_group: str = "all"
+
+class EmailTestSend(BaseModel):
+    to_email: str
+    subject: str
+    html_content: str
 
 # ==================== AFFILIATE MODELS ====================
 
-class AffiliateRegister(BaseModel):
-    name: str
-    email: EmailStr
-    payment_method: str = "bank_transfer"
+class AffiliateSignup(BaseModel):
     payment_details: str
 
-class AffiliateStats(BaseModel):
-    total_referrals: int
-    converted_leads: int
-    pending_commission: float
-    paid_commission: float
-    current_tier: str
-    commission_rate: float
+class AffiliatePayoutRequest(BaseModel):
+    affiliate_id: str
+    amount: float
 
-# ==================== NEW FEATURE MODELS ====================
+# ==================== WISHLIST MODELS ====================
 
-class BuyNowRequest(BaseModel):
+class WishlistItem(BaseModel):
+    item_type: str  # 'product' or 'category'
+    item_id: str
+    item_name: str
+
+# ==================== AUTOBIDDER MODELS ====================
+
+class AutobidderConfig(BaseModel):
     auction_id: str
-
-class WishlistRequest(BaseModel):
-    product_id: Optional[str] = None
-    category: Optional[str] = None
-
-class VIPSubscription(BaseModel):
-    plan: str  # monthly, yearly
-
-class ChatMessage(BaseModel):
-    message: str
-    auction_id: Optional[str] = None
-
-# ==================== ACHIEVEMENT TYPES ====================
-
-class AchievementType:
-    FIRST_WIN = "first_win"
-    WINS_10 = "wins_10"
-    WINS_50 = "wins_50"
-    NIGHT_OWL = "night_owl"
-    EARLY_BIRD = "early_bird"
-    BIG_SPENDER = "big_spender"
-    STREAK_7 = "streak_7"
-    STREAK_30 = "streak_30"
-    SOCIAL_SHARER = "social_sharer"
-    FIRST_BID = "first_bid"
-    BIDS_100 = "bids_100"
-    BIDS_1000 = "bids_1000"
+    max_bids: int
+    max_price: Optional[float] = None
+    bid_in_last_seconds: int = 10
