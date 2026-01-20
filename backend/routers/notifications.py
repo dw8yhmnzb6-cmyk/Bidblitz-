@@ -449,5 +449,166 @@ async def create_notification(
     return notification
 
 
+# ==================== AUCTION REMINDERS ====================
+
+@router.post("/auction-reminder/{auction_id}")
+async def set_auction_reminder(
+    auction_id: str,
+    minutes_before: int = 5,
+    user: dict = Depends(get_current_user)
+):
+    """Set a reminder for an auction (will notify X minutes before end)"""
+    # Check auction exists
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
+    
+    if auction.get("status") == "ended":
+        raise HTTPException(status_code=400, detail="Auktion ist bereits beendet")
+    
+    # Get product info for notification
+    product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+    product_name = product.get("name", "Unbekanntes Produkt") if product else "Unbekanntes Produkt"
+    
+    # Calculate reminder time
+    end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
+    remind_at = end_time - timedelta(minutes=minutes_before)
+    
+    # Don't set reminder if it's already past
+    if remind_at <= datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Auktion endet zu bald für Erinnerung")
+    
+    # Create or update reminder
+    reminder_id = str(uuid.uuid4())
+    await db.auction_reminders.update_one(
+        {"user_id": user["id"], "auction_id": auction_id},
+        {
+            "$set": {
+                "id": reminder_id,
+                "user_id": user["id"],
+                "auction_id": auction_id,
+                "product_name": product_name,
+                "remind_at": remind_at.isoformat(),
+                "minutes_before": minutes_before,
+                "sent": False,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }
+        },
+        upsert=True
+    )
+    
+    return {
+        "message": f"Erinnerung gesetzt - {minutes_before} Min. vor Ende",
+        "remind_at": remind_at.isoformat(),
+        "product_name": product_name
+    }
+
+
+@router.delete("/auction-reminder/{auction_id}")
+async def cancel_auction_reminder(
+    auction_id: str,
+    user: dict = Depends(get_current_user)
+):
+    """Cancel an auction reminder"""
+    result = await db.auction_reminders.delete_one({
+        "user_id": user["id"],
+        "auction_id": auction_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Erinnerung nicht gefunden")
+    
+    return {"message": "Erinnerung gelöscht"}
+
+
+@router.get("/auction-reminder/{auction_id}")
+async def get_auction_reminder(
+    auction_id: str,
+    user: dict = Depends(get_current_user)
+):
+    """Check if user has a reminder set for an auction"""
+    reminder = await db.auction_reminders.find_one({
+        "user_id": user["id"],
+        "auction_id": auction_id
+    }, {"_id": 0})
+    
+    return {"has_reminder": reminder is not None, "reminder": reminder}
+
+
+@router.get("/my-reminders")
+async def get_my_reminders(user: dict = Depends(get_current_user)):
+    """Get all active reminders for the current user"""
+    reminders = await db.auction_reminders.find({
+        "user_id": user["id"],
+        "sent": False
+    }, {"_id": 0}).sort("remind_at", 1).to_list(50)
+    
+    # Enrich with auction info
+    for reminder in reminders:
+        auction = await db.auctions.find_one(
+            {"id": reminder["auction_id"]}, 
+            {"_id": 0, "id": 1, "current_price": 1, "end_time": 1, "status": 1}
+        )
+        if auction:
+            reminder["auction"] = auction
+    
+    return {"reminders": reminders, "count": len(reminders)}
+
+
+async def process_auction_reminders():
+    """Process due auction reminders and send notifications - called by background task"""
+    now = datetime.now(timezone.utc)
+    
+    # Find all due reminders
+    due_reminders = await db.auction_reminders.find({
+        "sent": False,
+        "remind_at": {"$lte": now.isoformat()}
+    }, {"_id": 0}).to_list(100)
+    
+    for reminder in due_reminders:
+        try:
+            user_id = reminder["user_id"]
+            auction_id = reminder["auction_id"]
+            product_name = reminder.get("product_name", "Auktion")
+            
+            # Check if auction is still active
+            auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+            if not auction or auction.get("status") != "active":
+                # Mark as sent since auction is no longer active
+                await db.auction_reminders.update_one(
+                    {"id": reminder["id"]},
+                    {"$set": {"sent": True, "skipped": True}}
+                )
+                continue
+            
+            # Send push notification
+            sent = await send_push_to_user(
+                user_id,
+                f"⏰ {product_name}",
+                f"Auktion endet in wenigen Minuten! Aktueller Preis: €{auction.get('current_price', 0):.2f}",
+                {"url": f"/auctions/{auction_id}", "auction_id": auction_id}
+            )
+            
+            # Also create in-app notification
+            await create_notification(
+                user_id,
+                f"⏰ Auktion endet bald: {product_name}",
+                f"Die Auktion endet in wenigen Minuten! Aktueller Preis: €{auction.get('current_price', 0):.2f}",
+                "auction",
+                f"/auctions/{auction_id}"
+            )
+            
+            # Mark reminder as sent
+            await db.auction_reminders.update_one(
+                {"id": reminder["id"]},
+                {"$set": {"sent": True, "sent_at": now.isoformat(), "push_sent": sent > 0}}
+            )
+            
+            logger.info(f"Reminder sent for auction {auction_id} to user {user_id}")
+            
+        except Exception as e:
+            logger.error(f"Error processing reminder: {e}")
+
+
 # Export helper for use in other modules
-__all__ = ['create_notification']
+__all__ = ['create_notification', 'send_push_to_user', 'process_auction_reminders']
