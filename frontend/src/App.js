@@ -130,6 +130,10 @@ function AppContent() {
               <Notifications />
             </ProtectedRoute>
           } />
+          {/* New Public Pages */}
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
