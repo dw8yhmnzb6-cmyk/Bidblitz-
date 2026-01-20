@@ -150,7 +150,10 @@ async def create_crypto_charge(
 ):
     """Create a Coinbase Commerce charge for crypto payment"""
     if not coinbase_client:
-        raise HTTPException(status_code=503, detail="Crypto payments not configured")
+        raise HTTPException(
+            status_code=503, 
+            detail="Krypto-Zahlungen sind nicht konfiguriert. Bitte kontaktieren Sie den Administrator, um einen gültigen Coinbase Commerce API-Key einzurichten."
+        )
     
     # Verify package (don't validate bids - just package_id and price)
     package = next((p for p in BID_PACKAGES if p["id"] == package_id), None)
