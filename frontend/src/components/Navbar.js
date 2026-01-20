@@ -195,27 +195,40 @@ export const Navbar = () => {
               {t('nav.auctions')}
             </Link>
             <Link 
-              to="/buy-bids" 
+              to="/how-it-works" 
               className="block text-[#94A3B8] hover:text-white py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              So funktioniert's
+            </Link>
+            <Link 
+              to="/buy-bids" 
+              className="block text-[#FFD700] hover:text-[#FCD34D] py-2 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('nav.buyBids')}
             </Link>
             <Link 
+              to="/faq" 
+              className="block text-[#94A3B8] hover:text-white py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              FAQ
+            </Link>
+            <Link 
+              to="/contact" 
+              className="block text-[#94A3B8] hover:text-white py-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Kontakt
+            </Link>
+            <Link 
               to="/winners" 
-              className="block text-[#FFD700] hover:text-[#FCD34D] py-2 flex items-center gap-2"
+              className="block text-[#94A3B8] hover:text-white py-2 flex items-center gap-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Trophy className="w-4 h-4" />
               {t('nav.winners')}
-            </Link>
-            <Link 
-              to="/invite" 
-              className="block text-[#10B981] hover:text-[#34D399] py-2 flex items-center gap-2"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <Gift className="w-4 h-4" />
-              {t('nav.inviteFriends')}
             </Link>
             {isAuthenticated && (
               <>
