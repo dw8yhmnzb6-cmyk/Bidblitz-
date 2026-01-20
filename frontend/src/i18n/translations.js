@@ -110,7 +110,14 @@ export const translations = {
       botTargetPrice: "Bot-Zielpreis",
       lastBidder: "Letzter Bieter",
       winner: "Gewinner",
-      totalBids: "Gebote gesamt"
+      totalBids: "Gebote gesamt",
+      transactions: "Transaktionen",
+      bids: "Gebote",
+      rrp: "UVP",
+      seedData: "Testdaten erstellen",
+      selectProduct: "Produkt wählen",
+      startPrice: "Startpreis",
+      toHome: "Zur Startseite"
     }
   },
   en: {
