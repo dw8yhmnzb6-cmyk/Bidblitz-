@@ -27,19 +27,24 @@ const ActivityDots = ({ bids }) => {
 
 // Compact Auction Card for Mobile
 const AuctionCard = ({ auction, product }) => {
-  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0, ended: false });
+  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0, ended: false, loading: true });
   
   useEffect(() => {
     const calc = () => {
-      const diff = new Date(auction.end_time) - new Date();
+      // Parse end_time properly (handle timezone)
+      const endTime = new Date(auction.end_time);
+      const now = new Date();
+      const diff = endTime.getTime() - now.getTime();
+      
       if (diff <= 0) {
-        setTimeLeft({ h: 0, m: 0, s: 0, ended: true });
+        setTimeLeft({ h: 0, m: 0, s: 0, ended: true, loading: false });
       } else {
         setTimeLeft({
           h: Math.floor(diff / 3600000),
           m: Math.floor((diff % 3600000) / 60000),
           s: Math.floor((diff % 60000) / 1000),
-          ended: false
+          ended: false,
+          loading: false
         });
       }
     };
@@ -48,7 +53,8 @@ const AuctionCard = ({ auction, product }) => {
     return () => clearInterval(int);
   }, [auction.end_time]);
   
-  const isEnded = auction.status === 'ended' || timeLeft.ended;
+  // Only show as ended if status is 'ended' OR time has run out (and not loading)
+  const isEnded = auction.status === 'ended' || (!timeLeft.loading && timeLeft.ended);
   const isUrgent = !isEnded && timeLeft.h === 0 && timeLeft.m < 2;
   const pad = (n) => String(n).padStart(2, '0');
   
