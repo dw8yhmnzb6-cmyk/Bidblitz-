@@ -217,6 +217,14 @@ export const Navbar = () => {
               {t('nav.buyBids')}
             </Link>
             <Link 
+              to="/vip" 
+              className="block text-[#FFA500] hover:text-[#FFD700] py-2 font-medium flex items-center gap-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Crown className="w-4 h-4" />
+              VIP Mitgliedschaft
+            </Link>
+            <Link 
               to="/faq" 
               className="block text-[#94A3B8] hover:text-white py-2"
               onClick={() => setMobileMenuOpen(false)}
