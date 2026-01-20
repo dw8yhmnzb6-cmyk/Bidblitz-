@@ -250,7 +250,7 @@ export const Navbar = () => {
             {/* Separator */}
             <div className="border-t border-white/10 my-3"></div>
             
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <>
                 <Link 
                   to="/dashboard" 
@@ -275,22 +275,22 @@ export const Navbar = () => {
                 </div>
                 <button 
                   onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-                  className="w-full text-left bg-[#EF4444]/10 text-[#EF4444] py-3 px-4 rounded-lg font-medium mt-2"
+                  className="w-full text-center bg-[#EF4444] text-white py-3 px-4 rounded-lg font-bold mt-2"
                 >
-                  {t('nav.logout') || 'Abmelden'}
+                  <LogOut className="w-4 h-4 inline mr-2" />
+                  Abmelden
                 </button>
               </>
-            )}
-            {!isAuthenticated && (
-              <div className="space-y-2 pt-2">
+            ) : (
+              <div className="space-y-3 pt-2">
                 <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block">
-                  <Button variant="outline" className="w-full border-[#7C3AED] text-[#7C3AED] py-3">
-                    {t('nav.login') || 'Anmelden'}
+                  <Button variant="outline" className="w-full border-[#7C3AED] text-[#7C3AED] py-3 text-lg font-bold">
+                    Anmelden
                   </Button>
                 </Link>
                 <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="block">
-                  <Button className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black py-3 font-bold">
-                    {t('nav.register') || 'Registrieren'}
+                  <Button className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black py-3 text-lg font-bold">
+                    Registrieren
                   </Button>
                 </Link>
               </div>
