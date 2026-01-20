@@ -232,16 +232,16 @@ export const Navbar = () => {
               </div>
             ) : (
               <div className="bg-gradient-to-r from-[#1a2a42] to-[#0d1829] rounded-xl p-4 mb-4 border border-white/10">
-                <p className="text-gray-300 text-sm mb-3 text-center">Melde dich an, um zu bieten!</p>
+                <p className="text-gray-300 text-sm mb-3 text-center">{t('home.ctaBid') || 'Melde dich an, um zu bieten!'}</p>
                 <div className="flex gap-2">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1">
                     <Button variant="outline" className="w-full border-[#7C3AED] text-[#7C3AED] py-3 text-base font-bold">
-                      Anmelden
+                      {t('nav.login')}
                     </Button>
                   </Link>
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex-1">
                     <Button className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black py-3 text-base font-bold">
-                      Registrieren
+                      {t('nav.register')}
                     </Button>
                   </Link>
                 </div>
