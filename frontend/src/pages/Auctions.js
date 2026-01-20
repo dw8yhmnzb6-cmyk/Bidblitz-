@@ -360,8 +360,8 @@ export default function Auctions() {
           </span>
         </div>
 
-        {/* Auctions Grid - 5 columns on large screens */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {/* Auctions Grid - 1 col on tiny, 2 on small, up to 5 on large */}
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
           {sortedAuctions.map(auction => (
             <SnipsterCard key={auction.id} auction={auction} t={t} />
           ))}
