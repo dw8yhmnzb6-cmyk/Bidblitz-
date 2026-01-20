@@ -473,6 +473,11 @@ export default function Auctions() {
                 <Bell className="w-3 h-3 inline" /> {reminders.length} Erinnerungen
               </span>
             )}
+            {serverTimeOffset !== 0 && (
+              <span className="ml-2 text-orange-400" title="Zeitabweichung erkannt">
+                ⚠️ Zeit-Sync
+              </span>
+            )}
           </span>
         </div>
 
@@ -486,6 +491,7 @@ export default function Auctions() {
               reminders={reminders}
               onToggleReminder={handleToggleReminder}
               isLoggedIn={!!token}
+              serverTimeOffset={serverTimeOffset}
             />
           ))}
         </div>
