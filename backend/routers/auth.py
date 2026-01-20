@@ -331,3 +331,150 @@ async def disable_2fa(request: TwoFactorDisable, user: dict = Depends(get_curren
     await log_security_event("2fa_disabled", user["id"], {"email": user["email"]})
     
     return {"message": "2FA erfolgreich deaktiviert"}
+
+# ==================== 2FA BACKUP CODES ====================
+
+import secrets
+
+def generate_backup_codes(count: int = 10) -> list:
+    """Generate backup codes for 2FA"""
+    codes = []
+    for _ in range(count):
+        code = secrets.token_hex(4).upper()  # 8 character hex code
+        codes.append(f"{code[:4]}-{code[4:]}")
+    return codes
+
+@router.post("/2fa/backup-codes/generate")
+async def generate_2fa_backup_codes(user: dict = Depends(get_current_user)):
+    """Generate new backup codes (requires 2FA to be enabled)"""
+    if not user.get("two_factor_enabled"):
+        raise HTTPException(status_code=400, detail="2FA muss zuerst aktiviert sein")
+    
+    # Generate new codes
+    codes = generate_backup_codes(10)
+    
+    # Hash codes before storing
+    from hashlib import sha256
+    hashed_codes = [sha256(code.encode()).hexdigest() for code in codes]
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$set": {
+                "two_factor_backup_codes": hashed_codes,
+                "backup_codes_generated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    await log_security_event("backup_codes_generated", user["id"], {"count": len(codes)})
+    
+    return {
+        "message": "Neue Backup-Codes generiert. Speichern Sie diese sicher!",
+        "codes": codes,
+        "warning": "Diese Codes werden nur einmal angezeigt!"
+    }
+
+@router.post("/2fa/backup-codes/verify")
+async def verify_backup_code(code: str, user: dict = Depends(get_current_user)):
+    """Verify and consume a backup code"""
+    from hashlib import sha256
+    
+    if not user.get("two_factor_backup_codes"):
+        raise HTTPException(status_code=400, detail="Keine Backup-Codes vorhanden")
+    
+    # Clean code format
+    clean_code = code.replace("-", "").replace(" ", "").upper()
+    if len(clean_code) == 8:
+        clean_code = f"{clean_code[:4]}-{clean_code[4:]}"
+    
+    hashed_input = sha256(clean_code.encode()).hexdigest()
+    
+    if hashed_input not in user["two_factor_backup_codes"]:
+        await log_security_event("backup_code_failed", user["id"], {"reason": "invalid_code"})
+        raise HTTPException(status_code=400, detail="Ungültiger Backup-Code")
+    
+    # Remove used code
+    new_codes = [c for c in user["two_factor_backup_codes"] if c != hashed_input]
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {"two_factor_backup_codes": new_codes}}
+    )
+    
+    await log_security_event("backup_code_used", user["id"], {"remaining": len(new_codes)})
+    
+    return {
+        "valid": True,
+        "message": "Backup-Code verifiziert",
+        "remaining_codes": len(new_codes)
+    }
+
+@router.get("/2fa/backup-codes/count")
+async def get_backup_codes_count(user: dict = Depends(get_current_user)):
+    """Get count of remaining backup codes"""
+    codes = user.get("two_factor_backup_codes", [])
+    return {
+        "remaining": len(codes),
+        "total": 10,
+        "generated_at": user.get("backup_codes_generated_at")
+    }
+
+@router.get("/2fa/status")
+async def get_2fa_status(user: dict = Depends(get_current_user)):
+    """Get comprehensive 2FA status"""
+    backup_codes = user.get("two_factor_backup_codes", [])
+    
+    return {
+        "enabled": user.get("two_factor_enabled", False),
+        "has_secret": bool(user.get("two_factor_secret")),
+        "backup_codes": {
+            "remaining": len(backup_codes),
+            "generated_at": user.get("backup_codes_generated_at"),
+            "low_warning": len(backup_codes) <= 2
+        },
+        "last_used": user.get("two_factor_last_used"),
+        "setup_at": user.get("two_factor_enabled_at")
+    }
+
+@router.post("/2fa/verify-only")
+async def verify_2fa_code_only(code: str, user: dict = Depends(get_current_user)):
+    """Verify a 2FA code without login (for sensitive actions)"""
+    if not user.get("two_factor_enabled"):
+        return {"valid": True, "message": "2FA nicht aktiviert"}
+    
+    secret = user.get("two_factor_secret")
+    if not secret:
+        raise HTTPException(status_code=400, detail="2FA-Secret nicht gefunden")
+    
+    if verify_2fa_code(secret, code):
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$set": {"two_factor_last_used": datetime.now(timezone.utc).isoformat()}}
+        )
+        return {"valid": True, "message": "Code verifiziert"}
+    
+    # Try backup code
+    from hashlib import sha256
+    clean_code = code.replace("-", "").replace(" ", "").upper()
+    if len(clean_code) == 8:
+        clean_code = f"{clean_code[:4]}-{clean_code[4:]}"
+    
+    hashed_input = sha256(clean_code.encode()).hexdigest()
+    backup_codes = user.get("two_factor_backup_codes", [])
+    
+    if hashed_input in backup_codes:
+        # Remove used backup code
+        new_codes = [c for c in backup_codes if c != hashed_input]
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$set": {"two_factor_backup_codes": new_codes}}
+        )
+        return {
+            "valid": True, 
+            "message": "Backup-Code verwendet",
+            "backup_code_used": True,
+            "remaining_codes": len(new_codes)
+        }
+    
+    raise HTTPException(status_code=400, detail="Ungültiger Code")
