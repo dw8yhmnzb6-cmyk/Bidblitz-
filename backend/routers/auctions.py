@@ -444,9 +444,17 @@ async def create_batch_auctions(
     count: int = 100,
     duration_minutes: int = 30,
     bot_target_percentage: int = 20,
+    immediate_percent: int = 50,
     admin: dict = Depends(get_admin_user)
 ):
-    """Create multiple auctions at once for testing (admin only)"""
+    """Create multiple auctions at once for testing (admin only)
+    
+    Args:
+        count: Number of auctions to create
+        duration_minutes: Base duration for each auction
+        bot_target_percentage: Bot target price as percentage of retail price
+        immediate_percent: Percentage of auctions to start immediately (0-100)
+    """
     import random
     
     products = await db.products.find({}, {"_id": 0}).to_list(1000)
@@ -455,17 +463,22 @@ async def create_batch_auctions(
     
     now = datetime.now(timezone.utc)
     created_auctions = []
+    immediate_count = int(count * (immediate_percent / 100))
     
     for i in range(count):
         product = random.choice(products)
         
-        # Randomize start times over the next hours for variety
-        start_offset = random.randint(0, 120)  # 0-120 minutes
-        start_time = now + timedelta(minutes=start_offset)
-        end_time = start_time + timedelta(minutes=duration_minutes + random.randint(0, 30))
+        # First 'immediate_count' auctions start immediately, rest are scheduled
+        if i < immediate_count:
+            start_time = now
+            status = "active"
+        else:
+            # Randomize start times over the next hours for variety
+            start_offset = random.randint(5, 120)  # 5-120 minutes
+            start_time = now + timedelta(minutes=start_offset)
+            status = "scheduled"
         
-        # Status based on start time
-        status = "scheduled" if start_time > now else "active"
+        end_time = start_time + timedelta(minutes=duration_minutes + random.randint(0, 30))
         
         # Calculate bot target price (percentage of retail price)
         retail_price = product.get("retail_price", 100)
