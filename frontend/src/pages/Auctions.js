@@ -23,31 +23,18 @@ const CATEGORY_ICONS = {
   mode: <Shirt className="w-4 h-4" />,
 };
 
-// Activity Index Component - Colorful animated bars
+// Activity Index Component - Simple green bars
 const ActivityIndex = ({ bids }) => {
   const activeBars = Math.min(Math.ceil(bids / 5), 10);
-  
-  const getBarColor = (index) => {
-    if (index < 3) return 'from-green-400 to-emerald-500';
-    if (index < 6) return 'from-yellow-400 to-orange-500';
-    if (index < 8) return 'from-orange-400 to-red-500';
-    return 'from-red-500 to-pink-500';
-  };
   
   return (
     <div className="flex items-center gap-0.5">
       {[...Array(10)].map((_, i) => (
         <div 
           key={i} 
-          className={`w-1.5 h-3 rounded-sm transition-all duration-300 ${
-            i < activeBars 
-              ? `bg-gradient-to-t ${getBarColor(i)}` 
-              : 'bg-gray-200'
+          className={`w-1.5 h-3 rounded-sm transition-all ${
+            i < activeBars ? 'bg-green-500' : 'bg-gray-200'
           }`}
-          style={{ 
-            animationDelay: `${i * 100}ms`,
-            transform: i < activeBars ? 'scaleY(1)' : 'scaleY(0.6)'
-          }}
         />
       ))}
     </div>
