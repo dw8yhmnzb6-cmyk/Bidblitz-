@@ -139,7 +139,7 @@ async def websocket_all_auctions(websocket: WebSocket):
 # ==================== BOT BACKGROUND TASK ====================
 
 async def bot_last_second_bidder():
-    """Background task - bots bid in last seconds until target price"""
+    """Background task - bots bid in last seconds until CUSTOMER bids reach target price"""
     global bot_task_running
     
     logger.info("Bot continuous bidder started")
@@ -161,11 +161,21 @@ async def bot_last_second_bidder():
                     
                     # Bid when 1-5 seconds left
                     if 1 <= seconds_left <= 5:
-                        current_price = auction.get("current_price", 0)
                         target_price = auction.get("bot_target_price", 0)
                         auction_id = auction.get("id")
+                        bid_increment = auction.get("bid_increment", 0.01)
                         
-                        if current_price < target_price:
+                        # Calculate CUSTOMER-ONLY bid total (exclude bot bids)
+                        bid_history = auction.get("bid_history", [])
+                        customer_bids = [b for b in bid_history if not b.get("is_bot", False)]
+                        customer_bid_count = len(customer_bids)
+                        
+                        # Customer price = number of customer bids * bid_increment
+                        # This represents what customers have "paid" in bid increments
+                        customer_price_contribution = customer_bid_count * bid_increment
+                        
+                        # Bots keep bidding until CUSTOMERS have contributed enough to reach target
+                        if customer_price_contribution < target_price:
                             # Get bots
                             bots = await db.bots.find({}, {"_id": 0}).to_list(100)
                             if bots:
@@ -176,7 +186,8 @@ async def bot_last_second_bidder():
                                 last_bot_per_auction[auction_id] = bot["id"]
                                 
                                 # Place bid
-                                new_price = round(current_price + auction.get("bid_increment", 0.01), 2)
+                                current_price = auction.get("current_price", 0)
+                                new_price = round(current_price + bid_increment, 2)
                                 timer_ext = random.randint(10, 20)
                                 new_end_time = datetime.now(timezone.utc) + timedelta(seconds=timer_ext)
                                 
