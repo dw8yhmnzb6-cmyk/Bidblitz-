@@ -45,10 +45,21 @@ async def create_checkout_session(request: CheckoutRequest, user: dict = Depends
             "created_at": datetime.now(timezone.utc).isoformat()
         })
         
-        # Create Stripe session using amount and currency (correct format)
-        checkout_request = CheckoutSessionRequest(
-            amount=float(package["price"]),
-            currency="eur",
+        # Create Stripe session using native Stripe library
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=[{
+                "price_data": {
+                    "currency": "eur",
+                    "unit_amount": int(float(package["price"]) * 100),
+                    "product_data": {
+                        "name": f"{total_bids} Gebote - {package['name']}",
+                        "description": f"BidBlitz Gebotspaket mit {package['bids']} Geboten" + (f" + {package.get('bonus', 0)} Bonus" if package.get('bonus') else "")
+                    }
+                },
+                "quantity": 1
+            }],
+            mode="payment",
             success_url=f"{FRONTEND_URL}/payment/success?session_id={{CHECKOUT_SESSION_ID}}",
             cancel_url=f"{FRONTEND_URL}/buy-bids?canceled=true",
             metadata={
@@ -57,36 +68,36 @@ async def create_checkout_session(request: CheckoutRequest, user: dict = Depends
                 "transaction_id": transaction_id,
                 "bids": str(total_bids),
                 "package_name": package["name"]
-            },
-            payment_methods=["card"]
+            }
         )
-        
-        session = await stripe_checkout.create_checkout_session(checkout_request)
         
         # Update transaction with session ID
         await db.transactions.update_one(
             {"id": transaction_id},
-            {"$set": {"stripe_session_id": session.session_id}}
+            {"$set": {"stripe_session_id": session.id}}
         )
         
         return {
-            "session_id": session.session_id,
+            "session_id": session.id,
             "url": session.url,
             "transaction_id": transaction_id
         }
         
-    except Exception as e:
+    except stripe.error.StripeError as e:
         logger.error(f"Stripe checkout error: {e}")
+        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+    except Exception as e:
+        logger.error(f"Checkout error: {e}")
         raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
 
 @router.get("/status/{session_id}")
 async def get_checkout_status(session_id: str, user: dict = Depends(get_current_user)):
     """Check the status of a checkout session"""
-    if not stripe_checkout:
+    if not STRIPE_API_KEY:
         raise HTTPException(status_code=503, detail="Payment service unavailable")
     
     try:
-        status = await stripe_checkout.get_checkout_status(session_id)
+        session = stripe.checkout.Session.retrieve(session_id)
         
         if status.payment_status == "paid":
             # Find and complete transaction
