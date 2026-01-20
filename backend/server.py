@@ -3015,14 +3015,43 @@ async def delete_bot(bot_id: str, admin: dict = Depends(get_admin_user)):
 
 @api_router.post("/admin/bots/seed")
 async def seed_bots(admin: dict = Depends(get_admin_user)):
-    """Create default bots"""
+    """Create 20 new bots with unique names"""
+    import random
+    
+    # Extended name pool for more variety
+    first_names = [
+        "Max", "Anna", "Leon", "Sophie", "Paul", "Emma", "Luca", "Mia", "Felix", "Hannah",
+        "Jonas", "Lea", "Tim", "Laura", "David", "Julia", "Simon", "Sarah", "Niklas", "Lisa",
+        "Jan", "Marie", "Tom", "Lena", "Lukas", "Nele", "Ben", "Clara", "Erik", "Amelie",
+        "Moritz", "Emily", "Julian", "Johanna", "Finn", "Maja", "Noah", "Alina", "Elias", "Zoe",
+        "Bardh", "Arben", "Drita", "Fatmir", "Genta", "Hana", "Ilir", "Kaltrina", "Liridon", "Majlinda",
+        "Stefan", "Peter", "Michael", "Thomas", "Andreas", "Matthias", "Jens", "Marco", "Sascha", "Frank",
+        "Sabine", "Petra", "Monika", "Karin", "Susanne", "Birgit", "Claudia", "Heike", "Andrea", "Martina"
+    ]
+    
+    last_initials = ["K.", "M.", "S.", "L.", "H.", "B.", "W.", "R.", "F.", "T.", "N.", "P.", "G.", "D.", "J.", "A.", "E.", "V.", "Z.", "C."]
+    
     created = 0
-    for name in DEFAULT_BOT_NAMES:
-        existing = await db.bots.find_one({"name": name})
-        if not existing:
-            bot = {
-                "id": str(uuid.uuid4()),
-                "name": name,
+    for _ in range(20):
+        # Generate unique name
+        for attempt in range(50):  # Max 50 attempts to find unique name
+            name = f"{random.choice(first_names)} {random.choice(last_initials)}"
+            existing = await db.bots.find_one({"name": name})
+            if not existing:
+                bot = {
+                    "id": str(uuid.uuid4()),
+                    "name": name,
+                    "is_bot": True,
+                    "total_bids_placed": 0,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "created_by": admin["id"]
+                }
+                await db.bots.insert_one(bot)
+                created += 1
+                break
+    
+    total = await db.bots.count_documents({})
+    return {"message": f"{created} neue Bots erstellt", "total": total, "created": created}
                 "is_active": True,
                 "total_bids_placed": 0,
                 "created_at": datetime.now(timezone.utc).isoformat(),
