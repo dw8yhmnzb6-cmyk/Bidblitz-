@@ -27,8 +27,58 @@ async def get_profile(user: dict = Depends(get_current_user)):
         "referral_code": user.get("referral_code", user["id"][:8].upper()),
         "two_factor_enabled": user.get("two_factor_enabled", False),
         "preferred_language": user.get("preferred_language", "de"),
+        "avatar_url": user.get("avatar_url"),
         "created_at": user.get("created_at")
     }
+
+@router.post("/user/avatar")
+async def upload_avatar(file: UploadFile = File(...), user: dict = Depends(get_current_user)):
+    """Upload profile avatar image.
+    
+    Accepts JPEG, PNG, WebP images up to 2MB.
+    The image is stored as base64 in the database.
+    """
+    # Validate file type
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid file type. Allowed: JPEG, PNG, WebP, GIF"
+        )
+    
+    # Read file content
+    content = await file.read()
+    
+    # Check file size (max 2MB)
+    if len(content) > 2 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File too large. Maximum size is 2MB.")
+    
+    # Convert to base64 data URL
+    base64_content = base64.b64encode(content).decode('utf-8')
+    data_url = f"data:{file.content_type};base64,{base64_content}"
+    
+    # Update user profile
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {"avatar_url": data_url, "avatar_updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    logger.info(f"User {user['id']} uploaded new avatar")
+    
+    return {
+        "message": "Avatar uploaded successfully",
+        "avatar_url": data_url
+    }
+
+@router.delete("/user/avatar")
+async def delete_avatar(user: dict = Depends(get_current_user)):
+    """Delete user's avatar"""
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$unset": {"avatar_url": "", "avatar_updated_at": ""}}
+    )
+    
+    return {"message": "Avatar deleted successfully"}
 
 @router.put("/user/profile")
 async def update_profile(data: UpdateProfileRequest, user: dict = Depends(get_current_user)):
