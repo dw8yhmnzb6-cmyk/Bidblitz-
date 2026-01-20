@@ -115,7 +115,7 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
     calc();
     const int = setInterval(calc, 1000);
     return () => clearInterval(int);
-  }, [auction.end_time]);
+  }, [auction.end_time, serverTimeOffset]);
   
   // IMPORTANT: Only show as ended if backend status is 'ended'
   // Don't rely purely on local time calculation which can be affected by timezone issues
