@@ -188,7 +188,10 @@ async def get_me(user: dict = Depends(get_current_user)):
         "bids_balance": user["bids_balance"],
         "is_admin": user.get("is_admin", False),
         "referral_code": user.get("referral_code", user["id"][:8].upper()),
-        "two_factor_enabled": user.get("two_factor_enabled", False)
+        "two_factor_enabled": user.get("two_factor_enabled", False),
+        "avatar_url": user.get("avatar_url"),
+        "vip_status": user.get("vip_status"),
+        "vip_period_end": user.get("vip_period_end")
     }
 
 # ==================== PASSWORD RESET ====================
