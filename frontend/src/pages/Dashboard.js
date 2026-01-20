@@ -219,7 +219,7 @@ export default function Dashboard() {
               </div>
               <div>
                 <p className="text-[#94A3B8] text-sm">Autobidder</p>
-                <p className="text-2xl font-bold text-white">{autobidders.filter(a => a.is_active).length}</p>
+                <p className="text-2xl font-bold text-white">{(autobidders || []).filter(a => a.is_active).length}</p>
                 <p className="text-[#06B6D4] text-xs">Aktiv</p>
               </div>
             </div>
