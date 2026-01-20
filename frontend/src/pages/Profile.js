@@ -177,15 +177,56 @@ export default function Profile() {
           {/* Sidebar - Profile Card */}
           <div className="lg:col-span-1">
             <div className="glass-card rounded-2xl p-6 text-center space-y-4">
-              {/* Avatar */}
-              <div className="relative w-24 h-24 mx-auto">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#FFD700] to-[#FF4D4D] flex items-center justify-center text-3xl font-bold text-black">
-                  {user.name?.charAt(0).toUpperCase()}
-                </div>
-                <button className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-[#181824] border-2 border-[#FFD700] flex items-center justify-center hover:bg-[#FFD700]/20 transition-colors">
-                  <Camera className="w-4 h-4 text-[#FFD700]" />
+              {/* Avatar with Upload */}
+              <div className="relative w-28 h-28 mx-auto">
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleAvatarChange}
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                />
+                
+                {/* Avatar Display */}
+                {avatarUrl ? (
+                  <img 
+                    src={avatarUrl} 
+                    alt={user.name}
+                    className="w-28 h-28 rounded-full object-cover border-4 border-[#FFD700]/30"
+                  />
+                ) : (
+                  <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[#FFD700] to-[#FF4D4D] flex items-center justify-center text-4xl font-bold text-black">
+                    {user.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                
+                {/* Upload Button Overlay */}
+                <button 
+                  onClick={handleAvatarClick}
+                  disabled={uploadingAvatar}
+                  className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[#181824] border-2 border-[#FFD700] flex items-center justify-center hover:bg-[#FFD700]/20 transition-colors disabled:opacity-50"
+                  title="Profilbild ändern"
+                >
+                  {uploadingAvatar ? (
+                    <Loader2 className="w-5 h-5 text-[#FFD700] animate-spin" />
+                  ) : (
+                    <Camera className="w-5 h-5 text-[#FFD700]" />
+                  )}
                 </button>
               </div>
+
+              {/* Avatar Actions */}
+              {avatarUrl && (
+                <button
+                  onClick={handleDeleteAvatar}
+                  disabled={uploadingAvatar}
+                  className="inline-flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  Bild entfernen
+                </button>
+              )}
 
               <div>
                 <h2 className="text-xl font-bold text-white">{user.name}</h2>
