@@ -1542,7 +1542,7 @@ export default function Admin() {
                         <SelectValue placeholder="Auktion wählen..." />
                       </SelectTrigger>
                       <SelectContent className="bg-[#181824] border-white/10">
-                        {auctions.filter(a => a.status === 'active').map((auction) => (
+                        {(auctions || []).filter(a => a.status === 'active').map((auction) => (
                           <SelectItem key={auction.id} value={auction.id} className="text-white hover:bg-white/10">
                             {auction.product?.name} (€{auction.current_price?.toFixed(2)})
                           </SelectItem>
