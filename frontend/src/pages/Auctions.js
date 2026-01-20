@@ -217,17 +217,31 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
 
 export default function Auctions() {
   const { t } = useLanguage();
+  const { user, token } = useAuth();
   const [auctions, setAuctions] = useState([]);
   const [products, setProducts] = useState({});
+  const [reminders, setReminders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('active');
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchAuctions = useCallback(async () => {
     try {
-      const [auctionRes, productRes] = await Promise.all([
+      const requests = [
         axios.get(`${API}/auctions`),
         axios.get(`${API}/products`)
+      ];
+      
+      // Fetch reminders if logged in
+      if (token) {
+        requests.push(
+          axios.get(`${API}/notifications/my-reminders`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(() => ({ data: { reminders: [] } }))
+        );
+      }
+      
+      const [auctionRes, productRes, remindersRes] = await Promise.all(requests);
       ]);
       setAuctions(auctionRes.data);
       const productMap = {};
