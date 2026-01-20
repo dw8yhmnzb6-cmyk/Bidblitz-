@@ -74,9 +74,11 @@ const AuctionCard = ({ auction, product }) => {
     return () => clearInterval(int);
   }, [auction.end_time]);
   
-  // Only show as ended if status is 'ended' OR time has run out (and not loading)
-  const isEnded = auction.status === 'ended' || (!timeLeft.loading && timeLeft.ended);
-  const isUrgent = !isEnded && timeLeft.h === 0 && timeLeft.m < 2;
+  // IMPORTANT: Only show as ended if backend status is 'ended'
+  // Don't rely purely on local time calculation which can be affected by timezone issues
+  const isEnded = auction.status === 'ended';
+  const showAsTimerExpired = !timeLeft.loading && timeLeft.ended && auction.status !== 'active';
+  const isUrgent = !isEnded && !showAsTimerExpired && timeLeft.h === 0 && timeLeft.m < 2;
   const pad = (n) => String(n).padStart(2, '0');
   
   // Short product name (max 20 chars)
