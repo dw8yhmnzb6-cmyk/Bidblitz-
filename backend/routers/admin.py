@@ -370,6 +370,155 @@ async def send_email_campaign(
         "message": f"Campaign sent to {sent_count} users"
     }
 
+@router.post("/email/send-localized")
+async def send_localized_email_campaign(
+    template_id: str,
+    target_group: str = "all",
+    custom_params: dict = None,
+    admin: dict = Depends(get_admin_user)
+):
+    """Send localized email campaign - each user receives email in their preferred language"""
+    if not RESEND_API_KEY or RESEND_API_KEY == 're_123_placeholder':
+        raise HTTPException(status_code=503, detail="Email service not configured")
+    
+    # Validate template exists
+    if template_id not in EMAIL_TRANSLATIONS.get("de", {}):
+        raise HTTPException(status_code=400, detail=f"Template '{template_id}' not found")
+    
+    # Build query based on target group
+    query = {"is_admin": {"$ne": True}, "is_bot": {"$ne": True}}
+    
+    if target_group == "active":
+        month_ago = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
+        query["$or"] = [
+            {"last_purchase_at": {"$gte": month_ago}},
+            {"created_at": {"$gte": month_ago}}
+        ]
+    elif target_group == "paying":
+        query["total_deposits"] = {"$gt": 0}
+    elif target_group == "inactive":
+        week_ago = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+        query["total_deposits"] = {"$eq": 0}
+        query["created_at"] = {"$lt": week_ago}
+    
+    # Get users with their preferred language
+    users = await db.users.find(
+        query, 
+        {"_id": 0, "email": 1, "name": 1, "preferred_language": 1}
+    ).to_list(10000)
+    
+    if not users:
+        return {"sent": 0, "failed": 0, "message": "No users in target group"}
+    
+    sent_count = 0
+    failed_count = 0
+    languages_sent = {}
+    
+    for user in users:
+        try:
+            # Get user's preferred language (default to German)
+            user_lang = user.get("preferred_language", "de")
+            if user_lang not in SUPPORTED_EMAIL_LANGUAGES:
+                user_lang = "de"
+            
+            # Get user name
+            user_name = user.get("name") or user.get("email", "").split("@")[0]
+            
+            # Build template parameters
+            params = {"name": user_name}
+            if custom_params:
+                params.update(custom_params)
+            
+            # Get localized template
+            template = get_email_template(template_id, user_lang, **params)
+            html_content = generate_email_html(template, "https://bidblitz.de/auctions")
+            
+            # Send email
+            resend.Emails.send({
+                "from": SENDER_EMAIL,
+                "to": [user["email"]],
+                "subject": template.get("subject", "BidBlitz Update"),
+                "html": html_content
+            })
+            
+            sent_count += 1
+            languages_sent[user_lang] = languages_sent.get(user_lang, 0) + 1
+            
+        except Exception as e:
+            logger.error(f"Failed to send localized email to {user.get('email')}: {e}")
+            failed_count += 1
+    
+    # Log campaign
+    await db.email_campaigns.insert_one({
+        "id": str(uuid.uuid4()),
+        "type": "localized",
+        "template_id": template_id,
+        "target_group": target_group,
+        "sent_count": sent_count,
+        "failed_count": failed_count,
+        "languages": languages_sent,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "created_by": admin["id"]
+    })
+    
+    return {
+        "sent": sent_count,
+        "failed": failed_count,
+        "languages": languages_sent,
+        "message": f"Localized campaign sent to {sent_count} users in {len(languages_sent)} languages"
+    }
+
+@router.get("/email/languages")
+async def get_supported_email_languages(admin: dict = Depends(get_admin_user)):
+    """Get list of supported email languages"""
+    language_names = {
+        "de": "Deutsch",
+        "en": "English",
+        "sq": "Shqip (Albanian)",
+        "el": "Ελληνικά (Greek)",
+        "tr": "Türkçe (Turkish)",
+        "fr": "Français",
+        "es": "Español",
+        "it": "Italiano"
+    }
+    
+    return {
+        "languages": [
+            {"code": code, "name": language_names.get(code, code)}
+            for code in SUPPORTED_EMAIL_LANGUAGES
+        ]
+    }
+
+@router.post("/email/preview")
+async def preview_email_template(
+    template_id: str,
+    language: str = "de",
+    admin: dict = Depends(get_admin_user)
+):
+    """Preview an email template in a specific language"""
+    if template_id not in EMAIL_TRANSLATIONS.get("de", {}):
+        raise HTTPException(status_code=400, detail=f"Template '{template_id}' not found")
+    
+    # Example parameters for preview
+    preview_params = {
+        "name": "Max Mustermann",
+        "bids": "5",
+        "count": "10",
+        "products": "iPhone 15, Apple Watch, PlayStation 5",
+        "product": "Apple AirPods Pro",
+        "price": "12.50"
+    }
+    
+    template = get_email_template(template_id, language, **preview_params)
+    html_content = generate_email_html(template, "https://bidblitz.de/auctions")
+    
+    return {
+        "template_id": template_id,
+        "language": language,
+        "subject": template.get("subject"),
+        "html": html_content
+    }
+
 @router.post("/email/send-test")
 async def send_test_email(
     to_email: str,
