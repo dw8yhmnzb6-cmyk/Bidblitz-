@@ -99,7 +99,7 @@ async def get_checkout_status(session_id: str, user: dict = Depends(get_current_
     try:
         session = stripe.checkout.Session.retrieve(session_id)
         
-        if status.payment_status == "paid":
+        if session.payment_status == "paid":
             # Find and complete transaction
             transaction = await db.transactions.find_one({
                 "stripe_session_id": session_id,
@@ -128,10 +128,13 @@ async def get_checkout_status(session_id: str, user: dict = Depends(get_current_
                 logger.info(f"Payment completed: {transaction['bids']} bids for user {transaction['user_id']}")
         
         return {
-            "status": status.status,
-            "payment_status": status.payment_status
+            "status": session.status,
+            "payment_status": session.payment_status
         }
         
+    except stripe.error.StripeError as e:
+        logger.error(f"Stripe status check error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         logger.error(f"Status check error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
