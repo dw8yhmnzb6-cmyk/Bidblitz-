@@ -1204,6 +1204,23 @@ export default function Admin() {
                   </div>
                 </form>
               </div>
+              
+              {/* Explanation Box for Bot Target Price */}
+              <div className="glass-card rounded-xl p-4 border-l-4 border-[#FFD700]">
+                <div className="flex items-start gap-3">
+                  <Bot className="w-6 h-6 text-[#FFD700] flex-shrink-0 mt-1" />
+                  <div>
+                    <h4 className="text-white font-semibold mb-1">Bot-Mindestpreis erklärt</h4>
+                    <p className="text-[#94A3B8] text-sm">
+                      Der <span className="text-[#FFD700] font-medium">Bot-Mindestpreis</span> ist der Preis, bis zu dem Bots automatisch bieten. 
+                      Sobald dieser Preis erreicht ist, <span className="text-[#10B981] font-medium">hören die Bots auf</span> und 
+                      <span className="text-[#06B6D4] font-medium"> nur echte Kunden</span> können weiter bieten. 
+                      So stellen Sie sicher, dass echtes Geld verdient wird.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
               <div className="glass-card rounded-xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full">
@@ -1211,6 +1228,12 @@ export default function Admin() {
                       <tr>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.product')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.price')}</th>
+                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">
+                          <div className="flex items-center gap-1">
+                            <Bot className="w-4 h-4 text-[#FFD700]" />
+                            <span>Bot-Ziel</span>
+                          </div>
+                        </th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.bids')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Zeit</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.status')}</th>
@@ -1218,50 +1241,86 @@ export default function Admin() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10">
-                      {(auctions || []).map((auction) => (
-                        <tr key={auction.id} className="hover:bg-white/5">
-                          <td className="px-4 py-3 text-white">{auction.product?.name || 'N/A'}</td>
-                          <td className="px-4 py-3 text-[#06B6D4] font-mono">€{auction.current_price?.toFixed(2)}</td>
-                          <td className="px-4 py-3 text-white">{auction.total_bids}</td>
-                          <td className="px-4 py-3 text-[#94A3B8] text-sm">
-                            {auction.start_time && (
+                      {(auctions || []).map((auction) => {
+                        const botTarget = auction.bot_target_price || 0;
+                        const currentPrice = auction.current_price || 0;
+                        const botActive = botTarget > 0 && currentPrice < botTarget && auction.status === 'active';
+                        const targetReached = botTarget > 0 && currentPrice >= botTarget;
+                        
+                        return (
+                          <tr key={auction.id} className="hover:bg-white/5">
+                            <td className="px-4 py-3 text-white">{auction.product?.name || 'N/A'}</td>
+                            <td className="px-4 py-3 text-[#06B6D4] font-mono">€{currentPrice.toFixed(2)}</td>
+                            <td className="px-4 py-3">
+                              <button
+                                onClick={() => handleUpdateBotTarget(auction.id, botTarget)}
+                                className="flex items-center gap-2 group"
+                                title="Klicken um Bot-Zielpreis zu ändern"
+                              >
+                                {botTarget > 0 ? (
+                                  <div className="flex items-center gap-1">
+                                    <span className={`font-mono ${targetReached ? 'text-[#10B981]' : 'text-[#FFD700]'}`}>
+                                      €{botTarget.toFixed(2)}
+                                    </span>
+                                    {botActive && (
+                                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FFD700]/20 text-[#FFD700] animate-pulse">
+                                        AKTIV
+                                      </span>
+                                    )}
+                                    {targetReached && (
+                                      <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#10B981]/20 text-[#10B981]">
+                                        ERREICHT
+                                      </span>
+                                    )}
+                                  </div>
+                                ) : (
+                                  <span className="text-[#94A3B8]">-</span>
+                                )}
+                                <Edit className="w-3 h-3 text-[#94A3B8] opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </button>
+                            </td>
+                            <td className="px-4 py-3 text-white">{auction.total_bids}</td>
+                            <td className="px-4 py-3 text-[#94A3B8] text-sm">
+                              {auction.start_time && (
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[#7C3AED]">Start:</span>
+                                  <span>{new Date(auction.start_time).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}</span>
+                                </div>
+                              )}
                               <div className="flex items-center gap-1">
-                                <span className="text-[#7C3AED]">Start:</span>
-                                <span>{new Date(auction.start_time).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}</span>
+                                <span className="text-[#EF4444]">Ende:</span>
+                                <span>{new Date(auction.end_time).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}</span>
                               </div>
-                            )}
-                            <div className="flex items-center gap-1">
-                              <span className="text-[#EF4444]">Ende:</span>
-                              <span>{new Date(auction.end_time).toLocaleString('de-DE', {dateStyle: 'short', timeStyle: 'short'})}</span>
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                              auction.status === 'active' ? 'bg-[#10B981]/20 text-[#10B981]' : 
-                              auction.status === 'scheduled' ? 'bg-[#F59E0B]/20 text-[#F59E0B]' : 
-                              'bg-[#EF4444]/20 text-[#EF4444]'
-                            }`}>
-                              {auction.status === 'active' ? t('admin.active') : 
-                               auction.status === 'scheduled' ? 'Geplant' : 
-                               t('admin.ended')}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              {(auction.status === 'active' || auction.status === 'scheduled') && (
-                                <>
-                                  <Button size="sm" variant="ghost" className="text-[#06B6D4] hover:bg-[#06B6D4]/10" onClick={() => handleExtendAuction(auction.id)} title="Zeit verlängern"><RefreshCw className="w-4 h-4" /></Button>
-                                  <Button size="sm" variant="ghost" className="text-[#F59E0B] hover:bg-[#F59E0B]/10" onClick={() => handleEndAuction(auction.id)} title="Beenden"><Square className="w-4 h-4" /></Button>
-                                </>
-                              )}
-                              {auction.status === 'ended' && (
-                                <Button size="sm" variant="ghost" className="text-[#10B981] hover:bg-[#10B981]/10" onClick={() => handleRestartAuction(auction.id)} title="Neu starten"><Play className="w-4 h-4" /></Button>
-                              )}
-                              <Button size="sm" variant="ghost" className="text-[#EF4444] hover:bg-[#EF4444]/10" onClick={() => handleDeleteAuction(auction.id)}><Trash2 className="w-4 h-4" /></Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                auction.status === 'active' ? 'bg-[#10B981]/20 text-[#10B981]' : 
+                                auction.status === 'scheduled' ? 'bg-[#F59E0B]/20 text-[#F59E0B]' : 
+                                'bg-[#EF4444]/20 text-[#EF4444]'
+                              }`}>
+                                {auction.status === 'active' ? t('admin.active') : 
+                                 auction.status === 'scheduled' ? 'Geplant' : 
+                                 t('admin.ended')}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-2">
+                                {(auction.status === 'active' || auction.status === 'scheduled') && (
+                                  <>
+                                    <Button size="sm" variant="ghost" className="text-[#FFD700] hover:bg-[#FFD700]/10" onClick={() => handleUpdateBotTarget(auction.id, botTarget)} title="Bot-Zielpreis ändern"><Target className="w-4 h-4" /></Button>
+                                    <Button size="sm" variant="ghost" className="text-[#06B6D4] hover:bg-[#06B6D4]/10" onClick={() => handleExtendAuction(auction.id)} title="Zeit verlängern"><RefreshCw className="w-4 h-4" /></Button>
+                                    <Button size="sm" variant="ghost" className="text-[#F59E0B] hover:bg-[#F59E0B]/10" onClick={() => handleEndAuction(auction.id)} title="Beenden"><Square className="w-4 h-4" /></Button>
+                                  </>
+                                )}
+                                {auction.status === 'ended' && (
+                                  <Button size="sm" variant="ghost" className="text-[#10B981] hover:bg-[#10B981]/10" onClick={() => handleRestartAuction(auction.id)} title="Neu starten"><Play className="w-4 h-4" /></Button>
+                                )}
+                                <Button size="sm" variant="ghost" className="text-[#EF4444] hover:bg-[#EF4444]/10" onClick={() => handleDeleteAuction(auction.id)}><Trash2 className="w-4 h-4" /></Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
