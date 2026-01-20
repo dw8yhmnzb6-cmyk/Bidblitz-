@@ -143,10 +143,13 @@ async def create_crypto_charge(
     if not coinbase_client:
         raise HTTPException(status_code=503, detail="Crypto payments not configured")
     
-    # Verify package
+    # Verify package (don't validate bids - just package_id and price)
     package = next((p for p in BID_PACKAGES if p["id"] == package_id), None)
-    if not package or package["price"] != price or package["bids"] != bids:
+    if not package or float(package["price"]) != float(price):
         raise HTTPException(status_code=400, detail="Invalid package details")
+    
+    # Calculate total bids including bonus
+    total_bids = package["bids"] + package.get("bonus", 0)
     
     try:
         # Create pending transaction
@@ -156,8 +159,8 @@ async def create_crypto_charge(
             "user_id": user["id"],
             "user_email": user["email"],
             "package_id": package_id,
-            "bids": bids,
-            "amount": price,
+            "bids": total_bids,
+            "amount": float(price),
             "status": "pending",
             "payment_method": "crypto",
             "created_at": datetime.now(timezone.utc).isoformat()
@@ -165,7 +168,7 @@ async def create_crypto_charge(
         
         # Create Coinbase charge
         charge = coinbase_client.charge.create(
-            name=f"{bids} Gebote - BidBlitz",
+            name=f"{total_bids} Gebote - BidBlitz",
             description=f"Gebotspaket für {user['email']}",
             pricing_type="fixed_price",
             local_price={
@@ -176,9 +179,9 @@ async def create_crypto_charge(
                 "user_id": user["id"],
                 "transaction_id": transaction_id,
                 "package_id": package_id,
-                "bids": str(bids)
+                "bids": str(total_bids)
             },
-            redirect_url=f"{FRONTEND_URL}/checkout/crypto-success",
+            redirect_url=f"{FRONTEND_URL}/payment/crypto-success",
             cancel_url=f"{FRONTEND_URL}/buy-bids?canceled=true"
         )
         
