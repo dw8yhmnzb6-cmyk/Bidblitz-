@@ -38,7 +38,7 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             <Link 
               to="/auctions" 
               className="text-[#94A3B8] hover:text-white transition-colors font-medium"
@@ -47,38 +47,36 @@ export const Navbar = () => {
               {t('nav.auctions')}
             </Link>
             <Link 
-              to="/buy-bids" 
+              to="/how-it-works" 
               className="text-[#94A3B8] hover:text-white transition-colors font-medium"
+              data-testid="nav-how-it-works"
+            >
+              So funktioniert's
+            </Link>
+            <Link 
+              to="/buy-bids" 
+              className="text-[#FFD700] hover:text-[#FCD34D] transition-colors font-medium"
               data-testid="nav-buy-bids"
             >
               {t('nav.buyBids')}
             </Link>
             <Link 
+              to="/faq" 
+              className="text-[#94A3B8] hover:text-white transition-colors font-medium"
+              data-testid="nav-faq"
+            >
+              FAQ
+            </Link>
+            <Link 
               to="/winners" 
-              className="text-[#FFD700] hover:text-[#FCD34D] transition-colors font-medium flex items-center gap-1"
+              className="text-[#94A3B8] hover:text-white transition-colors font-medium flex items-center gap-1"
               data-testid="nav-winners"
             >
               <Trophy className="w-4 h-4" />
               {t('nav.winners')}
             </Link>
-            <Link 
-              to="/invite" 
-              className="text-[#10B981] hover:text-[#34D399] transition-colors font-medium flex items-center gap-1"
-              data-testid="nav-invite"
-            >
-              <Gift className="w-4 h-4" />
-              {t('nav.inviteFriends')}
-            </Link>
             {isAuthenticated && (
               <>
-                <Link 
-                  to="/wishlist" 
-                  className="text-[#FF4D4D] hover:text-[#FF6B6B] transition-colors font-medium flex items-center gap-1"
-                  data-testid="nav-wishlist"
-                >
-                  <Heart className="w-4 h-4" />
-                  {t('nav.wishlist')}
-                </Link>
                 <Link 
                   to="/dashboard" 
                   className="text-[#94A3B8] hover:text-white transition-colors font-medium"
