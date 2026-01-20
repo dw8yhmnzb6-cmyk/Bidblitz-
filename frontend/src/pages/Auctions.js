@@ -116,18 +116,18 @@ const SnipsterCard = ({ auction, t }) => {
           )}
         </div>
 
-        <div className="flex gap-2 sm:gap-3">
-          {/* Left side */}
+        <div className="flex gap-3">
+          {/* Left side - Price & Button */}
           <div className="flex-1 min-w-0">
             {/* Current Price - CLEAR & BIG */}
             <div className="bg-gray-100 rounded-lg p-2 mb-2">
-              <p className="text-lg sm:text-xl font-black text-gray-900 font-mono leading-none">
+              <p className="text-xl font-black text-gray-900 font-mono leading-none">
                 €{auction.current_price?.toFixed(2).replace('.', ',')}
               </p>
             </div>
             
-            {/* Last Bidder - No truncate on mobile */}
-            <p className="text-gray-600 text-[10px] sm:text-xs mb-2 leading-tight">
+            {/* Last Bidder */}
+            <p className="text-gray-600 text-[11px] mb-2 leading-tight truncate">
               {auction.last_bidder_name || 'Startpreis'}
             </p>
             
@@ -135,7 +135,7 @@ const SnipsterCard = ({ auction, t }) => {
             <Link to={`/auctions/${auction.id}`}>
               <button 
                 data-testid={`bid-button-${auction.id}`}
-                className={`w-full font-bold py-2 px-2 sm:px-3 rounded-lg text-[10px] sm:text-xs uppercase transition-all ${
+                className={`w-full font-bold py-2 px-3 rounded-lg text-xs uppercase transition-all ${
                   isEnded 
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
                     : 'bg-green-500 hover:bg-green-600 text-white shadow-md hover:shadow-lg'
@@ -147,17 +147,17 @@ const SnipsterCard = ({ auction, t }) => {
             </Link>
           </div>
 
-          {/* Right side - Image & Timer */}
-          <div className="w-20 sm:w-24 flex flex-col items-center flex-shrink-0">
-            {/* Timer */}
-            <div className={`w-full text-center py-1.5 px-1 rounded-lg text-white text-[10px] sm:text-xs font-mono font-bold ${
-              isUrgent ? 'bg-red-500' : isEnded ? 'bg-gray-400' : 'bg-blue-500'
+          {/* Right side - Timer & Image stacked vertically */}
+          <div className="w-24 flex flex-col items-center flex-shrink-0">
+            {/* Timer Badge */}
+            <div className={`w-full text-center py-1.5 px-2 rounded-lg text-white text-xs font-mono font-bold mb-2 ${
+              isUrgent ? 'bg-red-500 animate-pulse' : isEnded ? 'bg-gray-400' : 'bg-blue-500'
             }`}>
               {isEnded ? t('auctionCard.end') : `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
             </div>
             
-            {/* Product Image - Fixed size container */}
-            <div className="w-16 h-16 sm:w-20 sm:h-20 mt-2 flex items-center justify-center bg-white rounded-lg overflow-hidden">
+            {/* Product Image */}
+            <div className="w-20 h-20 flex items-center justify-center bg-white rounded-lg overflow-hidden border border-gray-100">
               <img
                 src={product.image_url || 'https://via.placeholder.com/80'}
                 alt={product.name}
