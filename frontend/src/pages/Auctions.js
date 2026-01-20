@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useLanguage } from '../context/LanguageContext';
-import { RefreshCw, Search, Flame, Clock, TrendingUp } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { RefreshCw, Search, Flame, Clock, TrendingUp, Bell, BellOff } from 'lucide-react';
+import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
