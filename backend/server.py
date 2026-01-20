@@ -159,15 +159,20 @@ async def websocket_all_auctions_legacy(websocket: WebSocket):
 # ==================== BOT BACKGROUND TASK ====================
 
 async def bot_last_second_bidder():
-    """Background task - bots bid in last seconds until CUSTOMER bids reach target price"""
+    """Background task - bots bid in last seconds until auction price reaches bot_target_price.
+    
+    WICHTIG: Bots bieten NUR bis der aktuelle Preis den bot_target_price erreicht hat.
+    Danach hören die Bots auf und nur echte Kunden können bieten.
+    Dies stellt sicher, dass echtes Geld verdient wird, bevor Bots aufhören.
+    """
     global bot_task_running
     
-    logger.info("Bot continuous bidder started")
+    logger.info("Bot continuous bidder started - Bots bieten bis zum Zielpreis")
     last_bot_per_auction = {}
     
     while bot_task_running:
         try:
-            # Get auctions with bot targets
+            # Get auctions with bot targets that haven't reached the target yet
             active_auctions = await db.auctions.find({
                 "status": "active",
                 "bot_target_price": {"$gt": 0}
@@ -182,20 +187,16 @@ async def bot_last_second_bidder():
                     # Bid when 1-5 seconds left
                     if 1 <= seconds_left <= 5:
                         target_price = auction.get("bot_target_price", 0)
+                        current_price = auction.get("current_price", 0)
                         auction_id = auction.get("id")
                         bid_increment = auction.get("bid_increment", 0.01)
                         
-                        # Calculate CUSTOMER-ONLY bid total (exclude bot bids)
-                        bid_history = auction.get("bid_history", [])
-                        customer_bids = [b for b in bid_history if not b.get("is_bot", False)]
-                        customer_bid_count = len(customer_bids)
+                        # WICHTIG: Prüfe ob der AKTUELLE PREIS den Zielpreis erreicht hat
+                        # Wenn ja, bieten Bots NICHT mehr - nur echte Kunden können jetzt bieten
+                        # Wenn nein, bieten Bots weiter um den Preis zum Zielpreis zu treiben
                         
-                        # Customer price = number of customer bids * bid_increment
-                        # This represents what customers have "paid" in bid increments
-                        customer_price_contribution = customer_bid_count * bid_increment
-                        
-                        # Bots keep bidding until CUSTOMERS have contributed enough to reach target
-                        if customer_price_contribution < target_price:
+                        # Bots bieten nur wenn der aktuelle Preis UNTER dem Zielpreis liegt
+                        if current_price < target_price:
                             # Get bots
                             bots = await db.bots.find({}, {"_id": 0}).to_list(100)
                             if bots:
