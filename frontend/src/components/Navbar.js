@@ -61,6 +61,14 @@ export const Navbar = () => {
               {t('nav.buyBids')}
             </Link>
             <Link 
+              to="/vip" 
+              className="text-[#FFA500] hover:text-[#FFD700] transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-vip"
+            >
+              <Crown className="w-4 h-4" />
+              VIP
+            </Link>
+            <Link 
               to="/faq" 
               className="text-[#94A3B8] hover:text-white transition-colors font-medium"
               data-testid="nav-faq"
