@@ -2027,7 +2027,7 @@ export default function Admin() {
                           }
                           setSendingEmail(true);
                           try {
-                            await axios.post(`${API}/admin/email/test`, {
+                            await axios.post(`${API}/admin/email/send-test`, {
                               to_email: emailForm.test_email,
                               subject: emailForm.subject,
                               html_content: emailForm.html_content || '<p>Test E-Mail</p>'
