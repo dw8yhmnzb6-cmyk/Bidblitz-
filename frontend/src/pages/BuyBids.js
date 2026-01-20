@@ -173,11 +173,28 @@ export default function BuyBids() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 py-4 mb-6 rounded-lg bg-[#181824]">
+                <div className="flex items-center justify-center gap-2 py-4 mb-2 rounded-lg bg-[#181824]">
                   <Zap className="w-6 h-6 text-[#F59E0B]" />
                   <span className="text-2xl font-bold text-white">{pkg.bids}</span>
                   <span className="text-[#94A3B8]">Gebote</span>
                 </div>
+                
+                {/* Bonus Bids */}
+                {pkg.bonus > 0 && (
+                  <div className="text-center mb-4">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm font-semibold">
+                      <Sparkles className="w-4 h-4" />
+                      +{pkg.bonus} GRATIS Gebote!
+                    </span>
+                  </div>
+                )}
+                
+                {/* Price per bid */}
+                {pkg.per_bid && (
+                  <div className="text-center text-gray-400 text-sm mb-4">
+                    Nur €{pkg.per_bid.toFixed(2)} pro Gebot
+                  </div>
+                )}
 
                 <ul className="space-y-3 mb-6">
                   {getPackageFeatures(pkg).map((feature, index) => (
