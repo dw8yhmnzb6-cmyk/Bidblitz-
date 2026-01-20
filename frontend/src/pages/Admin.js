@@ -512,6 +512,88 @@ export default function Admin() {
     }
   };
 
+  // Email template HTML generator
+  const getTemplateHtml = (templateId) => {
+    const templates = {
+      welcome: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f4;">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#fff;">
+<tr><td style="background:linear-gradient(135deg,#7C3AED,#EC4899);padding:30px;text-align:center;">
+<h1 style="color:#fff;margin:0;font-size:28px;">🎉 Willkommen bei BidBlitz!</h1>
+</td></tr>
+<tr><td style="padding:30px;">
+<p style="font-size:18px;color:#333;">Hallo <strong>{name}</strong>,</p>
+<p style="color:#555;line-height:1.6;">Vielen Dank für Ihre Registrierung! Als Willkommensgeschenk haben wir Ihnen <strong>10 kostenlose Gebote</strong> gutgeschrieben.</p>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/auctions" style="background:#7C3AED;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt mitbieten</a></p>
+<p style="color:#888;font-size:14px;">Viel Erfolg beim Bieten!<br>Ihr BidBlitz Team</p>
+</td></tr>
+</table>
+</body>
+</html>`,
+      new_auction: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f4;">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#fff;">
+<tr><td style="background:linear-gradient(135deg,#FFD700,#FF4D4D);padding:30px;text-align:center;">
+<h1 style="color:#111;margin:0;font-size:28px;">🔥 Neue Auktion gestartet!</h1>
+</td></tr>
+<tr><td style="padding:30px;">
+<p style="font-size:18px;color:#333;">Hallo <strong>{name}</strong>,</p>
+<p style="color:#555;line-height:1.6;">Eine neue spannende Auktion wurde soeben gestartet! Verpassen Sie nicht Ihre Chance auf ein tolles Schnäppchen.</p>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/auctions" style="background:#FFD700;color:#111;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Zur Auktion</a></p>
+<p style="color:#888;font-size:14px;">Viel Erfolg beim Bieten!<br>Ihr BidBlitz Team</p>
+</td></tr>
+</table>
+</body>
+</html>`,
+      special_offer: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f4;">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#fff;">
+<tr><td style="background:linear-gradient(135deg,#10B981,#06B6D4);padding:30px;text-align:center;">
+<h1 style="color:#fff;margin:0;font-size:28px;">💰 Exklusives Angebot!</h1>
+</td></tr>
+<tr><td style="padding:30px;">
+<p style="font-size:18px;color:#333;">Hallo <strong>{name}</strong>,</p>
+<p style="color:#555;line-height:1.6;">Nur für kurze Zeit: Kaufen Sie jetzt ein Gebotspaket und erhalten Sie <strong>50% mehr Gebote</strong> gratis dazu!</p>
+<div style="background:#f9f9f9;border-radius:10px;padding:20px;margin:20px 0;text-align:center;">
+<p style="margin:0;font-size:24px;color:#10B981;font-weight:bold;">100 Gebote + 50 GRATIS</p>
+<p style="margin:10px 0 0;color:#888;">Nur €29,99 statt €44,99</p>
+</div>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/buy-bids" style="background:#10B981;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt sichern</a></p>
+</td></tr>
+</table>
+</body>
+</html>`,
+      reactivation: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f4f4f4;">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;margin:0 auto;background:#fff;">
+<tr><td style="background:linear-gradient(135deg,#F59E0B,#EF4444);padding:30px;text-align:center;">
+<h1 style="color:#fff;margin:0;font-size:28px;">😢 Wir vermissen Sie!</h1>
+</td></tr>
+<tr><td style="padding:30px;">
+<p style="font-size:18px;color:#333;">Hallo <strong>{name}</strong>,</p>
+<p style="color:#555;line-height:1.6;">Es ist schon eine Weile her, seit Sie das letzte Mal bei uns waren. Kommen Sie zurück und sichern Sie sich tolle Schnäppchen!</p>
+<p style="color:#555;line-height:1.6;">Als kleines Willkommensgeschenk haben wir Ihnen <strong>5 kostenlose Gebote</strong> gutgeschrieben.</p>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/auctions" style="background:#F59E0B;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt zurückkommen</a></p>
+</td></tr>
+</table>
+</body>
+</html>`
+    };
+    return templates[templateId] || '';
+  };
+
   if (!isAdmin) {
     return (
       <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
