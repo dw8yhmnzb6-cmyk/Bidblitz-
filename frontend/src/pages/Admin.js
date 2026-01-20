@@ -74,6 +74,18 @@ export default function Admin() {
     auction_id: '', target_price: '', num_bids: '5'
   });
 
+  // Email Marketing states
+  const [emailTemplates, setEmailTemplates] = useState([]);
+  const [emailUserStats, setEmailUserStats] = useState(null);
+  const [emailCampaigns, setEmailCampaigns] = useState([]);
+  const [emailForm, setEmailForm] = useState({
+    subject: '',
+    html_content: '',
+    target_group: 'all',
+    test_email: ''
+  });
+  const [sendingEmail, setSendingEmail] = useState(false);
+
   useEffect(() => {
     if (isAdmin) {
       fetchData();
