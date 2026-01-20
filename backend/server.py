@@ -100,6 +100,7 @@ app.include_router(staff_router, prefix="/api")
 app.include_router(rewards_router, prefix="/api")
 app.include_router(invoices_router, prefix="/api")
 app.include_router(notifications_router, prefix="/api")
+app.include_router(vip_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
