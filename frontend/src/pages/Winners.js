@@ -94,7 +94,27 @@ export default function Winners() {
   const fetchWinners = async () => {
     try {
       const response = await axios.get(`${API}/winners?limit=30`);
-      setWinners(response.data);
+      // Transform data to include calculated fields
+      const transformedWinners = response.data.map(auction => {
+        const retailPrice = auction.product?.retail_price || 0;
+        const finalPrice = auction.final_price || auction.current_price || 0;
+        const savingsPercent = retailPrice > 0 
+          ? Math.round((1 - finalPrice / retailPrice) * 100) 
+          : 0;
+        
+        return {
+          auction_id: auction.id,
+          product_name: auction.product?.name || 'Unbekanntes Produkt',
+          product_image: auction.product?.image_url || '',
+          winner_name: auction.winner_name || 'Anonym',
+          final_price: finalPrice,
+          retail_price: retailPrice,
+          savings_percent: savingsPercent,
+          total_bids: auction.total_bids || 0,
+          ended_at: auction.ended_at || auction.end_time
+        };
+      });
+      setWinners(transformedWinners);
     } catch (error) {
       console.error('Error fetching winners:', error);
     } finally {
