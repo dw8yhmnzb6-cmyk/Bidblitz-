@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { FileText, Download, Trophy, CreditCard, Calendar } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { 
-  FileText, Download, Calendar, CreditCard, 
-  Package, Euro, ArrowLeft
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -23,43 +20,52 @@ export default function Invoices() {
 
   const fetchInvoices = async () => {
     try {
-      const response = await axios.get(`${API}/invoices`, {
+      const res = await axios.get(`${API}/invoices/user/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setInvoices(response.data);
+      setInvoices(res.data.invoices || []);
     } catch (error) {
       console.error('Error fetching invoices:', error);
+      toast.error('Fehler beim Laden der Rechnungen');
     } finally {
       setLoading(false);
     }
   };
 
-  const downloadInvoice = async (invoiceId) => {
+  const downloadInvoice = async (invoice) => {
     try {
-      const response = await axios.get(`${API}/invoices/${invoiceId}/download`, {
+      const endpoint = invoice.type === 'auction_win'
+        ? `${API}/invoices/auction-win/${invoice.id}`
+        : `${API}/invoices/${invoice.id}`;
+      
+      const response = await axios.get(endpoint, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob'
       });
       
+      // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `BidBlitz_Rechnung_${invoiceId.substring(0, 8)}.pdf`);
+      link.setAttribute('download', `rechnung_${invoice.invoice_number}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
+      
+      toast.success('Rechnung heruntergeladen');
     } catch (error) {
       console.error('Error downloading invoice:', error);
+      toast.error('Fehler beim Download');
     }
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center bg-[#0a1929]">
         <div className="glass-card p-8 rounded-xl text-center max-w-md">
           <FileText className="w-16 h-16 text-[#FFD700] mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-white mb-4">Rechnungen</h2>
+          <h2 className="text-xl font-bold text-white mb-4">Meine Rechnungen</h2>
           <p className="text-[#94A3B8] mb-6">Melden Sie sich an, um Ihre Rechnungen zu sehen.</p>
           <Button className="btn-primary" onClick={() => window.location.href = '/login'}>
             Anmelden
@@ -69,102 +75,97 @@ export default function Invoices() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen pt-24 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFD700]"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4" data-testid="invoices-page">
-      <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
-        <Link to="/dashboard" className="inline-flex items-center gap-2 text-[#94A3B8] hover:text-white mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" />
-          Zurück zum Dashboard
-        </Link>
-
+    <div className="min-h-screen pt-20 pb-12 px-4 bg-gradient-to-b from-[#0a1929] to-[#0d2538]" data-testid="invoices-page">
+      <div className="max-w-3xl mx-auto">
+        
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-[#FFD700] to-[#FF4D4D] flex items-center justify-center">
-            <FileText className="w-7 h-7 text-black" />
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FFD700] to-[#FF4D4D] flex items-center justify-center">
+            <FileText className="w-6 h-6 text-black" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white">Meine Rechnungen</h1>
-            <p className="text-[#94A3B8]">Alle Ihre Käufe auf einen Blick</p>
+            <h1 className="text-xl font-bold text-white">Meine Rechnungen</h1>
+            <p className="text-sm text-gray-400">{invoices.length} Rechnungen</p>
           </div>
         </div>
 
-        {/* Invoices List */}
-        {invoices.length === 0 ? (
-          <div className="glass-card p-12 rounded-xl text-center">
-            <FileText className="w-16 h-16 text-[#475569] mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">Keine Rechnungen vorhanden</h3>
-            <p className="text-[#94A3B8] mb-6">
-              Sobald Sie ein Gebotspaket kaufen, erscheint hier Ihre Rechnung.
-            </p>
-            <Link to="/buy-bids">
-              <Button className="bg-gradient-to-r from-[#FFD700] to-[#FF4D4D] text-black font-bold">
-                <Package className="w-5 h-5 mr-2" />
-                Gebote kaufen
-              </Button>
-            </Link>
+        {/* Invoice List */}
+        {loading ? (
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FFD700]"></div>
+          </div>
+        ) : invoices.length === 0 ? (
+          <div className="text-center py-12 bg-[#1a3a52] rounded-xl">
+            <FileText className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+            <p className="text-white font-medium">Keine Rechnungen</p>
+            <p className="text-gray-400 text-sm mt-1">Ihre Rechnungen erscheinen hier nach dem Kauf</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {invoices.map((invoice) => (
               <div 
                 key={invoice.id}
-                className="glass-card p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                data-testid={`invoice-${invoice.id}`}
+                className="bg-[#1a3a52] rounded-xl p-4 border border-white/5 hover:border-white/10 transition-all"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#181824] flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-[#FFD700]" />
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      invoice.type === 'auction_win' 
+                        ? 'bg-green-500/20 text-green-400'
+                        : 'bg-blue-500/20 text-blue-400'
+                    }`}>
+                      {invoice.type === 'auction_win' ? (
+                        <Trophy className="w-5 h-5" />
+                      ) : (
+                        <CreditCard className="w-5 h-5" />
+                      )}
+                    </div>
+                    
+                    <div>
+                      <p className="text-white font-medium">{invoice.invoice_number}</p>
+                      <p className="text-gray-400 text-sm mt-0.5">{invoice.description}</p>
+                      <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {invoice.date ? new Date(invoice.date).toLocaleDateString('de-DE') : 'N/A'}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded ${
+                          invoice.type === 'auction_win'
+                            ? 'bg-green-500/20 text-green-400'
+                            : 'bg-blue-500/20 text-blue-400'
+                        }`}>
+                          {invoice.type === 'auction_win' ? 'Gewinn' : 'Kauf'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-bold text-white">{invoice.invoice_number}</p>
-                    <p className="text-[#94A3B8] text-sm flex items-center gap-2">
-                      <Calendar className="w-3 h-3" />
-                      {new Date(invoice.date).toLocaleDateString('de-DE')}
+                  
+                  <div className="text-right flex flex-col items-end gap-2">
+                    <p className="text-white font-bold text-lg">
+                      €{invoice.amount?.toFixed(2).replace('.', ',')}
                     </p>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => downloadInvoice(invoice)}
+                      className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-400/10"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      PDF
+                    </Button>
                   </div>
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="text-center">
-                    <p className="text-[#94A3B8] text-xs">Paket</p>
-                    <p className="text-white font-medium">{invoice.package_name}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[#94A3B8] text-xs">Gebote</p>
-                    <p className="text-[#FFD700] font-bold">{invoice.bids}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-[#94A3B8] text-xs">Betrag</p>
-                    <p className="text-white font-bold font-mono">€{invoice.amount?.toFixed(2)}</p>
-                  </div>
-                  <Button
-                    onClick={() => downloadInvoice(invoice.id)}
-                    variant="outline"
-                    className="border-[#FFD700]/30 text-[#FFD700] hover:bg-[#FFD700]/10"
-                    data-testid={`download-invoice-${invoice.id}`}
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    PDF
-                  </Button>
                 </div>
               </div>
             ))}
           </div>
         )}
 
-        {/* Info */}
-        <div className="glass-card p-4 rounded-xl mt-8 border border-white/10">
-          <p className="text-[#94A3B8] text-sm text-center">
-            Alle Preise inkl. 19% MwSt. • Rechnungen werden automatisch nach jedem Kauf erstellt
+        {/* Info Note */}
+        <div className="mt-6 p-4 bg-[#1a3a52]/50 rounded-xl border border-white/5">
+          <p className="text-gray-400 text-xs text-center">
+            Alle Rechnungen enthalten die gesetzlich vorgeschriebene Mehrwertsteuer (19%).
+            Bei Fragen wenden Sie sich an support@bidblitz.de
           </p>
         </div>
       </div>
