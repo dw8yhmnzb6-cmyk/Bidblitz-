@@ -16,6 +16,28 @@ Penny-Auktion-Website ähnlich dealdash.com und snipster.de mit Kunden-App und A
 
 ---
 
+## ✅ COMPLETED - Neue Seiten & Preise (20.01.2026)
+
+### Neue Seiten erstellt (wie snipster.de)
+- [x] **So funktioniert's** (`/how-it-works`) - 4-Schritte-Erklärung mit Beispielrechnung
+- [x] **FAQ** (`/faq`) - Kategorisierte Fragen mit Suchfunktion
+- [x] **Kontakt** (`/contact`) - Kontaktformular mit E-Mail, Telefon, Adresse
+
+### Aktualisierte Gebotspakete
+| Paket | Preis | Gebote | Bonus | Pro Gebot |
+|-------|-------|--------|-------|-----------|
+| Mini | 5€ | 10 | - | 0,50€ |
+| Starter | 10€ | 20 | +2 | 0,45€ |
+| Basic | 20€ | 40 | +5 | 0,44€ |
+| Pro | 50€ | 100 | +15 | 0,43€ |
+| Ultimate | 100€ | 200 | +30 | 0,43€ |
+
+### Aktualisierte Navigation
+- Desktop: Auktionen | So funktioniert's | Gebote kaufen | FAQ | Gewinner | Dashboard | Admin
+- Mobile: Hamburger-Menü mit allen Seiten
+
+---
+
 ## ✅ COMPLETED - Bug Fixes (20.01.2026)
 
 ### Kritischer Auktions-Timer Bug behoben
