@@ -328,6 +328,7 @@ async def get_autobidder_stats(auction_id: str, user: dict = Depends(get_current
                  (auction and auction.get("current_price", 0) < autobidder.get("max_price", float('inf'))))
             )
         }
+    }
 
 @router.put("/autobidder/{autobidder_id}/toggle")
 async def toggle_autobidder(autobidder_id: str, user: dict = Depends(get_current_user)):
@@ -354,7 +355,6 @@ async def toggle_autobidder(autobidder_id: str, user: dict = Depends(get_current
         "message": f"Autobidder {status_msg}",
         "is_paused": new_paused,
         "is_active": autobidder.get("is_active", True)
-    }
     }
 
 # ==================== ADMIN ENDPOINTS ====================
