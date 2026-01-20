@@ -230,6 +230,10 @@ export const Navbar = () => {
               <Trophy className="w-4 h-4" />
               {t('nav.winners')}
             </Link>
+            
+            {/* Separator */}
+            <div className="border-t border-white/10 my-3"></div>
+            
             {isAuthenticated && (
               <>
                 <Link 
@@ -248,26 +252,30 @@ export const Navbar = () => {
                     Admin Panel
                   </Link>
                 )}
-                <div className="flex items-center gap-2 py-2">
+                <div className="flex items-center gap-2 py-2 bg-[#06B6D4]/10 px-3 rounded-lg my-2">
                   <Zap className="w-4 h-4 text-[#06B6D4]" />
                   <span className="font-mono font-bold text-[#06B6D4]">{user?.bids_balance || 0}</span>
                   <span className="text-[#94A3B8] text-sm">{t('nav.bids')}</span>
                 </div>
                 <button 
                   onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-                  className="block text-[#EF4444] py-2"
+                  className="w-full text-left bg-[#EF4444]/10 text-[#EF4444] py-3 px-4 rounded-lg font-medium mt-2"
                 >
-                  {t('nav.logout')}
+                  {t('nav.logout') || 'Abmelden'}
                 </button>
               </>
             )}
             {!isAuthenticated && (
-              <div className="flex gap-2 pt-2">
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="ghost" className="text-white">{t('nav.login')}</Button>
+              <div className="space-y-2 pt-2">
+                <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block">
+                  <Button variant="outline" className="w-full border-[#7C3AED] text-[#7C3AED] py-3">
+                    {t('nav.login') || 'Anmelden'}
+                  </Button>
                 </Link>
-                <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="btn-primary">{t('nav.register')}</Button>
+                <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="block">
+                  <Button className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black py-3 font-bold">
+                    {t('nav.register') || 'Registrieren'}
+                  </Button>
                 </Link>
               </div>
             )}
