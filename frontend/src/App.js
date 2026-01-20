@@ -35,6 +35,7 @@ import Notifications from "./pages/Notifications";
 import HowItWorks from "./pages/HowItWorks";
 import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
+import VIP from "./pages/VIP";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
