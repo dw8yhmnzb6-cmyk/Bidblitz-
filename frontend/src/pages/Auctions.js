@@ -411,6 +411,11 @@ export default function Auctions() {
           <TrendingUp className="w-3 h-3 text-cyan-400" />
           <span className="text-[10px] text-gray-400">
             {sorted.length} Auktionen gefunden
+            {reminders.length > 0 && (
+              <span className="ml-2 text-yellow-400">
+                <Bell className="w-3 h-3 inline" /> {reminders.length} Erinnerungen
+              </span>
+            )}
           </span>
         </div>
 
@@ -421,6 +426,9 @@ export default function Auctions() {
               key={auction.id} 
               auction={auction} 
               product={products[auction.product_id]}
+              reminders={reminders}
+              onToggleReminder={handleToggleReminder}
+              isLoggedIn={!!token}
             />
           ))}
         </div>
