@@ -427,13 +427,13 @@ export default function Dashboard() {
                 <Bot className="w-5 h-5 text-[#06B6D4]" />
                 Meine Autobidder
               </h2>
-              {autobidders.length === 0 ? (
+              {(autobidders || []).length === 0 ? (
                 <p className="text-[#94A3B8] text-sm text-center py-4">
                   Keine aktiven Autobidder. Erstellen Sie einen auf der Auktionsdetailseite!
                 </p>
               ) : (
                 <div className="space-y-2">
-                  {autobidders.map((ab) => (
+                  {(autobidders || []).map((ab) => (
                     <div key={ab.id} className="flex items-center justify-between p-3 rounded-lg bg-[#181824]">
                       <div className="flex-1 min-w-0">
                         <p className="text-white text-sm truncate">{ab.auction_name || 'Auktion'}</p>
