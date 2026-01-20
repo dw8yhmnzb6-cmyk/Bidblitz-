@@ -241,18 +241,26 @@ export default function Auctions() {
         );
       }
       
-      const [auctionRes, productRes, remindersRes] = await Promise.all(requests);
-      ]);
+      const results = await Promise.all(requests);
+      const auctionRes = results[0];
+      const productRes = results[1];
+      const remindersRes = results[2];
+      
       setAuctions(auctionRes.data);
       const productMap = {};
       productRes.data.forEach(p => { productMap[p.id] = p; });
       setProducts(productMap);
+      
+      // Set reminder auction IDs
+      if (remindersRes?.data?.reminders) {
+        setReminders(remindersRes.data.reminders.map(r => r.auction_id));
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     fetchAuctions();
