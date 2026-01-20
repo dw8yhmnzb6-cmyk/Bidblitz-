@@ -121,7 +121,7 @@ export const translations = {
     }
   },
   en: {
-    nav: { auctions: "Auctions", buyBids: "Buy Bids", dashboard: "Dashboard", admin: "Admin", login: "Login", register: "Register", logout: "Logout", bids: "Bids", winners: "Winners", inviteFriends: "Invite Friends", wishlist: "Wishlist" },
+    nav: { auctions: "Auctions", buyBids: "Buy Bids", dashboard: "Dashboard", admin: "Admin", login: "Login", register: "Register", logout: "Logout", bids: "Bids", winners: "Winners", inviteFriends: "Invite Friends", wishlist: "Wishlist", howItWorks: "How it works", vip: "VIP Membership", faq: "FAQ", contact: "Contact" },
     home: {
       badge: "10 free bids on registration",
       heroTitle1: "Win",
@@ -164,7 +164,7 @@ export const translations = {
     admin: { category: "Category" }
   },
   fr: {
-    nav: { auctions: "Enchères", buyBids: "Acheter des offres", dashboard: "Tableau de bord", admin: "Admin", login: "Connexion", register: "S'inscrire", logout: "Déconnexion", bids: "Offres", winners: "Gagnants", inviteFriends: "Inviter des amis", wishlist: "Liste de souhaits" },
+    nav: { auctions: "Enchères", buyBids: "Acheter des offres", dashboard: "Tableau de bord", admin: "Admin", login: "Connexion", register: "S'inscrire", logout: "Déconnexion", bids: "Offres", winners: "Gagnants", inviteFriends: "Inviter des amis", wishlist: "Liste de souhaits", howItWorks: "Comment ça marche", vip: "Adhésion VIP", faq: "FAQ", contact: "Contact" },
     home: {
       badge: "10 offres gratuites à l'inscription",
       heroTitle1: "Gagnez",
@@ -205,7 +205,7 @@ export const translations = {
     common: { loading: "Chargement...", error: "Erreur", success: "Succès", save: "Sauvegarder", cancel: "Annuler" }
   },
   es: {
-    nav: { auctions: "Subastas", buyBids: "Comprar pujas", dashboard: "Panel", admin: "Admin", login: "Iniciar sesión", register: "Registrarse", logout: "Cerrar sesión", bids: "Pujas", winners: "Ganadores", inviteFriends: "Invitar amigos", wishlist: "Lista de deseos" },
+    nav: { auctions: "Subastas", buyBids: "Comprar pujas", dashboard: "Panel", admin: "Admin", login: "Iniciar sesión", register: "Registrarse", logout: "Cerrar sesión", bids: "Pujas", winners: "Ganadores", inviteFriends: "Invitar amigos", wishlist: "Lista de deseos", howItWorks: "Cómo funciona", vip: "Membresía VIP", faq: "FAQ", contact: "Contacto" },
     home: {
       badge: "10 pujas gratis al registrarse",
       heroTitle1: "Gana",
@@ -246,7 +246,7 @@ export const translations = {
     common: { loading: "Cargando...", error: "Error", success: "Éxito", save: "Guardar", cancel: "Cancelar" }
   },
   it: {
-    nav: { auctions: "Aste", buyBids: "Compra offerte", dashboard: "Pannello", admin: "Admin", login: "Accedi", register: "Registrati", logout: "Esci", bids: "Offerte", winners: "Vincitori", inviteFriends: "Invita amici", wishlist: "Lista desideri" },
+    nav: { auctions: "Aste", buyBids: "Compra offerte", dashboard: "Pannello", admin: "Admin", login: "Accedi", register: "Registrati", logout: "Esci", bids: "Offerte", winners: "Vincitori", inviteFriends: "Invita amici", wishlist: "Lista desideri", howItWorks: "Come funziona", vip: "Abbonamento VIP", faq: "FAQ", contact: "Contatto" },
     home: {
       badge: "10 offerte gratis alla registrazione",
       heroTitle1: "Vinci",
@@ -287,7 +287,7 @@ export const translations = {
     common: { loading: "Caricamento...", error: "Errore", success: "Successo", save: "Salva", cancel: "Annulla" }
   },
   pt: {
-    nav: { auctions: "Leilões", buyBids: "Comprar lances", dashboard: "Painel", admin: "Admin", login: "Entrar", register: "Registrar", logout: "Sair", bids: "Lances", winners: "Vencedores", inviteFriends: "Convidar amigos", wishlist: "Lista de desejos" },
+    nav: { auctions: "Leilões", buyBids: "Comprar lances", dashboard: "Painel", admin: "Admin", login: "Entrar", register: "Registrar", logout: "Sair", bids: "Lances", winners: "Vencedores", inviteFriends: "Convidar amigos", wishlist: "Lista de desejos", howItWorks: "Como funciona", vip: "Assinatura VIP", faq: "FAQ", contact: "Contato" },
     home: {
       badge: "10 lances grátis no registro",
       heroTitle1: "Ganhe",
@@ -328,7 +328,7 @@ export const translations = {
     common: { loading: "Carregando...", error: "Erro", success: "Sucesso", save: "Salvar", cancel: "Cancelar" }
   },
   nl: {
-    nav: { auctions: "Veilingen", buyBids: "Biedingen kopen", dashboard: "Dashboard", admin: "Admin", login: "Inloggen", register: "Registreren", logout: "Uitloggen", bids: "Biedingen", winners: "Winnaars", inviteFriends: "Vrienden uitnodigen", wishlist: "Verlanglijst" },
+    nav: { auctions: "Veilingen", buyBids: "Biedingen kopen", dashboard: "Dashboard", admin: "Admin", login: "Inloggen", register: "Registreren", logout: "Uitloggen", bids: "Biedingen", winners: "Winnaars", inviteFriends: "Vrienden uitnodigen", wishlist: "Verlanglijst", howItWorks: "Hoe het werkt", vip: "VIP Lidmaatschap", faq: "FAQ", contact: "Contact" },
     home: {
       badge: "10 gratis biedingen bij registratie",
       heroTitle1: "Win",
@@ -369,7 +369,7 @@ export const translations = {
     common: { loading: "Laden...", error: "Fout", success: "Succes", save: "Opslaan", cancel: "Annuleren" }
   },
   pl: {
-    nav: { auctions: "Aukcje", buyBids: "Kup licytacje", dashboard: "Panel", admin: "Admin", login: "Zaloguj", register: "Zarejestruj", logout: "Wyloguj", bids: "Licytacje", winners: "Zwycięzcy", inviteFriends: "Zaproś znajomych", wishlist: "Lista życzeń" },
+    nav: { auctions: "Aukcje", buyBids: "Kup licytacje", dashboard: "Panel", admin: "Admin", login: "Zaloguj", register: "Zarejestruj", logout: "Wyloguj", bids: "Licytacje", winners: "Zwycięzcy", inviteFriends: "Zaproś znajomych", wishlist: "Lista życzeń", howItWorks: "Jak to działa", vip: "Członkostwo VIP", faq: "FAQ", contact: "Kontakt" },
     home: {
       badge: "10 darmowych licytacji przy rejestracji",
       heroTitle1: "Wygrywaj",
@@ -410,7 +410,7 @@ export const translations = {
     common: { loading: "Ładowanie...", error: "Błąd", success: "Sukces", save: "Zapisz", cancel: "Anuluj" }
   },
   tr: {
-    nav: { auctions: "Müzayedeler", buyBids: "Teklif satın al", dashboard: "Panel", admin: "Yönetici", login: "Giriş", register: "Kayıt ol", logout: "Çıkış", bids: "Teklifler", winners: "Kazananlar", inviteFriends: "Arkadaşları davet et", wishlist: "İstek listesi" },
+    nav: { auctions: "Müzayedeler", buyBids: "Teklif satın al", dashboard: "Panel", admin: "Yönetici", login: "Giriş", register: "Kayıt ol", logout: "Çıkış", bids: "Teklifler", winners: "Kazananlar", inviteFriends: "Arkadaşları davet et", wishlist: "İstek listesi", howItWorks: "Nasıl çalışır", vip: "VIP Üyelik", faq: "SSS", contact: "İletişim" },
     home: {
       badge: "Kayıtta 10 ücretsiz teklif",
       heroTitle1: "Kazan",
@@ -451,7 +451,7 @@ export const translations = {
     common: { loading: "Yükleniyor...", error: "Hata", success: "Başarılı", save: "Kaydet", cancel: "İptal" }
   },
   ru: {
-    nav: { auctions: "Аукционы", buyBids: "Купить ставки", dashboard: "Панель", admin: "Админ", login: "Войти", register: "Регистрация", logout: "Выйти", bids: "Ставки", winners: "Победители", inviteFriends: "Пригласить друзей", wishlist: "Список желаний" },
+    nav: { auctions: "Аукционы", buyBids: "Купить ставки", dashboard: "Панель", admin: "Админ", login: "Войти", register: "Регистрация", logout: "Выйти", bids: "Ставки", winners: "Победители", inviteFriends: "Пригласить друзей", wishlist: "Список желаний", howItWorks: "Как это работает", vip: "VIP Членство", faq: "FAQ", contact: "Контакт" },
     home: {
       badge: "10 бесплатных ставок при регистрации",
       heroTitle1: "Выигрывайте",
@@ -622,7 +622,7 @@ export const translations = {
     common: { loading: "लोड हो रहा है...", error: "त्रुटि", success: "सफलता", save: "सेव करें", cancel: "रद्द करें" }
   },
   sq: {
-    nav: { auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave" },
+    nav: { auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave", howItWorks: "Si funksionon", vip: "Anëtarësimi VIP", faq: "FAQ", contact: "Kontakt" },
     home: {
       badge: "10 oferta falas me regjistrim",
       heroTitle1: "Fito",
@@ -808,7 +808,7 @@ export const translations = {
     common: { loading: "Duke ngarkuar...", error: "Gabim", success: "Sukses", save: "Ruaj", cancel: "Anulo" }
   },
   el: {
-    nav: { auctions: "Δημοπρασίες", buyBids: "Αγορά Προσφορών", dashboard: "Πίνακας", admin: "Διαχειριστής", login: "Σύνδεση", register: "Εγγραφή", logout: "Αποσύνδεση", bids: "Προσφορές", winners: "Νικητές", inviteFriends: "Προσκάλεσε Φίλους", wishlist: "Λίστα Επιθυμιών" },
+    nav: { auctions: "Δημοπρασίες", buyBids: "Αγορά Προσφορών", dashboard: "Πίνακας", admin: "Διαχειριστής", login: "Σύνδεση", register: "Εγγραφή", logout: "Αποσύνδεση", bids: "Προσφορές", winners: "Νικητές", inviteFriends: "Προσκάλεσε Φίλους", wishlist: "Λίστα Επιθυμιών", howItWorks: "Πώς λειτουργεί", vip: "VIP Συνδρομή", faq: "FAQ", contact: "Επικοινωνία" },
     home: {
       badge: "10 δωρεάν προσφορές με εγγραφή",
       heroTitle1: "Κερδίστε",
