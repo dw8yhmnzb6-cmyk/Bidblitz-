@@ -268,6 +268,35 @@ export default function Auctions() {
     return () => clearInterval(interval);
   }, [fetchAuctions]);
 
+  // Toggle reminder for an auction
+  const handleToggleReminder = async (auctionId, hasReminder) => {
+    if (!token) {
+      toast.error('Bitte melden Sie sich an');
+      return;
+    }
+    
+    try {
+      if (hasReminder) {
+        // Remove reminder
+        await axios.delete(`${API}/notifications/auction-reminder/${auctionId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setReminders(prev => prev.filter(id => id !== auctionId));
+        toast.success('Erinnerung entfernt');
+      } else {
+        // Set reminder (5 min before end)
+        const res = await axios.post(`${API}/notifications/auction-reminder/${auctionId}`, 
+          { minutes_before: 5 },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setReminders(prev => [...prev, auctionId]);
+        toast.success(`⏰ ${res.data.message}`);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Setzen der Erinnerung');
+    }
+  };
+
   // Filter
   const filtered = auctions.filter(a => {
     if (statusFilter === 'active' && a.status !== 'active') return false;
