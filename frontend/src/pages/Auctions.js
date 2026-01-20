@@ -105,7 +105,7 @@ const SnipsterCard = ({ auction, t }) => {
         </h3>
         
         {/* Retail Price with Discount */}
-        <div className="flex items-center gap-2 mb-2">
+        <div className="flex items-center gap-2 mb-3">
           <p className="text-gray-500 text-xs">
             UVP: <span className="line-through">€{product.retail_price?.toFixed(0)},-</span>
           </p>
@@ -116,60 +116,58 @@ const SnipsterCard = ({ auction, t }) => {
           )}
         </div>
 
-        <div className="flex gap-3">
-          {/* Left side - Price & Button */}
-          <div className="flex-1 min-w-0">
-            {/* Current Price - CLEAR & BIG */}
-            <div className="bg-gray-100 rounded-lg p-2 mb-2">
-              <p className="text-xl font-black text-gray-900 font-mono leading-none">
+        {/* Price and Timer Row - Fixed Layout */}
+        <div className="flex items-start justify-between gap-2 mb-3">
+          {/* Left: Price Box */}
+          <div className="flex-shrink-0">
+            <div className="bg-gray-100 rounded-lg px-3 py-2">
+              <p className="text-xl font-black text-gray-900 font-mono whitespace-nowrap">
                 €{auction.current_price?.toFixed(2).replace('.', ',')}
               </p>
             </div>
-            
-            {/* Last Bidder */}
-            <p className="text-gray-600 text-[11px] mb-2 leading-tight truncate">
+            <p className="text-gray-500 text-[10px] mt-1">
               {auction.last_bidder_name || 'Startpreis'}
             </p>
-            
-            {/* Bid Button */}
-            <Link to={`/auctions/${auction.id}`}>
-              <button 
-                data-testid={`bid-button-${auction.id}`}
-                className={`w-full font-bold py-2 px-3 rounded-lg text-xs uppercase transition-all ${
-                  isEnded 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'bg-green-500 hover:bg-green-600 text-white shadow-md hover:shadow-lg'
-                }`}
-                disabled={isEnded}
-              >
-                {isEnded ? t('auctionCard.ended') : t('auctionCard.bidNow')}
-              </button>
-            </Link>
           </div>
-
-          {/* Right side - Timer & Image stacked vertically */}
-          <div className="w-24 flex flex-col items-center flex-shrink-0">
-            {/* Timer Badge */}
-            <div className={`w-full text-center py-1.5 px-2 rounded-lg text-white text-xs font-mono font-bold mb-2 ${
-              isUrgent ? 'bg-red-500 animate-pulse' : isEnded ? 'bg-gray-400' : 'bg-blue-500'
-            }`}>
-              {isEnded ? t('auctionCard.end') : `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
-            </div>
-            
-            {/* Product Image */}
-            <div className="w-20 h-20 flex items-center justify-center bg-white rounded-lg overflow-hidden border border-gray-100">
-              <img
-                src={product.image_url || 'https://via.placeholder.com/80'}
-                alt={product.name}
-                className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform"
-                onError={(e) => { e.target.src = 'https://via.placeholder.com/80?text=Bild'; }}
-              />
-            </div>
+          
+          {/* Right: Timer */}
+          <div className={`flex-shrink-0 text-center py-2 px-3 rounded-lg text-white text-sm font-mono font-bold ${
+            isUrgent ? 'bg-red-500 animate-pulse' : isEnded ? 'bg-gray-400' : 'bg-blue-500'
+          }`}>
+            {isEnded ? t('auctionCard.end') : `${formatTime(timeLeft.hours)}:${formatTime(timeLeft.minutes)}:${formatTime(timeLeft.seconds)}`}
           </div>
+        </div>
+        
+        {/* Image and Button Row */}
+        <div className="flex gap-3 items-end">
+          {/* Product Image */}
+          <div className="w-16 h-16 flex-shrink-0 flex items-center justify-center bg-white rounded-lg overflow-hidden border border-gray-100">
+            <img
+              src={product.image_url || 'https://via.placeholder.com/80'}
+              alt={product.name}
+              className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform"
+              onError={(e) => { e.target.src = 'https://via.placeholder.com/80?text=Bild'; }}
+            />
+          </div>
+          
+          {/* Bid Button */}
+          <Link to={`/auctions/${auction.id}`} className="flex-1">
+            <button 
+              data-testid={`bid-button-${auction.id}`}
+              className={`w-full font-bold py-2.5 px-3 rounded-lg text-xs uppercase transition-all ${
+                isEnded 
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
+                  : 'bg-green-500 hover:bg-green-600 text-white shadow-md hover:shadow-lg'
+              }`}
+              disabled={isEnded}
+            >
+              {isEnded ? t('auctionCard.ended') : t('auctionCard.bidNow')}
+            </button>
+          </Link>
         </div>
 
         {/* Activity & Bids */}
-        <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
+        <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
           <div className="flex items-center gap-2">
             <span>Aktivität:</span>
             <ActivityIndex bids={auction.total_bids || 0} />
