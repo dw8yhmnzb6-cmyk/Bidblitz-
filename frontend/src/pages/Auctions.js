@@ -25,6 +25,20 @@ const ActivityDots = ({ bids }) => {
   );
 };
 
+// Helper to parse ISO date correctly in all browsers
+const parseEndTime = (endTimeStr) => {
+  if (!endTimeStr) return null;
+  // Handle ISO string with +00:00 timezone - convert to Z format for consistent parsing
+  let normalizedStr = endTimeStr;
+  if (endTimeStr.includes('+00:00')) {
+    normalizedStr = endTimeStr.replace('+00:00', 'Z');
+  } else if (!endTimeStr.endsWith('Z') && !endTimeStr.includes('+') && !endTimeStr.includes('-', 10)) {
+    // If no timezone info, assume UTC
+    normalizedStr = endTimeStr + 'Z';
+  }
+  return new Date(normalizedStr);
+};
+
 // Compact Auction Card for Mobile
 const AuctionCard = ({ auction, product }) => {
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0, ended: false, loading: true });
@@ -32,8 +46,15 @@ const AuctionCard = ({ auction, product }) => {
   useEffect(() => {
     const calc = () => {
       // Parse end_time properly (handle timezone)
-      const endTime = new Date(auction.end_time);
+      const endTime = parseEndTime(auction.end_time);
       const now = new Date();
+      
+      // Safety check: if parsing failed or auction is explicitly ended
+      if (!endTime || isNaN(endTime.getTime())) {
+        setTimeLeft({ h: 0, m: 0, s: 0, ended: true, loading: false });
+        return;
+      }
+      
       const diff = endTime.getTime() - now.getTime();
       
       if (diff <= 0) {
