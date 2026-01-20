@@ -237,6 +237,30 @@ async def get_all_user_autobidders(user: dict = Depends(get_current_user)):
     
     return autobidders
 
+@router.get("/autobidder/my")
+async def get_my_autobidders(user: dict = Depends(get_current_user)):
+    """Get all autobidders for the current user (alias for frontend)"""
+    autobidders = await db.autobidders.find(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    ).to_list(100)
+    
+    # Enrich with auction info
+    for ab in autobidders:
+        auction = await db.auctions.find_one({"id": ab["auction_id"]}, {"_id": 0})
+        if auction:
+            product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+            ab["auction"] = {
+                "id": auction["id"],
+                "current_price": auction.get("current_price"),
+                "status": auction.get("status"),
+                "end_time": auction.get("end_time"),
+                "product_name": product.get("name") if product else "Unknown",
+                "product_image": product.get("image_url") if product else ""
+            }
+    
+    return autobidders if autobidders else []
+
 @router.put("/autobidder/{auction_id}/settings")
 async def update_autobidder_settings(
     auction_id: str, 
