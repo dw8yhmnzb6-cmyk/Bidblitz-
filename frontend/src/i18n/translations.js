@@ -22,6 +22,7 @@ export const translations = {
     },
     auctions: { title: "Alle Auktionen", filter: "Filter", all: "Alle", active: "Aktiv", ended: "Beendet", currentPrice: "Aktueller Preis", bids: "Gebote", bid: "Bieten", live: "Live", lastBidder: "Letzter Bieter", winner: "Gewinner", rrp: "UVP" },
     auctionPage: {
+      title: "Active Auctions",
       title: "Aktive Auktionen",
       searchPlaceholder: "Angebote suchen...",
       categories: { all: "Alle", electronics: "Elektronik", smartphones: "Smartphones", household: "Haushalt", emobility: "E-Mobilität", gifts: "Geschenke", fashion: "Mode" },
@@ -65,6 +66,7 @@ export const translations = {
     },
     auctions: { title: "All Auctions", filter: "Filter", all: "All", active: "Active", ended: "Ended", currentPrice: "Current Price", bids: "Bids", bid: "Bid", live: "Live", lastBidder: "Last Bidder", winner: "Winner", rrp: "RRP" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Search offers...",
       categories: { all: "All", electronics: "Electronics", smartphones: "Smartphones", household: "Household", emobility: "E-Mobility", gifts: "Gifts", fashion: "Fashion" },
       active: "Active", scheduled: "Scheduled", all: "All",
@@ -107,6 +109,7 @@ export const translations = {
     },
     auctions: { title: "Toutes les enchères", filter: "Filtrer", all: "Tout", active: "Actif", ended: "Terminé", currentPrice: "Prix actuel", bids: "Offres", bid: "Enchérir", live: "En direct" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Rechercher des offres...",
       categories: { all: "Tout", electronics: "Électronique", smartphones: "Smartphones", household: "Maison", emobility: "E-Mobilité", gifts: "Cadeaux", fashion: "Mode" },
       active: "Actif", scheduled: "Prévu", all: "Tout",
@@ -147,6 +150,7 @@ export const translations = {
     },
     auctions: { title: "Todas las subastas", filter: "Filtrar", all: "Todo", active: "Activo", ended: "Terminado", currentPrice: "Precio actual", bids: "Pujas", bid: "Pujar", live: "En vivo" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Buscar ofertas...",
       categories: { all: "Todo", electronics: "Electrónica", smartphones: "Smartphones", household: "Hogar", emobility: "E-Movilidad", gifts: "Regalos", fashion: "Moda" },
       active: "Activo", scheduled: "Programado", all: "Todo",
@@ -187,6 +191,7 @@ export const translations = {
     },
     auctions: { title: "Tutte le aste", filter: "Filtra", all: "Tutto", active: "Attivo", ended: "Terminato", currentPrice: "Prezzo attuale", bids: "Offerte", bid: "Offri", live: "Live" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Cerca offerte...",
       categories: { all: "Tutto", electronics: "Elettronica", smartphones: "Smartphones", household: "Casa", emobility: "E-Mobilità", gifts: "Regali", fashion: "Moda" },
       active: "Attivo", scheduled: "Programmato", all: "Tutto",
@@ -227,6 +232,7 @@ export const translations = {
     },
     auctions: { title: "Todos os leilões", filter: "Filtrar", all: "Tudo", active: "Ativo", ended: "Encerrado", currentPrice: "Preço atual", bids: "Lances", bid: "Lance", live: "Ao vivo" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Pesquisar ofertas...",
       categories: { all: "Tudo", electronics: "Eletrônicos", smartphones: "Smartphones", household: "Casa", emobility: "E-Mobilidade", gifts: "Presentes", fashion: "Moda" },
       active: "Ativo", scheduled: "Agendado", all: "Tudo",
@@ -267,6 +273,7 @@ export const translations = {
     },
     auctions: { title: "Alle veilingen", filter: "Filter", all: "Alles", active: "Actief", ended: "Beëindigd", currentPrice: "Huidige prijs", bids: "Biedingen", bid: "Bieden", live: "Live" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Zoek aanbiedingen...",
       categories: { all: "Alles", electronics: "Elektronica", smartphones: "Smartphones", household: "Huishouden", emobility: "E-Mobiliteit", gifts: "Cadeaus", fashion: "Mode" },
       active: "Actief", scheduled: "Gepland", all: "Alles",
@@ -307,6 +314,7 @@ export const translations = {
     },
     auctions: { title: "Wszystkie aukcje", filter: "Filtruj", all: "Wszystko", active: "Aktywne", ended: "Zakończone", currentPrice: "Aktualna cena", bids: "Licytacje", bid: "Licytuj", live: "Na żywo" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Szukaj ofert...",
       categories: { all: "Wszystko", electronics: "Elektronika", smartphones: "Smartfony", household: "Dom", emobility: "E-Mobilność", gifts: "Prezenty", fashion: "Moda" },
       active: "Aktywne", scheduled: "Zaplanowane", all: "Wszystko",
@@ -347,6 +355,7 @@ export const translations = {
     },
     auctions: { title: "Tüm müzayedeler", filter: "Filtrele", all: "Tümü", active: "Aktif", ended: "Bitti", currentPrice: "Güncel fiyat", bids: "Teklifler", bid: "Teklif ver", live: "Canlı" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Teklifleri ara...",
       categories: { all: "Tümü", electronics: "Elektronik", smartphones: "Akıllı Telefonlar", household: "Ev", emobility: "E-Mobilite", gifts: "Hediyeler", fashion: "Moda" },
       active: "Aktif", scheduled: "Planlanmış", all: "Tümü",
@@ -387,6 +396,7 @@ export const translations = {
     },
     auctions: { title: "Все аукционы", filter: "Фильтр", all: "Все", active: "Активные", ended: "Завершённые", currentPrice: "Текущая цена", bids: "Ставки", bid: "Ставка", live: "Живой" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Поиск предложений...",
       categories: { all: "Все", electronics: "Электроника", smartphones: "Смартфоны", household: "Дом", emobility: "Э-мобильность", gifts: "Подарки", fashion: "Мода" },
       active: "Активные", scheduled: "Запланированные", all: "Все",
@@ -557,6 +567,7 @@ export const translations = {
     },
     auctions: { title: "Të Gjitha Ankandet", filter: "Filtro", all: "Të gjitha", active: "Aktive", ended: "Përfunduara", currentPrice: "Çmimi Aktual", bids: "Oferta", bid: "Oferoni", live: "Live" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Kërko oferta...",
       categories: { all: "Të gjitha", electronics: "Elektronikë", smartphones: "Smartphones", household: "Shtëpi", emobility: "E-Mobilitet", gifts: "Dhurata", fashion: "Modë" },
       active: "Aktive", scheduled: "Planifikuara", all: "Të gjitha",
@@ -701,6 +712,7 @@ export const translations = {
     },
     auctions: { title: "Të Gjitha Ankandet", filter: "Filtro", all: "Të gjitha", active: "Aktive", ended: "Përfunduara", currentPrice: "Çmimi Aktual", bids: "Oferta", bid: "Oferoni", live: "Live" },
     auctionPage: {
+      title: "Active Auctions",
       searchPlaceholder: "Kërko oferta...",
       categories: { all: "Të gjitha", electronics: "Elektronikë", smartphones: "Smartphones", household: "Shtëpi", emobility: "E-Mobilitet", gifts: "Dhurata", fashion: "Modë" },
       active: "Aktive", scheduled: "Planifikuara", all: "Të gjitha",
