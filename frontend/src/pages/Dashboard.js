@@ -40,13 +40,13 @@ export default function Dashboard() {
       
       // Fetch all data in parallel
       const [auctionsRes, autobiddersRes, bidHistoryRes, purchasesRes] = await Promise.all([
-        axios.get(`${API}/auctions`),
+        axios.get(`${API}/auctions`).catch(() => ({ data: [] })),
         axios.get(`${API}/autobidder/my`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/user/bid-history`, { headers }).catch(() => ({ data: [] })),
         axios.get(`${API}/user/purchases`, { headers }).catch(() => ({ data: [] }))
       ]);
       
-      const allAuctions = auctionsRes.data;
+      const allAuctions = auctionsRes.data || [];
       
       // Active auctions where user has bid
       const myBids = bidHistoryRes.data;
