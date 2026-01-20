@@ -1294,6 +1294,162 @@ export default function Admin() {
             </div>
           )}
 
+          {/* Staff Tab */}
+          {activeTab === 'staff' && (
+            <div className="space-y-8">
+              <h1 className="text-2xl font-bold text-white">Mitarbeiter verwalten</h1>
+              
+              {/* Add Staff Form */}
+              <div className="glass-card rounded-xl p-6">
+                <h3 className="text-lg font-bold text-white mb-4">Neuer Mitarbeiter</h3>
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  try {
+                    await axios.post(`${API}/admin/staff`, newStaff, { headers: { Authorization: `Bearer ${token}` } });
+                    toast.success('Mitarbeiter erstellt');
+                    setNewStaff({ email: '', password: '', name: '', role: 'editor' });
+                    fetchData();
+                  } catch (error) {
+                    toast.error(error.response?.data?.detail || 'Fehler beim Erstellen');
+                  }
+                }} className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-white">Name</Label>
+                    <Input value={newStaff.name} onChange={(e) => setNewStaff({...newStaff, name: e.target.value})} required className="bg-[#181824] border-white/10 text-white" placeholder="Max Mustermann" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white">E-Mail</Label>
+                    <Input type="email" value={newStaff.email} onChange={(e) => setNewStaff({...newStaff, email: e.target.value})} required className="bg-[#181824] border-white/10 text-white" placeholder="mitarbeiter@bidblitz.de" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white">Passwort</Label>
+                    <Input type="password" value={newStaff.password} onChange={(e) => setNewStaff({...newStaff, password: e.target.value})} required className="bg-[#181824] border-white/10 text-white" placeholder="••••••••" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white">Rolle</Label>
+                    <Select value={newStaff.role} onValueChange={(v) => setNewStaff({...newStaff, role: v})}>
+                      <SelectTrigger className="bg-[#181824] border-white/10 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(roles).map(([id, role]) => (
+                          <SelectItem key={id} value={id}>{role.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex items-end">
+                    <Button type="submit" className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white">
+                      <Plus className="w-4 h-4 mr-2" /> Erstellen
+                    </Button>
+                  </div>
+                </form>
+              </div>
+
+              {/* Roles Overview */}
+              <div className="glass-card rounded-xl p-6">
+                <h3 className="text-lg font-bold text-white mb-4">Verfügbare Rollen</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                  {Object.entries(roles).map(([id, role]) => (
+                    <div key={id} className="bg-[#181824] rounded-lg p-4 border border-white/10">
+                      <h4 className="font-bold text-white mb-1">{role.name}</h4>
+                      <p className="text-[#94A3B8] text-xs mb-2">{role.description}</p>
+                      <div className="flex flex-wrap gap-1">
+                        {role.permissions?.map(perm => (
+                          <span key={perm} className="px-2 py-0.5 bg-[#7C3AED]/20 text-[#A78BFA] text-[10px] rounded">
+                            {permissions[perm]?.name || perm}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Staff List */}
+              <div className="glass-card rounded-xl p-6">
+                <h3 className="text-lg font-bold text-white mb-4">Mitarbeiterliste ({staff.length})</h3>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-white/10">
+                        <th className="text-left py-3 text-[#94A3B8] font-medium">Name</th>
+                        <th className="text-left py-3 text-[#94A3B8] font-medium">E-Mail</th>
+                        <th className="text-left py-3 text-[#94A3B8] font-medium">Rolle</th>
+                        <th className="text-left py-3 text-[#94A3B8] font-medium">Berechtigungen</th>
+                        <th className="text-left py-3 text-[#94A3B8] font-medium">Status</th>
+                        <th className="text-left py-3 text-[#94A3B8] font-medium">Aktionen</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {staff.map((member) => (
+                        <tr key={member.id} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="py-3 text-white font-medium">{member.name}</td>
+                          <td className="py-3 text-[#94A3B8]">{member.email}</td>
+                          <td className="py-3">
+                            <span className="px-2 py-1 bg-[#7C3AED]/20 text-[#A78BFA] text-xs rounded">
+                              {member.role_name}
+                            </span>
+                          </td>
+                          <td className="py-3">
+                            <div className="flex flex-wrap gap-1 max-w-xs">
+                              {member.permissions?.slice(0, 3).map(perm => (
+                                <span key={perm} className="px-1.5 py-0.5 bg-[#06B6D4]/20 text-[#06B6D4] text-[10px] rounded">
+                                  {permissions[perm]?.name || perm}
+                                </span>
+                              ))}
+                              {member.permissions?.length > 3 && (
+                                <span className="px-1.5 py-0.5 bg-white/10 text-white/60 text-[10px] rounded">
+                                  +{member.permissions.length - 3}
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="py-3">
+                            <span className={`px-2 py-1 text-xs rounded ${member.is_active ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/20 text-[#EF4444]'}`}>
+                              {member.is_active ? 'Aktiv' : 'Inaktiv'}
+                            </span>
+                          </td>
+                          <td className="py-3">
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="ghost" className={member.is_active ? "text-[#EF4444]" : "text-[#10B981]"} onClick={async () => {
+                                try {
+                                  await axios.put(`${API}/admin/staff/${member.id}`, { is_active: !member.is_active }, { headers: { Authorization: `Bearer ${token}` } });
+                                  toast.success(member.is_active ? 'Deaktiviert' : 'Aktiviert');
+                                  fetchData();
+                                } catch (e) { toast.error('Fehler'); }
+                              }}>
+                                {member.is_active ? <Ban className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                              </Button>
+                              <Button size="sm" variant="ghost" className="text-[#EF4444]" onClick={async () => {
+                                if (window.confirm('Mitarbeiter wirklich löschen?')) {
+                                  try {
+                                    await axios.delete(`${API}/admin/staff/${member.id}`, { headers: { Authorization: `Bearer ${token}` } });
+                                    toast.success('Gelöscht');
+                                    fetchData();
+                                  } catch (e) { toast.error('Fehler'); }
+                                }
+                              }}>
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                      {staff.length === 0 && (
+                        <tr>
+                          <td colSpan="6" className="py-8 text-center text-[#94A3B8]">
+                            Keine Mitarbeiter vorhanden. Erstellen Sie den ersten Mitarbeiter oben.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Vouchers Tab */}
           {activeTab === 'vouchers' && (
             <div className="space-y-8">
