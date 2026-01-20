@@ -31,6 +31,7 @@ import Winners from "./pages/Winners";
 import Achievements from "./pages/Achievements";
 import Wishlist from "./pages/Wishlist";
 import Invoices from "./pages/Invoices";
+import Notifications from "./pages/Notifications";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
