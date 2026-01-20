@@ -213,6 +213,99 @@ async def delete_autobidder(auction_id: str, user: dict = Depends(get_current_us
     
     return {"message": "Autobidder deactivated"}
 
+@router.get("/autobidders/all")
+async def get_all_user_autobidders(user: dict = Depends(get_current_user)):
+    """Get all autobidders for a user"""
+    autobidders = await db.autobidders.find(
+        {"user_id": user["id"], "is_active": True},
+        {"_id": 0}
+    ).to_list(100)
+    
+    # Enrich with auction info
+    for ab in autobidders:
+        auction = await db.auctions.find_one({"id": ab["auction_id"]}, {"_id": 0})
+        if auction:
+            product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+            ab["auction"] = {
+                "id": auction["id"],
+                "current_price": auction.get("current_price"),
+                "status": auction.get("status"),
+                "end_time": auction.get("end_time"),
+                "product_name": product.get("name") if product else "Unknown",
+                "product_image": product.get("image_url") if product else ""
+            }
+    
+    return autobidders
+
+@router.put("/autobidder/{auction_id}/settings")
+async def update_autobidder_settings(
+    auction_id: str, 
+    max_bids: Optional[int] = None,
+    max_price: Optional[float] = None,
+    bid_in_last_seconds: Optional[int] = None,
+    pause: Optional[bool] = None,
+    user: dict = Depends(get_current_user)
+):
+    """Update autobidder settings"""
+    autobidder = await db.autobidders.find_one({
+        "user_id": user["id"],
+        "auction_id": auction_id,
+        "is_active": True
+    })
+    
+    if not autobidder:
+        raise HTTPException(status_code=404, detail="Autobidder nicht gefunden")
+    
+    updates = {}
+    if max_bids is not None:
+        if user["bids_balance"] < max_bids:
+            raise HTTPException(status_code=400, detail=f"Nicht genug Gebote. Du hast {user['bids_balance']}")
+        updates["max_bids"] = max_bids
+    if max_price is not None:
+        updates["max_price"] = max_price
+    if bid_in_last_seconds is not None:
+        updates["bid_in_last_seconds"] = max(5, min(60, bid_in_last_seconds))  # 5-60 seconds
+    if pause is not None:
+        updates["is_paused"] = pause
+    
+    if updates:
+        await db.autobidders.update_one({"id": autobidder["id"]}, {"$set": updates})
+    
+    updated = await db.autobidders.find_one({"id": autobidder["id"]}, {"_id": 0})
+    return {"message": "Einstellungen aktualisiert", "autobidder": updated}
+
+@router.get("/autobidder/{auction_id}/stats")
+async def get_autobidder_stats(auction_id: str, user: dict = Depends(get_current_user)):
+    """Get autobidder statistics for an auction"""
+    autobidder = await db.autobidders.find_one({
+        "user_id": user["id"],
+        "auction_id": auction_id
+    }, {"_id": 0})
+    
+    if not autobidder:
+        return {"active": False, "stats": None}
+    
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    
+    return {
+        "active": autobidder.get("is_active", False),
+        "paused": autobidder.get("is_paused", False),
+        "stats": {
+            "bids_placed": autobidder.get("bids_placed", 0),
+            "max_bids": autobidder.get("max_bids", 0),
+            "remaining_bids": autobidder.get("max_bids", 0) - autobidder.get("bids_placed", 0),
+            "max_price": autobidder.get("max_price"),
+            "current_price": auction.get("current_price") if auction else None,
+            "will_continue": (
+                autobidder.get("is_active", False) and
+                not autobidder.get("is_paused", False) and
+                autobidder.get("bids_placed", 0) < autobidder.get("max_bids", 0) and
+                (autobidder.get("max_price") is None or 
+                 (auction and auction.get("current_price", 0) < autobidder.get("max_price", float('inf'))))
+            )
+        }
+    }
+
 # ==================== ADMIN ENDPOINTS ====================
 
 @router.post("/admin/auctions")
