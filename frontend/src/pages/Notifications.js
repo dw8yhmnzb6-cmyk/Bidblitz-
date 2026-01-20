@@ -292,22 +292,59 @@ export default function Notifications() {
             
             {/* Push Notifications */}
             <div className="mb-4 p-3 bg-[#0a1929] rounded-lg">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-2">
                 <div>
                   <p className="text-white font-medium">Push-Benachrichtigungen</p>
-                  <p className="text-gray-400 text-xs">Im Browser benachrichtigt werden</p>
+                  <p className="text-gray-400 text-xs">
+                    {pushPermission === 'denied' 
+                      ? 'Blockiert - Bitte in Browser-Einstellungen erlauben'
+                      : 'Im Browser benachrichtigt werden'
+                    }
+                  </p>
                 </div>
                 {pushSupported ? (
-                  <button
-                    onClick={requestPushPermission}
-                    className={`px-3 py-1.5 rounded text-xs font-medium ${
-                      pushSubscribed 
-                        ? 'bg-green-500/20 text-green-400'
-                        : 'bg-blue-500 text-white hover:bg-blue-600'
-                    }`}
-                  >
-                    {pushSubscribed ? '✓ Aktiviert' : 'Aktivieren'}
-                  </button>
+                  <div className="flex gap-2">
+                    {pushSubscribed ? (
+                      <>
+                        <button
+                          onClick={handleTestPush}
+                          className="px-2 py-1.5 rounded text-xs font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+                          title="Test-Benachrichtigung senden"
+                        >
+                          <Send className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={handlePushUnsubscribe}
+                          disabled={pushLoading}
+                          className="px-3 py-1.5 rounded text-xs font-medium bg-green-500/20 text-green-400 hover:bg-red-500/20 hover:text-red-400"
+                        >
+                          {pushLoading ? '...' : '✓ Aktiviert'}
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={handlePushSubscribe}
+                        disabled={pushLoading || pushPermission === 'denied'}
+                        className={`px-3 py-1.5 rounded text-xs font-medium ${
+                          pushPermission === 'denied'
+                            ? 'bg-gray-500/20 text-gray-500 cursor-not-allowed'
+                            : 'bg-blue-500 text-white hover:bg-blue-600'
+                        }`}
+                      >
+                        {pushLoading ? 'Aktiviere...' : 'Aktivieren'}
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-gray-500 text-xs">Nicht unterstützt</span>
+                )}
+              </div>
+              {pushSubscribed && (
+                <p className="text-green-400/70 text-[10px]">
+                  ✓ Sie erhalten Push-Benachrichtigungen auf diesem Gerät
+                </p>
+              )}
+            </div>
                 ) : (
                   <span className="text-gray-500 text-xs">Nicht unterstützt</span>
                 )}
