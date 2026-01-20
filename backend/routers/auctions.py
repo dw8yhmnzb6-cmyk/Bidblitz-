@@ -328,6 +328,33 @@ async def get_autobidder_stats(auction_id: str, user: dict = Depends(get_current
                  (auction and auction.get("current_price", 0) < autobidder.get("max_price", float('inf'))))
             )
         }
+
+@router.put("/autobidder/{autobidder_id}/toggle")
+async def toggle_autobidder(autobidder_id: str, user: dict = Depends(get_current_user)):
+    """Toggle autobidder active/paused state"""
+    # Find autobidder by ID
+    autobidder = await db.autobidders.find_one({
+        "id": autobidder_id,
+        "user_id": user["id"]
+    })
+    
+    if not autobidder:
+        raise HTTPException(status_code=404, detail="Autobidder nicht gefunden")
+    
+    # Toggle the paused state
+    new_paused = not autobidder.get("is_paused", False)
+    
+    await db.autobidders.update_one(
+        {"id": autobidder_id},
+        {"$set": {"is_paused": new_paused}}
+    )
+    
+    status_msg = "pausiert" if new_paused else "aktiviert"
+    return {
+        "message": f"Autobidder {status_msg}",
+        "is_paused": new_paused,
+        "is_active": autobidder.get("is_active", True)
+    }
     }
 
 # ==================== ADMIN ENDPOINTS ====================
