@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
-import { RefreshCw, Search, Sparkles, Flame, Clock, TrendingUp } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { RefreshCw, Search, Flame, Clock, TrendingUp } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
