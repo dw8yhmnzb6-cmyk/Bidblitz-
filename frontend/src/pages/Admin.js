@@ -375,6 +375,21 @@ export default function Admin() {
     }
   };
 
+  // Set auction as featured/VIP
+  const handleSetFeatured = async (auctionId, currentFeatured) => {
+    try {
+      await axios.put(
+        `${API}/admin/auctions/${auctionId}/featured?is_featured=${!currentFeatured}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(currentFeatured ? 'VIP-Status entfernt' : 'Als VIP-Auktion markiert');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler');
+    }
+  };
+
   // User handlers
   const handleToggleAdmin = async (userId) => {
     try {
