@@ -455,7 +455,7 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
           
           {/* UVP */}
           <p className="text-gray-400 text-[9px] mb-1">
-            UVP: <span className="line-through">€{product?.retail_price?.toFixed(0) || '999'}</span>
+            {texts.rrp}: <span className="line-through">€{product?.retail_price?.toFixed(0) || '999'}</span>
           </p>
           
           {/* Price + Image Row */}
@@ -466,10 +466,10 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
                 €{auction.current_price?.toFixed(2).replace('.', ',')}
               </p>
               <p className="text-cyan-300 text-[9px] truncate mt-0.5">
-                {auction.last_bidder_name || 'Startpreis'}
+                {auction.last_bidder_name || texts.startPrice}
               </p>
               <div className="flex items-center gap-1 mt-1">
-                <span className="text-gray-500 text-[8px]">Aktivität:</span>
+                <span className="text-gray-500 text-[8px]">{texts.activity}:</span>
                 <ActivityDots bids={auction.total_bids} />
               </div>
             </div>
@@ -484,7 +484,7 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
               />
               {isEnded && (
                 <div className="absolute inset-0 bg-red-500/80 flex items-center justify-center">
-                  <span className="text-white text-[8px] font-bold rotate-[-10deg]">VERKAUFT</span>
+                  <span className="text-white text-[8px] font-bold rotate-[-10deg]">{texts.sold}</span>
                 </div>
               )}
             </div>
@@ -500,14 +500,14 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
                   : 'bg-blue-500 hover:bg-blue-600 text-white'
             }`}
           >
-            {isEnded ? 'Beendet' : auction.status === 'scheduled' ? 'Geplant' : 'Bieten'}
+            {isEnded ? texts.ended : auction.status === 'scheduled' ? texts.scheduled : texts.bid}
           </button>
         </div>
         
         {/* Footer: Last Sold */}
         <div className="bg-[#0a2a38] px-2 py-1 text-center">
           <p className="text-[8px] text-gray-400">
-            Zuletzt für <span className="text-green-400 font-semibold">€{((product?.retail_price || 100) * 0.08).toFixed(2)}</span>
+            {texts.lastSold} <span className="text-green-400 font-semibold">€{((product?.retail_price || 100) * 0.08).toFixed(2)}</span>
           </p>
         </div>
       </div>
