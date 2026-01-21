@@ -848,15 +848,15 @@ export default function Auctions() {
         <div className="mb-2 flex items-center gap-1">
           <TrendingUp className="w-3 h-3 text-cyan-400" />
           <span className="text-[10px] text-gray-400">
-            {sorted.length} Auktionen gefunden
+            {sorted.length} {texts.auctionsFound}
             {reminders.length > 0 && (
               <span className="ml-2 text-yellow-400">
-                <Bell className="w-3 h-3 inline" /> {reminders.length} Erinnerungen
+                <Bell className="w-3 h-3 inline" /> {reminders.length} {texts.reminders}
               </span>
             )}
             {serverTimeOffset !== 0 && (
-              <span className="ml-2 text-orange-400" title="Zeitabweichung erkannt">
-                ⚠️ Zeit-Sync
+              <span className="ml-2 text-orange-400" title={texts.timeSync}>
+                ⚠️ {texts.timeSync}
               </span>
             )}
           </span>
@@ -874,6 +874,7 @@ export default function Auctions() {
               isLoggedIn={!!token}
               serverTimeOffset={serverTimeOffset}
               isPaused={!businessHours.is_open}
+              texts={texts}
             />
           ))}
         </div>
@@ -882,14 +883,14 @@ export default function Auctions() {
         {sorted.length === 0 && (
           <div className="text-center py-12 bg-[#1a3a52] rounded-xl">
             <Search className="w-10 h-10 text-cyan-400 mx-auto mb-3" />
-            <p className="text-white text-sm font-medium">Keine Auktionen</p>
-            <p className="text-gray-400 text-xs mt-1">Anderer Filter probieren</p>
+            <p className="text-white text-sm font-medium">{texts.noAuctions}</p>
+            <p className="text-gray-400 text-xs mt-1">{texts.tryOther}</p>
           </div>
         )}
 
         {/* Footer */}
         <div className="mt-6 text-center text-[9px] text-gray-600">
-          * Preise zzgl. Versand
+          * {texts.pricesNote}
         </div>
       </div>
     </div>
