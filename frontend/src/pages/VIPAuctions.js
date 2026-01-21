@@ -143,6 +143,24 @@ export default function VIPAuctions() {
     <div className="min-h-screen bg-gradient-to-b from-[#1a0a2e] via-[#0d1929] to-[#0a1929] pt-16 pb-20">
       <div className="max-w-7xl mx-auto px-4">
         
+        {/* Business Hours Notice */}
+        {!businessHours.is_open && (
+          <div className="bg-gradient-to-r from-orange-500/20 to-yellow-500/20 border border-orange-500/30 rounded-xl p-4 mb-4 mt-2">
+            <div className="flex items-center gap-3">
+              <Clock className="w-6 h-6 text-orange-400" />
+              <div>
+                <p className="text-white font-semibold">Auktionen pausiert</p>
+                <p className="text-gray-300 text-sm">
+                  Unsere Auktionen laufen täglich von {businessHours.business_start || '09:00'} bis {businessHours.business_end || '24:00'} Uhr.
+                  {businessHours.next_opening && (
+                    <span className="text-orange-400 font-medium"> Nächste Öffnung: {new Date(businessHours.next_opening).toLocaleString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* VIP Header */}
         <div className="text-center py-8">
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 px-6 py-2 rounded-full mb-4">
