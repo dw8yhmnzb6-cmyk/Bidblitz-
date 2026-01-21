@@ -87,16 +87,16 @@ export default function Register() {
                 <Zap className="w-7 h-7 text-white" />
               </div>
             </Link>
-            <h1 className="text-2xl font-bold text-white mt-4">Konto erstellen</h1>
-            <p className="text-[#94A3B8] mt-2">Beginnen Sie noch heute mit dem Bieten</p>
+            <h1 className="text-2xl font-bold text-white mt-4">{texts.createAccount}</h1>
+            <p className="text-[#94A3B8] mt-2">{texts.startBiddingToday}</p>
           </div>
 
           {/* Free bids banner */}
           <div className="flex items-center gap-3 p-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30 mb-6">
             <Gift className="w-6 h-6 text-[#10B981] flex-shrink-0" />
             <div>
-              <p className="text-[#10B981] font-bold">10 kostenlose Gebote!</p>
-              <p className="text-[#94A3B8] text-sm">Bei Registrierung erhalten</p>
+              <p className="text-[#10B981] font-bold">{texts.freeBids}</p>
+              <p className="text-[#94A3B8] text-sm">{texts.onRegistration}</p>
             </div>
           </div>
 
@@ -105,21 +105,21 @@ export default function Register() {
             <div className="flex items-center gap-3 p-4 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30 mb-6">
               <Users className="w-6 h-6 text-[#FFD700] flex-shrink-0" />
               <div>
-                <p className="text-[#FFD700] font-bold">Empfohlen von {affiliateName}</p>
-                <p className="text-[#94A3B8] text-sm">Willkommen bei BidBlitz!</p>
+                <p className="text-[#FFD700] font-bold">{texts.referredBy} {affiliateName}</p>
+                <p className="text-[#94A3B8] text-sm">{texts.bonusBids}</p>
               </div>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-white">Name</Label>
+              <Label htmlFor="name" className="text-white">{texts.name}</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                 <Input
                   id="name"
                   type="text"
-                  placeholder="Ihr Name"
+                  placeholder={texts.enterName}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -130,13 +130,13 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">E-Mail</Label>
+              <Label htmlFor="email" className="text-white">{texts.email}</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                 <Input
                   id="email"
                   type="email"
-                  placeholder="ihre@email.de"
+                  placeholder={texts.enterEmail}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -147,7 +147,7 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">Passwort</Label>
+              <Label htmlFor="password" className="text-white">{texts.password}</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                 <Input
