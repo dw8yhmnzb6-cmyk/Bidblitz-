@@ -233,6 +233,38 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
     except Exception as e:
         logger.error(f"WebSocket broadcast error: {e}")
     
+    # Send OUTBID notification to previous bidder (if different user)
+    previous_bidder_id = auction.get("last_bidder_id")
+    if previous_bidder_id and previous_bidder_id != user["id"]:
+        try:
+            # Get product info for notification
+            product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+            product_name = product.get("name", "Auktion") if product else "Auktion"
+            
+            # Import notification functions
+            from routers.notifications import send_push_to_user, create_notification
+            
+            # Send push notification
+            await send_push_to_user(
+                previous_bidder_id,
+                f"⚡ Überboten: {product_name}",
+                f"Sie wurden überboten! Neuer Preis: €{new_price:.2f}. Jetzt bieten um zu gewinnen!",
+                {"url": f"/auctions/{auction_id}", "auction_id": auction_id, "type": "outbid"}
+            )
+            
+            # Create in-app notification
+            await create_notification(
+                previous_bidder_id,
+                f"⚡ Überboten: {product_name}",
+                f"Sie wurden von {user['name']} überboten! Aktueller Preis: €{new_price:.2f}",
+                "auction",
+                f"/auctions/{auction_id}"
+            )
+            
+            logger.info(f"Outbid notification sent to {previous_bidder_id}")
+        except Exception as e:
+            logger.error(f"Error sending outbid notification: {e}")
+    
     return {
         "message": "Bid placed successfully",
         "new_price": new_price,
