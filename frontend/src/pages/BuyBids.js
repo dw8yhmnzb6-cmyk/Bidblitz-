@@ -18,9 +18,11 @@ export default function BuyBids() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState('stripe');
+  const [paymentMethods, setPaymentMethods] = useState({ stripe: true, crypto: false, paypal: false });
 
   useEffect(() => {
     fetchPackages();
+    fetchPaymentMethods();
     
     // Check for crypto callback
     if (searchParams.get('crypto_success')) {
@@ -30,6 +32,15 @@ export default function BuyBids() {
       toast.info('Krypto-Zahlung abgebrochen');
     }
   }, [searchParams]);
+
+  const fetchPaymentMethods = async () => {
+    try {
+      const response = await axios.get(`${API}/checkout/payment-methods`);
+      setPaymentMethods(response.data);
+    } catch (error) {
+      console.error('Error fetching payment methods:', error);
+    }
+  };
 
   const fetchPackages = async () => {
     try {
