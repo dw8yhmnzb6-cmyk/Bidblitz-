@@ -228,10 +228,10 @@ export default function VIPAuctions() {
                   isVip ? 'border-yellow-500/50' : 'border-gray-700/50'
                 } transition-all hover:border-yellow-500 hover:shadow-lg hover:shadow-yellow-500/10`}
               >
-                {/* VIP Badge */}
+                {/* Large VIP Badge - Top Left */}
                 <div className="absolute top-2 left-2 z-10">
-                  <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
-                    <Crown className="w-3 h-3" /> VIP
+                  <span className="bg-gradient-to-r from-yellow-400 via-amber-500 to-orange-500 text-black text-sm font-bold px-3 py-1.5 rounded-lg flex items-center gap-1.5 shadow-lg shadow-yellow-500/30">
+                    <Crown className="w-4 h-4" /> VIP
                   </span>
                 </div>
                 
@@ -244,7 +244,7 @@ export default function VIPAuctions() {
                 
                 {/* Product Image - visible for all, slight blur for non-VIP */}
                 <Link to={isVip ? `/auctions/${auction.id}` : '#'} onClick={(e) => !isVip && e.preventDefault()}>
-                  <div className="relative h-40 bg-white/5">
+                  <div className="relative h-40 bg-white/5 mt-8">
                     <img 
                       src={auction.product?.image_url || '/placeholder.png'}
                       alt={auction.product?.name}
@@ -261,9 +261,15 @@ export default function VIPAuctions() {
                 
                 {/* Product Info - always visible */}
                 <div className="p-4">
-                  <h3 className="text-white font-semibold text-sm mb-2 line-clamp-2">
-                    {auction.product?.name}
-                  </h3>
+                  {/* VIP Badge before product name */}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-yellow-400 to-amber-500 text-black flex items-center gap-1">
+                      <Crown className="w-3 h-3" /> VIP
+                    </span>
+                    <h3 className="text-white font-semibold text-sm line-clamp-1 flex-1">
+                      {auction.product?.name}
+                    </h3>
+                  </div>
                   
                   <div className="flex items-center justify-between mb-3">
                     <div>
