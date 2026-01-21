@@ -701,6 +701,7 @@ export default function Auctions() {
               onToggleReminder={handleToggleReminder}
               isLoggedIn={!!token}
               serverTimeOffset={serverTimeOffset}
+              isPaused={!businessHours.is_open}
             />
           ))}
         </div>
