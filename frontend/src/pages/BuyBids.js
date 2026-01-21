@@ -220,16 +220,16 @@ export default function BuyBids() {
     const totalBids = pkg.bids + (pkg.bonus || 0);
     const pricePerBid = (pkg.price / totalBids).toFixed(2);
     const features = [
-      `${pkg.bids} Gebote`,
+      `${pkg.bids} ${texts.bids}`,
     ];
     
     if (pkg.bonus > 0) {
-      features.push(`+${pkg.bonus} GRATIS Gebote`);
+      features.push(`+${pkg.bonus} ${language === 'en' ? 'FREE' : language === 'sq' ? 'FALAS' : language === 'tr' ? 'ÜCRETSİZ' : language === 'fr' ? 'GRATUIT' : 'GRATIS'} ${texts.bids}`);
     }
     
-    features.push(`€${pricePerBid} pro Gebot`);
-    features.push('Sofort verfügbar');
-    features.push('Kein Ablaufdatum');
+    features.push(`€${pricePerBid} ${texts.perBid}`);
+    features.push(language === 'en' ? 'Instantly available' : language === 'sq' ? 'Menjëherë i disponueshëm' : language === 'tr' ? 'Anında kullanılabilir' : language === 'fr' ? 'Disponible immédiatement' : 'Sofort verfügbar');
+    features.push(language === 'en' ? 'No expiry date' : language === 'sq' ? 'Pa datë skadence' : language === 'tr' ? 'Son kullanma tarihi yok' : language === 'fr' ? 'Pas de date d\'expiration' : 'Kein Ablaufdatum');
     
     return features;
   };
@@ -241,24 +241,24 @@ export default function BuyBids() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#181824] border border-white/10 mb-6">
             <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-            <span className="text-sm text-[#94A3B8]">Beste Preise garantiert</span>
+            <span className="text-sm text-[#94A3B8]">{language === 'en' ? 'Best prices guaranteed' : language === 'sq' ? 'Çmimet më të mira të garantuara' : language === 'tr' ? 'En iyi fiyatlar garantili' : language === 'fr' ? 'Meilleurs prix garantis' : 'Beste Preise garantiert'}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Gebote kaufen
+            {texts.title}
           </h1>
           <p className="text-[#94A3B8] text-lg max-w-2xl mx-auto">
-            Wählen Sie das passende Paket und starten Sie mit dem Bieten. Je mehr Gebote Sie kaufen, desto mehr sparen Sie!
+            {texts.subtitle}
           </p>
           
           {/* Payment Methods Info */}
           <div className="mt-6 flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#181824] border border-white/10">
               <CreditCard className="w-4 h-4 text-[#7C3AED]" />
-              <span className="text-xs text-[#94A3B8]">Kreditkarte</span>
+              <span className="text-xs text-[#94A3B8]">{language === 'en' ? 'Credit Card' : language === 'sq' ? 'Kartë Krediti' : language === 'tr' ? 'Kredi Kartı' : language === 'fr' ? 'Carte de Crédit' : 'Kreditkarte'}</span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#181824] border border-white/10">
               <Bitcoin className="w-4 h-4 text-[#F7931A]" />
-              <span className="text-xs text-[#94A3B8]">Bitcoin & Krypto</span>
+              <span className="text-xs text-[#94A3B8]">Bitcoin & Crypto</span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#181824] border border-white/10">
               <span className="text-xs text-[#94A3B8]">SEPA • Klarna • PayPal</span>
