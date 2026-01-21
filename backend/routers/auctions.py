@@ -93,7 +93,6 @@ async def get_featured_auction():
 
 @router.get("/auctions")
 async def get_auctions():
-async def get_auctions():
     """Get all auctions with product details"""
     auctions = await db.auctions.find({}, {"_id": 0}).sort("created_at", -1).to_list(100)
     
