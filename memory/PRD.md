@@ -266,13 +266,13 @@ Penny-Auktion-Website ähnlich dealdash.com und snipster.de mit Kunden-App und A
 
 ```
 /app/backend/
-├── server.py           # Main entry, WebSocket, Bot Task
+├── server.py           # Main entry, WebSocket, Bot Task, Auto-Restart Task
 ├── config.py           # DB, API Keys, Bid Packages
 ├── dependencies.py     # Auth utilities, Password, 2FA
 ├── schemas.py          # Pydantic models
 ├── routers/
 │   ├── auth.py         # Login, Register, 2FA, Password Reset
-│   ├── auctions.py     # Auctions CRUD, Bidding, Autobidder, Buy It Now
+│   ├── auctions.py     # Auctions CRUD, Bidding, Autobidder, Buy It Now, Auto-Restart
 │   ├── products.py     # Products CRUD
 │   ├── admin.py        # Stats, Users, Email Marketing
 │   ├── checkout.py     # Stripe, Coinbase
@@ -281,7 +281,11 @@ Penny-Auktion-Website ähnlich dealdash.com und snipster.de mit Kunden-App und A
 │   ├── bots.py         # Bot Management
 │   ├── vouchers.py     # Voucher System
 │   ├── staff.py        # Staff Management
-│   └── rewards.py      # Achievements, Daily Rewards, Leaderboard (NEW)
+│   ├── rewards.py      # Achievements, Daily Rewards, Leaderboard
+│   ├── notifications.py # Push Notifications, Reminders
+│   ├── invoices.py     # PDF Invoice Generation
+│   ├── vip.py          # VIP Membership
+│   └── pages.py        # CMS for Static Pages (NEW)
 ├── services/
 │   └── websocket.py    # WebSocket Manager
 ├── models/
@@ -291,7 +295,12 @@ Penny-Auktion-Website ähnlich dealdash.com und snipster.de mit Kunden-App und A
 
 /app/frontend/src/
 ├── pages/
-│   ├── Achievements.js # Achievements, Daily Rewards, Leaderboard (UPDATED)
+│   ├── Admin.js        # Admin Panel with Seiten-Tab, Auto-Restart (UPDATED)
+│   ├── Impressum.js    # Dynamic content from DB (UPDATED)
+│   ├── Datenschutz.js  # Dynamic content from DB (UPDATED)
+│   ├── AGB.js          # Dynamic content from DB (UPDATED)
+│   ├── Achievements.js # Achievements, Daily Rewards, Leaderboard
+│   ├── VIPAuctions.js  # VIP-Only Auctions Page
 │   └── ...
 ├── components/         # Reusable components
 ├── context/            # Language, Auth context
