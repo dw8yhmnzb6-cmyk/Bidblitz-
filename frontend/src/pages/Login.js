@@ -39,7 +39,7 @@ export default function Login() {
       // Check if 2FA is required
       if (response.data.requires_2fa) {
         setRequires2FA(true);
-        toast.info('Bitte geben Sie Ihren 2FA-Code ein');
+        toast.info(texts.enter2FAPrompt);
         setLoading(false);
         return;
       }
@@ -48,7 +48,7 @@ export default function Login() {
       const { token } = response.data;
       localStorage.setItem('token', token);
       await refreshUser();
-      toast.success('Erfolgreich angemeldet!');
+      toast.success(texts.loginSuccess);
       
       // Force navigation with window.location as fallback
       setTimeout(() => {
