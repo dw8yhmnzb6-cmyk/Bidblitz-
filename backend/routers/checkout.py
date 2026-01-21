@@ -17,6 +17,22 @@ STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
 if STRIPE_API_KEY:
     stripe.api_key = STRIPE_API_KEY
 
+# Check if crypto payments are available
+def is_crypto_available():
+    coinbase_key = os.environ.get('COINBASE_COMMERCE_API_KEY', '')
+    return bool(coinbase_key and coinbase_key not in ['pennyauction', 'your_key_here', 'test', ''])
+
+# ==================== PAYMENT STATUS ====================
+
+@router.get("/payment-methods")
+async def get_payment_methods():
+    """Get available payment methods"""
+    return {
+        "stripe": bool(STRIPE_API_KEY),
+        "crypto": is_crypto_available(),
+        "paypal": False  # Not yet implemented
+    }
+
 # ==================== STRIPE CHECKOUT ====================
 
 @router.post("/create-session")
