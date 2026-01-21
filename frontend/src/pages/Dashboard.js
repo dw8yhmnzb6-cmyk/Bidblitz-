@@ -162,19 +162,19 @@ export default function Dashboard() {
                 {user.name?.charAt(0).toUpperCase()}
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Willkommen, {user.name}!</h1>
+                <h1 className="text-2xl font-bold text-white">{dt.welcome}, {user.name}!</h1>
                 <p className="text-[#94A3B8]">{user.email}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
               <Link to="/profile">
                 <Button variant="outline" className="border-white/10 text-white hover:bg-white/10">
-                  <Settings className="w-4 h-4 mr-2" />Profil
+                  <Settings className="w-4 h-4 mr-2" />{dt.profile}
                 </Button>
               </Link>
               <Link to="/buy-bids">
                 <Button className="btn-primary">
-                  <Zap className="w-4 h-4 mr-2" />Gebote kaufen
+                  <Zap className="w-4 h-4 mr-2" />{dt.buyBids}
                 </Button>
               </Link>
             </div>
@@ -189,9 +189,9 @@ export default function Dashboard() {
                 <Zap className="w-6 h-6 text-[#FFD700]" />
               </div>
               <div>
-                <p className="text-[#94A3B8] text-sm">Guthaben</p>
+                <p className="text-[#94A3B8] text-sm">{dt.balance}</p>
                 <p className="text-2xl font-bold text-white">{user.bids_balance || 0}</p>
-                <p className="text-[#FFD700] text-xs">Gebote</p>
+                <p className="text-[#FFD700] text-xs">{dt.bids}</p>
               </div>
             </div>
           </div>
@@ -202,9 +202,9 @@ export default function Dashboard() {
                 <Trophy className="w-6 h-6 text-[#10B981]" />
               </div>
               <div>
-                <p className="text-[#94A3B8] text-sm">Gewonnen</p>
+                <p className="text-[#94A3B8] text-sm">{dt.won}</p>
                 <p className="text-2xl font-bold text-white">{wonAuctions.length}</p>
-                <p className="text-[#10B981] text-xs">Auktionen</p>
+                <p className="text-[#10B981] text-xs">{dt.auctions}</p>
               </div>
             </div>
           </div>
