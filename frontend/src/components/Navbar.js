@@ -61,12 +61,19 @@ export const Navbar = () => {
               {t('nav.buyBids')}
             </Link>
             <Link 
-              to="/vip" 
+              to="/vip-auctions" 
               className="text-[#FFA500] hover:text-[#FFD700] transition-colors font-medium flex items-center gap-1"
-              data-testid="nav-vip"
+              data-testid="nav-vip-auctions"
             >
               <Crown className="w-4 h-4" />
-              {t('nav.vip') || "VIP"}
+              VIP Auktionen
+            </Link>
+            <Link 
+              to="/vip" 
+              className="text-[#94A3B8] hover:text-white transition-colors font-medium"
+              data-testid="nav-vip"
+            >
+              {t('nav.vip') || "VIP Mitgliedschaft"}
             </Link>
             <Link 
               to="/faq" 
