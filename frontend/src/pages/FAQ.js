@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { usePageTranslations } from '../i18n/pageTranslations';
 import { ChevronDown, ChevronUp, HelpCircle, Search } from 'lucide-react';
 
 const FAQItem = ({ question, answer, isOpen, onClick }) => {
@@ -32,8 +32,10 @@ const faqContent = {
     title: "Häufig gestellte Fragen",
     subtitle: "Antworten auf die häufigsten Fragen zu BidBlitz",
     searchPlaceholder: "Fragen durchsuchen...",
-    stillQuestions: "Noch Fragen?",
-    contactText: "Unser Support-Team hilft Ihnen gerne weiter.",
+    resultsFor: "Ergebnis(se) für",
+    noResults: "Keine Ergebnisse gefunden. Kontaktieren Sie uns für weitere Hilfe.",
+    stillQuestions: "Ihre Frage nicht gefunden?",
+    contactText: "Unser Support-Team hilft Ihnen gerne weiter!",
     contactButton: "Kontakt aufnehmen",
     categories: [
       {
@@ -66,8 +68,10 @@ const faqContent = {
     title: "Frequently Asked Questions",
     subtitle: "Answers to the most common questions about BidBlitz",
     searchPlaceholder: "Search questions...",
-    stillQuestions: "Still have questions?",
-    contactText: "Our support team is happy to help you.",
+    resultsFor: "result(s) for",
+    noResults: "No results found. Contact us for further help.",
+    stillQuestions: "Didn't find your question?",
+    contactText: "Our support team is happy to help you!",
     contactButton: "Contact Us",
     categories: [
       {
@@ -100,8 +104,10 @@ const faqContent = {
     title: "Pyetjet e Bëra Shpesh",
     subtitle: "Përgjigje për pyetjet më të zakonshme rreth BidBlitz",
     searchPlaceholder: "Kërko pyetje...",
-    stillQuestions: "Ende keni pyetje?",
-    contactText: "Ekipi ynë i mbështetjes është i gatshëm t'ju ndihmojë.",
+    resultsFor: "rezultat(e) për",
+    noResults: "Nuk u gjetën rezultate. Na kontaktoni për ndihmë të mëtejshme.",
+    stillQuestions: "Nuk e gjetët pyetjen tuaj?",
+    contactText: "Ekipi ynë i mbështetjes është i gatshëm t'ju ndihmojë!",
     contactButton: "Na Kontaktoni",
     categories: [
       {
@@ -134,8 +140,10 @@ const faqContent = {
     title: "Sık Sorulan Sorular",
     subtitle: "BidBlitz hakkında en yaygın sorulara cevaplar",
     searchPlaceholder: "Soru ara...",
-    stillQuestions: "Hala sorularınız mı var?",
-    contactText: "Destek ekibimiz size yardımcı olmaktan mutluluk duyar.",
+    resultsFor: "sonuç",
+    noResults: "Sonuç bulunamadı. Daha fazla yardım için bizimle iletişime geçin.",
+    stillQuestions: "Sorunuzu bulamadınız mı?",
+    contactText: "Destek ekibimiz size yardımcı olmaktan mutluluk duyar!",
     contactButton: "Bize Ulaşın",
     categories: [
       {
@@ -168,8 +176,10 @@ const faqContent = {
     title: "Questions Fréquemment Posées",
     subtitle: "Réponses aux questions les plus courantes sur BidBlitz",
     searchPlaceholder: "Rechercher des questions...",
-    stillQuestions: "Encore des questions?",
-    contactText: "Notre équipe de support est là pour vous aider.",
+    resultsFor: "résultat(s) pour",
+    noResults: "Aucun résultat trouvé. Contactez-nous pour plus d'aide.",
+    stillQuestions: "Vous n'avez pas trouvé votre question?",
+    contactText: "Notre équipe de support est là pour vous aider!",
     contactButton: "Contactez-nous",
     categories: [
       {
@@ -201,49 +211,13 @@ const faqContent = {
 };
 
 export default function FAQ() {
-  const { t, language } = useLanguage();
-  const texts = usePageTranslations(language);
-  const [openIndex, setOpenIndex] = useState(0);
+  const { language } = useLanguage();
+  const [openIndex, setOpenIndex] = useState('0-0');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Get FAQ content for current language
   const content = faqContent[language] || faqContent.de;
   const faqCategories = content.categories;
-          question: "Wie erfahre ich, dass ich gewonnen habe?",
-          answer: "Sie erhalten sofort eine E-Mail-Benachrichtigung und eine Nachricht in Ihrem Dashboard. Außerdem können Sie Push-Benachrichtigungen aktivieren."
-        },
-        {
-          question: "Wie lange dauert der Versand?",
-          answer: "Nach Zahlungseingang versenden wir innerhalb von 1-3 Werktagen. Die Lieferzeit beträgt in der Regel 3-5 Werktage in Deutschland."
-        },
-        {
-          question: "Muss ich den Auktionspreis noch bezahlen?",
-          answer: "Ja, der Gewinner zahlt den Auktions-Endpreis plus Versandkosten. Bei unserem Beispiel: Ein iPhone für 12,47€ + 4,99€ Versand = 17,46€ total!"
-        },
-        {
-          question: "Was ist 'Sofortkauf'?",
-          answer: "Mit Sofortkauf können Sie ein Produkt direkt zum ermäßigten Preis kaufen, ohne zu bieten. Der Preis liegt zwischen 70-90% des Originalpreises."
-        }
-      ]
-    },
-    {
-      title: "Konto & Sicherheit",
-      faqs: [
-        {
-          question: "Wie registriere ich mich?",
-          answer: "Klicken Sie auf 'Registrieren', geben Sie Ihre E-Mail und ein sicheres Passwort ein. Die Registrierung ist kostenlos!"
-        },
-        {
-          question: "Was ist 2FA?",
-          answer: "Zwei-Faktor-Authentifizierung ist eine zusätzliche Sicherheitsebene. Nach dem Login müssen Sie einen Code aus einer Authenticator-App eingeben."
-        },
-        {
-          question: "Kann ich mein Konto löschen?",
-          answer: "Ja, kontaktieren Sie unseren Support und wir löschen Ihr Konto. Beachten Sie, dass ungenutzte Gebote nicht erstattet werden."
-        }
-      ]
-    }
-  ];
 
   // Flatten FAQs for search
   const allFaqs = faqCategories.flatMap((cat, catIndex) => 
@@ -272,10 +246,10 @@ export default function FAQ() {
             <HelpCircle className="w-8 h-8 text-[#FFD700]" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Häufige Fragen
+            {content.title}
           </h1>
           <p className="text-gray-400 max-w-lg mx-auto">
-            Finden Sie Antworten auf die häufigsten Fragen zu BidBlitz
+            {content.subtitle}
           </p>
         </div>
 
@@ -284,7 +258,7 @@ export default function FAQ() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Frage suchen..."
+            placeholder={content.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#1a3a52] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
@@ -295,7 +269,7 @@ export default function FAQ() {
         {filteredFaqs && (
           <div className="mb-10">
             <p className="text-gray-400 mb-4">
-              {filteredFaqs.length} Ergebnis(se) für "{searchQuery}"
+              {filteredFaqs.length} {content.resultsFor} "{searchQuery}"
             </p>
             <div className="bg-[#1a3a52]/50 rounded-2xl p-6 border border-gray-700/50">
               {filteredFaqs.length > 0 ? (
@@ -310,7 +284,7 @@ export default function FAQ() {
                 ))
               ) : (
                 <p className="text-gray-400 text-center py-4">
-                  Keine Ergebnisse gefunden. Kontaktieren Sie uns für weitere Hilfe.
+                  {content.noResults}
                 </p>
               )}
             </div>
@@ -344,17 +318,17 @@ export default function FAQ() {
         {/* Contact CTA */}
         <div className="bg-gradient-to-r from-[#FFD700]/10 to-[#FF4D4D]/10 rounded-2xl p-8 text-center border border-[#FFD700]/30">
           <h3 className="text-xl font-bold text-white mb-2">
-            Ihre Frage nicht gefunden?
+            {content.stillQuestions}
           </h3>
           <p className="text-gray-400 mb-4">
-            Unser Support-Team hilft Ihnen gerne weiter!
+            {content.contactText}
           </p>
-          <a 
-            href="/contact" 
+          <Link 
+            to="/contact" 
             className="inline-flex items-center gap-2 bg-[#FFD700] hover:bg-[#FCD34D] text-black font-bold px-6 py-3 rounded-lg transition-colors"
           >
-            Kontakt aufnehmen
-          </a>
+            {content.contactButton}
+          </Link>
         </div>
       </div>
     </div>
