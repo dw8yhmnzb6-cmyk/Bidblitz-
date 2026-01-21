@@ -507,6 +507,9 @@ async def create_auction(auction: AuctionCreate, admin: dict = Depends(get_admin
     
     await db.auctions.insert_one(doc)
     
+    # Remove _id added by MongoDB before returning
+    doc.pop("_id", None)
+    
     # Add product info to response
     doc["product"] = product
     
