@@ -60,7 +60,8 @@ async def lifespan(app: FastAPI):
     bot_task_running = True
     asyncio.create_task(bot_last_second_bidder())
     asyncio.create_task(auction_reminder_processor())
-    logger.info("BidBlitz server started - Bot bidder & Reminder tasks running")
+    asyncio.create_task(auction_auto_restart_processor())
+    logger.info("BidBlitz server started - Bot bidder, Reminder & Auto-restart tasks running")
     
     yield
     
