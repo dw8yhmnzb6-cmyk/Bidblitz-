@@ -400,6 +400,21 @@ export default function Admin() {
     }
   };
 
+  // Set auction as VIP-only
+  const handleSetVipOnly = async (auctionId, isVipOnly) => {
+    try {
+      await axios.put(
+        `${API}/admin/auctions/${auctionId}/vip-only?is_vip_only=${!isVipOnly}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(isVipOnly ? 'VIP-Only Status entfernt' : 'Als VIP-Only markiert');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler');
+    }
+  };
+
   // User handlers
   const handleToggleAdmin = async (userId) => {
     try {
