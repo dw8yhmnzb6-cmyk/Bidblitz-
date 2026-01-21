@@ -202,19 +202,21 @@ export default function Contact() {
                   <Clock className="w-6 h-6 text-cyan-400" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold mb-2">Öffnungszeiten</h3>
+                  <h3 className="text-white font-semibold mb-2">
+                    {language === 'en' ? 'Opening Hours' : language === 'sq' ? 'Orari' : language === 'tr' ? 'Çalışma Saatleri' : language === 'fr' ? 'Horaires' : 'Öffnungszeiten'}
+                  </h3>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Montag - Freitag</span>
+                      <span className="text-gray-400">{language === 'en' ? 'Monday - Friday' : language === 'sq' ? 'E Hënë - E Premte' : language === 'tr' ? 'Pazartesi - Cuma' : language === 'fr' ? 'Lundi - Vendredi' : 'Montag - Freitag'}</span>
                       <span className="text-white">9:00 - 18:00</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Samstag</span>
+                      <span className="text-gray-400">{language === 'en' ? 'Saturday' : language === 'sq' ? 'E Shtunë' : language === 'tr' ? 'Cumartesi' : language === 'fr' ? 'Samedi' : 'Samstag'}</span>
                       <span className="text-white">10:00 - 14:00</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">Sonntag</span>
-                      <span className="text-gray-500">Geschlossen</span>
+                      <span className="text-gray-400">{language === 'en' ? 'Sunday' : language === 'sq' ? 'E Diel' : language === 'tr' ? 'Pazar' : language === 'fr' ? 'Dimanche' : 'Sonntag'}</span>
+                      <span className="text-gray-500">{language === 'en' ? 'Closed' : language === 'sq' ? 'Mbyllur' : language === 'tr' ? 'Kapalı' : language === 'fr' ? 'Fermé' : 'Geschlossen'}</span>
                     </div>
                   </div>
                 </div>
@@ -226,13 +228,13 @@ export default function Contact() {
           <div className="lg:col-span-2">
             <form onSubmit={handleSubmit} className="bg-[#1a3a52]/50 rounded-2xl p-6 sm:p-8 border border-gray-700/50">
               <h2 className="text-xl font-bold text-white mb-6">
-                Nachricht senden
+                {texts.sendMessage}
               </h2>
               
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-gray-400 text-sm mb-2">
-                    Name <span className="text-red-500">*</span>
+                    {texts.name} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -240,13 +242,13 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
-                    placeholder="Ihr Name"
+                    placeholder={texts.enterName}
                     required
                   />
                 </div>
                 <div>
                   <label className="block text-gray-400 text-sm mb-2">
-                    E-Mail <span className="text-red-500">*</span>
+                    {texts.email} <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -254,7 +256,7 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
-                    placeholder="ihre@email.de"
+                    placeholder={texts.enterEmail}
                     required
                   />
                 </div>
@@ -262,7 +264,7 @@ export default function Contact() {
               
               <div className="mb-4">
                 <label className="block text-gray-400 text-sm mb-2">
-                  Betreff
+                  {texts.subject}
                 </label>
                 <select
                   name="subject"
