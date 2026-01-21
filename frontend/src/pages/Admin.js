@@ -602,6 +602,64 @@ export default function Admin() {
     }
   };
 
+  // Page content handlers
+  const handleSelectPage = async (page) => {
+    setSelectedPage(page);
+    setPageTitle(page.title);
+    setPageContent(page.content);
+  };
+
+  const handleSavePage = async () => {
+    if (!selectedPage) return;
+    try {
+      await axios.put(`${API}/admin/pages/${selectedPage.page_id}`, {
+        title: pageTitle,
+        content: pageContent
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success('Seite gespeichert');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Speichern');
+    }
+  };
+
+  const handleResetPage = async () => {
+    if (!selectedPage) return;
+    if (!confirm(`Seite "${selectedPage.title}" auf Standardinhalt zurücksetzen?`)) return;
+    try {
+      await axios.post(`${API}/admin/pages/${selectedPage.page_id}/reset`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Seite zurückgesetzt');
+      setSelectedPage(null);
+      setPageContent('');
+      setPageTitle('');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Zurücksetzen');
+    }
+  };
+
+  // Auto-restart auction handler
+  const handleSetAutoRestart = async (auctionId, currentAutoRestart) => {
+    const duration = prompt('Auto-Neustart Dauer in Minuten (0 = deaktiviert):', currentAutoRestart || '10');
+    if (duration === null) return;
+    
+    const botPrice = prompt('Bot-Mindestpreis (€) für Auto-Neustart (leer = kein Bot):', '');
+    
+    try {
+      await axios.put(
+        `${API}/admin/auctions/${auctionId}/auto-restart?duration_minutes=${parseInt(duration) || 0}&bot_target_price=${parseFloat(botPrice) || 0}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(parseInt(duration) > 0 ? `Auto-Neustart aktiviert (${duration} Min)` : 'Auto-Neustart deaktiviert');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler');
+    }
+  };
+
   // Email template HTML generator
   const getTemplateHtml = (templateId) => {
     const templates = {
