@@ -274,29 +274,55 @@ async def bot_last_second_bidder():
 
 
 async def auction_auto_restart_processor():
-    """Background task - automatically restart ended auctions with auto_restart config"""
+    """Background task - automatically restart ALL ended auctions with same settings"""
     global bot_task_running
     
-    logger.info("Auction auto-restart processor started")
+    logger.info("Auction auto-restart processor started - ALL ended auctions will restart automatically")
     
     while bot_task_running:
         try:
-            # Find ended auctions with auto_restart enabled
+            # CHECK BUSINESS HOURS - Don't restart outside 9:00-24:00
+            now_utc = datetime.now(timezone.utc)
+            berlin_hour = (now_utc.hour + 1) % 24  # Approximate Berlin/Dubai time
+            if berlin_hour < 9:
+                await asyncio.sleep(60)  # Check again in 1 minute
+                continue
+            
+            # Find ALL ended auctions (not just ones with auto_restart enabled)
             ended_auctions = await db.auctions.find({
-                "status": "ended",
-                "auto_restart.enabled": True
+                "status": "ended"
             }, {"_id": 0}).to_list(100)
             
             for auction in ended_auctions:
                 try:
+                    # Get original duration from the auction or use default
+                    original_start = auction.get("start_time")
+                    original_end = auction.get("end_time") or auction.get("ended_at")
+                    
+                    # Calculate original duration
+                    duration_minutes = 10  # Default 10 minutes
+                    if original_start and original_end:
+                        try:
+                            start_dt = datetime.fromisoformat(original_start.replace("Z", "+00:00"))
+                            end_dt = datetime.fromisoformat(original_end.replace("Z", "+00:00"))
+                            original_duration = (end_dt - start_dt).total_seconds() / 60
+                            if 1 <= original_duration <= 1440:  # Between 1 min and 24 hours
+                                duration_minutes = int(original_duration)
+                        except:
+                            pass
+                    
+                    # Check if auction has specific auto_restart config
                     auto_restart = auction.get("auto_restart", {})
-                    duration_minutes = auto_restart.get("duration_minutes", 10)
-                    bot_target = auto_restart.get("bot_target_price")
+                    if auto_restart.get("enabled") and auto_restart.get("duration_minutes"):
+                        duration_minutes = auto_restart.get("duration_minutes")
+                    
+                    # Keep the same bot target price
+                    bot_target = auction.get("bot_target_price") or auto_restart.get("bot_target_price")
                     
                     now = datetime.now(timezone.utc)
                     new_end_time = now + timedelta(minutes=duration_minutes)
                     
-                    # Reset auction to active state
+                    # Reset auction to active state with SAME SETTINGS
                     update_data = {
                         "status": "active",
                         "start_time": now.isoformat(),
@@ -312,14 +338,23 @@ async def auction_auto_restart_processor():
                         "final_price": None
                     }
                     
-                    # Set bot target price if configured
+                    # Keep the same bot target price
                     if bot_target and bot_target > 0:
                         update_data["bot_target_price"] = bot_target
                     
+                    # Mark as auto-restarted for tracking
+                    update_data["auto_restart"] = {
+                        "enabled": True,
+                        "duration_minutes": duration_minutes,
+                        "bot_target_price": bot_target,
+                        "last_restart": now.isoformat()
+                    }
+                    
                     await db.auctions.update_one({"id": auction["id"]}, {"$set": update_data})
                     
-                    logger.info(f"Auto-restarted auction {auction['id'][:8]}... for {duration_minutes} min" + 
-                               (f" with bot target €{bot_target}" if bot_target else ""))
+                    product_name = auction.get("product", {}).get("name", auction["id"][:8])
+                    logger.info(f"🔄 Auto-restarted: {product_name} for {duration_minutes} min" + 
+                               (f" (Bot: €{bot_target})" if bot_target else ""))
                     
                 except Exception as e:
                     logger.error(f"Auto-restart error for {auction.get('id')}: {e}")
