@@ -272,6 +272,153 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
         "bids_remaining": user["bids_balance"] - 1
     }
 
+# ==================== WISHLIST ====================
+
+@router.post("/wishlist/{auction_id}")
+async def add_to_wishlist(auction_id: str, user: dict = Depends(get_current_user)):
+    """Add auction to user's wishlist"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    # Check if already in wishlist
+    existing = await db.wishlist.find_one({
+        "user_id": user["id"],
+        "auction_id": auction_id
+    })
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="Already in wishlist")
+    
+    # Add to wishlist
+    wishlist_item = {
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "auction_id": auction_id,
+        "product_id": auction.get("product_id"),
+        "added_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.wishlist.insert_one(wishlist_item)
+    
+    return {"message": "Added to wishlist", "id": wishlist_item["id"]}
+
+
+@router.delete("/wishlist/{auction_id}")
+async def remove_from_wishlist(auction_id: str, user: dict = Depends(get_current_user)):
+    """Remove auction from user's wishlist"""
+    result = await db.wishlist.delete_one({
+        "user_id": user["id"],
+        "auction_id": auction_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Not in wishlist")
+    
+    return {"message": "Removed from wishlist"}
+
+
+@router.get("/wishlist")
+async def get_wishlist(user: dict = Depends(get_current_user)):
+    """Get user's wishlist with auction details"""
+    wishlist = await db.wishlist.find(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    ).sort("added_at", -1).to_list(100)
+    
+    # Enrich with auction and product info
+    for item in wishlist:
+        auction = await db.auctions.find_one({"id": item["auction_id"]}, {"_id": 0})
+        if auction:
+            product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+            item["auction"] = auction
+            item["product"] = product
+    
+    return {"wishlist": wishlist, "count": len(wishlist)}
+
+
+@router.get("/wishlist/check/{auction_id}")
+async def check_wishlist(auction_id: str, user: dict = Depends(get_current_user)):
+    """Check if auction is in user's wishlist"""
+    item = await db.wishlist.find_one({
+        "user_id": user["id"],
+        "auction_id": auction_id
+    })
+    
+    return {"in_wishlist": item is not None}
+
+
+# ==================== AUCTION OF THE DAY ====================
+
+@router.get("/auction-of-the-day")
+async def get_auction_of_the_day():
+    """Get the featured 'Auction of the Day'"""
+    # First check if there's a manually set AOTD
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    aotd = await db.auction_of_the_day.find_one({"date": today}, {"_id": 0})
+    
+    if aotd:
+        auction = await db.auctions.find_one({"id": aotd["auction_id"]}, {"_id": 0})
+        if auction and auction.get("status") == "active":
+            product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+            auction["product"] = product
+            auction["is_aotd"] = True
+            return auction
+    
+    # Otherwise, automatically select the highest-value active auction
+    active_auctions = await db.auctions.find(
+        {"status": "active"},
+        {"_id": 0}
+    ).to_list(100)
+    
+    if not active_auctions:
+        return None
+    
+    # Get product values and find highest
+    best_auction = None
+    highest_value = 0
+    
+    for auction in active_auctions:
+        product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+        if product:
+            value = product.get("retail_price", 0)
+            if value > highest_value:
+                highest_value = value
+                best_auction = auction
+                best_auction["product"] = product
+    
+    if best_auction:
+        best_auction["is_aotd"] = True
+        best_auction["auto_selected"] = True
+    
+    return best_auction
+
+
+@router.post("/admin/auction-of-the-day/{auction_id}")
+async def set_auction_of_the_day(auction_id: str, admin: dict = Depends(get_admin_user)):
+    """Set the Auction of the Day (Admin only)"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    
+    await db.auction_of_the_day.update_one(
+        {"date": today},
+        {
+            "$set": {
+                "date": today,
+                "auction_id": auction_id,
+                "set_at": datetime.now(timezone.utc).isoformat(),
+                "set_by": admin["id"]
+            }
+        },
+        upsert=True
+    )
+    
+    return {"message": "Auction of the Day set", "date": today, "auction_id": auction_id}
+
+
 # ==================== AUTOBIDDER ====================
 
 @router.post("/autobidder")
