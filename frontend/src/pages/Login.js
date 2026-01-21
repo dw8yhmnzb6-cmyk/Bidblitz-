@@ -86,9 +86,9 @@ export default function Login() {
                 <Zap className="w-7 h-7 text-white" />
               </div>
             </Link>
-            <h1 className="text-2xl font-bold text-white mt-4">Willkommen zurück</h1>
+            <h1 className="text-2xl font-bold text-white mt-4">{texts.welcomeBack}</h1>
             <p className="text-[#94A3B8] mt-2">
-              {requires2FA ? 'Zwei-Faktor-Authentifizierung' : 'Melden Sie sich an, um fortzufahren'}
+              {requires2FA ? texts.twoFactorAuth : texts.loginToContinue}
             </p>
           </div>
 
@@ -96,13 +96,13 @@ export default function Login() {
             {!requires2FA ? (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-white">E-Mail</Label>
+                  <Label htmlFor="email" className="text-white">{texts.email}</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                     <Input
                       id="email"
                       type="email"
-                      placeholder="ihre@email.de"
+                      placeholder={texts.enterEmail}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
@@ -115,9 +115,9 @@ export default function Login() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="text-white">Passwort</Label>
+                    <Label htmlFor="password" className="text-white">{texts.password}</Label>
                     <Link to="/forgot-password" className="text-sm text-[#7C3AED] hover:underline">
-                      Passwort vergessen?
+                      {texts.forgotPassword}
                     </Link>
                   </div>
                   <div className="relative">
