@@ -18,7 +18,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function Dashboard() {
   const { user, token, refreshUser, updateBidsBalance } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [activeAuctions, setActiveAuctions] = useState([]);
   const [myBidAuctions, setMyBidAuctions] = useState([]);
   const [wonAuctions, setWonAuctions] = useState([]);
@@ -28,6 +28,16 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [voucherCode, setVoucherCode] = useState('');
   const [redeemingVoucher, setRedeemingVoucher] = useState(false);
+
+  // Dashboard translations
+  const dashTexts = {
+    de: { welcome: 'Willkommen', profile: 'Profil', buyBids: 'Gebote kaufen', balance: 'Guthaben', bids: 'Gebote', won: 'Gewonnen', auctions: 'Auktionen', active: 'Aktiv', watching: 'Beobachtet', voucherCode: 'Gutscheincode', redeem: 'Einlösen', myAuctions: 'Meine Auktionen', recentBids: 'Letzte Gebote', autobidder: 'Autobidder', noBids: 'Noch keine Gebote', startBidding: 'Bieten anfangen', noAutobidder: 'Kein Autobidder', createAutobidder: 'Autobidder erstellen', viewAll: 'Alle anzeigen' },
+    en: { welcome: 'Welcome', profile: 'Profile', buyBids: 'Buy Bids', balance: 'Balance', bids: 'Bids', won: 'Won', auctions: 'Auctions', active: 'Active', watching: 'Watching', voucherCode: 'Voucher Code', redeem: 'Redeem', myAuctions: 'My Auctions', recentBids: 'Recent Bids', autobidder: 'Auto-Bidder', noBids: 'No bids yet', startBidding: 'Start Bidding', noAutobidder: 'No auto-bidder', createAutobidder: 'Create Auto-Bidder', viewAll: 'View All' },
+    sq: { welcome: 'Mirë se vini', profile: 'Profili', buyBids: 'Bli Oferta', balance: 'Bilanci', bids: 'Oferta', won: 'Fituar', auctions: 'Ankande', active: 'Aktive', watching: 'Duke ndjekur', voucherCode: 'Kodi i Kuponit', redeem: 'Aktivizo', myAuctions: 'Ankandet e Mia', recentBids: 'Ofertat e Fundit', autobidder: 'Auto-Ofertuesi', noBids: 'Ende pa oferta', startBidding: 'Fillo të Ofrosh', noAutobidder: 'Pa auto-ofertues', createAutobidder: 'Krijo Auto-Ofertues', viewAll: 'Shiko të Gjitha' },
+    tr: { welcome: 'Hoş geldiniz', profile: 'Profil', buyBids: 'Teklif Al', balance: 'Bakiye', bids: 'Teklif', won: 'Kazanılan', auctions: 'Açık Artırma', active: 'Aktif', watching: 'İzlenen', voucherCode: 'Kupon Kodu', redeem: 'Kullan', myAuctions: 'Açık Artırmalarım', recentBids: 'Son Teklifler', autobidder: 'Otomatik Teklif', noBids: 'Henüz teklif yok', startBidding: 'Teklif Vermeye Başla', noAutobidder: 'Otomatik teklif yok', createAutobidder: 'Otomatik Teklif Oluştur', viewAll: 'Tümünü Gör' },
+    fr: { welcome: 'Bienvenue', profile: 'Profil', buyBids: 'Acheter Enchères', balance: 'Solde', bids: 'Enchères', won: 'Gagné', auctions: 'Enchères', active: 'Actif', watching: 'Surveillé', voucherCode: 'Code Promo', redeem: 'Utiliser', myAuctions: 'Mes Enchères', recentBids: 'Enchères Récentes', autobidder: 'Auto-Enchère', noBids: 'Pas encore d\'enchères', startBidding: 'Commencer à Enchérir', noAutobidder: 'Pas d\'auto-enchère', createAutobidder: 'Créer Auto-Enchère', viewAll: 'Voir Tout' }
+  };
+  const dt = dashTexts[language] || dashTexts.de;
 
   useEffect(() => {
     if (user) fetchData();
