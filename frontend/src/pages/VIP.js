@@ -215,18 +215,18 @@ export default function VIP() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success(response.data.message);
+      toast.success(texts.subscriptionActive);
       fetchData();
       // Remove session_id from URL
       navigate('/vip', { replace: true });
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Aktivierung fehlgeschlagen');
+      toast.error(error.response?.data?.detail || 'Activation failed');
     }
   };
 
   const handleSubscribe = async (planId) => {
     if (!token) {
-      toast.error('Bitte melden Sie sich an');
+      toast.error(texts.loginRequired);
       navigate('/login');
       return;
     }
@@ -242,7 +242,7 @@ export default function VIP() {
       
       window.location.href = response.data.url;
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Erstellen des Abos');
+      toast.error(error.response?.data?.detail || 'Subscription error');
       setSubscribing(null);
     }
   };
