@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
-import { RefreshCw, Search, Flame, Clock, TrendingUp, Bell, BellOff } from 'lucide-react';
+import { RefreshCw, Search, Flame, Clock, TrendingUp, Bell, BellOff, Star } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -23,6 +23,58 @@ const ActivityDots = ({ bids }) => {
           }`}
         />
       ))}
+    </div>
+  );
+};
+
+// Featured Auction Timer Component
+const FeaturedTimer = ({ endTime, serverTimeOffset = 0 }) => {
+  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
+  
+  useEffect(() => {
+    const parseEndTime = (endTimeStr) => {
+      if (!endTimeStr) return null;
+      try {
+        let date = new Date(endTimeStr);
+        if (!isNaN(date.getTime())) return date;
+        return null;
+      } catch {
+        return null;
+      }
+    };
+    
+    const calc = () => {
+      const end = parseEndTime(endTime);
+      if (!end) return;
+      
+      const now = new Date(Date.now() + serverTimeOffset);
+      const diff = end.getTime() - now.getTime();
+      
+      if (diff <= 0) {
+        setTimeLeft({ h: 0, m: 0, s: 0 });
+      } else {
+        setTimeLeft({
+          h: Math.floor(diff / 3600000),
+          m: Math.floor((diff % 3600000) / 60000),
+          s: Math.floor((diff % 60000) / 1000)
+        });
+      }
+    };
+    
+    calc();
+    const int = setInterval(calc, 1000);
+    return () => clearInterval(int);
+  }, [endTime, serverTimeOffset]);
+  
+  const pad = (n) => String(n).padStart(2, '0');
+  
+  return (
+    <div className="flex items-center gap-1 text-xl font-mono font-bold text-yellow-400">
+      <span className="bg-black/50 px-2 py-1 rounded">{pad(timeLeft.h)}</span>
+      <span className="text-white/50">:</span>
+      <span className="bg-black/50 px-2 py-1 rounded">{pad(timeLeft.m)}</span>
+      <span className="text-white/50">:</span>
+      <span className="bg-black/50 px-2 py-1 rounded">{pad(timeLeft.s)}</span>
     </div>
   );
 };
