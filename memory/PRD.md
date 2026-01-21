@@ -3,74 +3,75 @@
 ## Letztes Update: 21. Januar 2026
 
 ## Original-Anforderung
-Der Benutzer hat eine Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de` angefordert, mit einer Kunden-App und einem Admin-Panel.
+Der Benutzer hat eine Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de` angefordert.
 
-## Was wurde implementiert
+## Aktuelle Session - 21. Januar 2026
 
-### Session 21. Januar 2026 - Vollständige i18n-Migration
-- **Auctions.js** - Vollständig übersetzt (DE, EN, SQ, TR, FR)
-- **Login.js** - Vollständig übersetzt
-- **Register.js** - Vollständig übersetzt
-- **Contact.js** - Vollständig übersetzt mit Dubai-Adresse
-- **FAQ.js** - Vollständig neu geschrieben mit mehrsprachigem Inhalt
-- **BuyBids.js** - Vollständig übersetzt
-- **Winners.js** - Vollständig übersetzt
-- **Dashboard.js** - Teilweise übersetzt (Haupttexte)
-- **HowItWorks.js** - War bereits übersetzt
+### Behobene Probleme:
+1. **Timer-Bug behoben** - Timer zeigten "00:00:00" und aktualisierten sich nicht
+   - Ursache: Bot-System bietete zu aggressiv, Timer waren immer nur wenige Sekunden
+   - Lösung: Auktions-Timer auf 10 Minuten zurückgesetzt
+   - Status: ✅ BEHOBEN - Timer zählen jetzt automatisch herunter
 
-### Unterstützte Sprachen
-1. Deutsch (DE) - Standard
-2. English (EN)
-3. Shqip/Albanisch (SQ)
-4. Türkçe (TR)
-5. Français (FR)
+### Neue Features implementiert:
 
-### Neue Dateien erstellt
-- `/app/frontend/src/i18n/pageTranslations.js` - Zentrale Übersetzungsdatei für Seiten
+1. **Push-Benachrichtigungen bei Überbieten** ✅
+   - Backend: `/app/backend/routers/auctions.py` 
+   - Wenn ein Benutzer überboten wird, erhält der vorherige Bieter:
+     - Push-Benachrichtigung (Browser)
+     - In-App Benachrichtigung
+   - Benachrichtigung enthält: Produktname, neuer Preis, Link zur Auktion
 
-### Früher implementierte Funktionen
-- Admin Content Management System für statische Seiten
-- Globales Auto-Restart für beendete Auktionen
-- Bot-System für VIP-Auktionen
-- Bedingte Krypto-Zahlungen (deaktiviert wenn API-Key ungültig)
-- Dubai-Firmeninformationen in legalen Seiten
-- Albanische Sprachunterstützung
+2. **Wunschliste (Wishlist)** ✅
+   - Backend API Endpoints:
+     - `POST /api/wishlist/{auction_id}` - Zur Wunschliste hinzufügen
+     - `DELETE /api/wishlist/{auction_id}` - Von Wunschliste entfernen
+     - `GET /api/wishlist` - Wunschliste abrufen
+     - `GET /api/wishlist/check/{auction_id}` - Prüfen ob in Wunschliste
+
+3. **Auktion des Tages** ✅
+   - Backend API Endpoints:
+     - `GET /api/auction-of-the-day` - Auktion des Tages abrufen
+     - `POST /api/admin/auction-of-the-day/{auction_id}` - AOTD setzen (Admin)
+   - Automatische Auswahl: Höchstwertiges aktives Produkt wird ausgewählt
+   - Manuelle Auswahl: Admin kann AOTD manuell setzen
+
+### i18n-Migration (vollständig)
+Alle wichtigen Seiten in 5 Sprachen (DE, EN, SQ, TR, FR):
+- Auctions.js, Login.js, Register.js, Contact.js
+- FAQ.js, BuyBids.js, Winners.js, Dashboard.js, HowItWorks.js
 
 ## Architektur
 ```
 /app/
 ├── backend/
-│   ├── server.py          # FastAPI mit Background Tasks
-│   ├── routers/           # API-Routen
-│   └── .env               # DB_NAME=bidblitz_production
+│   ├── server.py              # FastAPI mit Background Tasks
+│   ├── routers/
+│   │   ├── auctions.py        # + Wishlist & AOTD Endpoints
+│   │   └── notifications.py   # Push Notifications
+│   └── .env
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/         # React-Seiten mit i18n
-│   │   ├── i18n/          # Übersetzungsdateien
-│   │   │   ├── translations.js
-│   │   │   └── pageTranslations.js
-│   │   └── context/       # Language & Auth Context
+│   │   ├── pages/             # React-Seiten mit i18n
+│   │   └── i18n/              # Übersetzungsdateien
 │   └── .env
-└── DEPLOYMENT_GUIDE.md
+└── memory/PRD.md
 ```
 
 ## Noch zu erledigen (Backlog)
 
 ### P1 - Hoch
+- [ ] Wishlist Frontend UI (Heart-Button auf Auction Cards)
+- [ ] Auktion des Tages im Frontend anzeigen
 - [ ] PayPal-Integration
-- [ ] Push-Benachrichtigungen bei Überbieten
-- [ ] Admin-Panel i18n (hardcodierte deutsche Texte)
 
 ### P2 - Mittel
-- [ ] VIP.js i18n
-- [ ] Profile.js i18n
-- [ ] InviteFriends.js i18n
+- [ ] VIP.js, Profile.js, InviteFriends.js i18n
+- [ ] Admin-Panel Internationalisierung
 - [ ] Mehr Auktionen erstellen (~100)
 
 ### P3 - Niedrig
-- [ ] Wunschliste & Auktion des Tages
-- [ ] Gewinner-Galerie erweitern
-- [ ] E-Mail-Konfiguration (Production)
+- [ ] E-Mail Production-Konfiguration
 - [ ] Datenpersistenz-Audit
 
 ## Test-Zugangsdaten
