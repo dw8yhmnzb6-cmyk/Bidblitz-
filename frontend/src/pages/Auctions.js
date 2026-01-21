@@ -62,7 +62,12 @@ const auctionTranslations = {
     sold: "VERKAUFT",
     remindMe: "Erinnere mich",
     reminderActive: "Erinnerung aktiv",
-    pricesNote: "Preise zzgl. Versand"
+    pricesNote: "Preise zzgl. Versand",
+    addToWishlist: "Zur Wunschliste",
+    removeFromWishlist: "Von Wunschliste entfernen",
+    wishlistAdded: "Zur Wunschliste hinzugefügt",
+    wishlistRemoved: "Von Wunschliste entfernt",
+    auctionOfDay: "AUKTION DES TAGES"
   },
   en: {
     vipAuction: "VIP AUCTION",
