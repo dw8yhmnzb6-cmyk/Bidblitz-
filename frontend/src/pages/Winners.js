@@ -289,13 +289,13 @@ export default function Winners() {
               {texts.firstWinner}
             </p>
             <Link to="/auctions">
-              <Button className="btn-primary">Auktionen ansehen</Button>
+              <Button className="btn-primary">{texts.goToAuctions}</Button>
             </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {winners.map((winner) => (
-              <WinnerCard key={winner.auction_id} winner={winner} />
+              <WinnerCard key={winner.auction_id} winner={winner} texts={texts} language={language} />
             ))}
           </div>
         )}
@@ -305,18 +305,18 @@ export default function Winners() {
           <div className="mt-16 text-center">
             <div className="glass-card p-8 rounded-2xl max-w-3xl mx-auto">
               <h2 className="text-2xl font-bold text-white mb-4">
-                Werden Sie der nächste Gewinner!
+                {language === 'en' ? 'Be the next winner!' : language === 'sq' ? 'Bëhuni fituesi i radhës!' : language === 'tr' ? 'Bir sonraki kazanan siz olun!' : language === 'fr' ? 'Soyez le prochain gagnant!' : 'Werden Sie der nächste Gewinner!'}
               </h2>
               <p className="text-[#94A3B8] mb-6">
-                Registrieren Sie sich jetzt und erhalten Sie 10 kostenlose Gebote zum Start.
+                {language === 'en' ? 'Register now and get 10 free bids to start.' : language === 'sq' ? 'Regjistrohuni tani dhe merrni 10 oferta falas për të filluar.' : language === 'tr' ? 'Şimdi kaydolun ve başlamak için 10 ücretsiz teklif alın.' : language === 'fr' ? 'Inscrivez-vous maintenant et obtenez 10 enchères gratuites pour commencer.' : 'Registrieren Sie sich jetzt und erhalten Sie 10 kostenlose Gebote zum Start.'}
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Link to="/register">
-                  <Button className="btn-primary">Kostenlos registrieren</Button>
+                  <Button className="btn-primary">{language === 'en' ? 'Register Free' : language === 'sq' ? 'Regjistrohu Falas' : language === 'tr' ? 'Ücretsiz Kayıt' : language === 'fr' ? 'Inscription Gratuite' : 'Kostenlos registrieren'}</Button>
                 </Link>
                 <Link to="/auctions">
                   <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
-                    Auktionen ansehen
+                    {texts.goToAuctions}
                   </Button>
                 </Link>
               </div>
