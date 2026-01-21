@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
-import { RefreshCw, Search, Flame, Clock, TrendingUp, Bell, BellOff, Star } from 'lucide-react';
+import { RefreshCw, Search, Flame, Clock, TrendingUp, Bell, BellOff, Star, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
