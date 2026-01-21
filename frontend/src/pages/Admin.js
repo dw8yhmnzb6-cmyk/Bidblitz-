@@ -12,7 +12,7 @@ import {
   Settings, BarChart3, Zap, RefreshCw, Square, UserPlus,
   Ban, CheckCircle, DollarSign, Globe, Ticket, Edit, X, Save,
   Bot, Play, Target, Calendar, Clock, TrendingUp, Activity, Menu,
-  Mail, Send, Eye, Star
+  Mail, Send, Eye, Star, Crown
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
