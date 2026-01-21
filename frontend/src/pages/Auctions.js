@@ -261,6 +261,8 @@ export default function Auctions() {
   const [auctions, setAuctions] = useState([]);
   const [products, setProducts] = useState({});
   const [reminders, setReminders] = useState([]);
+  const [featuredAuction, setFeaturedAuction] = useState(null);
+  const [businessHours, setBusinessHours] = useState({ is_open: true });
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('active');
   const [searchQuery, setSearchQuery] = useState('');
@@ -272,7 +274,9 @@ export default function Auctions() {
       
       const requests = [
         axios.get(`${API}/auctions`),
-        axios.get(`${API}/products`)
+        axios.get(`${API}/products`),
+        axios.get(`${API}/auctions/featured`).catch(() => ({ data: null })),
+        axios.get(`${API}/auctions/business-hours`).catch(() => ({ data: { is_open: true } }))
       ];
       
       // Fetch reminders if logged in
@@ -287,7 +291,9 @@ export default function Auctions() {
       const results = await Promise.all(requests);
       const auctionRes = results[0];
       const productRes = results[1];
-      const remindersRes = results[2];
+      const featuredRes = results[2];
+      const businessHoursRes = results[3];
+      const remindersRes = results[4];
       
       // Calculate server time offset from response header or first auction's timestamp
       // This helps devices with wrong system time
@@ -307,6 +313,16 @@ export default function Auctions() {
       const productMap = {};
       productRes.data.forEach(p => { productMap[p.id] = p; });
       setProducts(productMap);
+      
+      // Set featured auction
+      if (featuredRes?.data) {
+        setFeaturedAuction(featuredRes.data);
+      }
+      
+      // Set business hours
+      if (businessHoursRes?.data) {
+        setBusinessHours(businessHoursRes.data);
+      }
       
       // Set reminder auction IDs
       if (remindersRes?.data?.reminders) {
