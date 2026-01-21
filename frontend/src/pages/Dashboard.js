@@ -111,20 +111,20 @@ export default function Dashboard() {
   const handleToggleAutobidder = async (autobidderId, currentStatus) => {
     try {
       await axios.put(`${API}/autobidder/${autobidderId}/toggle`, {}, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success(currentStatus ? 'Autobidder deaktiviert' : 'Autobidder aktiviert');
+      toast.success(currentStatus ? (language === 'en' ? 'Auto-bidder disabled' : 'Autobidder deaktiviert') : (language === 'en' ? 'Auto-bidder enabled' : 'Autobidder aktiviert'));
       fetchData();
     } catch (error) {
-      toast.error('Fehler beim Ändern');
+      toast.error(language === 'en' ? 'Error changing status' : 'Fehler beim Ändern');
     }
   };
 
   const handleDeleteAutobidder = async (autobidderId) => {
     try {
       await axios.delete(`${API}/autobidder/${autobidderId}`, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success('Autobidder gelöscht');
+      toast.success(language === 'en' ? 'Auto-bidder deleted' : 'Autobidder gelöscht');
       fetchData();
     } catch (error) {
-      toast.error('Fehler beim Löschen');
+      toast.error(language === 'en' ? 'Error deleting' : 'Fehler beim Löschen');
     }
   };
 
@@ -135,11 +135,11 @@ export default function Dashboard() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success('Gebot platziert!');
+      toast.success(language === 'en' ? 'Bid placed!' : 'Gebot platziert!');
       updateBidsBalance(response.data.bids_remaining);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Bieten');
+      toast.error(error.response?.data?.detail || (language === 'en' ? 'Error bidding' : 'Fehler beim Bieten'));
     }
   };
 
