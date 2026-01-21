@@ -311,25 +311,14 @@ async def auction_auto_restart_processor():
                         except:
                             pass  # If we can't parse ended_at, restart anyway
                     
-                    # Get original duration from the auto_restart config or calculate from auction times
+                    # Get original duration from the auto_restart config
                     auto_restart = auction.get("auto_restart", {})
                     duration_minutes = auto_restart.get("duration_minutes")
                     
-                    # If no duration in config, calculate from original auction
-                    if not duration_minutes:
-                        original_start = auction.get("original_start_time") or auction.get("start_time")
-                        original_end = auction.get("original_end_time") or auction.get("end_time") or auction.get("ended_at")
-                        
-                        duration_minutes = 10  # Default 10 minutes
-                        if original_start and original_end:
-                            try:
-                                start_dt = datetime.fromisoformat(original_start.replace("Z", "+00:00"))
-                                end_dt = datetime.fromisoformat(original_end.replace("Z", "+00:00"))
-                                original_duration = (end_dt - start_dt).total_seconds() / 60
-                                if 1 <= original_duration <= 1440:  # Between 1 min and 24 hours
-                                    duration_minutes = int(original_duration)
-                            except:
-                                pass
+                    # If no configured duration, use DEFAULT 10 minutes
+                    # Don't try to calculate from times as this can lead to very short durations
+                    if not duration_minutes or duration_minutes < 5:
+                        duration_minutes = 10  # Default 10 minutes minimum
                     
                     # Keep the same bot target price
                     bot_target = auction.get("bot_target_price") or auto_restart.get("bot_target_price")
