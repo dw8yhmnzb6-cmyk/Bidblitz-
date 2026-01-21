@@ -259,7 +259,7 @@ const FeaturedTimer = ({ endTime, serverTimeOffset = 0, isPaused = false, paused
   if (isPaused) {
     return (
       <div className="flex items-center gap-2 text-lg font-bold text-orange-400">
-        <span className="bg-orange-500/20 px-3 py-1 rounded animate-pulse">⏸ PAUSIERT</span>
+        <span className="bg-orange-500/20 px-3 py-1 rounded animate-pulse">⏸ {pausedText}</span>
       </div>
     );
   }
