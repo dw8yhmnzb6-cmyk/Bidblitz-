@@ -1320,6 +1320,16 @@ export default function Admin() {
                             </td>
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
+                                {/* Featured/VIP Button */}
+                                <Button 
+                                  size="sm" 
+                                  variant="ghost" 
+                                  className={`${auction.is_featured ? 'text-yellow-400 bg-yellow-400/20' : 'text-gray-400 hover:text-yellow-400'} hover:bg-yellow-400/10`}
+                                  onClick={() => handleSetFeatured(auction.id, auction.is_featured)}
+                                  title={auction.is_featured ? 'VIP-Status entfernen' : 'Als VIP markieren'}
+                                >
+                                  <Star className={`w-4 h-4 ${auction.is_featured ? 'fill-current' : ''}`} />
+                                </Button>
                                 {(auction.status === 'active' || auction.status === 'scheduled') && (
                                   <>
                                     <Button size="sm" variant="ghost" className="text-[#FFD700] hover:bg-[#FFD700]/10" onClick={() => handleUpdateBotTarget(auction.id, botTarget)} title="Bot-Zielpreis ändern"><Target className="w-4 h-4" /></Button>
