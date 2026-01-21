@@ -1,15 +1,90 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useLanguage } from '../context/LanguageContext';
 import { Trophy, Star, TrendingDown, Clock, Users, ChevronRight, Sparkles } from 'lucide-react';
 import { Button } from '../components/ui/button';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const WinnerCard = ({ winner }) => {
+// Multilingual content
+const winnersTexts = {
+  de: {
+    title: "Gewinner-Galerie",
+    subtitle: "Sehen Sie, wer bei unseren Auktionen gewonnen hat",
+    recentWinners: "Aktuelle Gewinner",
+    topSavers: "Top-Sparer",
+    viewAll: "Alle anzeigen",
+    wonFor: "Gewonnen für",
+    saved: "Gespart",
+    retail: "UVP",
+    bids: "Gebote",
+    noWinners: "Noch keine Gewinner",
+    firstWinner: "Seien Sie der erste Gewinner!",
+    goToAuctions: "Zu den Auktionen"
+  },
+  en: {
+    title: "Winners Gallery",
+    subtitle: "See who won in our auctions",
+    recentWinners: "Recent Winners",
+    topSavers: "Top Savers",
+    viewAll: "View all",
+    wonFor: "Won for",
+    saved: "Saved",
+    retail: "RRP",
+    bids: "Bids",
+    noWinners: "No winners yet",
+    firstWinner: "Be the first winner!",
+    goToAuctions: "Go to Auctions"
+  },
+  sq: {
+    title: "Galeria e Fituesve",
+    subtitle: "Shikoni kush ka fituar në ankandet tona",
+    recentWinners: "Fituesit e Fundit",
+    topSavers: "Kursimtarët Kryesorë",
+    viewAll: "Shiko të gjitha",
+    wonFor: "Fituar për",
+    saved: "Kursyer",
+    retail: "Çmimi",
+    bids: "Oferta",
+    noWinners: "Ende pa fitues",
+    firstWinner: "Bëhu fituesi i parë!",
+    goToAuctions: "Shko te Ankandet"
+  },
+  tr: {
+    title: "Kazananlar Galerisi",
+    subtitle: "Açık artırmalarımızda kimin kazandığını görün",
+    recentWinners: "Son Kazananlar",
+    topSavers: "En Çok Tasarruf Edenler",
+    viewAll: "Tümünü gör",
+    wonFor: "Şu fiyata kazanıldı",
+    saved: "Tasarruf",
+    retail: "TSF",
+    bids: "Teklif",
+    noWinners: "Henüz kazanan yok",
+    firstWinner: "İlk kazanan siz olun!",
+    goToAuctions: "Açık Artırmalara Git"
+  },
+  fr: {
+    title: "Galerie des Gagnants",
+    subtitle: "Découvrez qui a gagné dans nos enchères",
+    recentWinners: "Gagnants Récents",
+    topSavers: "Top Économiseurs",
+    viewAll: "Voir tout",
+    wonFor: "Gagné pour",
+    saved: "Économisé",
+    retail: "Prix conseillé",
+    bids: "Enchères",
+    noWinners: "Pas encore de gagnants",
+    firstWinner: "Soyez le premier gagnant!",
+    goToAuctions: "Aller aux Enchères"
+  }
+};
+
+const WinnerCard = ({ winner, texts, language }) => {
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
-    return new Date(dateStr).toLocaleDateString('de-DE', {
+    return new Date(dateStr).toLocaleDateString(language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : language === 'tr' ? 'tr-TR' : 'en-US', {
       day: '2-digit',
       month: 'short',
       year: 'numeric'
