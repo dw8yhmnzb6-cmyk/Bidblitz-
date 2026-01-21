@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { usePageTranslations } from '../i18n/pageTranslations';
 import { 
   Mail, 
   MessageSquare, 
@@ -13,7 +14,8 @@ import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 
 export default function Contact() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const texts = usePageTranslations(language);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,7 +36,7 @@ export default function Contact() {
     e.preventDefault();
     
     if (!formData.name || !formData.email || !formData.message) {
-      toast.error('Bitte füllen Sie alle Pflichtfelder aus');
+      toast.error(language === 'en' ? 'Please fill all required fields' : 'Bitte füllen Sie alle Pflichtfelder aus');
       return;
     }
 
@@ -45,7 +47,7 @@ export default function Contact() {
     
     setSubmitting(false);
     setSubmitted(true);
-    toast.success('Nachricht erfolgreich gesendet!');
+    toast.success(texts.messageSent);
   };
 
   const contactInfo = [
