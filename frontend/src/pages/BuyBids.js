@@ -320,11 +320,14 @@ export default function BuyBids() {
 
               {/* Crypto Option */}
               <button
-                onClick={() => setPaymentMethod('crypto')}
+                onClick={() => paymentMethods.crypto && setPaymentMethod('crypto')}
+                disabled={!paymentMethods.crypto}
                 className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-4 ${
-                  paymentMethod === 'crypto' 
-                    ? 'border-[#F7931A] bg-[#F7931A]/10' 
-                    : 'border-white/10 hover:border-white/20'
+                  !paymentMethods.crypto 
+                    ? 'border-white/5 opacity-50 cursor-not-allowed'
+                    : paymentMethod === 'crypto' 
+                      ? 'border-[#F7931A] bg-[#F7931A]/10' 
+                      : 'border-white/10 hover:border-white/20'
                 }`}
               >
                 <div className="w-12 h-12 rounded-lg bg-[#F7931A]/20 flex items-center justify-center">
@@ -332,9 +335,13 @@ export default function BuyBids() {
                 </div>
                 <div className="flex-1 text-left">
                   <p className="text-white font-medium">Kryptowährung</p>
-                  <p className="text-[#94A3B8] text-xs">Bitcoin, Ethereum, Litecoin, USDC, Dogecoin & mehr</p>
+                  {paymentMethods.crypto ? (
+                    <p className="text-[#94A3B8] text-xs">Bitcoin, Ethereum, Litecoin, USDC, Dogecoin & mehr</p>
+                  ) : (
+                    <p className="text-orange-400 text-xs">Derzeit nicht verfügbar</p>
+                  )}
                 </div>
-                {paymentMethod === 'crypto' && (
+                {paymentMethod === 'crypto' && paymentMethods.crypto && (
                   <Check className="w-5 h-5 text-[#F7931A]" />
                 )}
               </button>
