@@ -30,6 +30,7 @@ from routers.rewards import router as rewards_router
 from routers.invoices import router as invoices_router
 from routers.notifications import router as notifications_router
 from routers.vip import router as vip_router
+from routers.pages import router as pages_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
@@ -101,6 +102,7 @@ app.include_router(rewards_router, prefix="/api")
 app.include_router(invoices_router, prefix="/api")
 app.include_router(notifications_router, prefix="/api")
 app.include_router(vip_router, prefix="/api")
+app.include_router(pages_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
