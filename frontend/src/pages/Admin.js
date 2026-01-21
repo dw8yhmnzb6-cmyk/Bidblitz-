@@ -271,6 +271,20 @@ export default function Admin() {
       const response = await axios.post(`${API}/admin/auctions`, auctionData, { headers: { Authorization: `Bearer ${token}` } });
       toast.success('Auktion erstellt');
       
+      // Set auto-restart if enabled
+      if (newAuction.auto_restart) {
+        try {
+          await axios.put(
+            `${API}/admin/auctions/${response.data.id}/auto-restart?duration_minutes=${parseInt(newAuction.auto_restart_duration) || 10}&bot_target_price=${newAuction.bot_target_price ? parseFloat(newAuction.bot_target_price) : 0}`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          toast.success('Auto-Neustart aktiviert');
+        } catch (autoRestartError) {
+          console.error('Auto-restart setup failed:', autoRestartError);
+        }
+      }
+      
       // If bot target price is set, automatically start bot bidding
       if (newAuction.bot_target_price && parseFloat(newAuction.bot_target_price) > 0) {
         try {
@@ -289,7 +303,7 @@ export default function Admin() {
         product_id: '', starting_price: '0.01', bid_increment: '0.01', 
         duration_value: '10', duration_unit: 'minutes',
         start_time: '', end_time: '', scheduling_mode: 'immediate',
-        bot_target_price: ''
+        bot_target_price: '', auto_restart: false, auto_restart_duration: '10'
       });
       fetchData();
     } catch (error) {
