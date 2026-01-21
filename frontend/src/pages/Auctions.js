@@ -751,19 +751,19 @@ export default function Auctions() {
                       ? 'bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-black hover:scale-105' 
                       : 'bg-gray-600 text-gray-400 cursor-not-allowed'
                   }`} disabled={!businessHours.is_open}>
-                    {businessHours.is_open ? 'JETZT BIETEN' : '⏸ PAUSIERT'}
+                    {businessHours.is_open ? texts.bidNow : `⏸ ${texts.paused}`}
                   </button>
                 </div>
               </div>
               
               {/* Activity Bar */}
               <div className="bg-black/30 px-4 py-2 flex items-center justify-between text-xs">
-                <span className="text-gray-400">{featuredAuction.total_bids || 0} Gebote</span>
+                <span className="text-gray-400">{featuredAuction.total_bids || 0} {texts.bids}</span>
                 <span className="text-gray-400">
-                  {featuredAuction.last_bidder_name && `Letzter Bieter: ${featuredAuction.last_bidder_name}`}
+                  {featuredAuction.last_bidder_name && featuredAuction.last_bidder_name}
                 </span>
                 <span className="text-green-400 flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" /> Hohe Aktivität
+                  <TrendingUp className="w-3 h-3" /> {texts.highActivity}
                 </span>
               </div>
             </div>
@@ -774,10 +774,10 @@ export default function Auctions() {
         <div className="py-3">
           <div className="flex items-center gap-2">
             <Flame className="w-5 h-5 text-orange-500" />
-            <h1 className="text-lg font-bold text-white">Live-Auktionen</h1>
+            <h1 className="text-lg font-bold text-white">{texts.liveAuctions}</h1>
           </div>
           <p className="text-gray-400 text-xs mt-0.5">
-            {activeCount} aktiv • Spare bis zu 99%!
+            {activeCount} {texts.activeCount} • {texts.saveUpTo}
           </p>
         </div>
 
@@ -788,7 +788,7 @@ export default function Auctions() {
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
             <input
               type="text"
-              placeholder="Suchen..."
+              placeholder={texts.search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-7 pr-2 py-1.5 rounded bg-[#1a3a52] border border-gray-700 text-white text-xs placeholder-gray-500 focus:outline-none focus:border-cyan-500"
@@ -807,7 +807,7 @@ export default function Auctions() {
                   : 'bg-[#1a3a52] text-gray-400'
               }`}
             >
-              Live ({activeCount})
+              {texts.live} ({activeCount})
             </button>
             <button
               onClick={() => setStatusFilter('scheduled')}
@@ -830,7 +830,7 @@ export default function Auctions() {
                   : 'bg-[#1a3a52] text-gray-400'
               }`}
             >
-              Ende ({endedCount})
+              {texts.end} ({endedCount})
             </button>
           </div>
 
