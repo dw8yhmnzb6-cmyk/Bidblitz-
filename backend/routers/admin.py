@@ -81,8 +81,8 @@ async def get_detailed_stats(admin: dict = Depends(get_admin_user)):
     """Get detailed statistics for charts and reports."""
     now = datetime.now(timezone.utc)
     
-    # Revenue and transactions
-    payments = await db.payment_transactions.find({"status": "paid"}, {"_id": 0}).to_list(1000)
+    # Revenue and transactions - use transactions collection
+    payments = await db.transactions.find({"status": "completed"}, {"_id": 0}).to_list(1000)
     total_revenue = sum(p.get("amount", 0) for p in payments)
     total_bids_sold = sum(p.get("bids", 0) for p in payments)
     
