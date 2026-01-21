@@ -1,7 +1,28 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText, Gavel, CreditCard, AlertTriangle, CheckCircle } from 'lucide-react';
+import axios from 'axios';
+import { ArrowLeft, FileText, Loader2 } from 'lucide-react';
+
+const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function AGB() {
+  const [pageContent, setPageContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const res = await axios.get(`${API}/pages/agb`);
+        setPageContent(res.data);
+      } catch (error) {
+        console.error('Failed to load page content:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContent();
+  }, []);
+
   return (
     <div className="min-h-screen pt-24 pb-12 px-4" data-testid="agb-page">
       <div className="max-w-4xl mx-auto">
@@ -16,174 +37,38 @@ export default function AGB() {
               <FileText className="w-7 h-7 text-[#06B6D4]" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Allgemeine Geschäftsbedingungen</h1>
+              <h1 className="text-3xl font-bold text-white">{pageContent?.title || 'Allgemeine Geschäftsbedingungen'}</h1>
               <p className="text-[#94A3B8]">Stand: Januar 2026</p>
             </div>
           </div>
 
-          <div className="space-y-8">
-            {/* Geltungsbereich */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-[#FFD700]" />
-                § 1 Geltungsbereich
-              </h2>
-              <div className="text-[#94A3B8] space-y-3">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 text-[#06B6D4] animate-spin" />
+            </div>
+          ) : pageContent?.content ? (
+            <div 
+              className="prose prose-invert max-w-none prose-headings:text-white prose-p:text-[#94A3B8] prose-a:text-[#FFD700] prose-strong:text-white prose-li:text-[#94A3B8]"
+              dangerouslySetInnerHTML={{ __html: pageContent.content }}
+            />
+          ) : (
+            /* Fallback content */
+            <div className="space-y-6 text-[#94A3B8]">
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 1 Geltungsbereich</h2>
                 <p>
-                  (1) Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge, die über 
-                  die Penny-Auktion-Plattform BidBlitz zwischen der BidBlitz GmbH (nachfolgend "Anbieter") 
-                  und dem Nutzer (nachfolgend "Kunde") geschlossen werden.
+                  Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über die 
+                  Penny-Auktion-Plattform BidBlitz.
                 </p>
+              </section>
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 2 Vertragsgegenstand</h2>
                 <p>
-                  (2) Abweichende Bedingungen des Kunden werden nicht anerkannt, es sei denn, der 
-                  Anbieter stimmt ihrer Geltung ausdrücklich schriftlich zu.
+                  Der Anbieter betreibt eine Penny-Auktion-Plattform, bei der Produkte versteigert werden.
                 </p>
-              </div>
-            </section>
-
-            {/* Vertragsgegenstand */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <Gavel className="w-5 h-5 text-[#FFD700]" />
-                § 2 Vertragsgegenstand / Funktionsweise der Auktionen
-              </h2>
-              <div className="text-[#94A3B8] space-y-3">
-                <p>
-                  (1) Der Anbieter betreibt eine Penny-Auktion-Plattform, bei der Produkte versteigert werden.
-                </p>
-                <p>
-                  (2) Bei einer Penny-Auktion erhöht jedes abgegebene Gebot den Preis des Produkts um 
-                  einen festgelegten Betrag (z.B. 0,01 € bis 0,15 €). Gleichzeitig wird der Countdown-Timer 
-                  zurückgesetzt oder um eine bestimmte Zeit verlängert.
-                </p>
-                <p>
-                  (3) Der Kunde, der das letzte Gebot vor Ablauf des Countdowns abgegeben hat, gewinnt 
-                  die Auktion und ist berechtigt, das Produkt zum erreichten Auktionspreis zu erwerben.
-                </p>
-                <p>
-                  (4) Für die Abgabe von Geboten benötigt der Kunde Gebotspunkte, die vorab erworben werden müssen.
-                </p>
-              </div>
-            </section>
-
-            {/* Gebotspakete */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-[#FFD700]" />
-                § 3 Gebotspakete / Preise
-              </h2>
-              <div className="text-[#94A3B8] space-y-3">
-                <p>
-                  (1) Gebotspakete können über die Plattform erworben werden. Die aktuellen Preise 
-                  sind auf der Website ersichtlich.
-                </p>
-                <p>
-                  (2) Alle angegebenen Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer.
-                </p>
-                <p>
-                  (3) Erworbene Gebote sind nicht erstattungsfähig und nicht auf andere Nutzer übertragbar.
-                </p>
-                <p>
-                  (4) Bei jedem abgegebenen Gebot wird dem Konto des Nutzers ein Gebot abgezogen.
-                </p>
-              </div>
-            </section>
-
-            {/* Registrierung */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white">§ 4 Registrierung / Nutzerkonto</h2>
-              <div className="text-[#94A3B8] space-y-3">
-                <p>
-                  (1) Für die Teilnahme an Auktionen ist eine Registrierung erforderlich. Der Kunde 
-                  muss wahrheitsgemäße Angaben machen.
-                </p>
-                <p>
-                  (2) Das Nutzerkonto ist nicht übertragbar. Der Kunde ist verpflichtet, seine 
-                  Zugangsdaten geheim zu halten.
-                </p>
-                <p>
-                  (3) Der Anbieter behält sich das Recht vor, Nutzerkonten bei Verstoß gegen diese 
-                  AGB zu sperren oder zu löschen.
-                </p>
-              </div>
-            </section>
-
-            {/* Gewinn */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white">§ 5 Auktionsgewinn / Zahlung</h2>
-              <div className="text-[#94A3B8] space-y-3">
-                <p>
-                  (1) Der Gewinner einer Auktion wird per E-Mail benachrichtigt und ist verpflichtet, 
-                  den Auktionspreis innerhalb von 7 Tagen zu bezahlen.
-                </p>
-                <p>
-                  (2) Nach Zahlungseingang wird das gewonnene Produkt an die vom Kunden angegebene 
-                  Lieferadresse versandt.
-                </p>
-                <p>
-                  (3) Erfolgt keine Zahlung innerhalb der Frist, verfällt der Anspruch auf das Produkt.
-                </p>
-              </div>
-            </section>
-
-            {/* Widerrufsrecht */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-[#FF4D4D]" />
-                § 6 Widerrufsrecht
-              </h2>
-              <div className="text-[#94A3B8] space-y-3">
-                <div className="p-4 rounded-lg bg-[#FF4D4D]/10 border border-[#FF4D4D]/30">
-                  <p className="font-semibold text-white mb-2">Wichtiger Hinweis:</p>
-                  <p>
-                    Das Widerrufsrecht für den Kauf von Gebotspaketen erlischt vorzeitig, wenn der 
-                    Kunde vor Ablauf der Widerrufsfrist mit dem Einsatz der Gebote begonnen hat und 
-                    der Anbieter den Kunden vor Vertragsschluss auf diesen Umstand hingewiesen hat.
-                  </p>
-                </div>
-                <p>
-                  Für gewonnene Produkte gilt das gesetzliche Widerrufsrecht von 14 Tagen.
-                </p>
-              </div>
-            </section>
-
-            {/* Haftung */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white">§ 7 Haftung</h2>
-              <div className="text-[#94A3B8] space-y-3">
-                <p>
-                  (1) Der Anbieter haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit.
-                </p>
-                <p>
-                  (2) Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher 
-                  Vertragspflichten.
-                </p>
-                <p>
-                  (3) Der Anbieter haftet nicht für technische Störungen, die außerhalb seines 
-                  Einflussbereichs liegen.
-                </p>
-              </div>
-            </section>
-
-            {/* Schlussbestimmungen */}
-            <section className="space-y-3">
-              <h2 className="text-xl font-bold text-white">§ 8 Schlussbestimmungen</h2>
-              <div className="text-[#94A3B8] space-y-3">
-                <p>
-                  (1) Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des 
-                  UN-Kaufrechts.
-                </p>
-                <p>
-                  (2) Gerichtsstand ist Berlin, sofern der Kunde Kaufmann ist oder keinen allgemeinen 
-                  Gerichtsstand in Deutschland hat.
-                </p>
-                <p>
-                  (3) Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt die Wirksamkeit 
-                  der übrigen Bestimmungen unberührt.
-                </p>
-              </div>
-            </section>
-          </div>
+              </section>
+            </div>
+          )}
         </div>
 
         {/* Related Links */}
