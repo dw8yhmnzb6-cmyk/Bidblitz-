@@ -609,9 +609,55 @@ export default function Auctions() {
 
   useEffect(() => {
     fetchAuctions();
-    const interval = setInterval(fetchAuctions, 30000);
+    // Reduced polling interval when WebSocket is connected
+    const interval = setInterval(fetchAuctions, isConnected ? 60000 : 15000);
     return () => clearInterval(interval);
-  }, [fetchAuctions]);
+  }, [fetchAuctions, isConnected]);
+
+  // Update auctions from WebSocket in real-time
+  useEffect(() => {
+    if (auctionData && Array.isArray(auctionData)) {
+      // Full state update from WebSocket
+      setAuctions(auctionData);
+    } else if (auctionData && auctionData.auction_id) {
+      // Single auction update (bid_update)
+      setAuctions(prev => prev.map(auction => 
+        auction.id === auctionData.auction_id
+          ? {
+              ...auction,
+              current_price: auctionData.current_price ?? auction.current_price,
+              end_time: auctionData.end_time ?? auction.end_time,
+              last_bidder_name: auctionData.last_bidder_name ?? auction.last_bidder_name,
+              total_bids: auctionData.total_bids ?? auction.total_bids
+            }
+          : auction
+      ));
+      
+      // Also update featured auction if it matches
+      setFeaturedAuction(prev => {
+        if (prev && prev.id === auctionData.auction_id) {
+          return {
+            ...prev,
+            current_price: auctionData.current_price ?? prev.current_price,
+            end_time: auctionData.end_time ?? prev.end_time,
+            last_bidder_name: auctionData.last_bidder_name ?? prev.last_bidder_name,
+            total_bids: auctionData.total_bids ?? prev.total_bids
+          };
+        }
+        return prev;
+      });
+    }
+  }, [auctionData]);
+
+  // Show bid notification toast
+  useEffect(() => {
+    if (bidNotification) {
+      toast.info(bidNotification.message, {
+        description: `Neuer Preis: €${bidNotification.price?.toFixed(2)}`,
+        duration: 2000
+      });
+    }
+  }, [bidNotification]);
 
   // Toggle reminder for an auction
   const handleToggleReminder = async (auctionId, hasReminder) => {
