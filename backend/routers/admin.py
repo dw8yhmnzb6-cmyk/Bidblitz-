@@ -291,6 +291,56 @@ async def get_email_stats(admin: dict = Depends(get_admin_user)):
         "email_configured": bool(RESEND_API_KEY and RESEND_API_KEY != 're_123_placeholder')
     }
 
+@router.get("/email/user-stats")
+async def get_email_user_stats(admin: dict = Depends(get_admin_user)):
+    """Get user statistics for email targeting - includes all segment counts"""
+    now = datetime.now(timezone.utc)
+    week_ago = (now - timedelta(days=7)).isoformat()
+    month_ago = (now - timedelta(days=30)).isoformat()
+    
+    # Total users (excluding admins)
+    total = await db.users.count_documents({"is_admin": {"$ne": True}})
+    
+    # Active users (logged in within 30 days or made purchase)
+    active = await db.users.count_documents({
+        "is_admin": {"$ne": True},
+        "$or": [
+            {"last_login_ip": {"$ne": None}},
+            {"created_at": {"$gte": month_ago}}
+        ]
+    })
+    
+    # Inactive users (no purchase, registered > 7 days ago)
+    inactive = await db.users.count_documents({
+        "is_admin": {"$ne": True},
+        "$or": [
+            {"total_deposits": {"$eq": 0}},
+            {"total_deposits": {"$exists": False}}
+        ],
+        "created_at": {"$lt": week_ago}
+    })
+    
+    # Winners (users who have won auctions)
+    winners = await db.users.count_documents({
+        "is_admin": {"$ne": True},
+        "won_auctions": {"$exists": True, "$not": {"$size": 0}}
+    })
+    
+    # New users (registered within last 7 days)
+    new_users = await db.users.count_documents({
+        "is_admin": {"$ne": True},
+        "created_at": {"$gte": week_ago}
+    })
+    
+    return {
+        "total": total,
+        "active": active,
+        "inactive": inactive,
+        "winners": winners,
+        "new_users": new_users,
+        "all": total  # Alias for dropdown
+    }
+
 @router.get("/email/templates")
 async def get_email_templates(admin: dict = Depends(get_admin_user)):
     """Get predefined email templates"""
