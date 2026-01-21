@@ -703,6 +703,7 @@ export default function Admin() {
     { id: 'vouchers', label: 'Gutscheine', icon: <Ticket className="w-5 h-5" /> },
     { id: 'bots', label: 'Bots', icon: <Bot className="w-5 h-5" /> },
     { id: 'email', label: 'E-Mail', icon: <Mail className="w-5 h-5" /> },
+    { id: 'pages', label: 'Seiten', icon: <FileText className="w-5 h-5" /> },
     { id: 'payments', label: 'Zahlungen', icon: <DollarSign className="w-5 h-5" /> },
     { id: 'logs', label: 'Systemlogs', icon: <BarChart3 className="w-5 h-5" /> }
   ];
