@@ -13,122 +13,132 @@ class PageContentUpdate(BaseModel):
     content: str
     title: Optional[str] = None
 
-# Default content for pages
+# Default content for pages - Dubai/UAE
 DEFAULT_PAGES = {
     "impressum": {
-        "title": "Impressum",
+        "title": "Impressum / Legal Notice",
         "content": """
-<h2>Angaben gemäß § 5 TMG</h2>
-<p><strong>BidBlitz GmbH</strong><br/>
-Musterstraße 123<br/>
-12345 Musterstadt<br/>
-Deutschland</p>
+<h2>Company Information</h2>
+<p><strong>BidBlitz FZ-LLC</strong><br/>
+Dubai Internet City<br/>
+Building 1, Office 305<br/>
+Dubai, United Arab Emirates</p>
 
-<h3>Vertreten durch:</h3>
-<p>Max Mustermann (Geschäftsführer)</p>
+<h3>Represented by:</h3>
+<p>Managing Director</p>
 
-<h3>Kontakt:</h3>
-<p>Telefon: +49 (0) 123 456789<br/>
-E-Mail: info@bidblitz.de</p>
+<h3>Contact:</h3>
+<p>Phone: +971 4 XXX XXXX<br/>
+E-Mail: info@bidblitz.ae</p>
 
-<h3>Registereintrag:</h3>
-<p>Eintragung im Handelsregister.<br/>
-Registergericht: Amtsgericht Musterstadt<br/>
-Registernummer: HRB 12345</p>
+<h3>Trade License:</h3>
+<p>Dubai Economic Department<br/>
+License Number: XXXXX</p>
 
-<h3>Umsatzsteuer-ID:</h3>
-<p>Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz:<br/>
-DE 123456789</p>
+<h3>VAT Registration:</h3>
+<p>VAT Registration Number (TRN): XXXXXXXXXXXXXXX</p>
 
-<h3>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:</h3>
-<p>Max Mustermann<br/>
-Musterstraße 123<br/>
-12345 Musterstadt</p>
+<h3>Regulatory Authority:</h3>
+<p>This platform operates under the laws of the United Arab Emirates and is subject to the regulations of the Dubai Department of Economy and Tourism (DET).</p>
 
-<h3>Streitschlichtung</h3>
-<p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: 
-<a href="https://ec.europa.eu/consumers/odr" target="_blank">https://ec.europa.eu/consumers/odr</a>.<br/>
-Unsere E-Mail-Adresse finden Sie oben im Impressum.</p>
+<h3>Dispute Resolution</h3>
+<p>Any disputes arising from the use of this platform shall be resolved in accordance with UAE Federal Law and the jurisdiction of Dubai Courts.</p>
+
+<p><em>Diese Website wird aus Dubai, Vereinigte Arabische Emirate, betrieben.</em></p>
 """
     },
     "datenschutz": {
-        "title": "Datenschutzerklärung",
+        "title": "Privacy Policy / Datenschutzerklärung",
         "content": """
-<h2>1. Datenschutz auf einen Blick</h2>
+<h2>1. Data Protection Overview</h2>
 
-<h3>Allgemeine Hinweise</h3>
-<p>Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
+<h3>General Information</h3>
+<p>The following information provides a simple overview of what happens to your personal data when you visit this website. Personal data is any data that can be used to personally identify you.</p>
 
-<h3>Datenerfassung auf dieser Website</h3>
-<p><strong>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</strong><br/>
-Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten können Sie dem Impressum dieser Website entnehmen.</p>
+<h3>Data Controller</h3>
+<p><strong>BidBlitz FZ-LLC</strong><br/>
+Dubai Internet City, Building 1, Office 305<br/>
+Dubai, United Arab Emirates<br/>
+E-Mail: privacy@bidblitz.ae</p>
 
-<h3>Wie erfassen wir Ihre Daten?</h3>
-<p>Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen. Hierbei kann es sich z. B. um Daten handeln, die Sie in ein Kontaktformular eingeben.</p>
-<p>Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z. B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs).</p>
+<h3>Data Collection on this Website</h3>
+<p><strong>Who is responsible for data collection?</strong><br/>
+Data processing on this website is carried out by the website operator. Contact details can be found in the Legal Notice section.</p>
 
-<h3>Wofür nutzen wir Ihre Daten?</h3>
-<p>Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gewährleisten. Andere Daten können zur Analyse Ihres Nutzerverhaltens verwendet werden.</p>
+<h3>How do we collect your data?</h3>
+<p>Your data is collected when you provide it to us, such as data entered in a contact form or during registration. Other data is automatically collected by our IT systems when you visit the website, primarily technical data (e.g., internet browser, operating system, time of page access).</p>
 
-<h3>Welche Rechte haben Sie bezüglich Ihrer Daten?</h3>
-<p>Sie haben jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung oder Löschung dieser Daten zu verlangen.</p>
+<h3>What do we use your data for?</h3>
+<p>Some data is collected to ensure error-free provision of the website. Other data may be used to analyze your user behavior and improve our services.</p>
+
+<h3>Your Rights</h3>
+<p>You have the right to receive information about the origin, recipients, and purpose of your stored personal data free of charge at any time. You also have the right to request correction or deletion of this data in accordance with UAE Federal Decree-Law No. 45/2021 on Personal Data Protection.</p>
 
 <h2>2. Hosting</h2>
-<p>Wir hosten die Inhalte unserer Website bei folgendem Anbieter:</p>
-<p>Die Server unseres Hosters befinden sich in Deutschland. Die Verarbeitung erfolgt zur Erfüllung unserer vertraglichen Pflichten gegenüber unseren potenziellen und bestehenden Kunden.</p>
+<p>We host our website content with providers whose servers are located in secure data centers. Data processing is carried out to fulfill our contractual obligations to our customers.</p>
 
-<h2>3. Allgemeine Hinweise und Pflichtinformationen</h2>
+<h2>3. Data Protection in the UAE</h2>
+<p>This platform complies with the UAE Federal Decree-Law No. 45/2021 on Personal Data Protection and related regulations. We are committed to protecting your personal data in accordance with UAE law.</p>
 
-<h3>Datenschutz</h3>
-<p>Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
+<h3>International Data Transfers</h3>
+<p>If data is transferred outside the UAE, we ensure appropriate safeguards are in place as required by UAE data protection law.</p>
+
+<p><em>Stand / Last Updated: January 2026</em></p>
 """
     },
     "agb": {
-        "title": "Allgemeine Geschäftsbedingungen",
+        "title": "Terms & Conditions / AGB",
         "content": """
-<h2>§ 1 Geltungsbereich</h2>
-<p>Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Geschäftsbeziehungen zwischen der BidBlitz GmbH (nachfolgend "Anbieter") und dem Kunden (nachfolgend "Nutzer").</p>
+<h2>§ 1 Scope of Application</h2>
+<p>These General Terms and Conditions (GTC) apply to all business relationships between BidBlitz FZ-LLC (hereinafter "Provider") and the customer (hereinafter "User").</p>
 
-<h2>§ 2 Vertragsgegenstand</h2>
-<p>Gegenstand des Vertrages ist die Teilnahme an Penny-Auktionen auf der Plattform bidblitz.de. Bei Penny-Auktionen handelt es sich um Auktionen, bei denen jedes Gebot den Preis um einen festen Betrag (0,01 €) erhöht und die Auktionszeit verlängert.</p>
+<h2>§ 2 Subject of Contract</h2>
+<p>The subject of this contract is participation in penny auctions on the BidBlitz platform. Penny auctions are auctions where each bid increases the price by a fixed amount (AED 0.04 / €0.01) and extends the auction time.</p>
 
-<h2>§ 3 Registrierung</h2>
-<p>(1) Die Nutzung der Auktionsplattform setzt eine Registrierung voraus.<br/>
-(2) Mit der Registrierung erklärt der Nutzer, dass er mindestens 18 Jahre alt ist.<br/>
-(3) Der Nutzer ist verpflichtet, seine Daten wahrheitsgemäß anzugeben.</p>
+<h2>§ 3 Registration</h2>
+<p>(1) Use of the auction platform requires registration.<br/>
+(2) By registering, the user confirms that they are at least 18 years old.<br/>
+(3) The user is obligated to provide truthful information.</p>
 
-<h2>§ 4 Gebotspakete</h2>
-<p>(1) Zur Teilnahme an Auktionen müssen Gebote erworben werden.<br/>
-(2) Gebote können in verschiedenen Paketen erworben werden.<br/>
-(3) Bereits erworbene Gebote können nicht zurückgegeben werden.</p>
+<h2>§ 4 Bid Packages</h2>
+<p>(1) Participation in auctions requires the purchase of bids.<br/>
+(2) Bids can be purchased in various packages.<br/>
+(3) Already purchased bids cannot be returned.</p>
 
-<h2>§ 5 Auktionsablauf</h2>
-<p>(1) Jedes Gebot erhöht den Auktionspreis um 0,01 €.<br/>
-(2) Jedes Gebot verlängert die Auktionslaufzeit.<br/>
-(3) Der Nutzer, der bei Ablauf der Auktionszeit das letzte Gebot abgegeben hat, gewinnt die Auktion.</p>
+<h2>§ 5 Auction Process</h2>
+<p>(1) Each bid increases the auction price by AED 0.04 / €0.01.<br/>
+(2) Each bid extends the auction duration.<br/>
+(3) The user who placed the last bid when the auction time expires wins the auction.</p>
 
-<h2>§ 6 Zahlung</h2>
-<p>(1) Die Zahlung erfolgt über die angebotenen Zahlungsmethoden.<br/>
-(2) Der Gewinner einer Auktion ist verpflichtet, den Endpreis zuzüglich Versandkosten zu zahlen.</p>
+<h2>§ 6 Payment</h2>
+<p>(1) Payment is made via the offered payment methods.<br/>
+(2) The auction winner is obligated to pay the final price plus shipping costs.<br/>
+(3) All prices include applicable VAT where required.</p>
 
-<h2>§ 7 Haftung</h2>
-<p>Der Anbieter haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten.</p>
+<h2>§ 7 Liability</h2>
+<p>The Provider is liable without limitation for intent and gross negligence. For slight negligence, the Provider is only liable in case of breach of essential contractual obligations.</p>
 
-<h2>§ 8 Schlussbestimmungen</h2>
-<p>(1) Es gilt das Recht der Bundesrepublik Deutschland.<br/>
-(2) Gerichtsstand ist der Sitz des Anbieters.</p>
+<h2>§ 8 Governing Law</h2>
+<p>(1) The laws of the United Arab Emirates shall apply.<br/>
+(2) The exclusive jurisdiction for all disputes is Dubai, UAE.<br/>
+(3) Consumers may also invoke the consumer protection laws of their country of residence.</p>
+
+<h2>§ 9 Online Dispute Resolution</h2>
+<p>For customers in the European Union, the European Commission provides an online dispute resolution platform: <a href="https://ec.europa.eu/consumers/odr" target="_blank">https://ec.europa.eu/consumers/odr</a></p>
+
+<p><em>BidBlitz FZ-LLC • Dubai, UAE • Stand / Last Updated: January 2026</em></p>
 """
     },
     "faq": {
-        "title": "Häufig gestellte Fragen",
+        "title": "Häufig gestellte Fragen / FAQ",
         "content": ""
     },
     "contact": {
-        "title": "Kontakt",
+        "title": "Kontakt / Contact",
         "content": ""
     },
     "how-it-works": {
-        "title": "So funktioniert's",
+        "title": "So funktioniert's / How It Works",
         "content": ""
     }
 }
