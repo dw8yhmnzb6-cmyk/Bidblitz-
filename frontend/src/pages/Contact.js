@@ -50,7 +50,46 @@ export default function Contact() {
     toast.success(texts.messageSent);
   };
 
-  const contactInfo = [
+  // Multilingual contact info
+  const contactInfo = language === 'en' ? [
+    {
+      icon: Mail,
+      title: "Email",
+      value: "support@bidblitz.de",
+      description: "Response within 24h"
+    },
+    {
+      icon: Phone,
+      title: "Phone",
+      value: "+49 30 12345678",
+      description: "Mon-Fri 9:00-18:00"
+    },
+    {
+      icon: MapPin,
+      title: "Address",
+      value: "Dubai Internet City",
+      description: "Dubai, UAE"
+    }
+  ] : language === 'sq' ? [
+    {
+      icon: Mail,
+      title: "Email",
+      value: "support@bidblitz.de",
+      description: "Përgjigje brenda 24 orëve"
+    },
+    {
+      icon: Phone,
+      title: "Telefoni",
+      value: "+49 30 12345678",
+      description: "E Hënë-E Premte 9:00-18:00"
+    },
+    {
+      icon: MapPin,
+      title: "Adresa",
+      value: "Dubai Internet City",
+      description: "Dubai, UAE"
+    }
+  ] : [
     {
       icon: Mail,
       title: "E-Mail",
@@ -66,10 +105,20 @@ export default function Contact() {
     {
       icon: MapPin,
       title: "Adresse",
-      value: "Musterstraße 123",
-      description: "10115 Berlin, Deutschland"
+      value: "Dubai Internet City",
+      description: "Dubai, UAE"
     }
   ];
+
+  // Multilingual success messages
+  const successMessages = {
+    de: { title: "Nachricht gesendet!", desc: "Vielen Dank für Ihre Nachricht. Wir werden uns innerhalb von 24 Stunden bei Ihnen melden.", button: "Weitere Nachricht senden" },
+    en: { title: "Message sent!", desc: "Thank you for your message. We will get back to you within 24 hours.", button: "Send another message" },
+    sq: { title: "Mesazhi u dërgua!", desc: "Faleminderit për mesazhin tuaj. Do t'ju kontaktojmë brenda 24 orëve.", button: "Dërgo mesazh tjetër" },
+    tr: { title: "Mesaj gönderildi!", desc: "Mesajınız için teşekkürler. 24 saat içinde size döneceğiz.", button: "Başka mesaj gönder" },
+    fr: { title: "Message envoyé!", desc: "Merci pour votre message. Nous vous répondrons dans les 24 heures.", button: "Envoyer un autre message" }
+  };
+  const successText = successMessages[language] || successMessages.de;
 
   if (submitted) {
     return (
