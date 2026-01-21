@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/button';
 import { Users, Gift, Copy, CheckCircle, Share2, Zap } from 'lucide-react';
 import { toast } from 'sonner';
@@ -7,20 +8,161 @@ import axios from 'axios';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+// InviteFriends translations
+const inviteTexts = {
+  de: {
+    title: "Freunde einladen",
+    subtitle: "Laden Sie Freunde ein und verdienen Sie Gratis-Gebote!",
+    yourCode: "Ihr Empfehlungscode",
+    copyLink: "Link kopieren",
+    copied: "Kopiert!",
+    share: "Teilen",
+    howItWorks: "So funktioniert's",
+    step1: "Teilen Sie Ihren Code",
+    step1Desc: "Senden Sie Ihren Empfehlungslink an Freunde",
+    step2: "Freund registriert sich",
+    step2Desc: "Ihr Freund erstellt ein Konto mit Ihrem Code",
+    step3: "Beide profitieren",
+    step3Desc: "Sie beide erhalten Gratis-Gebote!",
+    yourProgress: "Ihr Fortschritt",
+    friendsInvited: "Freunde eingeladen",
+    bidsEarned: "Gebote verdient",
+    nextMilestone: "Nächstes Ziel",
+    friendsNeeded: "Freunde",
+    rewardTiers: "Belohnungsstufen",
+    friend: "Freund",
+    friends: "Freunde",
+    bids: "Gebote",
+    loginRequired: "Bitte melden Sie sich an, um Freunde einzuladen",
+    login: "Anmelden",
+    register: "Registrieren"
+  },
+  en: {
+    title: "Invite Friends",
+    subtitle: "Invite friends and earn free bids!",
+    yourCode: "Your Referral Code",
+    copyLink: "Copy Link",
+    copied: "Copied!",
+    share: "Share",
+    howItWorks: "How it works",
+    step1: "Share your code",
+    step1Desc: "Send your referral link to friends",
+    step2: "Friend signs up",
+    step2Desc: "Your friend creates an account with your code",
+    step3: "Both benefit",
+    step3Desc: "You both get free bids!",
+    yourProgress: "Your Progress",
+    friendsInvited: "Friends invited",
+    bidsEarned: "Bids earned",
+    nextMilestone: "Next milestone",
+    friendsNeeded: "friends",
+    rewardTiers: "Reward Tiers",
+    friend: "friend",
+    friends: "friends",
+    bids: "Bids",
+    loginRequired: "Please log in to invite friends",
+    login: "Log In",
+    register: "Register"
+  },
+  sq: {
+    title: "Ftoni Miqtë",
+    subtitle: "Ftoni miqtë dhe fitoni oferta falas!",
+    yourCode: "Kodi Juaj i Referimit",
+    copyLink: "Kopjo Linkun",
+    copied: "U kopjua!",
+    share: "Ndaj",
+    howItWorks: "Si funksionon",
+    step1: "Ndani kodin tuaj",
+    step1Desc: "Dërgoni linkun tuaj të referimit miqve",
+    step2: "Miku regjistrohet",
+    step2Desc: "Miku juaj krijon llogari me kodin tuaj",
+    step3: "Të dy përfitoni",
+    step3Desc: "Ju të dy merrni oferta falas!",
+    yourProgress: "Progresi Juaj",
+    friendsInvited: "Miq të ftuar",
+    bidsEarned: "Oferta të fituara",
+    nextMilestone: "Objektivi i radhës",
+    friendsNeeded: "miq",
+    rewardTiers: "Nivelet e Shpërblimit",
+    friend: "mik",
+    friends: "miq",
+    bids: "Oferta",
+    loginRequired: "Ju lutem hyni për të ftuar miq",
+    login: "Hyr",
+    register: "Regjistrohu"
+  },
+  tr: {
+    title: "Arkadaşları Davet Et",
+    subtitle: "Arkadaşlarınızı davet edin ve ücretsiz teklifler kazanın!",
+    yourCode: "Referans Kodunuz",
+    copyLink: "Linki Kopyala",
+    copied: "Kopyalandı!",
+    share: "Paylaş",
+    howItWorks: "Nasıl çalışır",
+    step1: "Kodunuzu paylaşın",
+    step1Desc: "Referans linkinizi arkadaşlarınıza gönderin",
+    step2: "Arkadaş kaydolur",
+    step2Desc: "Arkadaşınız kodunuzla hesap oluşturur",
+    step3: "İkiniz de kazanın",
+    step3Desc: "İkiniz de ücretsiz teklif alırsınız!",
+    yourProgress: "İlerlemeniz",
+    friendsInvited: "Davet edilen arkadaşlar",
+    bidsEarned: "Kazanılan teklifler",
+    nextMilestone: "Sonraki hedef",
+    friendsNeeded: "arkadaş",
+    rewardTiers: "Ödül Seviyeleri",
+    friend: "arkadaş",
+    friends: "arkadaş",
+    bids: "Teklif",
+    loginRequired: "Arkadaş davet etmek için lütfen giriş yapın",
+    login: "Giriş Yap",
+    register: "Kayıt Ol"
+  },
+  fr: {
+    title: "Inviter des Amis",
+    subtitle: "Invitez des amis et gagnez des enchères gratuites!",
+    yourCode: "Votre Code de Parrainage",
+    copyLink: "Copier le Lien",
+    copied: "Copié!",
+    share: "Partager",
+    howItWorks: "Comment ça marche",
+    step1: "Partagez votre code",
+    step1Desc: "Envoyez votre lien de parrainage à vos amis",
+    step2: "L'ami s'inscrit",
+    step2Desc: "Votre ami crée un compte avec votre code",
+    step3: "Tous les deux gagnent",
+    step3Desc: "Vous recevez tous les deux des enchères gratuites!",
+    yourProgress: "Votre Progression",
+    friendsInvited: "Amis invités",
+    bidsEarned: "Enchères gagnées",
+    nextMilestone: "Prochain objectif",
+    friendsNeeded: "amis",
+    rewardTiers: "Niveaux de Récompense",
+    friend: "ami",
+    friends: "amis",
+    bids: "Enchères",
+    loginRequired: "Veuillez vous connecter pour inviter des amis",
+    login: "Connexion",
+    register: "Inscription"
+  }
+};
+
 export default function InviteFriends() {
   const { isAuthenticated, token, user } = useAuth();
+  const { language } = useLanguage();
+  const texts = inviteTexts[language] || inviteTexts.de;
   const [referralData, setReferralData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
   // Reward tiers - more friends = more bids
   const rewardTiers = [
-    { friends: 1, bids: 5, label: '1 Freund' },
-    { friends: 3, bids: 20, label: '3 Freunde' },
-    { friends: 5, bids: 40, label: '5 Freunde' },
-    { friends: 10, bids: 100, label: '10 Freunde' },
-    { friends: 25, bids: 300, label: '25 Freunde' },
-    { friends: 50, bids: 750, label: '50 Freunde' },
+    { friends: 1, bids: 5, label: `1 ${texts.friend}` },
+    { friends: 3, bids: 20, label: `3 ${texts.friends}` },
+    { friends: 5, bids: 40, label: `5 ${texts.friends}` },
+    { friends: 10, bids: 100, label: `10 ${texts.friends}` },
+    { friends: 25, bids: 300, label: `25 ${texts.friends}` },
+    { friends: 50, bids: 750, label: `50 ${texts.friends}` },
   ];
 
   useEffect(() => {
@@ -48,7 +190,7 @@ export default function InviteFriends() {
     const link = referralData?.referral_link || `https://bidblitz.de/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`;
     navigator.clipboard.writeText(link);
     setCopied(true);
-    toast.success('Link kopiert!');
+    toast.success(texts.copied);
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -58,7 +200,7 @@ export default function InviteFriends() {
       try {
         await navigator.share({
           title: 'BidBlitz - Penny Auktionen',
-          text: 'Registriere dich bei BidBlitz und erhalte 10 kostenlose Gebote!',
+          text: language === 'en' ? 'Sign up at BidBlitz and get 10 free bids!' : 'Registriere dich bei BidBlitz und erhalte 10 kostenlose Gebote!',
           url: link
         });
       } catch (err) {
