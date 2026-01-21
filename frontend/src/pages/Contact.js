@@ -166,10 +166,10 @@ export default function Contact() {
             <MessageSquare className="w-8 h-8 text-[#FFD700]" />
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Kontakt
+            {pageText.title}
           </h1>
           <p className="text-gray-400 max-w-lg mx-auto">
-            Haben Sie Fragen oder Anregungen? Wir freuen uns auf Ihre Nachricht!
+            {pageText.subtitle}
           </p>
         </div>
 
