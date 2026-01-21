@@ -1,84 +1,149 @@
 # BidBlitz Penny Auction Platform - PRD
 
-## Letztes Update: 21. Januar 2026
+## Letztes Update: 22. Januar 2026
 
 ## Original-Anforderung
 Der Benutzer hat eine Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de` angefordert.
 
-## Aktuelle Session - 21. Januar 2026
+## Aktuelle Session - 22. Januar 2026
 
-### Behobene Probleme:
-1. **Timer-Bug behoben** - Timer zeigten "00:00:00" und aktualisierten sich nicht
-   - Ursache: Bot-System bietete zu aggressiv, Timer waren immer nur wenige Sekunden
-   - Lösung: Auktions-Timer auf 10 Minuten zurückgesetzt
-   - Status: ✅ BEHOBEN - Timer zählen jetzt automatisch herunter
+### Behobene Probleme dieser Session:
+
+1. **Admin-Login "Ungültige Anmeldedaten"** ✅ BEHOBEN
+   - Problem: `is_admin` Feld war `None` in MongoDB
+   - Lösung: Feld auf `True` aktualisiert
+   - Zugangsdaten: `admin@bidblitz.de` / `Admin123!`
+
+2. **Timer bei 00:00:00 stehen geblieben** ✅ BEHOBEN
+   - Problem: Geschäftszeiten-Logik blockierte Auktionen (Berlin nach Mitternacht)
+   - Lösung: Geschäftszeiten auf 0:00-24:00 erweitert (24/7 für Entwicklung)
+
+3. **Zahlungsübersicht zeigte €0.00** ✅ BEHOBEN
+   - Problem: Code las aus falscher Collection (`payment_transactions` statt `transactions`)
+   - Lösung: Collection in `routers/admin.py` korrigiert
+
+4. **E-Mail Marketing zeigte 0 Benutzer** ✅ BEHOBEN
+   - Problem: Fehlender API-Endpoint `/admin/email/user-stats`
+   - Lösung: Neuen Endpoint hinzugefügt mit allen Segmentierungen
 
 ### Neue Features implementiert:
 
-1. **Push-Benachrichtigungen bei Überbieten** ✅
-   - Backend: `/app/backend/routers/auctions.py` 
-   - Wenn ein Benutzer überboten wird, erhält der vorherige Bieter:
-     - Push-Benachrichtigung (Browser)
-     - In-App Benachrichtigung
-   - Benachrichtigung enthält: Produktname, neuer Preis, Link zur Auktion
-
-2. **Wunschliste (Wishlist)** ✅
+1. **Buy It Now (Sofort Kaufen)** ✅ NEU
    - Backend API Endpoints:
-     - `POST /api/wishlist/{auction_id}` - Zur Wunschliste hinzufügen
-     - `DELETE /api/wishlist/{auction_id}` - Von Wunschliste entfernen
-     - `GET /api/wishlist` - Wunschliste abrufen
-     - `GET /api/wishlist/check/{auction_id}` - Prüfen ob in Wunschliste
+     - `GET /api/auctions/{auction_id}/buy-now-price` - Preis berechnen
+     - `POST /api/auctions/{auction_id}/buy-now` - Kauf ausführen
+   - Funktionen:
+     - Festpreis = UVP - (platzierte Gebote × €0.15)
+     - Minimum 50% vom UVP
+     - Auktion wird sofort beendet
+     - Benutzer erhält Produkt
 
-3. **Auktion des Tages** ✅
-   - Backend API Endpoints:
-     - `GET /api/auction-of-the-day` - Auktion des Tages abrufen
-     - `POST /api/admin/auction-of-the-day/{auction_id}` - AOTD setzen (Admin)
-   - Automatische Auswahl: Höchstwertiges aktives Produkt wird ausgewählt
-   - Manuelle Auswahl: Admin kann AOTD manuell setzen
+2. **Bestellverwaltung** ✅ NEU
+   - `GET /api/orders/my` - Benutzer-Bestellungen abrufen
+   - Speichert: Buy Now Käufe, Rabatt, finale Preise
 
-### i18n-Migration (vollständig)
-Alle wichtigen Seiten in 5 Sprachen (DE, EN, SQ, TR, FR):
-- Auctions.js, Login.js, Register.js, Contact.js
-- FAQ.js, BuyBids.js, Winners.js, Dashboard.js, HowItWorks.js
+### Bestehendes aus vorherigen Sessions:
+
+- **Push-Benachrichtigungen bei Überbieten** ✅
+- **Wunschliste (Wishlist)** ✅  
+- **Auktion des Tages** ✅
+- **Autobidder System** ✅
+- **i18n für alle Hauptseiten** ✅
+
+## Zugangsdaten
+
+| Rolle | E-Mail | Passwort |
+|-------|--------|----------|
+| Admin | admin@bidblitz.de | Admin123! |
+| Kunde | kunde@bidblitz.de | Kunde123! |
+| Test | afrimk@me.com | Test123! |
+
+## Kommende Features (Benutzer-Priorität)
+
+### 🔴 Hohe Priorität
+1. **Bid Buddy / Auto-Bieter verbessern**
+   - Max. Preis-Limit setzen
+   - Automatisch in letzten Sekunden bieten
+   - UI: "Bid Buddy aktiv (noch X Gebote)"
+
+2. **Push-Benachrichtigungen erweitern**
+   - Browser-Notifications optimieren
+   - "Auktion endet in 5 Min" Erinnerung
+   - E-Mail Fallback
+
+3. **PayPal Integration**
+   - Als dritte Zahlungsoption
+
+### 🟡 Mittlere Priorität
+4. **Auktions-Typen**
+   - Beginner-Auktionen (max. 10 Gewinne)
+   - Nacht-Auktionen (50% weniger Gebote)
+   - Gratis-Auktionen
+
+5. **Achievements & Gamification**
+   - Badges: "Erster Gewinn", "10 Auktionen gewonnen"
+   - Tägliche Login-Belohnungen
+   - Streak-System
+
+6. **Live-Chat Support**
+
+### 🟢 Niedrige Priorität
+7. Benutzer-Statistiken
+8. Social Features
+9. Leaderboards
 
 ## Architektur
 ```
 /app/
 ├── backend/
-│   ├── server.py              # FastAPI mit Background Tasks
+│   ├── server.py              # FastAPI + WebSocket + Background Tasks
 │   ├── routers/
-│   │   ├── auctions.py        # + Wishlist & AOTD Endpoints
-│   │   └── notifications.py   # Push Notifications
-│   └── .env
+│   │   ├── auctions.py        # + Buy Now, Wishlist, AOTD
+│   │   ├── admin.py           # + Email User Stats
+│   │   ├── auth.py
+│   │   ├── checkout.py
+│   │   └── notifications.py
+│   └── services/
+│       └── websocket.py
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/             # React-Seiten mit i18n
-│   │   └── i18n/              # Übersetzungsdateien
-│   └── .env
-└── memory/PRD.md
+│   │   ├── pages/
+│   │   │   ├── Auctions.js    # Hauptseite mit Timer
+│   │   │   ├── AuctionDetail.js # + Buy Now Modal
+│   │   │   ├── Admin.js
+│   │   │   └── ...
+│   │   ├── hooks/
+│   │   │   └── useAuctionWebSocket.js
+│   │   └── i18n/
+│   │       └── translations.js
 ```
 
-## Noch zu erledigen (Backlog)
+## Key API Endpoints
 
-### P1 - Hoch
-- [ ] Wishlist Frontend UI (Heart-Button auf Auction Cards)
-- [ ] Auktion des Tages im Frontend anzeigen
-- [ ] PayPal-Integration
+### Auktionen
+- `GET /api/auctions` - Alle Auktionen
+- `GET /api/auctions/{id}` - Detail
+- `POST /api/auctions/{id}/bid` - Bieten
+- `GET /api/auctions/{id}/buy-now-price` - Buy Now Preis
+- `POST /api/auctions/{id}/buy-now` - Sofort Kaufen
 
-### P2 - Mittel
-- [ ] VIP.js, Profile.js, InviteFriends.js i18n
-- [ ] Admin-Panel Internationalisierung
-- [ ] Mehr Auktionen erstellen (~100)
+### Admin
+- `GET /api/admin/stats` - Dashboard Stats
+- `GET /api/admin/stats/detailed` - Detaillierte Stats
+- `GET /api/admin/email/user-stats` - E-Mail Segmente
+- `POST /api/admin/email/send-campaign` - E-Mail senden
 
-### P3 - Niedrig
-- [ ] E-Mail Production-Konfiguration
-- [ ] Datenpersistenz-Audit
+### Benutzer
+- `GET /api/wishlist` - Wunschliste
+- `GET /api/orders/my` - Bestellungen
+- `GET /api/autobidder/my` - Auto-Bieter
 
-## Test-Zugangsdaten
-- **Admin:** admin@bidblitz.de / Admin123!
-- **Kunde:** kunde@bidblitz.de / Kunde123!
-- **Test:** afrimk@me.com / Test123!
+## Bekannte Probleme / Tech Debt
 
-## Bekannte Einschränkungen
-- Resend E-Mail ist im Sandbox-Modus
-- Coinbase Commerce ist deaktiviert (Platzhalter-API-Key)
+1. **Resend Email Sandbox** - Nur Test-E-Mails möglich
+2. **Coinbase Commerce** - Deaktiviert (Placeholder Key)
+3. **In-Memory State** - Einige Daten nicht persistent in MongoDB
+
+## Mocked Services
+- Resend E-Mails (Sandbox)
+- Coinbase Commerce (deaktiviert)
