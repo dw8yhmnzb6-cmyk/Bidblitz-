@@ -417,6 +417,18 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
             <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
               -{discount}%
             </span>
+            {/* Beginner Badge */}
+            {auction.is_beginner_only && (
+              <span className="bg-purple-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded" title="Nur für Anfänger (max. 10 Siege)">
+                🎓
+              </span>
+            )}
+            {/* VIP Badge */}
+            {auction.is_vip_only && (
+              <span className="bg-yellow-500 text-black text-[9px] font-bold px-1.5 py-0.5 rounded">
+                VIP
+              </span>
+            )}
             {/* Reminder Button - only show for active auctions when logged in */}
             {isLoggedIn && !isEnded && (
               <button
