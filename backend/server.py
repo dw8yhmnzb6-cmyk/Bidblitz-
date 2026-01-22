@@ -276,10 +276,13 @@ async def bot_last_second_bidder():
 
 
 async def auction_auto_restart_processor():
-    """Background task - automatically restart ALL ended auctions with same settings after a delay"""
+    """Background task - automatically restart ALL ended auctions with same settings after 5 minutes"""
     global bot_task_running
     
-    logger.info("Auction auto-restart processor started - ALL ended auctions will restart automatically after 60 seconds")
+    # Auto-restart delay: 5 minutes (300 seconds)
+    RESTART_DELAY_SECONDS = 300
+    
+    logger.info(f"Auction auto-restart processor started - Ended auctions restart after {RESTART_DELAY_SECONDS // 60} minutes")
     
     while bot_task_running:
         try:
@@ -290,23 +293,23 @@ async def auction_auto_restart_processor():
                 await asyncio.sleep(60)  # Check again in 1 minute
                 continue
             
-            # Find ALL ended auctions that have been ended for at least 60 seconds
-            # This gives users time to see them in the "Ende" tab
+            # Find ALL ended auctions that have been ended for at least 5 minutes
+            # This gives users time to see them in the "Ende" tab and claim prizes
             ended_auctions = await db.auctions.find({
                 "status": "ended"
             }, {"_id": 0}).to_list(100)
             
             for auction in ended_auctions:
                 try:
-                    # Check if auction has been ended for at least 60 seconds
+                    # Check if auction has been ended for at least 5 minutes (300 seconds)
                     ended_at = auction.get("ended_at")
                     if ended_at:
                         try:
                             ended_time = datetime.fromisoformat(ended_at.replace("Z", "+00:00"))
                             seconds_since_ended = (now_utc - ended_time).total_seconds()
                             
-                            # Wait at least 60 seconds before restarting
-                            if seconds_since_ended < 60:
+                            # Wait at least 5 minutes before restarting
+                            if seconds_since_ended < RESTART_DELAY_SECONDS:
                                 continue  # Skip this auction - not old enough yet
                         except:
                             pass  # If we can't parse ended_at, restart anyway
