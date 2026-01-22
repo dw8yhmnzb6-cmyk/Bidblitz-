@@ -559,6 +559,7 @@ async def process_auction_reminders():
     """Process due auction reminders and send notifications - called by background task"""
     now = datetime.now(timezone.utc)
     
+    # ==================== USER-SET REMINDERS ====================
     # Find all due reminders
     due_reminders = await db.auction_reminders.find({
         "sent": False,
@@ -608,6 +609,74 @@ async def process_auction_reminders():
             
         except Exception as e:
             logger.error(f"Error processing reminder: {e}")
+
+    # ==================== AUTO "5 MINUTES LEFT" NOTIFICATIONS ====================
+    # Find auctions ending in 4-6 minutes that haven't been notified yet
+    five_min_from_now = (now + timedelta(minutes=5)).isoformat()
+    four_min_from_now = (now + timedelta(minutes=4)).isoformat()
+    
+    auctions_ending_soon = await db.auctions.find({
+        "status": "active",
+        "end_time": {"$gte": four_min_from_now, "$lte": five_min_from_now},
+        "five_min_notification_sent": {"$ne": True}
+    }, {"_id": 0}).to_list(50)
+    
+    for auction in auctions_ending_soon:
+        try:
+            auction_id = auction["id"]
+            product_id = auction.get("product_id")
+            
+            # Get product name
+            product = await db.products.find_one({"id": product_id}, {"_id": 0, "name": 1})
+            product_name = product.get("name", "Produkt") if product else "Produkt"
+            
+            # Find users who have bid on this auction or have it in wishlist
+            bid_history = auction.get("bid_history", [])
+            bidder_ids = set(bid.get("user_id") for bid in bid_history if not bid.get("is_bot"))
+            
+            # Also get wishlist users
+            wishlist_users = await db.users.find(
+                {"wishlist": auction_id},
+                {"_id": 0, "id": 1}
+            ).to_list(1000)
+            wishlist_ids = set(u["id"] for u in wishlist_users)
+            
+            # Combine and remove duplicates
+            notify_users = bidder_ids.union(wishlist_ids)
+            
+            for user_id in notify_users:
+                # Check user preferences
+                prefs = await db.notification_preferences.find_one({"user_id": user_id}, {"_id": 0})
+                if prefs and not prefs.get("auction_ending", True):
+                    continue  # User disabled this notification type
+                
+                # Send push notification
+                await send_push_to_user(
+                    user_id,
+                    f"⏰ Endet in 5 Minuten!",
+                    f"{product_name} - Jetzt €{auction.get('current_price', 0):.2f}",
+                    {"url": f"/auctions/{auction_id}", "auction_id": auction_id, "type": "auction_ending"}
+                )
+                
+                # Create in-app notification
+                await create_notification(
+                    user_id,
+                    f"⏰ Auktion endet in 5 Minuten",
+                    f"{product_name} endet bald! Aktueller Preis: €{auction.get('current_price', 0):.2f}",
+                    "auction",
+                    f"/auctions/{auction_id}"
+                )
+            
+            # Mark auction as notified
+            await db.auctions.update_one(
+                {"id": auction_id},
+                {"$set": {"five_min_notification_sent": True}}
+            )
+            
+            logger.info(f"5-minute notifications sent for auction {auction_id} to {len(notify_users)} users")
+            
+        except Exception as e:
+            logger.error(f"Error sending 5-min notification: {e}")
 
 
 # Export helper for use in other modules
