@@ -695,10 +695,52 @@ export default function AuctionDetail() {
                     </div>
                   )}
 
-                  {/* Autobidder Section */}
+                  {/* Bid Buddy / Autobidder Section */}
                   {isAuthenticated && (
                     <div className="border-t border-white/10 pt-4">
-                      {!showAutobidder ? (
+                      {/* Active Bid Buddy Status */}
+                      {activeAutobidder && (
+                        <div className="mb-4 p-4 rounded-lg bg-gradient-to-r from-[#7C3AED]/20 to-[#06B6D4]/20 border border-[#7C3AED]/30" data-testid="active-autobidder">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                              <span className="text-[#7C3AED] font-bold">🤖 Bid Buddy aktiv</span>
+                            </div>
+                            <Button
+                              onClick={handleDeactivateAutobidder}
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10 h-8 px-2"
+                            >
+                              Stoppen
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-2 gap-3 text-sm">
+                            <div className="bg-black/20 rounded-lg p-2">
+                              <p className="text-[#94A3B8] text-xs">Verbleibende Gebote</p>
+                              <p className="text-white font-bold text-lg">
+                                {activeAutobidder.max_bids - (activeAutobidder.bids_placed || 0)} / {activeAutobidder.max_bids}
+                              </p>
+                            </div>
+                            <div className="bg-black/20 rounded-lg p-2">
+                              <p className="text-[#94A3B8] text-xs">Platzierte Gebote</p>
+                              <p className="text-[#10B981] font-bold text-lg">{activeAutobidder.bids_placed || 0}</p>
+                            </div>
+                            {activeAutobidder.max_price && (
+                              <div className="bg-black/20 rounded-lg p-2 col-span-2">
+                                <p className="text-[#94A3B8] text-xs">Max. Preis</p>
+                                <p className="text-white font-bold">€{activeAutobidder.max_price?.toFixed(2)}</p>
+                              </div>
+                            )}
+                          </div>
+                          <p className="text-[#94A3B8] text-xs mt-3 text-center">
+                            ⚡ Bietet automatisch in den letzten {activeAutobidder.bid_in_last_seconds || 10} Sekunden
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Setup New Bid Buddy */}
+                      {!activeAutobidder && !showAutobidder && (
                         <Button
                           onClick={() => setShowAutobidder(true)}
                           variant="outline"
@@ -706,30 +748,69 @@ export default function AuctionDetail() {
                           data-testid="show-autobidder-btn"
                         >
                           <Zap className="w-5 h-5 mr-2" />
-                          {t('autobidder.title') || 'Auto-Bieter'} aktivieren
+                          🤖 Bid Buddy aktivieren
                         </Button>
-                      ) : (
-                        <div className="space-y-4 p-4 rounded-lg bg-[#181824]">
+                      )}
+
+                      {/* Bid Buddy Setup Form */}
+                      {showAutobidder && !activeAutobidder && (
+                        <div className="space-y-4 p-4 rounded-lg bg-[#181824]" data-testid="autobidder-form">
                           <div className="flex items-center gap-2 text-[#7C3AED]">
                             <Zap className="w-5 h-5" />
-                            <span className="font-bold">{t('autobidder.title') || 'Auto-Bieter'}</span>
+                            <span className="font-bold">🤖 Bid Buddy einrichten</span>
                           </div>
                           <p className="text-[#94A3B8] text-sm">
-                            {t('autobidder.description') || 'Lassen Sie automatisch bieten bis zu Ihrem Limit'}
+                            Ihr Bid Buddy bietet automatisch in den letzten Sekunden für Sie!
                           </p>
+                          
+                          {/* Max Bids */}
                           <div className="space-y-2">
-                            <Label className="text-white">{t('autobidder.maxPrice') || 'Maximaler Preis (€)'}</Label>
+                            <Label className="text-white">Maximale Anzahl Gebote</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max={user?.bids_balance || 100}
+                              value={maxBids}
+                              onChange={(e) => setMaxBids(e.target.value)}
+                              placeholder="z.B. 10"
+                              className="bg-[#0F0F16] border-white/10 text-white"
+                              data-testid="max-bids-input"
+                            />
+                            <p className="text-[#94A3B8] text-xs">Verfügbar: {user?.bids_balance || 0} Gebote</p>
+                          </div>
+
+                          {/* Max Price (optional) */}
+                          <div className="space-y-2">
+                            <Label className="text-white">Maximaler Preis (€) <span className="text-[#94A3B8]">- optional</span></Label>
                             <Input
                               type="number"
                               step="0.01"
                               min={auction.current_price + 0.01}
                               value={maxPrice}
                               onChange={(e) => setMaxPrice(e.target.value)}
-                              placeholder={`Min. €${(auction.current_price + 0.01).toFixed(2)}`}
+                              placeholder={`z.B. ${(auction.current_price * 2).toFixed(2)}`}
                               className="bg-[#0F0F16] border-white/10 text-white"
                               data-testid="max-price-input"
                             />
+                            <p className="text-[#94A3B8] text-xs">Stoppt wenn dieser Preis erreicht ist</p>
                           </div>
+
+                          {/* Bid in Last Seconds */}
+                          <div className="space-y-2">
+                            <Label className="text-white">Bieten in letzten Sekunden</Label>
+                            <select
+                              value={bidInLastSeconds}
+                              onChange={(e) => setBidInLastSeconds(e.target.value)}
+                              className="w-full h-10 px-3 bg-[#0F0F16] border border-white/10 rounded-md text-white"
+                              data-testid="bid-seconds-select"
+                            >
+                              <option value="5">5 Sekunden</option>
+                              <option value="10">10 Sekunden</option>
+                              <option value="15">15 Sekunden</option>
+                              <option value="20">20 Sekunden</option>
+                            </select>
+                          </div>
+
                           <div className="flex gap-2">
                             <Button
                               onClick={handleSetAutobidder}
@@ -737,14 +818,14 @@ export default function AuctionDetail() {
                               className="flex-1 bg-[#7C3AED] hover:bg-[#6D28D9]"
                               data-testid="activate-autobidder-btn"
                             >
-                              {settingAutobidder ? '...' : (t('autobidder.activate') || 'Aktivieren')}
+                              {settingAutobidder ? '...' : '🚀 Aktivieren'}
                             </Button>
                             <Button
                               onClick={() => setShowAutobidder(false)}
                               variant="outline"
                               className="border-white/10 text-white hover:bg-white/10"
                             >
-                              {t('common.cancel')}
+                              {t('common.cancel') || 'Abbrechen'}
                             </Button>
                           </div>
                         </div>
