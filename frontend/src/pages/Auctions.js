@@ -412,32 +412,33 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
       <div className={`bg-[#1a4a5e] rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow ${isEnded ? 'opacity-60' : ''}`}>
         
         {/* Header: Badge + Timer + Reminder */}
-        <div className="flex justify-between items-center px-2 py-1.5 bg-[#0d3040]">
-          <div className="flex items-center gap-1">
-            <span className="bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">
+        <div className="flex justify-between items-center px-1.5 py-1.5 bg-[#0d3040] gap-1">
+          {/* Left side: Badges - use flex-shrink to allow wrapping */}
+          <div className="flex items-center gap-0.5 flex-shrink min-w-0 flex-wrap">
+            <span className="bg-red-500 text-white text-[8px] font-bold px-1 py-0.5 rounded flex-shrink-0">
               -{discount}%
             </span>
             {/* Beginner Badge */}
             {auction.is_beginner_only && (
-              <span className="bg-purple-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded" title="Nur für Anfänger (max. 10 Siege)">
+              <span className="bg-purple-500 text-white text-[8px] font-bold px-1 py-0.5 rounded flex-shrink-0" title="Nur für Anfänger (max. 10 Siege)">
                 🎓
               </span>
             )}
             {/* Free Auction Badge */}
             {auction.is_free_auction && (
-              <span className="bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded" title="Gratis-Auktion - keine Gebote nötig!">
-                🎁 GRATIS
+              <span className="bg-green-500 text-white text-[8px] font-bold px-1 py-0.5 rounded flex-shrink-0" title="Gratis-Auktion - keine Gebote nötig!">
+                🎁
               </span>
             )}
             {/* VIP Badge */}
             {auction.is_vip_only && (
-              <span className="bg-yellow-500 text-black text-[9px] font-bold px-1.5 py-0.5 rounded">
+              <span className="bg-yellow-500 text-black text-[8px] font-bold px-1 py-0.5 rounded flex-shrink-0">
                 VIP
               </span>
             )}
             {/* Night Auction Badge */}
             {auction.is_night_auction && (
-              <span className="bg-indigo-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded" title="Nacht-Auktion (22-6 Uhr)">
+              <span className="bg-indigo-500 text-white text-[8px] font-bold px-1 py-0.5 rounded flex-shrink-0" title="Nacht-Auktion (22-6 Uhr)">
                 🌙
               </span>
             )}
@@ -445,7 +446,7 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
             {isLoggedIn && !isEnded && (
               <button
                 onClick={handleReminderClick}
-                className={`p-1 rounded transition-colors ${
+                className={`p-0.5 rounded transition-colors flex-shrink-0 ${
                   hasReminder 
                     ? 'bg-yellow-500/20 text-yellow-400' 
                     : 'bg-gray-700/50 text-gray-400 hover:text-yellow-400'
@@ -453,31 +454,35 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
                 title={hasReminder ? texts.reminderActive : texts.remindMe}
                 data-testid={`reminder-btn-${auction.id}`}
               >
-                {hasReminder ? <Bell className="w-3 h-3" /> : <BellOff className="w-3 h-3" />}
+                {hasReminder ? <Bell className="w-2.5 h-2.5" /> : <BellOff className="w-2.5 h-2.5" />}
               </button>
             )}
           </div>
-          {timeLeft.loading ? (
-            <span className="text-gray-400 text-[11px]">...</span>
-          ) : isPaused && !isEnded ? (
-            <span className="text-orange-400 text-[10px] font-bold bg-orange-500/20 px-2 py-0.5 rounded animate-pulse">
-              ⏸ {texts.paused}
-            </span>
-          ) : timeLeft.ended && auction.status === 'active' ? (
-            // Timer expired but auction still active - show refreshing indicator
-            <span className="text-cyan-400 text-[10px] font-bold bg-cyan-500/20 px-2 py-0.5 rounded animate-pulse">
-              🔄 Neu...
-            </span>
-          ) : (
-            <div className={`flex text-[11px] font-mono font-bold ${isUrgent ? 'text-red-400' : 'text-yellow-400'}`}>
-              <span className="bg-black/30 px-1 rounded-l">{pad(timeLeft.h)}</span>
-              <span className="text-white/50">:</span>
-              <span className="bg-black/30 px-1">{pad(timeLeft.m)}</span>
-              <span className="text-white/50">:</span>
-              <span className={`px-1 rounded-r ${isUrgent ? 'bg-red-500 text-white' : 'bg-orange-400 text-black'}`}>
-                {pad(timeLeft.s)}
+          {/* Right side: Timer - flex-shrink-0 to prevent shrinking */}
+          <div className="flex-shrink-0">
+            {timeLeft.loading ? (
+              <span className="text-gray-400 text-[10px]">...</span>
+            ) : isPaused && !isEnded ? (
+              <span className="text-orange-400 text-[9px] font-bold bg-orange-500/20 px-1.5 py-0.5 rounded animate-pulse">
+                ⏸
               </span>
-            </div>
+            ) : timeLeft.ended && auction.status === 'active' ? (
+              // Timer expired but auction still active - show refreshing indicator
+              <span className="text-cyan-400 text-[9px] font-bold bg-cyan-500/20 px-1.5 py-0.5 rounded animate-pulse">
+                🔄
+              </span>
+            ) : (
+              <div className={`flex text-[10px] font-mono font-bold ${isUrgent ? 'text-red-400' : 'text-yellow-400'}`}>
+                <span className="bg-black/30 px-1 rounded-l">{pad(timeLeft.h)}</span>
+                <span className="text-white/50">:</span>
+                <span className="bg-black/30 px-1">{pad(timeLeft.m)}</span>
+                <span className="text-white/50">:</span>
+                <span className={`px-1 rounded-r ${isUrgent ? 'bg-red-500 text-white' : 'bg-orange-400 text-black'}`}>
+                  {pad(timeLeft.s)}
+                </span>
+              </div>
+            )}
+          </div>
           )}
         </div>
 
