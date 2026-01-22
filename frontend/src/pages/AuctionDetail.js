@@ -108,10 +108,46 @@ export default function AuctionDetail() {
     }
   };
 
+  // Fetch active autobidder for this auction
+  const fetchAutobidder = async () => {
+    if (!isAuthenticated || !id) return;
+    try {
+      const response = await axios.get(
+        `${API}/autobidder/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setActiveAutobidder(response.data);
+    } catch (error) {
+      // No autobidder found is normal
+      setActiveAutobidder(null);
+    }
+  };
+
+  // Deactivate autobidder
+  const handleDeactivateAutobidder = async () => {
+    try {
+      await axios.delete(
+        `${API}/autobidder/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setActiveAutobidder(null);
+      toast.success(t('autobidder.deactivated') || 'Bid Buddy deaktiviert');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Deaktivieren');
+    }
+  };
+
   // Initial fetch
   useEffect(() => {
     fetchBidHistory();
   }, [id]);
+
+  // Fetch autobidder when authenticated
+  useEffect(() => {
+    if (isAuthenticated && id) {
+      fetchAutobidder();
+    }
+  }, [isAuthenticated, id]);
 
   // Fetch Buy It Now price when authenticated
   useEffect(() => {
@@ -124,6 +160,10 @@ export default function AuctionDetail() {
   useEffect(() => {
     if (bidNotification) {
       fetchBidHistory();
+      // Also refresh autobidder status
+      if (isAuthenticated) {
+        fetchAutobidder();
+      }
     }
   }, [bidNotification]);
 
