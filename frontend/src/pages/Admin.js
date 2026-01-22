@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuctionWebSocket } from '../hooks/useAuctionWebSocket';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -12,7 +13,8 @@ import {
   Settings, BarChart3, Zap, RefreshCw, Square, UserPlus,
   Ban, CheckCircle, DollarSign, Globe, Ticket, Edit, X, Save,
   Bot, Play, Target, Calendar, Clock, TrendingUp, Activity, Menu,
-  Mail, Send, Eye, Star, Crown, FileText, RotateCcw, Repeat
+  Mail, Send, Eye, Star, Crown, FileText, RotateCcw, Repeat,
+  Gift, Trophy, Moon, Wifi, WifiOff
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
