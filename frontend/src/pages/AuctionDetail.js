@@ -725,8 +725,8 @@ export default function AuctionDetail() {
           >
             <div className="flex items-center gap-3">
               <History className="w-5 h-5 text-[#7C3AED]" />
-              <span className="text-white font-bold">Gebotsverlauf</span>
-              <span className="text-[#94A3B8] text-sm">({bidHistory.length} Gebote)</span>
+              <span className="text-white font-bold">{t('auctions.bidHistory') || 'Gebotsverlauf'}</span>
+              <span className="text-[#94A3B8] text-sm">({bidHistory.length} {t('auctions.bids') || 'Gebote'})</span>
             </div>
             {showBidHistory ? (
               <ChevronUp className="w-5 h-5 text-[#94A3B8]" />
@@ -744,16 +744,16 @@ export default function AuctionDetail() {
               ) : bidHistory.length === 0 ? (
                 <div className="p-6 text-center text-[#94A3B8]">
                   <History className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p>Noch keine Gebote abgegeben</p>
+                  <p>{t('auctions.noBidsYet') || 'Noch keine Gebote abgegeben'}</p>
                 </div>
               ) : (
                 <div className="max-h-80 overflow-y-auto">
                   <table className="w-full">
                     <thead className="bg-[#0F0F16] sticky top-0">
                       <tr>
-                        <th className="text-left text-[#94A3B8] text-xs font-medium p-3">Bieter</th>
-                        <th className="text-right text-[#94A3B8] text-xs font-medium p-3">Preis</th>
-                        <th className="text-right text-[#94A3B8] text-xs font-medium p-3 hidden sm:table-cell">Zeit</th>
+                        <th className="text-left text-[#94A3B8] text-xs font-medium p-3">{t('auctions.lastBidder') || 'Bieter'}</th>
+                        <th className="text-right text-[#94A3B8] text-xs font-medium p-3">{t('auctions.price') || 'Preis'}</th>
+                        <th className="text-right text-[#94A3B8] text-xs font-medium p-3 hidden sm:table-cell">{t('auctions.time') || 'Zeit'}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -773,7 +773,7 @@ export default function AuctionDetail() {
                                   {bid.user_name}
                                 </p>
                                 {index === 0 && (
-                                  <p className="text-[#10B981] text-xs">Aktueller Höchstbieter</p>
+                                  <p className="text-[#10B981] text-xs">{t('auctions.currentHighBidder') || 'Aktueller Höchstbieter'}</p>
                                 )}
                               </div>
                             </div>
