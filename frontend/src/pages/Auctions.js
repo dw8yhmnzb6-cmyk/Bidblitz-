@@ -866,7 +866,7 @@ export default function Auctions() {
           </div>
 
           {/* Status Buttons */}
-          <div className="flex gap-1">
+          <div className="flex gap-1 flex-wrap">
             <button
               onClick={() => setStatusFilter('active')}
               data-testid="filter-active"
@@ -877,6 +877,17 @@ export default function Auctions() {
               }`}
             >
               {texts.live} ({activeCount})
+            </button>
+            <button
+              onClick={() => setStatusFilter('beginner')}
+              data-testid="filter-beginner"
+              className={`px-2 py-1.5 rounded text-[10px] font-medium ${
+                statusFilter === 'beginner' 
+                  ? 'bg-purple-500 text-white' 
+                  : 'bg-[#1a3a52] text-gray-400'
+              }`}
+            >
+              🎓 {texts.beginner || 'Anfänger'} ({auctions.filter(a => a.is_beginner_only && a.status === 'active').length})
             </button>
             <button
               onClick={() => setStatusFilter('scheduled')}
