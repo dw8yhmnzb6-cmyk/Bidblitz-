@@ -645,3 +645,263 @@ async def get_security_logs(admin: dict = Depends(get_admin_user), limit: int = 
         {"_id": 0}
     ).sort("timestamp", -1).to_list(limit)
     return logs
+
+
+# ==================== ADMIN CONFIGURATION ====================
+
+class GameConfig(BaseModel):
+    # Daily Login Rewards
+    daily_reward_enabled: bool = True
+    daily_reward_min_bids: int = 1
+    daily_reward_max_bids: int = 5
+    streak_bonus_day_7: int = 10
+    streak_bonus_day_14: int = 20
+    streak_bonus_day_30: int = 50
+    
+    # Free Auctions
+    free_auction_enabled: bool = True
+    free_auction_max_participants: int = 100
+    
+    # Beginner Auctions
+    beginner_auction_enabled: bool = True
+    beginner_max_wins: int = 10
+    
+    # Night Auctions (22:00-06:00)
+    night_auction_enabled: bool = True
+    night_auction_bid_discount: int = 50  # 50% less bids needed
+    night_auction_start_hour: int = 22
+    night_auction_end_hour: int = 6
+    
+    # Achievements
+    achievements_enabled: bool = True
+    
+    # Referral
+    referral_reward_bids: int = 10
+    referral_min_deposit: float = 5.0
+
+
+@router.get("/config/game")
+async def get_game_config(admin: dict = Depends(get_admin_user)):
+    """Get game configuration settings"""
+    config = await db.game_config.find_one({"id": "main"}, {"_id": 0})
+    if not config:
+        # Return defaults
+        return GameConfig().model_dump()
+    return config
+
+
+@router.put("/config/game")
+async def update_game_config(config: GameConfig, admin: dict = Depends(get_admin_user)):
+    """Update game configuration settings"""
+    config_dict = config.model_dump()
+    config_dict["id"] = "main"
+    config_dict["updated_at"] = datetime.now(timezone.utc).isoformat()
+    config_dict["updated_by"] = admin["id"]
+    
+    await db.game_config.update_one(
+        {"id": "main"},
+        {"$set": config_dict},
+        upsert=True
+    )
+    
+    logger.info(f"Game config updated by admin {admin['id']}")
+    return {"message": "Configuration updated", "config": config_dict}
+
+
+# ==================== ACHIEVEMENTS SYSTEM ====================
+
+ACHIEVEMENT_DEFINITIONS = [
+    {"id": "first_win", "name": "Erster Sieg", "name_en": "First Win", "description": "Gewinne deine erste Auktion", "icon": "🏆", "bids_reward": 5},
+    {"id": "wins_10", "name": "Sammler", "name_en": "Collector", "description": "Gewinne 10 Auktionen", "icon": "🎯", "bids_reward": 20},
+    {"id": "wins_50", "name": "Profi", "name_en": "Pro", "description": "Gewinne 50 Auktionen", "icon": "⭐", "bids_reward": 100},
+    {"id": "wins_100", "name": "Meister", "name_en": "Master", "description": "Gewinne 100 Auktionen", "icon": "👑", "bids_reward": 250},
+    {"id": "night_owl", "name": "Nachteule", "name_en": "Night Owl", "description": "Gewinne 5 Nacht-Auktionen", "icon": "🦉", "bids_reward": 15},
+    {"id": "early_bird", "name": "Frühaufsteher", "name_en": "Early Bird", "description": "Biete vor 8 Uhr morgens", "icon": "🐦", "bids_reward": 5},
+    {"id": "big_spender", "name": "Großzügig", "name_en": "Big Spender", "description": "Kaufe Gebote für über €100", "icon": "💎", "bids_reward": 30},
+    {"id": "lucky_winner", "name": "Glückspilz", "name_en": "Lucky Winner", "description": "Gewinne mit nur 1 Gebot", "icon": "🍀", "bids_reward": 10},
+    {"id": "streak_7", "name": "Wochensieger", "name_en": "Week Champion", "description": "7 Tage Login-Streak", "icon": "🔥", "bids_reward": 10},
+    {"id": "streak_30", "name": "Monatssieger", "name_en": "Month Champion", "description": "30 Tage Login-Streak", "icon": "💪", "bids_reward": 50},
+    {"id": "referral_5", "name": "Werber", "name_en": "Recruiter", "description": "Werbe 5 Freunde", "icon": "👥", "bids_reward": 25},
+    {"id": "beginner_champ", "name": "Anfänger-Champion", "name_en": "Beginner Champ", "description": "Gewinne 3 Anfänger-Auktionen", "icon": "🎓", "bids_reward": 15},
+]
+
+
+@router.get("/achievements/all")
+async def get_all_achievements(admin: dict = Depends(get_admin_user)):
+    """Get all achievement definitions"""
+    return {"achievements": ACHIEVEMENT_DEFINITIONS}
+
+
+@router.post("/achievements/grant/{user_id}/{achievement_id}")
+async def grant_achievement(user_id: str, achievement_id: str, admin: dict = Depends(get_admin_user)):
+    """Manually grant an achievement to a user"""
+    # Find achievement definition
+    achievement = next((a for a in ACHIEVEMENT_DEFINITIONS if a["id"] == achievement_id), None)
+    if not achievement:
+        raise HTTPException(status_code=404, detail="Achievement not found")
+    
+    # Check if user exists
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if already has achievement
+    existing = await db.user_achievements.find_one({
+        "user_id": user_id,
+        "achievement_id": achievement_id
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="User already has this achievement")
+    
+    # Grant achievement
+    await db.user_achievements.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "achievement_id": achievement_id,
+        "granted_at": datetime.now(timezone.utc).isoformat(),
+        "granted_by": "admin"
+    })
+    
+    # Grant bids reward
+    if achievement.get("bids_reward", 0) > 0:
+        await db.users.update_one(
+            {"id": user_id},
+            {"$inc": {"bids_balance": achievement["bids_reward"]}}
+        )
+    
+    logger.info(f"Achievement {achievement_id} granted to user {user_id} by admin")
+    return {"message": f"Achievement '{achievement['name']}' granted", "bids_reward": achievement.get("bids_reward", 0)}
+
+
+# ==================== DAILY REWARDS ADMIN ====================
+
+@router.get("/daily-rewards/stats")
+async def get_daily_rewards_stats(admin: dict = Depends(get_admin_user)):
+    """Get daily rewards statistics"""
+    now = datetime.now(timezone.utc)
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+    week_ago = (now - timedelta(days=7)).isoformat()
+    
+    # Today's claims
+    today_claims = await db.daily_rewards.count_documents({
+        "claimed_at": {"$gte": today_start}
+    })
+    
+    # Week's claims
+    week_claims = await db.daily_rewards.count_documents({
+        "claimed_at": {"$gte": week_ago}
+    })
+    
+    # Total bids given
+    pipeline = [
+        {"$group": {"_id": None, "total_bids": {"$sum": "$bids_given"}}}
+    ]
+    result = await db.daily_rewards.aggregate(pipeline).to_list(1)
+    total_bids_given = result[0]["total_bids"] if result else 0
+    
+    # Users with streaks
+    users_with_streaks = await db.users.count_documents({
+        "login_streak": {"$gte": 7}
+    })
+    
+    return {
+        "today_claims": today_claims,
+        "week_claims": week_claims,
+        "total_bids_given": total_bids_given,
+        "users_with_7day_streak": users_with_streaks
+    }
+
+
+# ==================== BULK AUCTION CREATION ====================
+
+class BulkAuctionCreate(BaseModel):
+    product_ids: List[str]
+    duration_minutes: int = 10
+    is_beginner_only: bool = False
+    is_free_auction: bool = False
+    is_night_auction: bool = False
+    is_vip_only: bool = False
+    stagger_minutes: int = 5  # Time between each auction start
+
+
+@router.post("/auctions/bulk-create")
+async def bulk_create_auctions(data: BulkAuctionCreate, admin: dict = Depends(get_admin_user)):
+    """Create multiple auctions at once"""
+    now = datetime.now(timezone.utc)
+    created_auctions = []
+    
+    for i, product_id in enumerate(data.product_ids):
+        # Check product exists
+        product = await db.products.find_one({"id": product_id}, {"_id": 0})
+        if not product:
+            continue
+        
+        # Calculate start time (staggered)
+        start_time = now + timedelta(minutes=i * data.stagger_minutes)
+        end_time = start_time + timedelta(minutes=data.duration_minutes)
+        
+        auction = {
+            "id": str(uuid.uuid4()),
+            "product_id": product_id,
+            "status": "active" if i == 0 else "scheduled",
+            "start_time": start_time.isoformat(),
+            "end_time": end_time.isoformat(),
+            "current_price": 0.00,
+            "start_price": 0.00,
+            "total_bids": 0,
+            "bid_history": [],
+            "is_beginner_only": data.is_beginner_only,
+            "is_free_auction": data.is_free_auction,
+            "is_night_auction": data.is_night_auction,
+            "is_vip_only": data.is_vip_only,
+            "auto_restart": True,
+            "original_duration_minutes": data.duration_minutes,
+            "created_at": now.isoformat(),
+            "created_by": admin["id"]
+        }
+        
+        await db.auctions.insert_one(auction)
+        created_auctions.append(auction["id"])
+    
+    logger.info(f"Bulk created {len(created_auctions)} auctions by admin {admin['id']}")
+    return {
+        "message": f"{len(created_auctions)} auctions created",
+        "auction_ids": created_auctions
+    }
+
+
+# ==================== PRODUCT BULK IMPORT ====================
+
+class ProductImport(BaseModel):
+    name: str
+    description: str = ""
+    retail_price: float
+    category: str = "Elektronik"
+    image_url: str = ""
+
+
+@router.post("/products/bulk-import")
+async def bulk_import_products(products: List[ProductImport], admin: dict = Depends(get_admin_user)):
+    """Import multiple products at once"""
+    now = datetime.now(timezone.utc)
+    created_products = []
+    
+    for p in products:
+        product = {
+            "id": str(uuid.uuid4()),
+            "name": p.name,
+            "description": p.description,
+            "retail_price": p.retail_price,
+            "category": p.category,
+            "image_url": p.image_url or f"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400",
+            "created_at": now.isoformat(),
+            "created_by": admin["id"]
+        }
+        await db.products.insert_one(product)
+        created_products.append(product["id"])
+    
+    logger.info(f"Bulk imported {len(created_products)} products by admin {admin['id']}")
+    return {
+        "message": f"{len(created_products)} products imported",
+        "product_ids": created_products
+    }
