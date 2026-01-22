@@ -12,19 +12,36 @@ Der Benutzer hat eine Penny-Auktions-Website nach dem Vorbild von `dealdash.com`
 1. **Admin-Login "Ungültige Anmeldedaten"** ✅ BEHOBEN
    - Problem: `is_admin` Feld war `None` in MongoDB
    - Lösung: Feld auf `True` aktualisiert
-   - Zugangsdaten: `admin@bidblitz.de` / `Admin123!`
 
 2. **Timer bei 00:00:00 stehen geblieben** ✅ BEHOBEN
-   - Problem: Geschäftszeiten-Logik blockierte Auktionen (Berlin nach Mitternacht)
-   - Lösung: Geschäftszeiten auf 0:00-24:00 erweitert (24/7 für Entwicklung)
+   - Problem: Geschäftszeiten-Logik blockierte Auktionen
+   - Lösung: Geschäftszeiten auf 0:00-24:00 erweitert
 
 3. **Zahlungsübersicht zeigte €0.00** ✅ BEHOBEN
-   - Problem: Code las aus falscher Collection (`payment_transactions` statt `transactions`)
-   - Lösung: Collection in `routers/admin.py` korrigiert
+   - Problem: Code las aus falscher Collection
+   - Lösung: Collection korrigiert
 
 4. **E-Mail Marketing zeigte 0 Benutzer** ✅ BEHOBEN
-   - Problem: Fehlender API-Endpoint `/admin/email/user-stats`
-   - Lösung: Neuen Endpoint hinzugefügt mit allen Segmentierungen
+   - Problem: Fehlender API-Endpoint
+   - Lösung: `/admin/email/user-stats` erstellt
+
+5. **Zahlung nicht gutgeschrieben** ✅ BEHOBEN
+   - Problem: Pending Transaction nicht abgeschlossen
+   - Lösung: Manuelle Gutschrift + Code-Review
+
+6. **Stripe LIVE aktiviert** ✅ NEU
+   - Test-Modus auf LIVE-Modus umgestellt
+   - Echte Zahlungen werden jetzt verarbeitet
+
+7. **Echtzeit-Updates auf Startseite** ✅ NEU
+   - WebSocket-Verbindung für alle Auktionen
+   - "Live" Status-Anzeige hinzugefügt
+   - Preise und Bieter aktualisieren sich automatisch
+
+8. **Vollständige i18n für AuctionDetail.js** ✅ NEU
+   - Alle hartkodierte Texte durch Übersetzungssystem ersetzt
+   - Neue Übersetzungen für DE und SQ (Albanisch) hinzugefügt
+   - Strings: increment, bidHistory, buyNow, yourPrice, etc.
 
 ### Neue Features implementiert:
 
