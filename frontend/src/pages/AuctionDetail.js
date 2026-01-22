@@ -505,7 +505,7 @@ export default function AuctionDetail() {
                 <div className="flex items-center gap-2">
                   <Zap className="w-5 h-5 text-[#F59E0B]" />
                   <div>
-                    <p className="text-[#94A3B8] text-sm">Inkrement</p>
+                    <p className="text-[#94A3B8] text-sm">{t('auctions.increment') || 'Inkrement'}</p>
                     <p className="text-white font-bold">+€{auction.bid_increment?.toFixed(2)}</p>
                   </div>
                 </div>
