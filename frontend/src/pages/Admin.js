@@ -206,11 +206,29 @@ export default function Admin() {
       } else if (activeTab === 'pages') {
         const res = await axios.get(`${API}/pages`);
         setPages(res.data);
+      } else if (activeTab === 'game-config') {
+        const res = await axios.get(`${API}/admin/config/game`, { headers });
+        setGameConfig(res.data);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Save Game Config
+  const handleSaveGameConfig = async () => {
+    setSavingConfig(true);
+    try {
+      await axios.put(`${API}/admin/config/game`, gameConfig, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Einstellungen gespeichert!');
+    } catch (error) {
+      toast.error('Fehler beim Speichern');
+    } finally {
+      setSavingConfig(false);
     }
   };
 
