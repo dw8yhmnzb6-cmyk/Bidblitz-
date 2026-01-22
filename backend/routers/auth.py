@@ -191,7 +191,214 @@ async def get_me(user: dict = Depends(get_current_user)):
         "two_factor_enabled": user.get("two_factor_enabled", False),
         "avatar_url": user.get("avatar_url"),
         "vip_status": user.get("vip_status"),
-        "vip_period_end": user.get("vip_period_end")
+        "vip_period_end": user.get("vip_period_end"),
+        "login_streak": user.get("login_streak", 0),
+        "last_daily_reward": user.get("last_daily_reward")
+    }
+
+
+# ==================== DAILY LOGIN REWARD ====================
+
+@router.post("/claim-daily-reward")
+async def claim_daily_reward(user: dict = Depends(get_current_user)):
+    """Claim daily login reward - users get 1-5 free bids per day"""
+    now = datetime.now(timezone.utc)
+    today_str = now.strftime("%Y-%m-%d")
+    
+    # Check if already claimed today
+    last_reward = user.get("last_daily_reward")
+    if last_reward and last_reward.startswith(today_str):
+        raise HTTPException(status_code=400, detail="Tägliche Belohnung bereits abgeholt!")
+    
+    # Get game config
+    config = await db.game_config.find_one({"id": "main"}, {"_id": 0})
+    if not config:
+        config = {"daily_reward_enabled": True, "daily_reward_min_bids": 1, "daily_reward_max_bids": 5,
+                  "streak_bonus_day_7": 10, "streak_bonus_day_14": 20, "streak_bonus_day_30": 50}
+    
+    if not config.get("daily_reward_enabled", True):
+        raise HTTPException(status_code=400, detail="Tägliche Belohnungen sind deaktiviert")
+    
+    # Calculate streak
+    yesterday_str = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+    current_streak = user.get("login_streak", 0)
+    
+    if last_reward and last_reward.startswith(yesterday_str):
+        # Continue streak
+        new_streak = current_streak + 1
+    else:
+        # Reset streak
+        new_streak = 1
+    
+    # Calculate reward (random between min and max)
+    min_bids = config.get("daily_reward_min_bids", 1)
+    max_bids = config.get("daily_reward_max_bids", 5)
+    base_reward = random.randint(min_bids, max_bids)
+    
+    # Add streak bonus
+    streak_bonus = 0
+    bonus_message = None
+    if new_streak == 7:
+        streak_bonus = config.get("streak_bonus_day_7", 10)
+        bonus_message = f"🔥 7-Tage-Streak! +{streak_bonus} Bonus-Gebote!"
+    elif new_streak == 14:
+        streak_bonus = config.get("streak_bonus_day_14", 20)
+        bonus_message = f"🔥 14-Tage-Streak! +{streak_bonus} Bonus-Gebote!"
+    elif new_streak == 30:
+        streak_bonus = config.get("streak_bonus_day_30", 50)
+        bonus_message = f"🔥 30-Tage-Streak! +{streak_bonus} Bonus-Gebote!"
+    elif new_streak % 7 == 0:
+        streak_bonus = 5
+        bonus_message = f"🎉 {new_streak}-Tage-Streak! +{streak_bonus} Bonus-Gebote!"
+    
+    total_reward = base_reward + streak_bonus
+    
+    # Update user
+    await db.users.update_one(
+        {"id": user["id"]},
+        {
+            "$inc": {"bids_balance": total_reward},
+            "$set": {
+                "last_daily_reward": now.isoformat(),
+                "login_streak": new_streak
+            }
+        }
+    )
+    
+    # Log reward
+    await db.daily_rewards.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "bids_given": total_reward,
+        "base_reward": base_reward,
+        "streak_bonus": streak_bonus,
+        "streak_day": new_streak,
+        "claimed_at": now.isoformat()
+    })
+    
+    # Check for streak achievements
+    if new_streak == 7:
+        await check_and_grant_achievement(user["id"], "streak_7")
+    elif new_streak == 30:
+        await check_and_grant_achievement(user["id"], "streak_30")
+    
+    return {
+        "success": True,
+        "bids_received": total_reward,
+        "base_reward": base_reward,
+        "streak_bonus": streak_bonus,
+        "current_streak": new_streak,
+        "bonus_message": bonus_message,
+        "new_balance": user["bids_balance"] + total_reward
+    }
+
+
+@router.get("/daily-reward-status")
+async def get_daily_reward_status(user: dict = Depends(get_current_user)):
+    """Check if user can claim daily reward"""
+    now = datetime.now(timezone.utc)
+    today_str = now.strftime("%Y-%m-%d")
+    
+    last_reward = user.get("last_daily_reward")
+    can_claim = not (last_reward and last_reward.startswith(today_str))
+    
+    # Calculate time until next reward
+    next_reward_time = None
+    if not can_claim:
+        tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        next_reward_time = tomorrow.isoformat()
+    
+    return {
+        "can_claim": can_claim,
+        "current_streak": user.get("login_streak", 0),
+        "last_claimed": last_reward,
+        "next_reward_time": next_reward_time
+    }
+
+
+# ==================== ACHIEVEMENTS ====================
+
+async def check_and_grant_achievement(user_id: str, achievement_id: str):
+    """Helper function to check and grant an achievement"""
+    # Check if already has
+    existing = await db.user_achievements.find_one({
+        "user_id": user_id,
+        "achievement_id": achievement_id
+    })
+    if existing:
+        return False
+    
+    # Achievement definitions (same as admin.py)
+    achievements = {
+        "first_win": {"bids_reward": 5},
+        "wins_10": {"bids_reward": 20},
+        "wins_50": {"bids_reward": 100},
+        "wins_100": {"bids_reward": 250},
+        "night_owl": {"bids_reward": 15},
+        "early_bird": {"bids_reward": 5},
+        "big_spender": {"bids_reward": 30},
+        "lucky_winner": {"bids_reward": 10},
+        "streak_7": {"bids_reward": 10},
+        "streak_30": {"bids_reward": 50},
+        "referral_5": {"bids_reward": 25},
+        "beginner_champ": {"bids_reward": 15},
+    }
+    
+    achievement = achievements.get(achievement_id)
+    if not achievement:
+        return False
+    
+    # Grant achievement
+    await db.user_achievements.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "achievement_id": achievement_id,
+        "granted_at": datetime.now(timezone.utc).isoformat(),
+        "granted_by": "system"
+    })
+    
+    # Grant bids reward
+    if achievement.get("bids_reward", 0) > 0:
+        await db.users.update_one(
+            {"id": user_id},
+            {"$inc": {"bids_balance": achievement["bids_reward"]}}
+        )
+    
+    logger.info(f"Achievement {achievement_id} granted to user {user_id}")
+    return True
+
+
+@router.get("/achievements")
+async def get_user_achievements(user: dict = Depends(get_current_user)):
+    """Get user's earned achievements"""
+    achievements = await db.user_achievements.find(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    ).to_list(100)
+    
+    # Achievement definitions
+    all_achievements = [
+        {"id": "first_win", "name": "Erster Sieg", "description": "Gewinne deine erste Auktion", "icon": "🏆", "bids_reward": 5},
+        {"id": "wins_10", "name": "Sammler", "description": "Gewinne 10 Auktionen", "icon": "🎯", "bids_reward": 20},
+        {"id": "wins_50", "name": "Profi", "description": "Gewinne 50 Auktionen", "icon": "⭐", "bids_reward": 100},
+        {"id": "wins_100", "name": "Meister", "description": "Gewinne 100 Auktionen", "icon": "👑", "bids_reward": 250},
+        {"id": "night_owl", "name": "Nachteule", "description": "Gewinne 5 Nacht-Auktionen", "icon": "🦉", "bids_reward": 15},
+        {"id": "early_bird", "name": "Frühaufsteher", "description": "Biete vor 8 Uhr morgens", "icon": "🐦", "bids_reward": 5},
+        {"id": "big_spender", "name": "Großzügig", "description": "Kaufe Gebote für über €100", "icon": "💎", "bids_reward": 30},
+        {"id": "lucky_winner", "name": "Glückspilz", "description": "Gewinne mit nur 1 Gebot", "icon": "🍀", "bids_reward": 10},
+        {"id": "streak_7", "name": "Wochensieger", "description": "7 Tage Login-Streak", "icon": "🔥", "bids_reward": 10},
+        {"id": "streak_30", "name": "Monatssieger", "description": "30 Tage Login-Streak", "icon": "💪", "bids_reward": 50},
+        {"id": "referral_5", "name": "Werber", "description": "Werbe 5 Freunde", "icon": "👥", "bids_reward": 25},
+        {"id": "beginner_champ", "name": "Anfänger-Champion", "description": "Gewinne 3 Anfänger-Auktionen", "icon": "🎓", "bids_reward": 15},
+    ]
+    
+    earned_ids = {a["achievement_id"] for a in achievements}
+    
+    return {
+        "earned": [a for a in all_achievements if a["id"] in earned_ids],
+        "locked": [a for a in all_achievements if a["id"] not in earned_ids],
+        "total_earned": len(earned_ids),
+        "total_available": len(all_achievements)
     }
 
 # ==================== PASSWORD RESET ====================
