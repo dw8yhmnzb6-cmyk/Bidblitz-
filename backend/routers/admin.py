@@ -666,10 +666,10 @@ class GameConfig(BaseModel):
     beginner_auction_enabled: bool = True
     beginner_max_wins: int = 10
     
-    # Night Auctions (22:00-06:00)
+    # Night Auctions (23:30-06:00) - Half price bids
     night_auction_enabled: bool = True
-    night_auction_bid_discount: int = 50  # 50% less bids needed
-    night_auction_start_hour: int = 22
+    night_auction_bid_discount: int = 50  # 50% = half price bids
+    night_auction_start_hour: float = 23.5  # 23:30 Uhr
     night_auction_end_hour: int = 6
     
     # Achievements
