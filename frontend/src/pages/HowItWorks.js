@@ -496,6 +496,43 @@ export default function HowItWorks() {
               </div>
               <p className="text-gray-400 text-sm">{t.badgeReminderDesc || "Benachrichtigung 5 Min. vor Ende"}</p>
             </div>
+            
+            {/* Activity Index */}
+            <div className="bg-[#1E293B] rounded-xl p-4 border border-gray-700/50 sm:col-span-2 lg:col-span-3">
+              <div className="flex items-center gap-3 mb-3">
+                <div style={{ 
+                  width: '80px', 
+                  height: '8px', 
+                  borderRadius: '4px',
+                  background: 'linear-gradient(to right, #22C55E 0%, #84CC16 25%, #EAB308 50%, #F97316 75%, #EF4444 100%)'
+                }} />
+                <span className="text-white font-semibold text-sm">📊 Aktivitätsindex</span>
+              </div>
+              <p className="text-gray-400 text-sm mb-3">
+                Der Aktivitätsindex zeigt dir, wie aktiv eine Auktion gerade ist:
+              </p>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  <span className="text-gray-300">Grün = Wenig Aktivität</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <span className="text-gray-300">Gelb = Mittlere Aktivität</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                  <span className="text-gray-300">Orange = Hohe Aktivität</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <span className="text-gray-300">Rot = Sehr hohe Aktivität</span>
+                </div>
+              </div>
+              <p className="text-gray-500 text-xs mt-3">
+                💡 Tipp: Bei niedriger Aktivität hast du bessere Chancen zu gewinnen!
+              </p>
+            </div>
           </div>
         </div>
 
