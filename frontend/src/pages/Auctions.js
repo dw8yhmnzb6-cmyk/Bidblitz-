@@ -9,29 +9,29 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-// Simple Activity Dots
+// Simple Activity Dots - Using SVG for perfect circles on all devices
 const ActivityDots = ({ bids }) => {
   const level = Math.min(5, Math.ceil((bids || 0) / 10));
+  
+  const getColor = (index) => {
+    if (index >= level) return '#4B5563'; // gray-600
+    if (index < 2) return '#4ADE80'; // green-400
+    if (index < 4) return '#FACC15'; // yellow-400
+    return '#F87171'; // red-400
+  };
+  
   return (
-    <div className="flex items-center gap-1">
-      {[...Array(5)].map((_, i) => (
-        <span 
+    <svg width="50" height="10" viewBox="0 0 50 10" style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <circle
           key={i}
-          style={{ 
-            width: '6px', 
-            height: '6px', 
-            borderRadius: '50%',
-            display: 'inline-block',
-            flexShrink: 0
-          }}
-          className={
-            i < level 
-              ? i < 2 ? 'bg-green-400' : i < 4 ? 'bg-yellow-400' : 'bg-red-400'
-              : 'bg-gray-600'
-          }
+          cx={5 + i * 10}
+          cy={5}
+          r={4}
+          fill={getColor(i)}
         />
       ))}
-    </div>
+    </svg>
   );
 };
 
