@@ -356,7 +356,7 @@ const InfoSidebar = memo(() => (
             <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🌙 NACHT</span>
             <span className="font-bold text-indigo-800">Nacht-Auktion</span>
           </div>
-          <p className="text-[8px] text-gray-600">Läuft zwischen 22:00 und 6:00 Uhr. Reduzierte Gebotskosten!</p>
+          <p className="text-[8px] text-gray-600">Läuft von 23:30 bis 6:00 Uhr. <span className="font-bold text-indigo-700">Halber Gebotspreis!</span></p>
         </div>
         
         {/* Erinnerung */}
