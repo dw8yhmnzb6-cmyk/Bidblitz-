@@ -472,18 +472,15 @@ export default function Home() {
           />
         )}
         
-        {/* Live Auctions Section */}
+        {/* Live Auctions Section - ALL auctions on one page */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-800">
-              Live-Auktionen
+              Live-Auktionen ({otherAuctions.length})
             </h2>
-            <Link to="/auctions" className="text-cyan-700 text-sm flex items-center gap-1 hover:text-cyan-800">
-              Alle ansehen <ChevronRight className="w-4 h-4" />
-            </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {otherAuctions.map(auction => (
               <AuctionCard 
                 key={auction.id}
