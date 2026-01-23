@@ -505,7 +505,7 @@ export default function Auctions() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-200 to-cyan-300 p-2" data-testid="auctions-page">
       <div className="text-center text-[10px] text-gray-600 mb-2">
-        {new Date().toLocaleTimeString('de-DE')} | {auctions.length} Live-Auktionen
+        {new Date().toLocaleTimeString('de-DE')} | {publicAuctions.length} Live-Auktionen
       </div>
       
       {/* Main layout with trust badges on right */}
