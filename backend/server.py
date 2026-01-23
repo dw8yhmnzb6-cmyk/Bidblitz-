@@ -220,7 +220,7 @@ async def bot_last_second_bidder():
                                 # Place bid
                                 current_price = auction.get("current_price", 0)
                                 new_price = round(current_price + bid_increment, 2)
-                                timer_ext = random.randint(10, 20)
+                                timer_ext = random.randint(9, 11)  # Reset to 9-11 seconds
                                 new_end_time = datetime.now(timezone.utc) + timedelta(seconds=timer_ext)
                                 
                                 bid_entry = {
