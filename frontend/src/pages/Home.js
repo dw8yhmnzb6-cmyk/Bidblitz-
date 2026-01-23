@@ -432,7 +432,7 @@ export default function Home() {
     }
   };
   
-  // Get premium auction
+  // Get premium auction (VIP or highest retail price)
   const premiumAuction = auctions.find(a => a.is_vip_only) || 
     auctions.reduce((max, a) => {
       const price = products[a.product_id]?.retail_price || 0;
@@ -440,8 +440,8 @@ export default function Home() {
       return price > maxPrice ? a : max;
     }, auctions[0]);
   
-  // Other auctions
-  const otherAuctions = auctions.filter(a => a.id !== premiumAuction?.id).slice(0, 8);
+  // ALL other auctions (no limit - show everything on one page)
+  const otherAuctions = auctions.filter(a => a.id !== premiumAuction?.id);
   
   if (loading) {
     return (
