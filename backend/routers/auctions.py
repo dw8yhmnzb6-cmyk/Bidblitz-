@@ -203,18 +203,21 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
             {"$inc": {"total_bids_placed": 1, "free_bids_placed": 1}}
         )
     
-    # Update auction - extend timer by 10-15 seconds, don't reset
+    # Update auction - extend timer to 9-11 seconds on last-second bids
     new_price = round(auction["current_price"] + auction.get("bid_increment", 0.01), 2)
     current_end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
     now = datetime.now(timezone.utc)
     
-    # Only extend if less than 60 seconds remaining
+    # Reset timer to 9-11 seconds when remaining time is low
     time_remaining = (current_end_time - now).total_seconds()
-    if time_remaining < 60:
-        if time_remaining < 15:
-            new_end_time = now + timedelta(seconds=15)
-        else:
-            new_end_time = current_end_time + timedelta(seconds=10)
+    timer_extension = random.randint(9, 11)
+    
+    if time_remaining < 15:
+        # Last-second bid: reset timer to 9-11 seconds
+        new_end_time = now + timedelta(seconds=timer_extension)
+    elif time_remaining < 60:
+        # Under 1 minute: add 8-10 seconds
+        new_end_time = now + timedelta(seconds=timer_extension)
     else:
         new_end_time = current_end_time
     
