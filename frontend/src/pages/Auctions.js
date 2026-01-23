@@ -9,13 +9,17 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-// Activity Index Bar - Like DealDash style with gradient and pointer
-const ActivityIndex = ({ bids }) => {
-  // Calculate activity level - minimum 30%, max 60% + some variation based on bids
-  // Base is 30-60%, with slight variation based on actual bids
-  const baseLevelPercent = 30 + Math.random() * 15; // Random base between 30-45%
-  const bidBonus = Math.min(20, (bids || 0) * 0.5); // Add up to 20% based on bids
-  const pointerPosition = Math.min(65, baseLevelPercent + bidBonus); // Cap at 65%
+// Activity Index Bar - Like Snipster style with gradient and pointer
+// Position is stable based on auction data, updates smoothly via WebSocket
+const ActivityIndex = ({ bids, auctionId = '' }) => {
+  // Create a stable "random" offset based on auction ID (so it doesn't jump around)
+  const stableOffset = auctionId ? 
+    (auctionId.charCodeAt(0) % 20) : 10; // 0-20 based on first char of ID
+  
+  // Base level is 30-50% + stable offset + bid bonus
+  const baseLevel = 30 + stableOffset;
+  const bidBonus = Math.min(25, (bids || 0) * 0.3); // Up to 25% bonus from bids
+  const pointerPosition = Math.min(65, baseLevel + bidBonus);
   
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -39,7 +43,8 @@ const ActivityIndex = ({ bids }) => {
           borderLeft: '4px solid transparent',
           borderRight: '4px solid transparent',
           borderBottom: '5px solid white',
-          filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.3))'
+          filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.3))',
+          transition: 'left 0.5s ease-out' // Smooth transition when bids change
         }} />
       </div>
     </div>
