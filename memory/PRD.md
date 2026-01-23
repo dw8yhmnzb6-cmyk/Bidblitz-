@@ -133,6 +133,20 @@ Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de`.
 - 50.000+ Nutzer (Zufriedene Kunden)
 - BidBlitz FZCO • Dubai, VAE
 
+### Erweiterte Badge-Erklärungen ✅ NEU
+- -95% Rabatt-Badge: Zeigt den aktuellen Rabatt gegenüber dem UVP
+- 🎓 Anfänger-Auktion: Nur für Nutzer mit weniger als 10 gewonnenen Auktionen
+- 🎁 Gratis-Auktion: Keine Gebote erforderlich
+- ⭐ VIP-Auktion: Exklusiv für VIP-Mitglieder
+- 🌙 Nacht-Auktion: Läuft zwischen 22:00 und 6:00 Uhr
+- 🔔 Erinnerung: 5 Minuten vor Ende benachrichtigt werden
+
+### Timer-Verbesserungen ✅ NEU
+- Timer aktualisiert jede Sekunde
+- Timer kann bis 0 runterzählen (keine künstliche Mindestgrenze mehr)
+- Bei Gebot (Bot oder Kunde) wird Timer auf 9-11 Sekunden zurückgesetzt
+- Pulse-Animation bei niedrigem Timer (unter 10 Sekunden)
+
 ### Achievements-Seite ✅ (bereits implementiert)
 - 12 verschiedene Achievements
 - Kategoriefilter: Siege, Spezial, Einkäufe, Streak, Sozial
