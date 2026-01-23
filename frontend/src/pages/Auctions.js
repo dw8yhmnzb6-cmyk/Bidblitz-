@@ -301,98 +301,67 @@ const TrustBadges = memo(() => (
 
 // Info Sidebar with Badge Legend - Compact for mobile
 const InfoSidebar = memo(() => (
-  <div className="space-y-3">
+  <div className="space-y-2">
     {/* Trust Badges First */}
     <TrustBadges />
     
-    <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-      <h3 className="text-xs font-bold text-gray-800 mb-2">AUKTIONS-TYPEN</h3>
-      <div className="space-y-2 text-[9px]">
+    <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
+      <h3 className="text-[10px] font-bold text-gray-800 mb-1">AUKTIONS-TYPEN</h3>
+      <div className="space-y-1">
         {/* Rabatt Badge */}
-        <div className="p-2 bg-red-50 rounded-lg border border-red-200">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-red-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">-95%</span>
-            <span className="font-bold text-red-800">Rabatt-Badge</span>
-          </div>
-          <p className="text-[8px] text-gray-600">Zeigt den aktuellen Rabatt gegenüber dem UVP</p>
+        <div className="flex items-center gap-1 p-1 bg-red-50 rounded border border-red-200">
+          <span className="bg-red-500 text-white px-1 py-0.5 rounded text-[7px] font-bold">-95%</span>
+          <span className="text-[7px] text-gray-600">Rabatt vs. UVP</span>
         </div>
         
         {/* Anfänger */}
-        <div className="p-2 bg-purple-50 rounded-lg border border-purple-200">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-purple-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🎓 ANFÄNGER</span>
-            <span className="font-bold text-purple-800">Anfänger-Auktion</span>
-          </div>
-          <p className="text-[8px] text-gray-600">Nur für Nutzer mit weniger als 10 gewonnenen Auktionen. Perfekt zum Einstieg!</p>
+        <div className="flex items-center gap-1 p-1 bg-purple-50 rounded border border-purple-200">
+          <span className="bg-purple-500 text-white px-1 py-0.5 rounded text-[7px] font-bold">🎓</span>
+          <span className="text-[7px] text-gray-600">Anfänger (&lt;10 Siege)</span>
         </div>
         
         {/* Gratis */}
-        <div className="p-2 bg-green-50 rounded-lg border border-green-200">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🎁 GRATIS</span>
-            <span className="font-bold text-green-800">Gratis-Auktion</span>
-          </div>
-          <p className="text-[8px] text-gray-600">Keine Gebote erforderlich! Jeder kann kostenlos teilnehmen.</p>
+        <div className="flex items-center gap-1 p-1 bg-green-50 rounded border border-green-200">
+          <span className="bg-green-500 text-white px-1 py-0.5 rounded text-[7px] font-bold">🎁</span>
+          <span className="text-[7px] text-gray-600">Gratis (kostenlos)</span>
         </div>
         
         {/* VIP */}
-        <div className="p-2 bg-yellow-50 rounded-lg border border-yellow-200">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-yellow-500 text-black px-1.5 py-0.5 rounded text-[8px] font-bold">⭐ VIP</span>
-            <span className="font-bold text-yellow-800">VIP-Auktion</span>
-          </div>
-          <p className="text-[8px] text-gray-600">Exklusiv für VIP-Mitglieder. Weniger Konkurrenz, bessere Chancen!</p>
+        <div className="flex items-center gap-1 p-1 bg-yellow-50 rounded border border-yellow-200">
+          <span className="bg-yellow-500 text-black px-1 py-0.5 rounded text-[7px] font-bold">⭐</span>
+          <span className="text-[7px] text-gray-600">VIP-Mitglieder</span>
         </div>
         
         {/* Nacht */}
-        <div className="p-2 bg-indigo-50 rounded-lg border border-indigo-200">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🌙 NACHT</span>
-            <span className="font-bold text-indigo-800">Nacht-Auktion</span>
-          </div>
-          <p className="text-[8px] text-gray-600">Läuft von 23:30 bis 6:00 Uhr. <span className="font-bold text-indigo-700">Halber Gebotspreis!</span></p>
+        <div className="flex items-center gap-1 p-1 bg-indigo-50 rounded border border-indigo-200">
+          <span className="bg-indigo-600 text-white px-1 py-0.5 rounded text-[7px] font-bold">🌙</span>
+          <span className="text-[7px] text-gray-600">Nacht 23:30-6h <b>½ Preis!</b></span>
         </div>
         
         {/* Erinnerung */}
-        <div className="p-2 bg-cyan-50 rounded-lg border border-cyan-200">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-cyan-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🔔</span>
-            <span className="font-bold text-cyan-800">Erinnerung</span>
-          </div>
-          <p className="text-[8px] text-gray-600">Klicken Sie darauf um 5 Minuten vor Ende benachrichtigt zu werden.</p>
+        <div className="flex items-center gap-1 p-1 bg-cyan-50 rounded border border-cyan-200">
+          <span className="bg-cyan-500 text-white px-1 py-0.5 rounded text-[7px] font-bold">🔔</span>
+          <span className="text-[7px] text-gray-600">Erinnerung (5 Min)</span>
         </div>
       </div>
     </div>
     
-    <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-      <h3 className="text-xs font-bold text-gray-800 mb-2">AKTIVITÄTSINDEX</h3>
-      <div className="space-y-1 text-[9px]">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-green-500"></div>
-          <span className="text-gray-600">Wenig Aktivität</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-yellow-500"></div>
-          <span className="text-gray-600">Mittlere Aktivität</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-orange-500"></div>
-          <span className="text-gray-600">Hohe Aktivität</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded bg-red-500"></div>
-          <span className="text-gray-600">Sehr hoch</span>
-        </div>
-        <p className="text-[8px] text-gray-500 mt-1">💡 Bei niedriger Aktivität = bessere Chancen!</p>
+    <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
+      <h3 className="text-[10px] font-bold text-gray-800 mb-1">AKTIVITÄT</h3>
+      <div className="flex flex-wrap gap-1 text-[7px]">
+        <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded bg-green-500"></span>Wenig</span>
+        <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded bg-yellow-500"></span>Mittel</span>
+        <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded bg-orange-500"></span>Hoch</span>
+        <span className="flex items-center gap-0.5"><span className="w-2 h-2 rounded bg-red-500"></span>Sehr</span>
       </div>
     </div>
     
-    <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
-      <h3 className="text-xs font-bold text-gray-800 mb-2">SO FUNKTIONIERT'S</h3>
-      <ol className="text-[9px] text-gray-600 space-y-1">
-        <li><span className="font-bold text-cyan-600">1.</span> Gebote kaufen</li>
-        <li><span className="font-bold text-cyan-600">2.</span> Produkt wählen & bieten</li>
-        <li><span className="font-bold text-cyan-600">3.</span> Gewinnen & sparen!</li>
+    <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
+      <h3 className="text-[10px] font-bold text-gray-800 mb-1">SO GEHT'S</h3>
+      <ol className="text-[7px] text-gray-600 space-y-0.5">
+        <li><b className="text-cyan-600">1.</b> Gebote kaufen</li>
+        <li><b className="text-cyan-600">2.</b> Bieten</li>
+        <li><b className="text-cyan-600">3.</b> Gewinnen!</li>
       </ol>
     </div>
   </div>
