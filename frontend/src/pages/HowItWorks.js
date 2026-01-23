@@ -48,7 +48,22 @@ const howItWorksTranslations = {
     readyToSave: "Bereit zum Sparen?",
     registerNowCTA: "Jetzt registrieren und sofort mit dem Bieten beginnen!",
     registerButton: "Jetzt registrieren",
-    viewAuctions: "Auktionen ansehen"
+    viewAuctions: "Auktionen ansehen",
+    // Badge descriptions
+    badgesTitle: "Auktions-Badges erklärt",
+    badgesSubtitle: "Diese Symbole zeigen dir spezielle Auktionstypen:",
+    badgeDiscount: "Rabatt-Badge",
+    badgeDiscountDesc: "Zeigt den aktuellen Rabatt gegenüber dem UVP",
+    badgeBeginner: "🎓 Anfänger-Auktion",
+    badgeBeginnerDesc: "Nur für Nutzer mit weniger als 10 gewonnenen Auktionen. Perfekt zum Einstieg!",
+    badgeFree: "🎁 Gratis-Auktion",
+    badgeFreeDesc: "Keine Gebote erforderlich! Jeder kann kostenlos teilnehmen.",
+    badgeVip: "⭐ VIP-Auktion",
+    badgeVipDesc: "Exklusiv für VIP-Mitglieder. Weniger Konkurrenz, bessere Chancen!",
+    badgeNight: "🌙 Nacht-Auktion",
+    badgeNightDesc: "Läuft zwischen 22:00 und 6:00 Uhr. Reduzierte Gebotskosten!",
+    badgeReminder: "🔔 Erinnerung",
+    badgeReminderDesc: "Klicken Sie darauf um 5 Minuten vor Ende benachrichtigt zu werden."
   },
   en: {
     title: "How it works",
