@@ -35,13 +35,20 @@ const ActivityIndex = memo(({ auctionId = '' }) => {
 const LiveTimer = memo(({ endTime }) => {
   const [display, setDisplay] = useState('00:00:10');
   const [isLow, setIsLow] = useState(false);
+  const endTimeRef = useRef(endTime);
+  
+  // Update ref when endTime changes from WebSocket
+  useEffect(() => {
+    endTimeRef.current = endTime;
+  }, [endTime]);
   
   useEffect(() => {
-    if (!endTime) return;
-    
     const updateTimer = () => {
+      const currentEndTime = endTimeRef.current;
+      if (!currentEndTime) return;
+      
       const now = Date.now();
-      const end = new Date(endTime).getTime();
+      const end = new Date(currentEndTime).getTime();
       const diff = Math.max(0, end - now);
       
       const h = Math.floor(diff / 3600000);
@@ -53,10 +60,10 @@ const LiveTimer = memo(({ endTime }) => {
       setIsLow(h === 0 && m === 0 && s <= 10);
     };
     
-    updateTimer();
+    updateTimer(); // Initial update
     const interval = setInterval(updateTimer, 1000);
     return () => clearInterval(interval);
-  }, [endTime]);
+  }, []); // Run only once, use ref for latest endTime
   
   return (
     <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded ${isLow ? 'bg-red-500 text-white animate-pulse' : 'bg-blue-600 text-white'}`}>
