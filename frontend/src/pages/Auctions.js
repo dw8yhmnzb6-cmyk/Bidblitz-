@@ -42,15 +42,15 @@ const LiveTimer = memo(({ endTime }) => {
     const updateTimer = () => {
       const now = Date.now();
       const end = new Date(endTime).getTime();
-      const diff = Math.max(3000, end - now); // Minimum 3 seconds
+      const diff = Math.max(0, end - now);
       
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.max(3, Math.floor((diff % 60000) / 1000));
+      const s = Math.floor((diff % 60000) / 1000);
       
       const pad = (n) => String(n).padStart(2, '0');
       setDisplay(`${pad(h)}:${pad(m)}:${pad(s)}`);
-      setIsLow(h === 0 && m === 0 && s < 10);
+      setIsLow(h === 0 && m === 0 && s <= 10);
     };
     
     updateTimer();
@@ -59,7 +59,7 @@ const LiveTimer = memo(({ endTime }) => {
   }, [endTime]);
   
   return (
-    <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded ${isLow ? 'bg-red-500 text-white' : 'bg-blue-600 text-white'}`}>
+    <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded ${isLow ? 'bg-red-500 text-white animate-pulse' : 'bg-blue-600 text-white'}`}>
       {display}
     </span>
   );
