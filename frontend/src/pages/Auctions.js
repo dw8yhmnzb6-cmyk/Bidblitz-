@@ -13,15 +13,22 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const ActivityDots = ({ bids }) => {
   const level = Math.min(5, Math.ceil((bids || 0) / 10));
   return (
-    <div className="flex gap-0.5">
+    <div className="flex items-center gap-1">
       {[...Array(5)].map((_, i) => (
-        <div 
+        <span 
           key={i}
-          className={`w-1.5 h-1.5 rounded-full ${
+          style={{ 
+            width: '6px', 
+            height: '6px', 
+            borderRadius: '50%',
+            display: 'inline-block',
+            flexShrink: 0
+          }}
+          className={
             i < level 
               ? i < 2 ? 'bg-green-400' : i < 4 ? 'bg-yellow-400' : 'bg-red-400'
               : 'bg-gray-600'
-          }`}
+          }
         />
       ))}
     </div>
