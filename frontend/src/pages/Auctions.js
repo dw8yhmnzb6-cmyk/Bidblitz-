@@ -525,9 +525,8 @@ const AuctionCard = ({ auction, product, reminders, onToggleReminder, isLoggedIn
               <p className="text-cyan-300 text-[9px] truncate mt-0.5">
                 {auction.last_bidder_name || texts.startPrice}
               </p>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="text-gray-500 text-[8px]">{texts.activity}:</span>
-                <ActivityDots bids={auction.total_bids} />
+              <div className="mt-1">
+                <ActivityIndex bids={auction.total_bids} />
               </div>
             </div>
             
