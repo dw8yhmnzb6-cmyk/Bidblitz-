@@ -186,16 +186,27 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
     
     # FREE AUCTION - no bid deduction required
     is_free_auction = auction.get("is_free_auction", False)
+    is_night_auction = auction.get("is_night_auction", False)
+    
+    # Check if currently night time (23:30 - 06:00) for half-price bids
+    now_berlin = datetime.now(timezone.utc) + timedelta(hours=1)  # Berlin is UTC+1
+    current_hour = now_berlin.hour + now_berlin.minute / 60  # e.g., 23:30 = 23.5
+    is_night_time = current_hour >= 23.5 or current_hour < 6
+    
+    # Night auctions have half bid cost during night hours
+    bid_cost = 1
+    if is_night_auction and is_night_time:
+        bid_cost = 0.5  # Half price during night hours
     
     if not is_free_auction:
         # Check user's bid balance for regular auctions
-        if user["bids_balance"] < 1:
-            raise HTTPException(status_code=400, detail="Insufficient bids. Please buy more bids.")
+        if user["bids_balance"] < bid_cost:
+            raise HTTPException(status_code=400, detail="Nicht genügend Gebote. Bitte kaufen Sie mehr Gebote.")
         
-        # Deduct bid from user
+        # Deduct bid from user (half for night auctions during night time)
         await db.users.update_one(
             {"id": user["id"]},
-            {"$inc": {"bids_balance": -1, "total_bids_placed": 1}}
+            {"$inc": {"bids_balance": -bid_cost, "total_bids_placed": 1}}
         )
     else:
         # Free auction - just track participation
