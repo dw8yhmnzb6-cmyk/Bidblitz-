@@ -187,7 +187,7 @@ const AuctionCard = ({ auction, product, texts, hasReminder, onToggleReminder, s
           </div>
           
           {/* Activity Index */}
-          <ActivityIndex bids={auction.total_bids} auctionId={auction.id} />
+          <ActivityIndex auctionId={auction.id} />
           
           {/* Bid Button */}
           <button 
