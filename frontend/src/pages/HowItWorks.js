@@ -99,7 +99,22 @@ const howItWorksTranslations = {
     readyToSave: "Ready to save?",
     registerNowCTA: "Register now and start bidding immediately!",
     registerButton: "Register Now",
-    viewAuctions: "View Auctions"
+    viewAuctions: "View Auctions",
+    // Badge descriptions
+    badgesTitle: "Auction Badges Explained",
+    badgesSubtitle: "These symbols show you special auction types:",
+    badgeDiscount: "Discount Badge",
+    badgeDiscountDesc: "Shows the current discount compared to RRP",
+    badgeBeginner: "🎓 Beginner Auction",
+    badgeBeginnerDesc: "Only for users with less than 10 won auctions. Perfect for getting started!",
+    badgeFree: "🎁 Free Auction",
+    badgeFreeDesc: "No bids required! Anyone can participate for free.",
+    badgeVip: "⭐ VIP Auction",
+    badgeVipDesc: "Exclusive for VIP members. Less competition, better chances!",
+    badgeNight: "🌙 Night Auction",
+    badgeNightDesc: "Runs between 10pm and 6am. Reduced bid costs!",
+    badgeReminder: "🔔 Reminder",
+    badgeReminderDesc: "Click to be notified 5 minutes before the auction ends."
   },
   sq: {
     title: "Si funksionon",
