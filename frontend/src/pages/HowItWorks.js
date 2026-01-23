@@ -437,6 +437,68 @@ export default function HowItWorks() {
           </div>
         </div>
 
+        {/* Badges Explained Section */}
+        <div className="mb-16">
+          <h2 className="text-2xl font-bold text-white mb-4 text-center">{t.badgesTitle || "Auktions-Badges erklärt"}</h2>
+          <p className="text-gray-400 text-center mb-8">{t.badgesSubtitle || "Diese Symbole zeigen dir spezielle Auktionstypen:"}</p>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Discount Badge */}
+            <div className="bg-[#1E293B] rounded-xl p-4 border border-gray-700/50">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">-95%</span>
+                <span className="text-white font-semibold text-sm">{t.badgeDiscount || "Rabatt-Badge"}</span>
+              </div>
+              <p className="text-gray-400 text-sm">{t.badgeDiscountDesc || "Zeigt den aktuellen Rabatt gegenüber dem UVP"}</p>
+            </div>
+            
+            {/* Beginner Badge */}
+            <div className="bg-[#1E293B] rounded-xl p-4 border border-gray-700/50">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded">🎓</span>
+                <span className="text-white font-semibold text-sm">{t.badgeBeginner || "Anfänger-Auktion"}</span>
+              </div>
+              <p className="text-gray-400 text-sm">{t.badgeBeginnerDesc || "Nur für Nutzer mit weniger als 10 gewonnenen Auktionen"}</p>
+            </div>
+            
+            {/* Free Badge */}
+            <div className="bg-[#1E293B] rounded-xl p-4 border border-gray-700/50">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">🎁</span>
+                <span className="text-white font-semibold text-sm">{t.badgeFree || "Gratis-Auktion"}</span>
+              </div>
+              <p className="text-gray-400 text-sm">{t.badgeFreeDesc || "Keine Gebote erforderlich! Kostenlose Teilnahme."}</p>
+            </div>
+            
+            {/* VIP Badge */}
+            <div className="bg-[#1E293B] rounded-xl p-4 border border-gray-700/50">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="bg-yellow-500 text-black text-xs font-bold px-2 py-1 rounded">⭐ VIP</span>
+                <span className="text-white font-semibold text-sm">{t.badgeVip || "VIP-Auktion"}</span>
+              </div>
+              <p className="text-gray-400 text-sm">{t.badgeVipDesc || "Exklusiv für VIP-Mitglieder"}</p>
+            </div>
+            
+            {/* Night Badge */}
+            <div className="bg-[#1E293B] rounded-xl p-4 border border-gray-700/50">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="bg-indigo-500 text-white text-xs font-bold px-2 py-1 rounded">🌙</span>
+                <span className="text-white font-semibold text-sm">{t.badgeNight || "Nacht-Auktion"}</span>
+              </div>
+              <p className="text-gray-400 text-sm">{t.badgeNightDesc || "Läuft zwischen 22:00 und 6:00 Uhr"}</p>
+            </div>
+            
+            {/* Reminder Badge */}
+            <div className="bg-[#1E293B] rounded-xl p-4 border border-gray-700/50">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="bg-gray-600 text-white text-xs font-bold px-2 py-1 rounded">🔔</span>
+                <span className="text-white font-semibold text-sm">{t.badgeReminder || "Erinnerung"}</span>
+              </div>
+              <p className="text-gray-400 text-sm">{t.badgeReminderDesc || "Benachrichtigung 5 Min. vor Ende"}</p>
+            </div>
+          </div>
+        </div>
+
         {/* CTA */}
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4">
