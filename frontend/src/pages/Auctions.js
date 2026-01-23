@@ -485,11 +485,14 @@ export default function Auctions() {
     }
   };
   
-  // Premium = VIP or first auction
-  const premiumAuction = auctions.find(a => a.is_vip_only) || auctions[0];
+  // Filter out VIP auctions from homepage (VIP only visible on /vip page)
+  const publicAuctions = auctions.filter(a => !a.is_vip_only);
   
-  // Grid auctions - ALL auctions except premium
-  const gridAuctions = auctions.filter(a => a.id !== premiumAuction?.id);
+  // Premium = first public auction
+  const premiumAuction = publicAuctions[0];
+  
+  // Grid auctions - ALL public auctions except premium
+  const gridAuctions = publicAuctions.filter(a => a.id !== premiumAuction?.id);
   
   if (loading) {
     return (
