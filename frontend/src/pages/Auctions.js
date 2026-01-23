@@ -284,26 +284,59 @@ const InfoSidebar = memo(() => (
     
     <div className="bg-white rounded-lg p-3 border border-gray-200 shadow-sm">
       <h3 className="text-xs font-bold text-gray-800 mb-2">AUKTIONS-TYPEN</h3>
-      <div className="space-y-1.5 text-[9px]">
-        <div className="flex items-center gap-2">
-          <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">FÜR PROFIS!</span>
-          <span className="text-gray-600">Standard-Auktion</span>
+      <div className="space-y-2 text-[9px]">
+        {/* Rabatt Badge */}
+        <div className="p-2 bg-red-50 rounded-lg border border-red-200">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="bg-red-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">-95%</span>
+            <span className="font-bold text-red-800">Rabatt-Badge</span>
+          </div>
+          <p className="text-[8px] text-gray-600">Zeigt den aktuellen Rabatt gegenüber dem UVP</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="bg-purple-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🎓 ANFÄNGER</span>
-          <span className="text-gray-600">Nur &lt;10 Siege</span>
+        
+        {/* Anfänger */}
+        <div className="p-2 bg-purple-50 rounded-lg border border-purple-200">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="bg-purple-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🎓 ANFÄNGER</span>
+            <span className="font-bold text-purple-800">Anfänger-Auktion</span>
+          </div>
+          <p className="text-[8px] text-gray-600">Nur für Nutzer mit weniger als 10 gewonnenen Auktionen. Perfekt zum Einstieg!</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🎁 GRATIS</span>
-          <span className="text-gray-600">Kostenlos bieten</span>
+        
+        {/* Gratis */}
+        <div className="p-2 bg-green-50 rounded-lg border border-green-200">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🎁 GRATIS</span>
+            <span className="font-bold text-green-800">Gratis-Auktion</span>
+          </div>
+          <p className="text-[8px] text-gray-600">Keine Gebote erforderlich! Jeder kann kostenlos teilnehmen.</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="bg-yellow-500 text-black px-1.5 py-0.5 rounded text-[8px] font-bold">⭐ VIP</span>
-          <span className="text-gray-600">Exklusiv für VIPs</span>
+        
+        {/* VIP */}
+        <div className="p-2 bg-yellow-50 rounded-lg border border-yellow-200">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="bg-yellow-500 text-black px-1.5 py-0.5 rounded text-[8px] font-bold">⭐ VIP</span>
+            <span className="font-bold text-yellow-800">VIP-Auktion</span>
+          </div>
+          <p className="text-[8px] text-gray-600">Exklusiv für VIP-Mitglieder. Weniger Konkurrenz, bessere Chancen!</p>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🌙 NACHT</span>
-          <span className="text-gray-600">22-6 Uhr</span>
+        
+        {/* Nacht */}
+        <div className="p-2 bg-indigo-50 rounded-lg border border-indigo-200">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🌙 NACHT</span>
+            <span className="font-bold text-indigo-800">Nacht-Auktion</span>
+          </div>
+          <p className="text-[8px] text-gray-600">Läuft zwischen 22:00 und 6:00 Uhr. Reduzierte Gebotskosten!</p>
+        </div>
+        
+        {/* Erinnerung */}
+        <div className="p-2 bg-cyan-50 rounded-lg border border-cyan-200">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="bg-cyan-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">🔔</span>
+            <span className="font-bold text-cyan-800">Erinnerung</span>
+          </div>
+          <p className="text-[8px] text-gray-600">Klicken Sie darauf um 5 Minuten vor Ende benachrichtigt zu werden.</p>
         </div>
       </div>
     </div>
