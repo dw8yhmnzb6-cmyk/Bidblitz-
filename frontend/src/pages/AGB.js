@@ -57,16 +57,132 @@ export default function AGB() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 1 Geltungsbereich</h2>
                 <p>
-                  Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über die 
-                  Penny-Auktion-Plattform BidBlitz.
+                  Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle über die Plattform BidBlitz 
+                  (betrieben von BidBlitz FZCO, Dubai Silicon Oasis, VAE) geschlossenen Verträge zwischen 
+                  dem Anbieter und dem Kunden. Der Anbieter ist:
                 </p>
+                <div className="bg-white/5 rounded-lg p-4 mt-2">
+                  <p className="font-semibold text-white">BidBlitz FZCO</p>
+                  <p>Dubai Silicon Oasis, DDP Building A1</p>
+                  <p>Dubai, Vereinigte Arabische Emirate</p>
+                  <p>CEO: Afrim Krasniqi</p>
+                </div>
               </section>
+
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 2 Vertragsgegenstand</h2>
                 <p>
-                  Der Anbieter betreibt eine Penny-Auktion-Plattform, bei der Produkte versteigert werden.
+                  BidBlitz betreibt eine Penny-Auktion-Plattform, bei der registrierte Nutzer auf Produkte 
+                  bieten können. Jedes Gebot erhöht den Preis um einen Cent (0,01 €) und verlängert die 
+                  Auktionszeit. Der letzte Bieter bei Ablauf der Zeit gewinnt das Produkt.
                 </p>
               </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 3 Registrierung und Nutzerkonto</h2>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Die Nutzung der Plattform erfordert eine Registrierung.</li>
+                  <li>Nutzer müssen mindestens 18 Jahre alt sein.</li>
+                  <li>Die angegebenen Daten müssen wahrheitsgemäß und vollständig sein.</li>
+                  <li>Jeder Nutzer darf nur ein Konto führen.</li>
+                  <li>Das Passwort ist geheim zu halten und darf nicht weitergegeben werden.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 4 Gebote und Gebotspaket</h2>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Gebote werden in Paketen erworben und sind kostenpflichtig.</li>
+                  <li>Einmal erworbene Gebote können nicht zurückgegeben oder in Geld umgewandelt werden.</li>
+                  <li>Pro Gebotsabgabe wird ein Gebot vom Nutzerkonto abgezogen.</li>
+                  <li>Die aktuellen Preise für Gebotspakete sind auf der Plattform einsehbar.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 5 Auktionsablauf</h2>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Jedes Gebot erhöht den Auktionspreis um 0,01 €.</li>
+                  <li>Jedes Gebot setzt den Countdown zurück (8-15 Sekunden je nach Auktion).</li>
+                  <li>Der Nutzer, dessen Gebot bei Ablauf des Countdowns aktiv ist, gewinnt.</li>
+                  <li>Der Gewinner zahlt den finalen Auktionspreis zuzüglich Versandkosten.</li>
+                  <li>Die "Sofort-Kaufen" Option ermöglicht den Direktkauf zum Marktpreis abzüglich verwendeter Gebote.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 6 Preise und Zahlung</h2>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Alle Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer (wo anwendbar).</li>
+                  <li>Zahlungen erfolgen per Kreditkarte, PayPal oder anderen angebotenen Zahlungsmethoden.</li>
+                  <li>Der Rechnungsbetrag ist sofort fällig.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 7 Lieferung</h2>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>Die Lieferung erfolgt an die vom Kunden angegebene Adresse.</li>
+                  <li>Die Lieferzeit beträgt in der Regel 5-14 Werktage.</li>
+                  <li>Bei internationaler Lieferung können zusätzliche Zölle und Gebühren anfallen.</li>
+                </ul>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 8 Widerrufsrecht</h2>
+                <p>
+                  Für digitale Inhalte (Gebotspakete) gilt: Mit dem Kauf stimmen Sie zu, dass die Ausführung 
+                  des Vertrags sofort beginnt und Sie auf Ihr Widerrufsrecht verzichten, sobald die Gebote 
+                  Ihrem Konto gutgeschrieben werden.
+                </p>
+                <p className="mt-2">
+                  Für gewonnene physische Produkte gilt ein 14-tägiges Widerrufsrecht ab Erhalt der Ware 
+                  gemäß den gesetzlichen Bestimmungen.
+                </p>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 9 Haftung</h2>
+                <p>
+                  BidBlitz haftet nur für Schäden, die auf vorsätzlichem oder grob fahrlässigem Verhalten 
+                  beruhen. Die Haftung für leichte Fahrlässigkeit ist ausgeschlossen, soweit gesetzlich zulässig.
+                </p>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 10 Sperrung und Kündigung</h2>
+                <p>
+                  BidBlitz behält sich das Recht vor, Nutzerkonten bei Verstoß gegen diese AGB oder bei 
+                  Verdacht auf Betrug oder Manipulation zu sperren oder zu löschen.
+                </p>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 11 Anwendbares Recht</h2>
+                <p>
+                  Es gilt das Recht der Vereinigten Arabischen Emirate. Gerichtsstand ist Dubai, VAE, 
+                  soweit gesetzlich zulässig.
+                </p>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">§ 12 Schlussbestimmungen</h2>
+                <p>
+                  Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt die Wirksamkeit der 
+                  übrigen Bestimmungen unberührt. BidBlitz behält sich das Recht vor, diese AGB jederzeit 
+                  zu ändern. Änderungen werden den Nutzern per E-Mail oder bei der nächsten Anmeldung mitgeteilt.
+                </p>
+              </section>
+
+              <div className="mt-8 p-4 bg-white/5 rounded-lg">
+                <p className="text-sm">
+                  <strong className="text-white">BidBlitz FZCO</strong><br />
+                  Dubai Silicon Oasis, DDP Building A1<br />
+                  Dubai, Vereinigte Arabische Emirate<br />
+                  CEO: Afrim Krasniqi<br />
+                  E-Mail: legal@bidblitz.ae
+                </p>
+              </div>
             </div>
           )}
         </div>

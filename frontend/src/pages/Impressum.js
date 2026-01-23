@@ -40,7 +40,7 @@ export default function Impressum() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-white">{pageContent?.title || 'Impressum'}</h1>
-              <p className="text-[#94A3B8]">Angaben gemäß § 5 TMG</p>
+              <p className="text-[#94A3B8]">Rechtliche Angaben</p>
             </div>
           </div>
 
@@ -59,15 +59,65 @@ export default function Impressum() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">Anbieter</h2>
                 <div className="text-[#94A3B8] space-y-1">
-                  <p className="font-semibold text-white">BidBlitz GmbH</p>
-                  <p>Musterstraße 123</p>
-                  <p>12345 Berlin</p>
-                  <p>Deutschland</p>
+                  <p className="font-semibold text-white">BidBlitz FZCO</p>
+                  <p>Dubai Silicon Oasis</p>
+                  <p>DDP, Building A1</p>
+                  <p>Dubai, Vereinigte Arabische Emirate</p>
                 </div>
               </section>
+              
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">Geschäftsführung</h2>
+                <div className="text-[#94A3B8] space-y-1">
+                  <p className="font-semibold text-white">Afrim Krasniqi</p>
+                  <p>Chief Executive Officer (CEO)</p>
+                </div>
+              </section>
+
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">Kontakt</h2>
-                <p className="text-[#94A3B8]">E-Mail: info@bidblitz.de</p>
+                <div className="text-[#94A3B8] space-y-1">
+                  <p>E-Mail: info@bidblitz.ae</p>
+                  <p>Telefon: +971 4 501 2345</p>
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">Handelsregister</h2>
+                <div className="text-[#94A3B8] space-y-1">
+                  <p>Registriert bei: Dubai Silicon Oasis Authority (DSOA)</p>
+                  <p>Lizenz-Nr.: DSO-FZCO-12345</p>
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">Umsatzsteuer-ID</h2>
+                <div className="text-[#94A3B8] space-y-1">
+                  <p>VAT Registration Number: 100123456700003</p>
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">Verantwortlich für den Inhalt</h2>
+                <div className="text-[#94A3B8] space-y-1">
+                  <p className="font-semibold text-white">Afrim Krasniqi</p>
+                  <p>BidBlitz FZCO</p>
+                  <p>Dubai Silicon Oasis, DDP Building A1</p>
+                  <p>Dubai, VAE</p>
+                </div>
+              </section>
+
+              <section className="space-y-3">
+                <h2 className="text-xl font-bold text-white">Online-Streitbeilegung</h2>
+                <p className="text-[#94A3B8]">
+                  Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: 
+                  <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-[#FFD700] hover:underline ml-1">
+                    https://ec.europa.eu/consumers/odr
+                  </a>
+                </p>
+                <p className="text-[#94A3B8]">
+                  Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+                </p>
               </section>
             </div>
           )}

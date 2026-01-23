@@ -80,17 +80,17 @@ export const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-[#94A3B8]">
                 <Mail className="w-5 h-5 text-[#FFD700]" />
-                <a href="mailto:info@bidblitz.de" className="hover:text-[#FFD700] transition-colors">
-                  info@bidblitz.de
+                <a href="mailto:info@bidblitz.ae" className="hover:text-[#FFD700] transition-colors">
+                  info@bidblitz.ae
                 </a>
               </div>
               <div className="flex items-center gap-3 text-[#94A3B8]">
                 <Phone className="w-5 h-5 text-[#FFD700]" />
-                <span>+49 (0) 30 123456789</span>
+                <span>+971 4 501 2345</span>
               </div>
               <div className="flex items-start gap-3 text-[#94A3B8]">
                 <MapPin className="w-5 h-5 text-[#FFD700] flex-shrink-0" />
-                <span>Musterstraße 123<br />12345 Berlin</span>
+                <span>Dubai Silicon Oasis<br />DDP Building A1, Dubai, VAE</span>
               </div>
             </div>
           </div>
@@ -99,7 +99,7 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[#94A3B8] text-sm">
-            © {currentYear} BidBlitz GmbH. Alle Rechte vorbehalten.
+            © {currentYear} BidBlitz FZCO. Alle Rechte vorbehalten. CEO: Afrim Krasniqi
           </p>
           <div className="flex items-center gap-4">
             <img src="https://cdn-icons-png.flaticon.com/128/349/349221.png" alt="Visa" className="h-6 opacity-70" />
