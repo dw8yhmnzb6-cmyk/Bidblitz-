@@ -512,20 +512,27 @@ export default function Auctions() {
   const [auctions, setAuctions] = useState([]);
   const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
+  const [auctionOfTheDay, setAuctionOfTheDay] = useState(null);
   const wsRef = useRef(null);
   
   // Fetch data
   const fetchData = useCallback(async () => {
     try {
-      const [auctionsRes, productsRes] = await Promise.all([
+      const [auctionsRes, productsRes, aotdRes] = await Promise.all([
         axios.get(`${API}/auctions?status=active`),
-        axios.get(`${API}/products`)
+        axios.get(`${API}/products`),
+        axios.get(`${API}/auction-of-the-day`).catch(() => ({ data: null }))
       ]);
       
       const prodMap = {};
       productsRes.data.forEach(p => { prodMap[p.id] = p; });
       setProducts(prodMap);
       setAuctions(auctionsRes.data.filter(a => a.status === 'active'));
+      
+      // Set Auction of the Day
+      if (aotdRes.data && aotdRes.data.id) {
+        setAuctionOfTheDay(aotdRes.data);
+      }
     } catch (error) {
       console.error('Error:', error);
     } finally {
