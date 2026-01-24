@@ -546,6 +546,32 @@ export const translations = {
     auth: { login: "تسجيل الدخول", register: "التسجيل", email: "البريد الإلكتروني", password: "كلمة المرور", name: "الاسم", noAccount: "ليس لديك حساب؟", haveAccount: "لديك حساب بالفعل؟" },
     common: { loading: "جاري التحميل...", error: "خطأ", success: "نجاح", save: "حفظ", cancel: "إلغاء" }
   },
+  ae: {
+    nav: { auctions: "المزادات", buyBids: "شراء العروض", dashboard: "لوحة التحكم", admin: "المشرف", login: "تسجيل الدخول", register: "التسجيل", logout: "تسجيل الخروج", bids: "العروض", howItWorks: "كيف يعمل", vip: "عضوية VIP", faq: "الأسئلة", contact: "اتصل" },
+    home: {
+      badge: "10 عروض مجانية عند التسجيل",
+      heroTitle1: "اربح",
+      heroTitle2: "منتجات مميزة",
+      heroTitle3: "بسنتات",
+      heroSubtitle: "أكثر منصة مزادات السنت إثارة. قدم عرضك واربح ووفر حتى 90%.",
+      ctaBid: "قدم عرضك الآن",
+      ctaBuyBids: "شراء العروض",
+      liveAuctions: "مزادات مباشرة",
+      viewAll: "عرض الكل",
+      noAuctions: "لا توجد مزادات نشطة",
+      howItWorks: "كيف يعمل",
+      step1: "شراء العروض", step1Desc: "اشترِ حزمة عروض بأسعار منخفضة",
+      step2: "قدم عرضك", step2Desc: "قدم عرضك في المزادات الجارية",
+      step3: "اربح", step3Desc: "كن آخر مزايد واربح",
+      readyToWin: "جاهز للفوز؟",
+      freeRegister: "سجل مجاناً"
+    },
+    auctions: { title: "جميع المزادات", filter: "تصفية", all: "الكل", active: "نشط", ended: "منتهي", currentPrice: "السعر الحالي", bids: "العروض", bid: "عرض", live: "مباشر" },
+    buyBids: { title: "شراء العروض", popular: "شائع", bids: "العروض", buyNow: "اشترِ الآن" },
+    winners: { title: "الفائزون", totalSaved: "إجمالي التوفير", avgSavings: "متوسط التوفير", winners: "الفائزون" },
+    auth: { login: "تسجيل الدخول", register: "التسجيل", email: "البريد الإلكتروني", password: "كلمة المرور", name: "الاسم", noAccount: "ليس لديك حساب؟", haveAccount: "لديك حساب بالفعل؟" },
+    common: { loading: "جاري التحميل...", error: "خطأ", success: "نجاح", save: "حفظ", cancel: "إلغاء" }
+  },
   zh: {
     nav: { auctions: "拍卖", buyBids: "购买竞价", dashboard: "仪表板", admin: "管理员", login: "登录", register: "注册", logout: "登出", bids: "竞价", howItWorks: "如何运作", vip: "VIP会员", faq: "常见问题", contact: "联系" },
     home: {
