@@ -172,6 +172,95 @@ async def get_influencer_stats(influencer_id: str, admin: dict = Depends(get_adm
         }
     }
 
+# ==================== INFLUENCER LOGIN & STATS ====================
+
+class InfluencerLogin(BaseModel):
+    code: str
+    email: str
+
+@router.post("/login")
+async def influencer_login(data: InfluencerLogin):
+    """Login for influencers to access their dashboard"""
+    influencer = await db.influencers.find_one(
+        {"code": data.code.lower(), "email": data.email, "is_active": True},
+        {"_id": 0}
+    )
+    
+    if not influencer:
+        raise HTTPException(status_code=401, detail="Ungültiger Code oder E-Mail")
+    
+    logger.info(f"🌟 Influencer login: {influencer['name']}")
+    
+    return {
+        "success": True,
+        "influencer": influencer
+    }
+
+@router.get("/stats/{code}")
+async def get_influencer_public_stats(code: str):
+    """Get statistics for an influencer (public endpoint for influencer dashboard)"""
+    influencer = await db.influencers.find_one(
+        {"code": code.lower()},
+        {"_id": 0}
+    )
+    
+    if not influencer:
+        raise HTTPException(status_code=404, detail="Influencer nicht gefunden")
+    
+    # Get all uses
+    uses = await db.influencer_uses.find(
+        {"influencer_code": code.lower()},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    total_revenue = sum(u.get("purchase_amount", 0) for u in uses)
+    total_commission = total_revenue * (influencer.get("commission_percent", 10) / 100)
+    total_purchases = len([u for u in uses if u.get("purchase_amount", 0) > 0])
+    
+    return {
+        "total_uses": len(uses),
+        "total_purchases": total_purchases,
+        "total_revenue": round(total_revenue, 2),
+        "total_commission": round(total_commission, 2),
+        "commission_percent": influencer.get("commission_percent", 10),
+        "recent_uses": uses[:10]  # Last 10 uses
+    }
+
+class InfluencerApply(BaseModel):
+    name: str
+    email: str
+    instagram: Optional[str] = None
+    youtube: Optional[str] = None
+    tiktok: Optional[str] = None
+    followers: str
+    message: Optional[str] = None
+
+@router.post("/apply")
+async def apply_as_influencer(data: InfluencerApply):
+    """Submit an application to become an influencer"""
+    # Check if email already has an application
+    existing = await db.influencer_applications.find_one({"email": data.email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Sie haben bereits eine Bewerbung eingereicht")
+    
+    application = {
+        "id": str(uuid.uuid4()),
+        "name": data.name,
+        "email": data.email,
+        "instagram": data.instagram,
+        "youtube": data.youtube,
+        "tiktok": data.tiktok,
+        "followers": data.followers,
+        "message": data.message,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.influencer_applications.insert_one(application)
+    logger.info(f"🌟 New influencer application from: {data.name} ({data.email})")
+    
+    return {"success": True, "message": "Bewerbung erfolgreich gesendet!"}
+
 # ==================== PUBLIC ENDPOINTS ====================
 
 @router.get("/validate/{code}")
