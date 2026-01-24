@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getAdminText } from '../i18n/adminTranslations';
 import { useAuctionWebSocket } from '../hooks/useAuctionWebSocket';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
