@@ -797,7 +797,12 @@ export default function Auctions() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
               {gridAuctions.map(auction => (
-                <AuctionCard key={auction.id} auction={auction} product={products[auction.product_id]} onBid={handleBid} />
+                <AuctionCard 
+                  key={auction.id} 
+                  auction={auction} 
+                  product={products[auction.product_id] || auction.product} 
+                  onBid={handleBid} 
+                />
               ))}
             </div>
           )}
