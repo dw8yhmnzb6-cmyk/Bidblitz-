@@ -39,9 +39,9 @@ const PIE_COLORS = ['#10B981', '#F59E0B', '#94A3B8'];
 
 export default function Admin() {
   const { token, isAdmin } = useAuth();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   
-  // Helper function for translations
+  // Helper function for admin translations
   const at = (key) => getAdminText(language, key);
   
   const [activeTab, setActiveTab] = useState('dashboard');
