@@ -128,7 +128,7 @@ async def get_referrals(user: dict = Depends(get_current_user)):
     qualified_count = sum(1 for u in referred_users if u.get("total_deposits", 0) >= REFERRAL_MIN_DEPOSIT)
     
     # Calculate earned bids (only from qualified referrals)
-    bids_earned = qualified_count * REFERRAL_REWARD_BIDS
+    bids_earned = qualified_count * REFERRER_REWARD_BIDS
     
     return {
         "referral_code": referral_code,
@@ -137,7 +137,8 @@ async def get_referrals(user: dict = Depends(get_current_user)):
         "qualified_friends": qualified_count,
         "bids_earned": bids_earned,
         "min_deposit_required": REFERRAL_MIN_DEPOSIT,
-        "reward_per_referral": REFERRAL_REWARD_BIDS,
+        "reward_per_referral": REFERRER_REWARD_BIDS,
+        "referee_bonus": REFEREE_REWARD_BIDS,
         "referred_users": [
             {
                 "name": u["name"],
