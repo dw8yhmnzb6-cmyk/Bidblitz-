@@ -6,6 +6,51 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+// Ad Banner Component - Loads from admin
+const AdBanner = memo(() => {
+  const [banner, setBanner] = useState(null);
+  
+  useEffect(() => {
+    const fetchBanner = async () => {
+      try {
+        const res = await axios.get(`${API}/admin/public/banners?position=homepage_middle`);
+        if (res.data && res.data.length > 0) {
+          setBanner(res.data[0]);
+        }
+      } catch (error) {
+        // No banner available - that's ok
+      }
+    };
+    fetchBanner();
+  }, []);
+  
+  if (!banner) return null;
+  
+  const handleClick = async () => {
+    try {
+      await axios.post(`${API}/admin/public/banners/${banner.id}/click`);
+    } catch (e) {}
+    
+    if (banner.link_url) {
+      window.open(banner.link_url, '_blank');
+    }
+  };
+  
+  return (
+    <div 
+      className="my-3 cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+      onClick={handleClick}
+    >
+      <img 
+        src={banner.image_url} 
+        alt={banner.title}
+        className="w-full h-auto object-cover"
+        style={{ maxHeight: '120px' }}
+      />
+    </div>
+  );
+});
+
 // Activity Index - Snipster Style (30-60%)
 const ActivityIndex = memo(({ auctionId = '' }) => {
   const hash = auctionId ? auctionId.split('').reduce((a, b) => a + b.charCodeAt(0), 0) : 50;
