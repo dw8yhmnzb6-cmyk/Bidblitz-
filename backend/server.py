@@ -33,6 +33,7 @@ from routers.invoices import router as invoices_router
 from routers.notifications import router as notifications_router
 from routers.vip import router as vip_router
 from routers.pages import router as pages_router
+from routers.influencer import router as influencer_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
