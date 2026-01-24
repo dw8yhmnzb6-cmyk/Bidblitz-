@@ -15,6 +15,7 @@ import AuctionDetail from "./pages/AuctionDetail";
 import BuyBids from "./pages/BuyBids";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import Dashboard from "./pages/Dashboard";
+import UserStats from "./pages/UserStats";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Admin from "./pages/Admin";
