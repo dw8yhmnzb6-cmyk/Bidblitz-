@@ -841,20 +841,20 @@ export default function Admin() {
   }
 
   const tabs = [
-    { id: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard className="w-5 h-5" /> },
-    { id: 'products', label: t('admin.products'), icon: <Package className="w-5 h-5" /> },
-    { id: 'auctions', label: t('admin.auctions'), icon: <Gavel className="w-5 h-5" /> },
-    { id: 'vip-auctions', label: 'VIP Auktionen', icon: <Crown className="w-5 h-5" /> },
-    { id: 'banners', label: 'Werbebanner', icon: <Eye className="w-5 h-5" /> },
-    { id: 'users', label: t('admin.users'), icon: <Users className="w-5 h-5" /> },
-    { id: 'staff', label: 'Mitarbeiter', icon: <UserPlus className="w-5 h-5" /> },
-    { id: 'vouchers', label: 'Gutscheine', icon: <Ticket className="w-5 h-5" /> },
-    { id: 'bots', label: 'Bots', icon: <Bot className="w-5 h-5" /> },
-    { id: 'email', label: 'E-Mail', icon: <Mail className="w-5 h-5" /> },
-    { id: 'pages', label: 'Seiten', icon: <FileText className="w-5 h-5" /> },
-    { id: 'payments', label: 'Zahlungen', icon: <DollarSign className="w-5 h-5" /> },
-    { id: 'logs', label: 'Systemlogs', icon: <BarChart3 className="w-5 h-5" /> },
-    { id: 'game-config', label: 'Spiel-Einstellungen', icon: <Settings className="w-5 h-5" /> }
+    { id: 'dashboard', label: at('dashboard'), icon: <LayoutDashboard className="w-5 h-5" /> },
+    { id: 'products', label: at('products'), icon: <Package className="w-5 h-5" /> },
+    { id: 'auctions', label: at('auctions'), icon: <Gavel className="w-5 h-5" /> },
+    { id: 'vip-auctions', label: at('vipAuctions'), icon: <Crown className="w-5 h-5" /> },
+    { id: 'banners', label: at('banners'), icon: <Eye className="w-5 h-5" /> },
+    { id: 'users', label: at('users'), icon: <Users className="w-5 h-5" /> },
+    { id: 'staff', label: language === 'en' ? 'Staff' : 'Mitarbeiter', icon: <UserPlus className="w-5 h-5" /> },
+    { id: 'vouchers', label: at('vouchers'), icon: <Ticket className="w-5 h-5" /> },
+    { id: 'bots', label: at('bots'), icon: <Bot className="w-5 h-5" /> },
+    { id: 'email', label: at('email'), icon: <Mail className="w-5 h-5" /> },
+    { id: 'pages', label: at('pages'), icon: <FileText className="w-5 h-5" /> },
+    { id: 'payments', label: language === 'en' ? 'Payments' : 'Zahlungen', icon: <DollarSign className="w-5 h-5" /> },
+    { id: 'logs', label: language === 'en' ? 'System Logs' : 'Systemlogs', icon: <BarChart3 className="w-5 h-5" /> },
+    { id: 'game-config', label: at('gameSettings'), icon: <Settings className="w-5 h-5" /> }
   ];
 
   return (
