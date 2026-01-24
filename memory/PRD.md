@@ -91,7 +91,20 @@ Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de`.
 - Übersetzungsdatei: `/app/frontend/src/i18n/adminTranslations.js`
 - 140+ übersetzte Begriffe
 
-### 14. VPN-Erkennung bei Registrierung ✅ (bereits implementiert)
+### 14. Filter-Buttons auf Startseite ✅ NEU
+- Schnelle Filter: Live, Anfänger, Gratis, Nacht, Ende, VIP
+- Zeigt Anzahl in jedem Filter (z.B. "Live (132)")
+- Sofortiges Filtern ohne Seitenladen
+
+### 15. Influencer-System ✅ NEU
+- Admin kann Influencer mit eigenem Code erstellen
+- Provision in % einstellbar (Standard: 10%)
+- Tracking: Code-Nutzungen, Umsatz, Verdient
+- Soziale Profile: Instagram, YouTube, TikTok
+- API: `/api/influencer/admin/list`, `/api/influencer/validate/{code}`
+- Admin-Tab: "Influencer verwalten" mit Statistiken
+
+### 16. VPN-Erkennung bei Registrierung ✅ (bereits implementiert)
 - Blockiert VPN, Proxy, Datacenter-IPs
 - Maximal 2 Konten pro IP-Adresse
 - Nutzt ip-api.com für Erkennung
