@@ -175,10 +175,25 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
     
     auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
     if not auction:
-        raise HTTPException(status_code=404, detail="Auction not found")
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
     
     if auction["status"] != "active":
-        raise HTTPException(status_code=400, detail="Auction is not active")
+        raise HTTPException(status_code=400, detail="Auktion ist nicht mehr aktiv")
+    
+    # Check VIP-ONLY AUCTION restriction
+    if auction.get("is_vip_only"):
+        # Check user's VIP status
+        vip_sub = await db.vip_subscriptions.find_one({"user_id": user["id"]}, {"_id": 0})
+        is_user_vip = False
+        if vip_sub:
+            expiry = datetime.fromisoformat(vip_sub.get("next_renewal", "2000-01-01").replace('Z', '+00:00'))
+            is_user_vip = vip_sub.get("status") == "active" and expiry > datetime.now(timezone.utc)
+        
+        if not is_user_vip:
+            raise HTTPException(
+                status_code=403, 
+                detail="Diese Auktion ist nur für VIP-Mitglieder. Werden Sie jetzt VIP, um mitzubieten!"
+            )
     
     # Check if auction has ended
     end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
