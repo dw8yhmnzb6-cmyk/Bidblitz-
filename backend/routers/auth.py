@@ -5,7 +5,7 @@ import uuid
 import random
 import resend
 
-from config import db, logger, RESEND_API_KEY, SENDER_EMAIL, REFERRAL_MIN_DEPOSIT, REFERRAL_REWARD_BIDS
+from config import db, logger, RESEND_API_KEY, SENDER_EMAIL, REFERRAL_MIN_DEPOSIT, REFERRER_REWARD_BIDS, REFEREE_REWARD_BIDS
 from dependencies import (
     hash_password, verify_password, validate_password_strength, create_token,
     get_current_user, generate_2fa_secret, generate_2fa_qr_code, verify_2fa_code,
