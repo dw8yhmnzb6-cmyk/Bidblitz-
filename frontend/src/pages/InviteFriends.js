@@ -23,7 +23,7 @@ const inviteTexts = {
     step2: "Freund registriert sich",
     step2Desc: "Ihr Freund erstellt ein Konto mit Ihrem Code",
     step3: "Beide profitieren",
-    step3Desc: "Sie beide erhalten Gratis-Gebote!",
+    step3Desc: "Sie erhalten 10 Gebote, Ihr Freund 5 Gebote!",
     yourProgress: "Ihr Fortschritt",
     friendsInvited: "Freunde eingeladen",
     bidsEarned: "Gebote verdient",
@@ -35,7 +35,10 @@ const inviteTexts = {
     bids: "Gebote",
     loginRequired: "Bitte melden Sie sich an, um Freunde einzuladen",
     login: "Anmelden",
-    register: "Registrieren"
+    register: "Registrieren",
+    bonusInfo: "Bei erstem Kauf des Freundes:",
+    youGet: "Sie erhalten",
+    friendGets: "Ihr Freund erhält"
   },
   en: {
     title: "Invite Friends",
@@ -50,7 +53,7 @@ const inviteTexts = {
     step2: "Friend signs up",
     step2Desc: "Your friend creates an account with your code",
     step3: "Both benefit",
-    step3Desc: "You both get free bids!",
+    step3Desc: "You get 10 bids, your friend gets 5 bids!",
     yourProgress: "Your Progress",
     friendsInvited: "Friends invited",
     bidsEarned: "Bids earned",
@@ -62,7 +65,10 @@ const inviteTexts = {
     bids: "Bids",
     loginRequired: "Please log in to invite friends",
     login: "Log In",
-    register: "Register"
+    register: "Register",
+    bonusInfo: "On friend's first purchase:",
+    youGet: "You get",
+    friendGets: "Your friend gets"
   },
   sq: {
     title: "Ftoni Miqtë",
