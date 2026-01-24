@@ -7,7 +7,7 @@ from config import db, logger, REFERRAL_MIN_DEPOSIT, REFERRER_REWARD_BIDS, REFER
 from dependencies import get_current_user, hash_password, verify_password, validate_password_strength
 from schemas import UpdateProfileRequest, ChangePasswordRequest, VoucherRedeem
 
-router = APIRouter(prefix="/user", tags=["User"])
+router = APIRouter(prefix="/users", tags=["Users"])
 
 # ==================== PROFILE ====================
 
