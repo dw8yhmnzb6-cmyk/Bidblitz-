@@ -295,7 +295,7 @@ const AuctionCard = memo(({ auction, product, onBid }) => {
   else if (auction.is_beginner_only) headerBg = 'bg-gradient-to-r from-purple-500 to-violet-500';
   
   return (
-    <div className="bg-gradient-to-b from-cyan-50 to-cyan-100 rounded-lg overflow-hidden border border-cyan-300 cursor-pointer hover:shadow-lg transition-shadow"
+    <div className={`bg-gradient-to-b from-cyan-50 to-cyan-100 rounded-lg overflow-hidden border border-cyan-300 cursor-pointer hover:shadow-lg transition-shadow ${isNightPaused ? 'opacity-60' : ''}`}
          onClick={() => window.location.href = `/auctions/${auction.id}`}>
       
       {/* Header with Badges + Timer */}
@@ -303,8 +303,19 @@ const AuctionCard = memo(({ auction, product, onBid }) => {
         <div className="flex items-center gap-1 flex-wrap">
           {badges}
         </div>
-        <LiveTimer endTime={auction.end_time} />
+        {isNightPaused ? (
+          <span className="text-[8px] opacity-80">{auction.night_message || '🌙 23:30-06:00'}</span>
+        ) : (
+          <LiveTimer endTime={auction.end_time} />
+        )}
       </div>
+      
+      {/* Free Auction Notice */}
+      {auction.is_free_auction && (
+        <div className="bg-green-100 text-green-800 text-[8px] px-2 py-0.5 text-center border-b border-green-200">
+          ✓ Kostenlos bieten • Endpreis bezahlen
+        </div>
+      )}
       
       {/* Content */}
       <div className="p-2">
@@ -321,9 +332,10 @@ const AuctionCard = memo(({ auction, product, onBid }) => {
             
             <button 
               onClick={(e) => { e.stopPropagation(); onBid(auction.id); }}
-              className="mt-2 w-full py-1.5 bg-gradient-to-b from-cyan-400 to-cyan-500 hover:from-cyan-300 hover:to-cyan-400 text-white font-bold text-[10px] rounded"
+              disabled={isNightPaused}
+              className={`mt-2 w-full py-1.5 ${isNightPaused ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-b from-cyan-400 to-cyan-500 hover:from-cyan-300 hover:to-cyan-400'} text-white font-bold text-[10px] rounded`}
             >
-              BIETEN
+              {isNightPaused ? '🌙 NACHTS' : 'BIETEN'}
             </button>
           </div>
           
