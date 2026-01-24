@@ -41,7 +41,8 @@ if COINBASE_COMMERCE_API_KEY:
 
 # Referral config
 REFERRAL_MIN_DEPOSIT = 5.00  # €5 minimum deposit for referral reward
-REFERRAL_REWARD_BIDS = 10    # Bids given to both referrer and referee
+REFERRER_REWARD_BIDS = 10    # Bids given to referrer (inviter)
+REFEREE_REWARD_BIDS = 5      # Bids given to referee (new user) as welcome gift
 
 # Bid packages - Updated pricing with bonus bids
 BID_PACKAGES = [
