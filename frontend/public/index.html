@@ -175,5 +175,38 @@
                 },
             });
         </script>
+        
+        <!--Start of Tawk.to Script-->
+        <!--
+        LIVE-CHAT KONFIGURATION:
+        1. Erstellen Sie ein kostenloses Konto auf https://www.tawk.to
+        2. Gehen Sie zu Administration > Channels > Chat Widget
+        3. Kopieren Sie Ihre Property ID und Widget ID
+        4. Ersetzen Sie PROPERTY_ID und WIDGET_ID unten
+        
+        Format: https://embed.tawk.to/PROPERTY_ID/WIDGET_ID
+        Beispiel: https://embed.tawk.to/507cbcb9fd0ab1c1c0000000/default
+        -->
+        <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+        // WICHTIG: Ersetzen Sie diese IDs mit Ihren eigenen Tawk.to IDs
+        var TAWK_PROPERTY_ID = 'IHRE_PROPERTY_ID'; // z.B. '507cbcb9fd0ab1c1c0000000'
+        var TAWK_WIDGET_ID = 'default'; // Normalerweise 'default' oder '1'
+        
+        // Nur laden wenn echte IDs gesetzt sind
+        if (TAWK_PROPERTY_ID !== 'IHRE_PROPERTY_ID') {
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/' + TAWK_PROPERTY_ID + '/' + TAWK_WIDGET_ID;
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        } else {
+            console.log('Tawk.to Live-Chat: Bitte konfigurieren Sie Ihre Property ID in index.html');
+        }
+        })();
+        </script>
+        <!--End of Tawk.to Script-->
     </body>
 </html>
