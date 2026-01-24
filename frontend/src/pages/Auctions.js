@@ -270,19 +270,22 @@ const AuctionCard = memo(({ auction, product, onBid }) => {
   
   if (auction.is_free_auction) {
     badges.push(
-      <span key="free" className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">
-        🎁
+      <span key="free" className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold" title="Kostenlos bieten - Endpreis zahlen">
+        🎁 GRATIS
       </span>
     );
   }
   
   if (auction.is_night_auction) {
     badges.push(
-      <span key="night" className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">
-        🌙
+      <span key="night" className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[8px] font-bold" title="Nur 23:30-06:00 Uhr">
+        🌙 NACHT
       </span>
     );
   }
+  
+  // Check if night auction is paused (daytime)
+  const isNightPaused = auction.is_night_paused;
   
   // Header background color based on primary type
   let headerBg = 'bg-gradient-to-r from-cyan-500 to-cyan-600';
