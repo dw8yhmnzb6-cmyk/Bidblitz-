@@ -1,0 +1,312 @@
+// Admin Panel Translations
+export const adminTranslations = {
+  de: {
+    // Tabs
+    dashboard: 'Dashboard',
+    products: 'Produkte',
+    auctions: 'Auktionen',
+    vipAuctions: 'VIP-Auktionen',
+    users: 'Benutzer',
+    vouchers: 'Gutscheine',
+    bots: 'Bots',
+    email: 'E-Mail',
+    gameSettings: 'Spieleinstellungen',
+    pages: 'Seiten',
+    banners: 'Werbebanner',
+    
+    // Dashboard
+    totalUsers: 'Benutzer gesamt',
+    activeAuctions: 'Aktive Auktionen',
+    todayBids: 'Gebote heute',
+    weeklyRevenue: 'Umsatz diese Woche',
+    recentBids: 'Letzte Gebote',
+    topBidders: 'Top Bieter',
+    bidActivity: 'Gebot-Aktivität',
+    revenueOverview: 'Umsatzübersicht',
+    userActivity: 'Benutzeraktivität',
+    
+    // Products
+    addProduct: 'Produkt hinzufügen',
+    productName: 'Produktname',
+    description: 'Beschreibung',
+    category: 'Kategorie',
+    retailPrice: 'UVP (€)',
+    imageUrl: 'Bild-URL',
+    save: 'Speichern',
+    cancel: 'Abbrechen',
+    edit: 'Bearbeiten',
+    delete: 'Löschen',
+    noProducts: 'Keine Produkte vorhanden',
+    
+    // Auctions
+    createAuction: 'Auktion erstellen',
+    selectProduct: 'Produkt auswählen',
+    startPrice: 'Startpreis',
+    bidIncrement: 'Gebote-Erhöhung',
+    duration: 'Dauer (Minuten)',
+    botTargetPrice: 'Bot-Zielpreis',
+    autoRestart: 'Auto-Neustart',
+    nightAuction: 'Nachtauktion',
+    freeAuction: 'Gratis-Auktion',
+    beginnerOnly: 'Nur für Anfänger',
+    vipOnly: 'Nur für VIP',
+    currentPrice: 'Aktueller Preis',
+    totalBids: 'Gebote gesamt',
+    lastBidder: 'Letzter Bieter',
+    status: 'Status',
+    active: 'Aktiv',
+    ended: 'Beendet',
+    scheduled: 'Geplant',
+    restartAuction: 'Neu starten',
+    endAuction: 'Beenden',
+    extendTime: 'Zeit verlängern',
+    updateBotTarget: 'Bot-Ziel ändern',
+    setVip: 'Als VIP markieren',
+    setAotd: 'Auktion des Tages',
+    noAuctions: 'Keine Auktionen vorhanden',
+    
+    // Users
+    searchUsers: 'Benutzer suchen...',
+    name: 'Name',
+    bidsBalance: 'Gebote-Guthaben',
+    totalDeposits: 'Einzahlungen gesamt',
+    wonAuctions: 'Gewonnene Auktionen',
+    memberSince: 'Mitglied seit',
+    banned: 'Gesperrt',
+    addBids: 'Gebote hinzufügen',
+    banUser: 'Benutzer sperren',
+    unbanUser: 'Entsperren',
+    noUsers: 'Keine Benutzer gefunden',
+    
+    // Vouchers
+    createVoucher: 'Gutschein erstellen',
+    voucherCode: 'Gutscheincode',
+    bidsAmount: 'Anzahl Gebote',
+    maxUses: 'Max. Verwendungen',
+    expiresAt: 'Gültig bis',
+    usedCount: 'Verwendet',
+    valid: 'Gültig',
+    expired: 'Abgelaufen',
+    deleteVoucher: 'Löschen',
+    noVouchers: 'Keine Gutscheine vorhanden',
+    
+    // Bots
+    manageBots: 'Bots verwalten',
+    botName: 'Bot-Name',
+    isActive: 'Aktiv',
+    bidsPlaced: 'Gebote platziert',
+    addBot: 'Bot hinzufügen',
+    toggleBot: 'Ein/Aus',
+    noBots: 'Keine Bots vorhanden',
+    
+    // Email
+    sendEmail: 'E-Mail senden',
+    recipient: 'Empfänger',
+    allUsers: 'Alle Benutzer',
+    activeUsers: 'Aktive Benutzer',
+    specificUser: 'Bestimmter Benutzer',
+    subject: 'Betreff',
+    message: 'Nachricht',
+    sendNow: 'Jetzt senden',
+    emailSent: 'E-Mail gesendet!',
+    
+    // Game Settings
+    bidPrice: 'Gebote-Preis',
+    timerExtension: 'Timer-Verlängerung',
+    maxAutobids: 'Max. Autobids',
+    referralBonus: 'Empfehlungsbonus',
+    nightAuctionStart: 'Nachtauktion Start',
+    nightAuctionEnd: 'Nachtauktion Ende',
+    saveSettings: 'Einstellungen speichern',
+    resetSettings: 'Zurücksetzen',
+    
+    // Pages
+    editPages: 'Seiten bearbeiten',
+    impressum: 'Impressum',
+    agb: 'AGB',
+    datenschutz: 'Datenschutz',
+    pageContent: 'Seiteninhalt',
+    savePage: 'Seite speichern',
+    
+    // Banners
+    manageBanners: 'Banner verwalten',
+    bannerTitle: 'Banner-Titel',
+    bannerImage: 'Bild-URL',
+    bannerLink: 'Link-URL',
+    bannerPosition: 'Position',
+    bannerActive: 'Aktiv',
+    views: 'Aufrufe',
+    clicks: 'Klicks',
+    createBanner: 'Banner erstellen',
+    noBanners: 'Keine Banner vorhanden',
+    
+    // Common
+    loading: 'Wird geladen...',
+    error: 'Fehler',
+    success: 'Erfolgreich',
+    confirm: 'Bestätigen',
+    actions: 'Aktionen',
+    refresh: 'Aktualisieren',
+    export: 'Exportieren',
+    filter: 'Filtern',
+    search: 'Suchen'
+  },
+  
+  en: {
+    // Tabs
+    dashboard: 'Dashboard',
+    products: 'Products',
+    auctions: 'Auctions',
+    vipAuctions: 'VIP Auctions',
+    users: 'Users',
+    vouchers: 'Vouchers',
+    bots: 'Bots',
+    email: 'Email',
+    gameSettings: 'Game Settings',
+    pages: 'Pages',
+    banners: 'Ad Banners',
+    
+    // Dashboard
+    totalUsers: 'Total Users',
+    activeAuctions: 'Active Auctions',
+    todayBids: 'Bids Today',
+    weeklyRevenue: 'Weekly Revenue',
+    recentBids: 'Recent Bids',
+    topBidders: 'Top Bidders',
+    bidActivity: 'Bid Activity',
+    revenueOverview: 'Revenue Overview',
+    userActivity: 'User Activity',
+    
+    // Products
+    addProduct: 'Add Product',
+    productName: 'Product Name',
+    description: 'Description',
+    category: 'Category',
+    retailPrice: 'Retail Price (€)',
+    imageUrl: 'Image URL',
+    save: 'Save',
+    cancel: 'Cancel',
+    edit: 'Edit',
+    delete: 'Delete',
+    noProducts: 'No products available',
+    
+    // Auctions
+    createAuction: 'Create Auction',
+    selectProduct: 'Select Product',
+    startPrice: 'Start Price',
+    bidIncrement: 'Bid Increment',
+    duration: 'Duration (minutes)',
+    botTargetPrice: 'Bot Target Price',
+    autoRestart: 'Auto-Restart',
+    nightAuction: 'Night Auction',
+    freeAuction: 'Free Auction',
+    beginnerOnly: 'Beginners Only',
+    vipOnly: 'VIP Only',
+    currentPrice: 'Current Price',
+    totalBids: 'Total Bids',
+    lastBidder: 'Last Bidder',
+    status: 'Status',
+    active: 'Active',
+    ended: 'Ended',
+    scheduled: 'Scheduled',
+    restartAuction: 'Restart',
+    endAuction: 'End',
+    extendTime: 'Extend Time',
+    updateBotTarget: 'Update Bot Target',
+    setVip: 'Mark as VIP',
+    setAotd: 'Auction of the Day',
+    noAuctions: 'No auctions available',
+    
+    // Users
+    searchUsers: 'Search users...',
+    name: 'Name',
+    bidsBalance: 'Bids Balance',
+    totalDeposits: 'Total Deposits',
+    wonAuctions: 'Won Auctions',
+    memberSince: 'Member Since',
+    banned: 'Banned',
+    addBids: 'Add Bids',
+    banUser: 'Ban User',
+    unbanUser: 'Unban',
+    noUsers: 'No users found',
+    
+    // Vouchers
+    createVoucher: 'Create Voucher',
+    voucherCode: 'Voucher Code',
+    bidsAmount: 'Number of Bids',
+    maxUses: 'Max Uses',
+    expiresAt: 'Expires At',
+    usedCount: 'Used Count',
+    valid: 'Valid',
+    expired: 'Expired',
+    deleteVoucher: 'Delete',
+    noVouchers: 'No vouchers available',
+    
+    // Bots
+    manageBots: 'Manage Bots',
+    botName: 'Bot Name',
+    isActive: 'Active',
+    bidsPlaced: 'Bids Placed',
+    addBot: 'Add Bot',
+    toggleBot: 'Toggle',
+    noBots: 'No bots available',
+    
+    // Email
+    sendEmail: 'Send Email',
+    recipient: 'Recipient',
+    allUsers: 'All Users',
+    activeUsers: 'Active Users',
+    specificUser: 'Specific User',
+    subject: 'Subject',
+    message: 'Message',
+    sendNow: 'Send Now',
+    emailSent: 'Email sent!',
+    
+    // Game Settings
+    bidPrice: 'Bid Price',
+    timerExtension: 'Timer Extension',
+    maxAutobids: 'Max Autobids',
+    referralBonus: 'Referral Bonus',
+    nightAuctionStart: 'Night Auction Start',
+    nightAuctionEnd: 'Night Auction End',
+    saveSettings: 'Save Settings',
+    resetSettings: 'Reset',
+    
+    // Pages
+    editPages: 'Edit Pages',
+    impressum: 'Imprint',
+    agb: 'Terms & Conditions',
+    datenschutz: 'Privacy Policy',
+    pageContent: 'Page Content',
+    savePage: 'Save Page',
+    
+    // Banners
+    manageBanners: 'Manage Banners',
+    bannerTitle: 'Banner Title',
+    bannerImage: 'Image URL',
+    bannerLink: 'Link URL',
+    bannerPosition: 'Position',
+    bannerActive: 'Active',
+    views: 'Views',
+    clicks: 'Clicks',
+    createBanner: 'Create Banner',
+    noBanners: 'No banners available',
+    
+    // Common
+    loading: 'Loading...',
+    error: 'Error',
+    success: 'Success',
+    confirm: 'Confirm',
+    actions: 'Actions',
+    refresh: 'Refresh',
+    export: 'Export',
+    filter: 'Filter',
+    search: 'Search'
+  }
+};
+
+// Helper function to get admin translation
+export const getAdminText = (language, key) => {
+  const translations = adminTranslations[language] || adminTranslations.de;
+  return translations[key] || adminTranslations.de[key] || key;
+};
