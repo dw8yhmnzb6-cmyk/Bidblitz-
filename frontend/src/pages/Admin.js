@@ -525,6 +525,48 @@ export default function Admin() {
     }
   };
 
+  // ==================== INFLUENCER HANDLERS ====================
+  
+  const handleCreateInfluencer = async () => {
+    try {
+      await axios.post(`${API}/influencer/admin/create`, influencerForm, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('🌟 Influencer erstellt!');
+      setShowInfluencerModal(false);
+      setInfluencerForm({ name: '', code: '', commission_percent: 10, email: '', instagram: '', youtube: '', tiktok: '' });
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler beim Erstellen');
+    }
+  };
+
+  const handleDeleteInfluencer = async (influencerId) => {
+    if (!window.confirm('Influencer wirklich löschen?')) return;
+    try {
+      await axios.delete(`${API}/influencer/admin/${influencerId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Influencer gelöscht');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler');
+    }
+  };
+
+  const handleToggleInfluencer = async (influencerId, currentStatus) => {
+    try {
+      await axios.put(`${API}/influencer/admin/${influencerId}`, 
+        { is_active: !currentStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(currentStatus ? 'Influencer deaktiviert' : 'Influencer aktiviert');
+      fetchData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Fehler');
+    }
+  };
+
   // User handlers
   const handleToggleAdmin = async (userId) => {
     try {
