@@ -141,6 +141,11 @@ function AppContent() {
               <Notifications />
             </ProtectedRoute>
           } />
+          <Route path="/checkout/won/:auctionId" element={
+            <ProtectedRoute>
+              <WonAuctionCheckout />
+            </ProtectedRoute>
+          } />
           {/* New Public Pages */}
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/faq" element={<FAQ />} />
