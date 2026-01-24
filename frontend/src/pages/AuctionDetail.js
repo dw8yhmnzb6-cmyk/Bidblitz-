@@ -304,7 +304,10 @@ export default function AuctionDetail() {
       setAuction(response.data);
     } catch (error) {
       console.error('Error fetching auction:', error);
-      toast.error('Auktion nicht gefunden');
+      // Only show error if not a 404 (auction might have ended)
+      if (error.response?.status !== 404) {
+        toast.error('Fehler beim Laden der Auktion');
+      }
     } finally {
       setLoading(false);
     }
