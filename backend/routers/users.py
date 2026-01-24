@@ -170,29 +170,30 @@ async def process_referral_reward(user_id: str, deposit_amount: float):
         if referred_by and user.get("referral_reward_pending"):
             # Give rewards to both referrer and referee
             
-            # Reward the referrer
+            # Reward the referrer (10 bids)
             await db.users.update_one(
                 {"id": referred_by},
-                {"$inc": {"bids_balance": REFERRAL_REWARD_BIDS}}
+                {"$inc": {"bids_balance": REFERRER_REWARD_BIDS}}
             )
             
-            # Reward the referee (new user)
+            # Reward the referee/new user (5 bids welcome gift)
             await db.users.update_one(
                 {"id": user_id},
                 {
-                    "$inc": {"bids_balance": REFERRAL_REWARD_BIDS},
+                    "$inc": {"bids_balance": REFEREE_REWARD_BIDS},
                     "$set": {"referral_reward_pending": False}
                 }
             )
             
-            logger.info(f"Referral reward processed: {user_id} referred by {referred_by}")
+            logger.info(f"Referral reward processed: Referrer {referred_by} gets {REFERRER_REWARD_BIDS} bids, Referee {user_id} gets {REFEREE_REWARD_BIDS} bids")
             
             # Log the referral completion
             await db.referral_rewards.insert_one({
                 "id": str(uuid.uuid4()),
                 "referrer_id": referred_by,
                 "referee_id": user_id,
-                "bids_awarded": REFERRAL_REWARD_BIDS,
+                "referrer_bids_awarded": REFERRER_REWARD_BIDS,
+                "referee_bids_awarded": REFEREE_REWARD_BIDS,
                 "trigger_deposit": deposit_amount,
                 "created_at": datetime.now(timezone.utc).isoformat()
             })
