@@ -310,17 +310,26 @@ export default function InviteFriends() {
           </div>
         )}
 
-        {/* Friend Gets */}
+        {/* Bonus Info - Clear explanation */}
         <div className="glass-card p-5 rounded-xl mb-6 border border-[#10B981]/30 bg-[#10B981]/5">
-          <div className="flex items-center gap-3">
-            <Gift className="w-8 h-8 text-[#10B981]" />
-            <div>
-              <p className="text-white font-medium">Dein Freund bekommt</p>
-              <p className="text-[#10B981] text-xl font-bold">10 kostenlose Gebote</p>
+          <h3 className="text-white font-bold mb-3 flex items-center gap-2">
+            <Gift className="w-5 h-5 text-[#10B981]" />
+            {texts.bonusInfo || 'Bei erstem Kauf des Freundes:'}
+          </h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center p-3 bg-[#FFD700]/10 rounded-lg">
+              <p className="text-[#FFD700] text-2xl font-black">10</p>
+              <p className="text-[#94A3B8] text-xs">{texts.youGet || 'Sie erhalten'}</p>
+              <p className="text-white text-sm font-medium">Gebote</p>
+            </div>
+            <div className="text-center p-3 bg-[#10B981]/10 rounded-lg">
+              <p className="text-[#10B981] text-2xl font-black">5</p>
+              <p className="text-[#94A3B8] text-xs">{texts.friendGets || 'Ihr Freund erhält'}</p>
+              <p className="text-white text-sm font-medium">Gebote</p>
             </div>
           </div>
-          <p className="text-[#94A3B8] text-sm mt-3 border-t border-white/10 pt-3">
-            <span className="text-[#FFD700] font-medium">Bedingung:</span> Du erhältst deine Belohnung, sobald dein Freund mindestens <span className="text-white font-bold">€5</span> aufgeladen hat.
+          <p className="text-[#94A3B8] text-xs mt-3 border-t border-white/10 pt-3 text-center">
+            <span className="text-[#FFD700] font-medium">Bedingung:</span> Freund muss mindestens <span className="text-white font-bold">€5</span> aufladen
           </p>
         </div>
 
