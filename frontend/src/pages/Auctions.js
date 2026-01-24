@@ -565,6 +565,20 @@ export default function Auctions() {
                   }
                 : a
             ));
+            
+            // Also update AOTD if it matches
+            setAuctionOfTheDay(prev => {
+              if (prev && prev.id === msg.auction_id) {
+                return {
+                  ...prev,
+                  current_price: msg.data.current_price,
+                  last_bidder_name: msg.data.last_bidder_name,
+                  total_bids: msg.data.total_bids,
+                  end_time: msg.data.end_time
+                };
+              }
+              return prev;
+            });
           }
           if (msg.type === 'auction_restarted' && msg.data) {
             setAuctions(prev => prev.map(a => 
