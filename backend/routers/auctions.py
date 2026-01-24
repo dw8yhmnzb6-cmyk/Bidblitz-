@@ -193,6 +193,13 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
     current_hour = now_berlin.hour + now_berlin.minute / 60  # e.g., 23:30 = 23.5
     is_night_time = current_hour >= 23.5 or current_hour < 6
     
+    # Night auctions can ONLY be bid on during night hours (23:30 - 06:00)
+    if is_night_auction and not is_night_time:
+        raise HTTPException(
+            status_code=403, 
+            detail="🌙 Diese Nachtauktion ist nur zwischen 23:30 und 06:00 Uhr verfügbar. Bitte kommen Sie heute Nacht wieder!"
+        )
+    
     # Night auctions have half bid cost during night hours
     bid_cost = 1
     if is_night_auction and is_night_time:
