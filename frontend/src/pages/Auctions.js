@@ -517,7 +517,7 @@ export default function Auctions() {
     
     try {
       const res = await axios.post(
-        `${API}/auctions/place-bid/${auctionId}`,
+        `${API}/auctions/${auctionId}/bid`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
