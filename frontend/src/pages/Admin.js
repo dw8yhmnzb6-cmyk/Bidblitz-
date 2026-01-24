@@ -231,6 +231,9 @@ export default function Admin() {
       } else if (activeTab === 'banners') {
         const bannersRes = await axios.get(`${API}/admin/banners`, { headers });
         setBanners(bannersRes.data);
+      } else if (activeTab === 'influencers') {
+        const influencersRes = await axios.get(`${API}/influencer/admin/list`, { headers });
+        setInfluencers(influencersRes.data);
       } else if (activeTab === 'game-config') {
         const res = await axios.get(`${API}/admin/config/game`, { headers });
         setGameConfig(res.data);
