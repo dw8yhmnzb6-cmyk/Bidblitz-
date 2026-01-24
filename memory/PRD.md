@@ -85,6 +85,7 @@ Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de`.
 ### 12. "Not Found" Toast behoben ✅
 - 404-Fehler werden nicht mehr als Toast angezeigt
 - Leise Fehlerbehandlung für nicht gefundene Auktionen
+- Hilfsfunktion `getErrorMessage()` in `/app/frontend/src/lib/utils.js`
 
 ### 13. Admin-Panel Internationalisierung ✅ NEU
 - Alle Tab-Namen in DE/EN
@@ -108,8 +109,23 @@ Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de`.
 - Blockiert VPN, Proxy, Datacenter-IPs
 - Maximal 2 Konten pro IP-Adresse
 - Nutzt ip-api.com für Erkennung
-- **Problem:** Falscher API-Endpunkt `/api/auctions/place-bid/{id}`
-- **Lösung:** Korrigiert zu `/api/auctions/{id}/bid`
+
+### 17. Influencer-Portal ✅ NEU (24. Januar 2026)
+- **Frontend-Seiten:**
+  - `/influencer-werden` - Promo-Seite für neue Influencer
+  - `/influencer-login` - Dashboard für bestehende Influencer
+- **Backend-APIs:**
+  - `POST /api/influencer/login` - Login mit Code + E-Mail
+  - `GET /api/influencer/stats/{code}` - Statistiken abrufen
+  - `POST /api/influencer/apply` - Bewerbung als Influencer
+- **Footer "Extras"-Sektion** mit Links zu Influencer-Seiten
+
+### 18. VIP-Auktionen Verbesserungen ✅ NEU (24. Januar 2026)
+- **Auto-Refresh:** Alle 10 Sekunden (vorher 30 Sek.)
+- **WebSocket:** Echtzeit-Preis-Updates
+- **Bieten-Einschränkung:** Nicht-VIP-Nutzer können nicht auf VIP-Auktionen bieten
+- **Fehlermeldung:** "Diese Auktion ist nur für VIP-Mitglieder. Werden Sie jetzt VIP, um mitzubieten!"
+- **Backend:** VIP-Status-Prüfung in `/api/auctions/{id}/bid`
 
 ---
 
