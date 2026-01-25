@@ -2,17 +2,21 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, FileText, Loader2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function AGB() {
+  const { language, t } = useLanguage();
   const [pageContent, setPageContent] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const res = await axios.get(`${API}/pages/agb`);
+        // Map language code to API format (use 'en' for non-German languages)
+        const apiLang = language === 'de' ? 'de' : 'en';
+        const res = await axios.get(`${API}/pages/agb?lang=${apiLang}`);
         setPageContent(res.data);
       } catch (error) {
         console.error('Failed to load page content:', error);
@@ -21,14 +25,14 @@ export default function AGB() {
       }
     };
     fetchContent();
-  }, []);
+  }, [language]);
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4" data-testid="agb-page">
       <div className="max-w-4xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-[#94A3B8] hover:text-white mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />
-          Zurück zur Startseite
+          {t('nav.backToHome') || 'Back to Home'}
         </Link>
 
         <div className="glass-card rounded-2xl p-8 space-y-8">
