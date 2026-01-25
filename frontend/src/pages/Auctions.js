@@ -721,28 +721,82 @@ export default function Auctions() {
   // Filtered auctions for grid
   const filteredAuctions = getFilteredAuctions();
   
-  // Grid auctions - sorted by time remaining (soonest first)
-  // Auctions ending soon are at the top, night auctions at the bottom
-  // Filter out auctions that have already ended (timer at 0)
-  const gridAuctions = filteredAuctions
-    .filter(a => a.id !== premiumAuction?.id && a.id !== aotdId)
-    .filter(a => {
-      // Hide auctions that have ended (timer at 0 or past)
-      if (a.status !== 'active') return false;
-      const endTime = new Date(a.end_time).getTime();
-      const now = Date.now();
-      return endTime > now; // Only show auctions with time remaining
-    })
-    .sort((a, b) => {
-      // Night auctions always at the bottom
-      if (a.is_night_auction && !b.is_night_auction) return 1;
-      if (!a.is_night_auction && b.is_night_auction) return -1;
+  // Track initial sort order - only sort once when auctions first load
+  const [initialSortDone, setInitialSortDone] = useState(false);
+  const [sortedAuctionIds, setSortedAuctionIds] = useState([]);
+  
+  // Initial sort - only runs once when auctions are loaded
+  useEffect(() => {
+    if (filteredAuctions.length > 0 && !initialSortDone) {
+      const sorted = [...filteredAuctions]
+        .filter(a => a.id !== premiumAuction?.id && a.id !== aotdId)
+        .filter(a => {
+          if (a.status !== 'active') return false;
+          const endTime = new Date(a.end_time).getTime();
+          return endTime > Date.now();
+        })
+        .sort((a, b) => {
+          // Night auctions at the bottom
+          if (a.is_night_auction && !b.is_night_auction) return 1;
+          if (!a.is_night_auction && b.is_night_auction) return -1;
+          // Sort by end_time (soonest first)
+          return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+        })
+        .map(a => a.id);
       
-      // Sort by end_time ascending (auctions ending soon at the top)
-      const timeA = new Date(a.end_time).getTime();
-      const timeB = new Date(b.end_time).getTime();
-      return timeA - timeB;
-    });
+      setSortedAuctionIds(sorted);
+      setInitialSortDone(true);
+    }
+  }, [filteredAuctions.length, initialSortDone, premiumAuction?.id, aotdId]);
+  
+  // Reset sort when filter changes
+  useEffect(() => {
+    setInitialSortDone(false);
+    setSortedAuctionIds([]);
+  }, [activeFilter]);
+  
+  // Grid auctions - use stable order from initial sort, update data only
+  const gridAuctions = useMemo(() => {
+    if (sortedAuctionIds.length === 0) {
+      // Fallback: sort by time if initial sort not done
+      return filteredAuctions
+        .filter(a => a.id !== premiumAuction?.id && a.id !== aotdId && a.status === 'active')
+        .filter(a => new Date(a.end_time).getTime() > Date.now())
+        .sort((a, b) => {
+          if (a.is_night_auction && !b.is_night_auction) return 1;
+          if (!a.is_night_auction && b.is_night_auction) return -1;
+          return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+        });
+    }
+    
+    // Use stable order - get auctions by their IDs in the original sort order
+    // Filter out ended auctions (timer at 0)
+    const auctionMap = new Map(filteredAuctions.map(a => [a.id, a]));
+    const result = [];
+    
+    for (const id of sortedAuctionIds) {
+      const auction = auctionMap.get(id);
+      if (auction && auction.status === 'active') {
+        const endTime = new Date(auction.end_time).getTime();
+        if (endTime > Date.now()) {
+          result.push(auction);
+        }
+      }
+    }
+    
+    // Add any new auctions that weren't in the original sort (at the end)
+    for (const auction of filteredAuctions) {
+      if (!sortedAuctionIds.includes(auction.id) && 
+          auction.id !== premiumAuction?.id && 
+          auction.id !== aotdId &&
+          auction.status === 'active' &&
+          new Date(auction.end_time).getTime() > Date.now()) {
+        result.push(auction);
+      }
+    }
+    
+    return result;
+  }, [filteredAuctions, sortedAuctionIds, premiumAuction?.id, aotdId]);
   
   // Get AOTD product
   const aotdProduct = auctionOfTheDay?.product || (auctionOfTheDay?.product_id ? products[auctionOfTheDay.product_id] : null);
