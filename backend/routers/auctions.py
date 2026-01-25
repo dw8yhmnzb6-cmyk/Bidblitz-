@@ -255,9 +255,9 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
     current_end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
     now = datetime.now(timezone.utc)
     
-    # Reset timer to 9-11 seconds when remaining time is low
+    # Reset timer to 10-15 seconds when remaining time is low
     time_remaining = (current_end_time - now).total_seconds()
-    timer_extension = random.randint(9, 11)
+    timer_extension = random.randint(10, 15)
     
     # GUARANTEED WINNER: Set timer to only 3 seconds so they win quickly
     if is_guaranteed_winner:
@@ -265,7 +265,7 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
         logger.info(f"🏆 Guaranteed winner bid: {user['name']} on auction {auction_id[:8]}...")
     
     if time_remaining < 15:
-        # Last-second bid: reset timer to 9-11 seconds (or 3 for guaranteed winner)
+        # Last-second bid: reset timer to 10-15 seconds (or 3 for guaranteed winner)
         new_end_time = now + timedelta(seconds=timer_extension)
     elif time_remaining < 60:
         # Under 1 minute: add time
