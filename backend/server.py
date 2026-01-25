@@ -252,12 +252,9 @@ async def bot_last_second_bidder():
                             new_price = round(current_price + bid_increment, 2)
                             
                             # Timer extension based on mode:
-                            # - Standard: 9-14 seconds (normal play)
-                            # - Mit Zielpreis: 8-12 seconds (faster to reach target)
-                            if explicit_target > 0:
-                                timer_ext = random.randint(8, 12)
-                            else:
-                                timer_ext = random.randint(9, 14)
+                            # - Standard: 10-15 seconds (normal play)
+                            # - Mit Zielpreis: 10-15 seconds (same, to reach target)
+                            timer_ext = random.randint(10, 15)
                             
                             new_end_time = datetime.now(timezone.utc) + timedelta(seconds=timer_ext)
                             
