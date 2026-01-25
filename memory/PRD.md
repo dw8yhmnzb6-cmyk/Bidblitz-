@@ -226,7 +226,30 @@ Penny-Auktions-Website nach dem Vorbild von `dealdash.com` und `snipster.de`.
 
 ---
 
-## Session 25. Januar 2026 - Internationalisierung Auktionsseite
+## Session 25. Januar 2026 - Kosovo Bots & Admin Refactoring
+
+### Kosovo-Bots hinzugefügt ✅
+- **100 neue Bots** mit kosovarischen Namen erstellt
+- Namen-Beispiele: Arben Krasniqi, Driton Gashi, Blerta Berisha, Valon Shala, etc.
+- Verschiedene Namensformate: "Vorname Nachname", "Vorname N.", "Vorname_Nachname", etc.
+- Script: `/app/backend/scripts/add_kosovo_bots.py`
+
+### 50 Auktionen gelöscht ✅
+- Die 50 ältesten Auktionen wurden entfernt
+- Auktionen reduziert: 210 → 160
+- Script: `/app/backend/scripts/delete_oldest_auctions.py`
+
+### Admin.js Refactoring begonnen ✅
+- Neuer Ordner: `/app/frontend/src/components/admin/`
+- `AdminDashboard.js` - Dashboard-Tab als separate Komponente extrahiert
+- `index.js` - Export-Datei für alle Admin-Komponenten
+- **Verbleibendes Refactoring** (für zukünftige Sessions):
+  - AdminProducts, AdminAuctions, AdminUsers
+  - AdminBots, AdminVouchers, AdminPayments
+  - AdminEmail, AdminStaff, AdminPages
+  - AdminBanners, AdminInfluencers, AdminWholesale
+
+---
 
 ### Vollständige i18n der Auctions.js Seite ✅
 - **Alle Texte** auf der Hauptauktionsseite sind jetzt übersetzbar
