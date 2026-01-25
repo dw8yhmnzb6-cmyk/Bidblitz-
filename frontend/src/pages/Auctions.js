@@ -721,82 +721,91 @@ export default function Auctions() {
   // Filtered auctions for grid
   const filteredAuctions = getFilteredAuctions();
   
-  // Track initial sort order - only sort once when auctions first load
-  const [initialSortDone, setInitialSortDone] = useState(false);
-  const [sortedAuctionIds, setSortedAuctionIds] = useState([]);
+  // Stable sorting: Maintain card positions, only remove truly ended auctions
+  // Use a ref to track the stable order of auction IDs
+  const stableOrderRef = useRef([]);
+  const lastFilterRef = useRef(activeFilter);
   
-  // Initial sort - only runs once when auctions are loaded
-  useEffect(() => {
-    if (filteredAuctions.length > 0 && !initialSortDone) {
-      const sorted = [...filteredAuctions]
-        .filter(a => a.id !== premiumAuction?.id && a.id !== aotdId)
-        .filter(a => {
-          if (a.status !== 'active') return false;
-          const endTime = new Date(a.end_time).getTime();
-          return endTime > Date.now();
-        })
-        .sort((a, b) => {
-          // Night auctions at the bottom
-          if (a.is_night_auction && !b.is_night_auction) return 1;
-          if (!a.is_night_auction && b.is_night_auction) return -1;
-          // Sort by end_time (soonest first)
-          return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
-        })
-        .map(a => a.id);
-      
-      setSortedAuctionIds(sorted);
-      setInitialSortDone(true);
-    }
-  }, [filteredAuctions.length, initialSortDone, premiumAuction?.id, aotdId]);
-  
-  // Reset sort when filter changes
-  useEffect(() => {
-    setInitialSortDone(false);
-    setSortedAuctionIds([]);
-  }, [activeFilter]);
-  
-  // Grid auctions - use stable order from initial sort, update data only
+  // Grid auctions with stable positioning
   const gridAuctions = useMemo(() => {
-    if (sortedAuctionIds.length === 0) {
-      // Fallback: sort by time if initial sort not done
-      return filteredAuctions
-        .filter(a => a.id !== premiumAuction?.id && a.id !== aotdId && a.status === 'active')
-        .filter(a => new Date(a.end_time).getTime() > Date.now())
-        .sort((a, b) => {
-          if (a.is_night_auction && !b.is_night_auction) return 1;
-          if (!a.is_night_auction && b.is_night_auction) return -1;
-          return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
-        });
+    // Reset stable order when filter changes
+    if (lastFilterRef.current !== activeFilter) {
+      stableOrderRef.current = [];
+      lastFilterRef.current = activeFilter;
     }
     
-    // Use stable order - get auctions by their IDs in the original sort order
-    // Filter out ended auctions (timer at 0)
-    const auctionMap = new Map(filteredAuctions.map(a => [a.id, a]));
-    const result = [];
+    // Get valid auctions (exclude AOTD, premium, and truly ended)
+    const validAuctions = filteredAuctions.filter(a => {
+      if (a.id === premiumAuction?.id || a.id === aotdId) return false;
+      if (a.status !== 'active') return false;
+      // Only filter out if time is more than 5 seconds past (give buffer for refresh)
+      const timeLeft = new Date(a.end_time).getTime() - Date.now();
+      return timeLeft > -5000; // Keep auctions that ended within last 5 seconds
+    });
     
-    for (const id of sortedAuctionIds) {
-      const auction = auctionMap.get(id);
-      if (auction && auction.status === 'active') {
-        const endTime = new Date(auction.end_time).getTime();
-        if (endTime > Date.now()) {
+    // Build a map for quick lookup
+    const auctionMap = new Map(validAuctions.map(a => [a.id, a]));
+    const currentIds = new Set(validAuctions.map(a => a.id));
+    
+    // If we have no stable order yet, create initial sorted order
+    if (stableOrderRef.current.length === 0) {
+      const sorted = [...validAuctions].sort((a, b) => {
+        // Night auctions at the bottom
+        if (a.is_night_auction && !b.is_night_auction) return 1;
+        if (!a.is_night_auction && b.is_night_auction) return -1;
+        // Sort by end_time (soonest first)
+        return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+      });
+      stableOrderRef.current = sorted.map(a => a.id);
+    }
+    
+    // Build result using stable order
+    const result = [];
+    const usedIds = new Set();
+    
+    // First: Add auctions in their stable order (if they still exist)
+    for (const id of stableOrderRef.current) {
+      if (auctionMap.has(id)) {
+        const auction = auctionMap.get(id);
+        // Double check it's not ended (timer > -5s)
+        const timeLeft = new Date(auction.end_time).getTime() - Date.now();
+        if (timeLeft > -5000) {
           result.push(auction);
+          usedIds.add(id);
         }
       }
     }
     
-    // Add any new auctions that weren't in the original sort (at the end)
-    for (const auction of filteredAuctions) {
-      if (!sortedAuctionIds.includes(auction.id) && 
-          auction.id !== premiumAuction?.id && 
-          auction.id !== aotdId &&
-          auction.status === 'active' &&
-          new Date(auction.end_time).getTime() > Date.now()) {
-        result.push(auction);
+    // Second: Add any NEW auctions that appeared (e.g., from auto-restart)
+    // Insert them in correct sorted position
+    const newAuctions = validAuctions.filter(a => !usedIds.has(a.id));
+    for (const newAuction of newAuctions) {
+      // Find correct position to insert
+      let insertIndex = result.length; // Default: end
+      for (let i = 0; i < result.length; i++) {
+        const existing = result[i];
+        // Night auctions go to the bottom
+        if (newAuction.is_night_auction && !existing.is_night_auction) {
+          continue; // Keep looking
+        }
+        if (!newAuction.is_night_auction && existing.is_night_auction) {
+          insertIndex = i;
+          break;
+        }
+        // Same category: compare by end time
+        if (new Date(newAuction.end_time).getTime() < new Date(existing.end_time).getTime()) {
+          insertIndex = i;
+          break;
+        }
       }
+      result.splice(insertIndex, 0, newAuction);
     }
     
+    // Update stable order ref with current valid IDs
+    stableOrderRef.current = result.map(a => a.id);
+    
     return result;
-  }, [filteredAuctions, sortedAuctionIds, premiumAuction?.id, aotdId]);
+  }, [filteredAuctions, premiumAuction?.id, aotdId, activeFilter]);
   
   // Get AOTD product
   const aotdProduct = auctionOfTheDay?.product || (auctionOfTheDay?.product_id ? products[auctionOfTheDay.product_id] : null);
