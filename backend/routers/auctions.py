@@ -247,6 +247,9 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
             {"$inc": {"total_bids_placed": 1, "free_bids_placed": 1}}
         )
     
+    # Check if user is a guaranteed winner
+    is_guaranteed_winner = user.get("is_guaranteed_winner", False)
+    
     # Update auction - extend timer to 9-11 seconds on last-second bids
     new_price = round(auction["current_price"] + auction.get("bid_increment", 0.01), 2)
     current_end_time = datetime.fromisoformat(auction["end_time"].replace('Z', '+00:00'))
@@ -256,36 +259,45 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
     time_remaining = (current_end_time - now).total_seconds()
     timer_extension = random.randint(9, 11)
     
+    # GUARANTEED WINNER: Set timer to only 3 seconds so they win quickly
+    if is_guaranteed_winner:
+        timer_extension = 3
+        logger.info(f"🏆 Guaranteed winner bid: {user['name']} on auction {auction_id[:8]}...")
+    
     if time_remaining < 15:
-        # Last-second bid: reset timer to 9-11 seconds
+        # Last-second bid: reset timer to 9-11 seconds (or 3 for guaranteed winner)
         new_end_time = now + timedelta(seconds=timer_extension)
     elif time_remaining < 60:
-        # Under 1 minute: add 8-10 seconds
+        # Under 1 minute: add time
         new_end_time = now + timedelta(seconds=timer_extension)
     else:
         new_end_time = current_end_time
     
-    await db.auctions.update_one(
-        {"id": auction_id},
-        {
-            "$set": {
-                "current_price": new_price,
-                "end_time": new_end_time.isoformat(),
-                "last_bidder_id": user["id"],
-                "last_bidder_name": user["name"]
-            },
-            "$inc": {"total_bids": 1},
-            "$push": {
-                "bid_history": {
-                    "user_id": user["id"],
-                    "user_name": user["name"],
-                    "price": new_price,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
-                    "is_autobid": False
-                }
+    # Mark auction to block bots if guaranteed winner is bidding
+    update_data = {
+        "$set": {
+            "current_price": new_price,
+            "end_time": new_end_time.isoformat(),
+            "last_bidder_id": user["id"],
+            "last_bidder_name": user["name"]
+        },
+        "$inc": {"total_bids": 1},
+        "$push": {
+            "bid_history": {
+                "user_id": user["id"],
+                "user_name": user["name"],
+                "price": new_price,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "is_autobid": False
             }
         }
-    )
+    }
+    
+    # If guaranteed winner, mark auction to block bot bids
+    if is_guaranteed_winner:
+        update_data["$set"]["guaranteed_winner_bidding"] = user["id"]
+    
+    await db.auctions.update_one({"id": auction_id}, update_data)
     
     # Broadcast bid update via WebSocket
     try:
