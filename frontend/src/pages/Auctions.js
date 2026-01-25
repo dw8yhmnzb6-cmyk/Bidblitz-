@@ -948,6 +948,7 @@ export default function Auctions() {
                   product={products[auction.product_id] || auction.product} 
                   onBid={handleBid}
                   t={t}
+                  language={language}
                 />
               ))}
             </div>
