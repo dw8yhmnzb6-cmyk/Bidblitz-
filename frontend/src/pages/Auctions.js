@@ -338,7 +338,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
       {/* Content */}
       <div className="p-2">
         <h3 className="text-[10px] font-bold text-gray-800 uppercase leading-tight mb-1 line-clamp-2 min-h-[24px]">
-          {product.name}
+          {productName}
         </h3>
         <p className="text-[8px] text-gray-500 mb-1">
           {t('auctionPage.uvp')}: € {product.retail_price?.toLocaleString('de-DE')},-
