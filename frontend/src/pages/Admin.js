@@ -31,7 +31,8 @@ import {
   AdminBots, 
   AdminVouchers,
   AdminPayments,
-  AdminLogs
+  AdminLogs,
+  AdminAuctions
 } from '../components/admin';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
