@@ -42,6 +42,8 @@ import VIPAuctions from "./pages/VIPAuctions";
 import WonAuctionCheckout from "./pages/WonAuctionCheckout";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
 import InfluencerBecome from "./pages/InfluencerBecome";
+import WholesaleApply from "./pages/WholesaleApply";
+import WholesaleDashboard from "./pages/WholesaleDashboard";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
