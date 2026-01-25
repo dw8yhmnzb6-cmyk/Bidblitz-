@@ -382,12 +382,15 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
 });
 
 // Premium Card
-const PremiumCard = memo(({ auction, product, onBid, t }) => {
+const PremiumCard = memo(({ auction, product, onBid, t, language }) => {
   if (!auction || !product) return null;
+  
+  // Get translated product name (fallback to default name)
+  const productName = product.name_translations?.[language] || product.name;
   
   return (
     <div className="bg-gradient-to-b from-cyan-100 to-cyan-200 rounded-lg p-3 border-2 border-cyan-400">
-      <h2 className="text-sm font-bold text-gray-800 uppercase leading-tight mb-1">{product.name}</h2>
+      <h2 className="text-sm font-bold text-gray-800 uppercase leading-tight mb-1">{productName}</h2>
       <p className="text-[10px] text-gray-600 mb-2">{t('auctionPage.comparePrice')}: € {product.retail_price?.toLocaleString('de-DE')},-</p>
       
       <div className="flex gap-3">
