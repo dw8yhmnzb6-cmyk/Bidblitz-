@@ -702,9 +702,14 @@ export default function Auctions() {
   const filteredAuctions = getFilteredAuctions();
   
   // Grid auctions - filtered minus premium and AOTD, sorted by end_time (soonest first)
+  // Night auctions always at the bottom
   const gridAuctions = filteredAuctions
     .filter(a => a.id !== premiumAuction?.id && a.id !== aotdId)
     .sort((a, b) => {
+      // Night auctions always at the bottom
+      if (a.is_night_auction && !b.is_night_auction) return 1;
+      if (!a.is_night_auction && b.is_night_auction) return -1;
+      
       // Sort by end_time ascending (auctions ending soon at the top)
       const timeA = new Date(a.end_time).getTime();
       const timeB = new Date(b.end_time).getTime();
