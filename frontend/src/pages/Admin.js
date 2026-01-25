@@ -1991,7 +1991,6 @@ export default function Admin() {
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.bids')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.deposits')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.status')}</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.isAdmin')}</th>
                         <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.actions')}</th>
                       </tr>
                     </thead>
