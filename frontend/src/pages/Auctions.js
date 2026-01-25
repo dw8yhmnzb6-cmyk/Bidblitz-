@@ -160,14 +160,16 @@ const ActivityIndex = memo(({ auctionId = '', t }) => {
   );
 });
 
-// ISOLATED Timer Component - Updates independently every second
+// ISOLATED Timer Component - Updates every 100ms for smooth countdown
 const LiveTimer = memo(({ endTime }) => {
   const [display, setDisplay] = useState('--:--:--');
   const [isLow, setIsLow] = useState(false);
+  const [ms, setMs] = useState('00');
   
   useEffect(() => {
     if (!endTime) {
       setDisplay('--:--:--');
+      setMs('00');
       return;
     }
     
@@ -178,7 +180,8 @@ const LiveTimer = memo(({ endTime }) => {
       
       // If diff is 0, the auction ended - show loading indicator
       if (diff === 0) {
-        setDisplay('⏳');
+        setDisplay('00:00:00');
+        setMs('00');
         setIsLow(true);
         return;
       }
@@ -186,20 +189,22 @@ const LiveTimer = memo(({ endTime }) => {
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
+      const milliseconds = Math.floor((diff % 1000) / 10); // Show centiseconds (00-99)
       
       const pad = (n) => String(n).padStart(2, '0');
       setDisplay(`${pad(h)}:${pad(m)}:${pad(s)}`);
+      setMs(pad(milliseconds));
       setIsLow(h === 0 && m === 0 && s <= 10);
     };
     
     updateTimer(); // Initial update
-    const interval = setInterval(updateTimer, 1000);
+    const interval = setInterval(updateTimer, 50); // Update every 50ms for smooth animation
     return () => clearInterval(interval);
   }, [endTime]); // Re-run when endTime changes from WebSocket
   
   return (
     <span className={`font-mono text-[9px] font-bold px-1 py-0.5 rounded ${isLow ? 'bg-red-500 text-white animate-pulse' : 'bg-blue-600 text-white'}`}>
-      {display}
+      {display}<span className="text-[7px] opacity-75">:{ms}</span>
     </span>
   );
 });
