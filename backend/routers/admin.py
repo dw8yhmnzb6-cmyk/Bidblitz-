@@ -297,6 +297,60 @@ async def toggle_admin_status(user_id: str, admin: dict = Depends(get_admin_user
     
     return {"message": f"Admin-Status {'aktiviert' if new_status else 'deaktiviert'}", "is_admin": new_status}
 
+@router.put("/users/{user_id}/toggle-vip")
+async def toggle_vip_status(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Toggle VIP membership status for a user (manual override)"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check current VIP status
+    vip_sub = await db.vip_subscriptions.find_one({"user_id": user_id})
+    
+    if vip_sub and vip_sub.get("status") == "active":
+        # Deactivate VIP
+        await db.vip_subscriptions.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "status": "cancelled",
+                "cancelled_at": datetime.now(timezone.utc).isoformat(),
+                "cancelled_by": "admin"
+            }}
+        )
+        logger.info(f"⭐ VIP deactivated for {user.get('name')} by admin")
+        return {"message": "VIP-Status deaktiviert", "is_vip": False}
+    else:
+        # Activate VIP (create or reactivate subscription)
+        from datetime import timedelta
+        next_renewal = (datetime.now(timezone.utc) + timedelta(days=365)).isoformat()
+        
+        if vip_sub:
+            await db.vip_subscriptions.update_one(
+                {"user_id": user_id},
+                {"$set": {
+                    "status": "active",
+                    "plan": "admin_granted",
+                    "next_renewal": next_renewal,
+                    "activated_by": "admin",
+                    "activated_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+        else:
+            import uuid
+            await db.vip_subscriptions.insert_one({
+                "id": str(uuid.uuid4()),
+                "user_id": user_id,
+                "plan": "admin_granted",
+                "status": "active",
+                "next_renewal": next_renewal,
+                "activated_by": "admin",
+                "activated_at": datetime.now(timezone.utc).isoformat(),
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
+        
+        logger.info(f"⭐ VIP activated for {user.get('name')} by admin (1 year)")
+        return {"message": "VIP-Status aktiviert (1 Jahr)", "is_vip": True}
+
 # ==================== EMAIL MARKETING ====================
 
 @router.get("/email/stats")
