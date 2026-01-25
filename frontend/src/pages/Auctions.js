@@ -356,10 +356,11 @@ const AuctionCard = memo(({ auction, product, onBid, t }) => {
     </div>
   );
 }, (prevProps, nextProps) => {
-  // Only re-render if price or bidder changes
+  // Re-render if price, bidder, or language changes
   return prevProps.auction.current_price === nextProps.auction.current_price &&
          prevProps.auction.last_bidder_name === nextProps.auction.last_bidder_name &&
-         prevProps.auction.end_time === nextProps.auction.end_time;
+         prevProps.auction.end_time === nextProps.auction.end_time &&
+         prevProps.t === nextProps.t;
 });
 
 // Premium Card
