@@ -170,23 +170,25 @@ async def websocket_all_auctions_legacy(websocket: WebSocket):
 # ==================== BOT BACKGROUND TASK ====================
 
 async def bot_last_second_bidder():
-    """Background task - bots bid in last seconds until auction price reaches bot_target_price.
+    """Background task - bots bid in last seconds until auction price reaches minimum price.
     
-    WICHTIG: Bots bieten NUR bis der aktuelle Preis den bot_target_price erreicht hat.
-    Danach hören die Bots auf und nur echte Kunden können bieten.
-    Dies stellt sicher, dass echtes Geld verdient wird, bevor Bots aufhören.
+    WICHTIG: Bots bieten automatisch bis der Preis zwischen €1.00 und €2.00 liegt.
+    Danach bieten sie nur noch, wenn ein expliziter bot_target_price gesetzt ist.
     """
     global bot_task_running
     
-    logger.info("Bot continuous bidder started - Bots bieten bis zum Zielpreis")
+    logger.info("Bot continuous bidder started - Automatisches Bieten bis €1-2")
     last_bot_per_auction = {}
+    
+    # Default minimum price range for all auctions (1.00 - 2.00 Euro)
+    DEFAULT_MIN_PRICE = 1.00
+    DEFAULT_MAX_PRICE = 2.00
     
     while bot_task_running:
         try:
-            # Get auctions with bot targets that haven't reached the target yet
+            # Get ALL active auctions (not just those with bot_target_price)
             active_auctions = await db.auctions.find({
-                "status": "active",
-                "bot_target_price": {"$gt": 0}
+                "status": "active"
             }, {"_id": 0}).to_list(100)
             
             for auction in active_auctions:
@@ -203,19 +205,26 @@ async def bot_last_second_bidder():
                     
                     # Bid when 1-5 seconds left
                     if 1 <= seconds_left <= 5:
-                        target_price = auction.get("bot_target_price", 0)
                         current_price = auction.get("current_price", 0)
                         auction_id = auction.get("id")
                         bid_increment = auction.get("bid_increment", 0.01)
                         
-                        # WICHTIG: Prüfe ob der AKTUELLE PREIS den Zielpreis erreicht hat
-                        # Wenn ja, bieten Bots NICHT mehr - nur echte Kunden können jetzt bieten
-                        # Wenn nein, bieten Bots weiter um den Preis zum Zielpreis zu treiben
+                        # Determine target price:
+                        # 1. If bot_target_price is set, use that
+                        # 2. Otherwise, use random price between DEFAULT_MIN and DEFAULT_MAX
+                        explicit_target = auction.get("bot_target_price", 0)
+                        if explicit_target > 0:
+                            target_price = explicit_target
+                        else:
+                            # Auto-target: random between 1.00 and 2.00 Euro
+                            # Use auction ID hash to keep consistent target for same auction
+                            hash_val = hash(auction_id) % 100
+                            target_price = DEFAULT_MIN_PRICE + (hash_val / 100) * (DEFAULT_MAX_PRICE - DEFAULT_MIN_PRICE)
+                            target_price = round(target_price, 2)
                         
                         # GUARANTEED WINNER CHECK: Don't bid if a guaranteed winner is active
                         guaranteed_winner_id = auction.get("guaranteed_winner_bidding")
                         if guaranteed_winner_id and auction.get("last_bidder_id") == guaranteed_winner_id:
-                            # A guaranteed winner has bid - bots must NOT bid against them
                             continue
                         
                         # Bots bieten nur wenn der aktuelle Preis UNTER dem Zielpreis liegt
@@ -230,9 +239,8 @@ async def bot_last_second_bidder():
                                 last_bot_per_auction[auction_id] = bot["id"]
                                 
                                 # Place bid
-                                current_price = auction.get("current_price", 0)
                                 new_price = round(current_price + bid_increment, 2)
-                                timer_ext = random.randint(9, 11)  # Reset to 9-11 seconds
+                                timer_ext = random.randint(9, 14)  # Reset to 9-14 seconds
                                 new_end_time = datetime.now(timezone.utc) + timedelta(seconds=timer_ext)
                                 
                                 bid_entry = {
@@ -273,7 +281,7 @@ async def bot_last_second_bidder():
                                     "bidder_message": f"{bot['name']} hat geboten!"
                                 })
                                 
-                                logger.info(f"Bot '{bot['name']}' bid €{new_price:.2f} on {auction_id[:8]}...")
+                                logger.debug(f"Bot '{bot['name']}' bid €{new_price:.2f} on {auction_id[:8]}... (target: €{target_price:.2f})")
                                 
                 except Exception as e:
                     logger.error(f"Bot bid error for {auction.get('id')}: {e}")
