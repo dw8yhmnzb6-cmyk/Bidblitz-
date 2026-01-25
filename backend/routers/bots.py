@@ -44,6 +44,58 @@ async def delete_bot(bot_id: str, admin: dict = Depends(get_admin_user)):
 
 # ==================== BOT BIDDING ====================
 
+@router.post("/execute-bids")
+async def execute_bot_bids(auction_id: str, num_bids: int = 1, admin: dict = Depends(get_admin_user)):
+    """Execute a specific number of bot bids on an auction"""
+    auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    if auction["status"] != "active":
+        raise HTTPException(status_code=400, detail="Auction is not active")
+    
+    # Get all bots
+    bots = await db.bots.find({}, {"_id": 0}).to_list(100)
+    if not bots:
+        raise HTTPException(status_code=400, detail="No bots available. Create some first.")
+    
+    current_price = auction.get("current_price", 0.01)
+    bid_increment = auction.get("bid_increment", 0.01)
+    bids_placed = 0
+    
+    for i in range(num_bids):
+        bot = random.choice(bots)
+        new_price = round(current_price + bid_increment, 2)
+        
+        # Update auction
+        await db.auctions.update_one(
+            {"id": auction_id},
+            {
+                "$set": {
+                    "current_price": new_price,
+                    "last_bidder_id": f"bot_{bot['id']}",
+                    "last_bidder_name": bot["name"],
+                    "end_time": (datetime.now(timezone.utc) + timedelta(seconds=15)).isoformat()
+                },
+                "$inc": {"total_bids": 1}
+            }
+        )
+        
+        # Update bot stats
+        await db.bots.update_one(
+            {"id": bot["id"]},
+            {"$inc": {"total_bids_placed": 1, "bids_placed": 1}}
+        )
+        
+        current_price = new_price
+        bids_placed += 1
+    
+    return {
+        "success": True,
+        "bids_placed": bids_placed,
+        "new_price": current_price
+    }
+
 @router.post("/bid")
 async def bot_bid(request: BotBidRequest, admin: dict = Depends(get_admin_user)):
     """Make a bot place a single bid"""
