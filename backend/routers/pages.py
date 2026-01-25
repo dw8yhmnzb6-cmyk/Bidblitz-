@@ -427,9 +427,11 @@ async def reset_page(page_id: str, lang: str = Query(default="de"), admin: dict 
     if page_id not in DEFAULT_PAGES:
         raise HTTPException(status_code=404, detail="Keine Standardvorlage für diese Seite")
     
-    await db.pages.delete_one({"page_id": page_id})
+    # Delete only the language-specific version
+    await db.pages.delete_one({"page_id": page_id, "lang": lang})
     
     return {
-        "message": f"Seite '{page_id}' auf Standard zurückgesetzt",
-        "page_id": page_id
+        "message": f"Seite '{page_id}' ({lang}) auf Standard zurückgesetzt",
+        "page_id": page_id,
+        "lang": lang
     }
