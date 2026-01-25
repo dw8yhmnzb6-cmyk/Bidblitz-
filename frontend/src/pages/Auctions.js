@@ -721,20 +721,22 @@ export default function Auctions() {
   // Filtered auctions for grid
   const filteredAuctions = getFilteredAuctions();
   
-  // Grid auctions - filtered minus premium and AOTD, sorted by end_time (soonest first)
-  // Night auctions always at the bottom
-  const gridAuctions = filteredAuctions
-    .filter(a => a.id !== premiumAuction?.id && a.id !== aotdId)
-    .sort((a, b) => {
+  // Grid auctions - filtered minus premium and AOTD
+  // WICHTIG: Sortierung nur beim ersten Laden, danach stabile Reihenfolge
+  // Karten bleiben an ihrer Position - nur Preis/Timer werden aktualisiert
+  const gridAuctions = React.useMemo(() => {
+    const filtered = filteredAuctions.filter(a => a.id !== premiumAuction?.id && a.id !== aotdId);
+    
+    // Sortiere nur einmal: Nachtauktionen unten, Rest nach ID (stabil)
+    return filtered.sort((a, b) => {
       // Night auctions always at the bottom
       if (a.is_night_auction && !b.is_night_auction) return 1;
       if (!a.is_night_auction && b.is_night_auction) return -1;
       
-      // Sort by end_time ascending (auctions ending soon at the top)
-      const timeA = new Date(a.end_time).getTime();
-      const timeB = new Date(b.end_time).getTime();
-      return timeA - timeB;
+      // Stabile Sortierung nach ID (ändert sich nicht)
+      return a.id.localeCompare(b.id);
     });
+  }, [filteredAuctions.map(a => a.id).join(','), premiumAuction?.id, aotdId, activeFilter]);
   
   // Get AOTD product
   const aotdProduct = auctionOfTheDay?.product || (auctionOfTheDay?.product_id ? products[auctionOfTheDay.product_id] : null);
