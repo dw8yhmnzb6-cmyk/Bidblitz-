@@ -363,13 +363,13 @@ const AuctionCard = memo(({ auction, product, onBid, t }) => {
 });
 
 // Premium Card
-const PremiumCard = memo(({ auction, product, onBid }) => {
+const PremiumCard = memo(({ auction, product, onBid, t }) => {
   if (!auction || !product) return null;
   
   return (
     <div className="bg-gradient-to-b from-cyan-100 to-cyan-200 rounded-lg p-3 border-2 border-cyan-400">
       <h2 className="text-sm font-bold text-gray-800 uppercase leading-tight mb-1">{product.name}</h2>
-      <p className="text-[10px] text-gray-600 mb-2">Vergleichspreis*: € {product.retail_price?.toLocaleString('de-DE')},-</p>
+      <p className="text-[10px] text-gray-600 mb-2">{t('auctionPage.comparePrice')}: € {product.retail_price?.toLocaleString('de-DE')},-</p>
       
       <div className="flex gap-3">
         <div className="flex-1">
@@ -380,14 +380,14 @@ const PremiumCard = memo(({ auction, product, onBid }) => {
           <div className="text-2xl font-black text-gray-800">
             € {auction.current_price?.toFixed(2).replace('.', ',')}
           </div>
-          <p className="text-[10px] text-cyan-700">{auction.last_bidder_name || 'Startpreis'}</p>
+          <p className="text-[10px] text-cyan-700">{auction.last_bidder_name || t('auctionPage.startPrice')}</p>
           
           <button onClick={() => onBid(auction.id)}
             className="mt-2 w-full py-2 bg-gradient-to-b from-cyan-400 to-cyan-500 hover:from-cyan-300 hover:to-cyan-400 text-white font-bold text-sm rounded shadow-md">
-            BIETEN
+            {t('auctionPage.bid')}
           </button>
           
-          <ActivityIndex auctionId={auction.id} />
+          <ActivityIndex auctionId={auction.id} t={t} />
         </div>
         
         <div className="w-24 h-24 bg-white rounded flex items-center justify-center shadow">
@@ -396,16 +396,16 @@ const PremiumCard = memo(({ auction, product, onBid }) => {
       </div>
       
       <p className="text-[9px] text-gray-500 mt-2 text-center">
-        Zuletzt für <span className="text-green-600 font-bold">€ {(product.retail_price * 0.02).toFixed(2).replace('.', ',')}</span>
+        {t('auctionPage.lastSoldFor')} <span className="text-green-600 font-bold">€ {(product.retail_price * 0.02).toFixed(2).replace('.', ',')}</span>
       </p>
     </div>
   );
 });
 
 // Trust Badges - Compact for mobile
-const TrustBadges = memo(() => (
+const TrustBadges = memo(({ t }) => (
   <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
-    <h3 className="text-[9px] font-bold text-gray-800 mb-2">SICHER</h3>
+    <h3 className="text-[9px] font-bold text-gray-800 mb-2">{t('auctionPage.secure')}</h3>
     <div className="grid grid-cols-2 gap-2">
       <div className="flex items-center gap-1.5 p-1.5 bg-green-50 rounded border border-green-200">
         <div className="w-4 h-4 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
