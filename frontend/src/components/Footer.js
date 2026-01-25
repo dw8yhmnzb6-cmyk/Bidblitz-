@@ -19,7 +19,7 @@ export const Footer = () => {
               <span className="text-xl font-bold text-white">BidBlitz</span>
             </Link>
             <p className="text-[#94A3B8] text-sm">
-              Die führende Penny-Auktion-Plattform in Deutschland. Bieten Sie auf Premium-Produkte 
+              Die führende Penny-Auktion-Plattform in Dubai. Bieten Sie auf Premium-Produkte 
               und sparen Sie bis zu 95%!
             </p>
             {/* Social Links */}
