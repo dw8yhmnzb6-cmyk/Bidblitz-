@@ -11,9 +11,19 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const AuctionOfTheDay = memo(({ auction, product, onBid, t }) => {
   if (!auction || !product) return null;
   
+  // Check if auction is still active (not expired)
+  const endTime = new Date(auction.end_time).getTime();
+  const isExpired = endTime <= Date.now();
+  
+  // If expired, don't render
+  if (isExpired) return null;
+  
   const discount = product.retail_price 
     ? Math.round((1 - auction.current_price / product.retail_price) * 100)
     : 99;
+  
+  // Handle both last_bidder and last_bidder_name field names
+  const lastBidder = auction.last_bidder_name || auction.last_bidder;
   
   return (
     <div 
@@ -62,7 +72,7 @@ const AuctionOfTheDay = memo(({ auction, product, onBid, t }) => {
                 <p className="text-xl sm:text-2xl font-black text-amber-600">
                   € {auction.current_price?.toFixed(2).replace('.', ',')}
                 </p>
-                <p className="text-[10px] sm:text-xs text-cyan-700">{auction.last_bidder_name || t('auctionPage.startPrice')}</p>
+                <p className="text-[10px] sm:text-xs text-cyan-700">{lastBidder || t('auctionPage.startPrice')}</p>
               </div>
               
               <div className="text-center">
