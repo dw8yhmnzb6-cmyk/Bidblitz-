@@ -724,7 +724,7 @@ export default function Auctions() {
   // Grid auctions - filtered minus premium and AOTD
   // WICHTIG: Sortierung nur beim ersten Laden, danach stabile Reihenfolge
   // Karten bleiben an ihrer Position - nur Preis/Timer werden aktualisiert
-  const gridAuctions = React.useMemo(() => {
+  const gridAuctions = useMemo(() => {
     const filtered = filteredAuctions.filter(a => a.id !== premiumAuction?.id && a.id !== aotdId);
     
     // Sortiere nur einmal: Nachtauktionen unten, Rest nach ID (stabil)
