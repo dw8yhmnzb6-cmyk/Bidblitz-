@@ -550,7 +550,7 @@ const InfoSidebar = memo(({ t }) => (
 
 export default function Auctions() {
   const { isAuthenticated, token, updateBidsBalance } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
   
   const [auctions, setAuctions] = useState([]);
