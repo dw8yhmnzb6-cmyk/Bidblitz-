@@ -81,6 +81,18 @@ export default function Admin() {
   });
   const [selectedInfluencer, setSelectedInfluencer] = useState(null);
 
+  // Wholesale/B2B states
+  const [wholesaleApplications, setWholesaleApplications] = useState([]);
+  const [wholesaleCustomers, setWholesaleCustomers] = useState([]);
+  const [showWholesaleModal, setShowWholesaleModal] = useState(false);
+  const [selectedWholesale, setSelectedWholesale] = useState(null);
+  const [wholesaleForm, setWholesaleForm] = useState({
+    discount_percent: 10,
+    credit_limit: 0,
+    payment_terms: 'prepaid',
+    notes: ''
+  });
+
   // Edit states
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
