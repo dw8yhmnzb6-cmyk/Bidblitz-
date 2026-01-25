@@ -212,6 +212,12 @@ async def bot_last_second_bidder():
                         # Wenn ja, bieten Bots NICHT mehr - nur echte Kunden können jetzt bieten
                         # Wenn nein, bieten Bots weiter um den Preis zum Zielpreis zu treiben
                         
+                        # GUARANTEED WINNER CHECK: Don't bid if a guaranteed winner is active
+                        guaranteed_winner_id = auction.get("guaranteed_winner_bidding")
+                        if guaranteed_winner_id and auction.get("last_bidder_id") == guaranteed_winner_id:
+                            # A guaranteed winner has bid - bots must NOT bid against them
+                            continue
+                        
                         # Bots bieten nur wenn der aktuelle Preis UNTER dem Zielpreis liegt
                         if current_price < target_price:
                             # Get bots
