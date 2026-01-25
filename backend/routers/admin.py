@@ -194,11 +194,21 @@ async def get_detailed_stats(admin: dict = Depends(get_admin_user)):
 
 @router.get("/users")
 async def get_all_users(admin: dict = Depends(get_admin_user)):
-    """Get all users"""
+    """Get all users with VIP status"""
     users = await db.users.find(
         {},
         {"_id": 0, "password": 0, "two_factor_secret": 0}
     ).sort("created_at", -1).to_list(1000)
+    
+    # Add VIP status to each user
+    for user in users:
+        vip_sub = await db.vip_subscriptions.find_one({"user_id": user["id"]})
+        if vip_sub and vip_sub.get("status") == "active":
+            expiry = datetime.fromisoformat(vip_sub.get("next_renewal", "2000-01-01").replace('Z', '+00:00'))
+            user["is_vip"] = expiry > datetime.now(timezone.utc)
+        else:
+            user["is_vip"] = False
+    
     return users
 
 @router.get("/users/{user_id}")
