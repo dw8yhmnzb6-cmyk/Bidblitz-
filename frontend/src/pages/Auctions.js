@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 // Auction of the Day Component - Special highlight
-const AuctionOfTheDay = memo(({ auction, product, onBid, t }) => {
+const AuctionOfTheDay = memo(({ auction, product, onBid, t, language }) => {
   if (!auction || !product) return null;
   
   // Check if auction is still active (not expired)
@@ -24,6 +24,10 @@ const AuctionOfTheDay = memo(({ auction, product, onBid, t }) => {
   
   // Handle both last_bidder and last_bidder_name field names
   const lastBidder = auction.last_bidder_name || auction.last_bidder;
+  
+  // Get translated product name (fallback to default name)
+  const productName = product.name_translations?.[language] || product.name;
+  const productDescription = product.description_translations?.[language] || product.description;
   
   return (
     <div 
