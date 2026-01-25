@@ -193,6 +193,23 @@ export const translations = {
       offersFound: "offers found",
       noOffers: "No offers found",
       tryAnother: "Try another category or search",
+      priceNote: "RRP = Manufacturer's suggested retail price",
+      auctionOfDay: "Auction of the Day",
+      liveAuctions: "Live Auctions",
+      filters: {
+        live: "Live",
+        beginner: "Beginner",
+        free: "Free",
+        night: "Night",
+        ending: "Ending",
+        vip: "VIP"
+      },
+      beginnerAuctions: "Beginner Auctions",
+      freeAuctions: "Free Auctions",
+      nightAuctions: "Night Auctions",
+      vipAuctions: "VIP Auctions",
+      showAllLive: "Show all live auctions"
+    },
       priceNote: "Retail price = Manufacturer's RRP"
     },
     auctionCard: {
