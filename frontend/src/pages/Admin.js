@@ -657,7 +657,7 @@ export default function Admin() {
 
   const handleToggleBlock = async (userId, currentStatus) => {
     try {
-      await axios.put(`${API}/admin/users/${userId}/toggle-block`, {}, {
+      await axios.put(`${API}/admin/users/${userId}/block`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success(currentStatus ? 'Benutzer entsperrt' : 'Benutzer gesperrt');
