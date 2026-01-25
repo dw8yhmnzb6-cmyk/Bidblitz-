@@ -35,26 +35,52 @@ Build a penny auction website modeled after `dealdash.com` and `snipster.de` wit
 
 ### Key Files
 - `/app/frontend/src/pages/Auctions.js` - Main auction page with stable card positioning
-- `/app/frontend/src/pages/Admin.js` - Admin panel (refactoring in progress)
+- `/app/frontend/src/pages/Admin.js` - Admin panel (refactoring ~50% complete)
+- `/app/frontend/src/components/admin/` - Extracted admin components
 - `/app/backend/server.py` - Main server with bot AI logic
 - `/app/backend/routers/` - API routes
 
 ## Current Session Work (Jan 2025)
 
 ### Completed ✅
-- **Fixed "Jumping" Auction Cards**: Implemented stable positioning using `useRef` to maintain card order across renders
-- **Verified Timer Updates**: Cards show correct HH:MM:SS format, update independently
-- **Expired Auction Removal**: Auctions with 00:00:00 timer correctly removed from grid
+- **Fixed "Jumping" Auction Cards**: Implemented stable positioning using `useRef`
+- **Fixed "Auction of the Day" Timer**: Timer now counts down correctly, expired auctions are replaced
+- **Admin.js Refactoring Progress**:
+  - Extracted `AdminAuctions.js` (~350 lines)
+  - Extracted `AdminVIPAuctions.js` (~230 lines)
+  - Reduced Admin.js from 3993 to 3435 lines (-14%)
 
 ### Test Results
 - Frontend testing: 100% pass rate (9/9 tests)
 - Card stability verified over 30+ seconds observation
-- All filter buttons working correctly
+- Admin Auctions tab fully functional
+
+## Refactoring Status
+
+### Extracted Components ✅
+1. AdminDashboard
+2. AdminProducts
+3. AdminUsers
+4. AdminBots
+5. AdminVouchers
+6. AdminPayments
+7. AdminLogs
+8. **AdminAuctions** (NEW)
+9. **AdminVIPAuctions** (NEW)
+
+### Still in Admin.js (To Extract)
+- AdminStaff
+- AdminEmail
+- AdminPages
+- AdminBanners
+- AdminInfluencers
+- AdminWholesale
+- AdminGameConfig
 
 ## Priority Backlog
 
 ### P1 - High Priority
-- [ ] Complete `Admin.js` refactoring (~30% done, 10+ tabs remaining)
+- [ ] Continue Admin.js refactoring (remaining 7 components)
 
 ### P2 - Medium Priority  
 - [ ] Root cause of "Not Found" toast (mitigated, not resolved)
@@ -72,7 +98,7 @@ Build a penny auction website modeled after `dealdash.com` and `snipster.de` wit
 - **"Not Found" Toast**: Global Axios interceptor suppresses 404 toasts, but root cause unknown
 
 ### Technical Debt
-- `Admin.js` is 4000+ lines - needs component extraction
+- `Admin.js` still has ~3435 lines - needs more component extraction
 - Two user router files with overlapping logic
 
 ## Credentials
