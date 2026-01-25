@@ -276,6 +276,27 @@ async def toggle_guaranteed_winner(user_id: str, admin: dict = Depends(get_admin
         "is_guaranteed_winner": new_status
     }
 
+@router.put("/users/{user_id}/toggle-admin")
+async def toggle_admin_status(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Toggle admin status for a user"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Prevent removing own admin status
+    if user_id == admin["id"]:
+        raise HTTPException(status_code=400, detail="Cannot change your own admin status")
+    
+    new_status = not user.get("is_admin", False)
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"is_admin": new_status}}
+    )
+    
+    logger.info(f"👑 Admin status changed for {user.get('name')}: {new_status}")
+    
+    return {"message": f"Admin-Status {'aktiviert' if new_status else 'deaktiviert'}", "is_admin": new_status}
+
 # ==================== EMAIL MARKETING ====================
 
 @router.get("/email/stats")
