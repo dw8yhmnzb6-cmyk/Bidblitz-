@@ -384,15 +384,21 @@ async def get_page(page_id: str, lang: str = Query(default="de")):
 
 @router.put("/admin/pages/{page_id}")
 async def update_page(page_id: str, data: PageContentUpdate, admin: dict = Depends(get_admin_user)):
-    """Update page content (admin only)"""
+    """Update page content (admin only) - supports language-specific content"""
     now = datetime.now(timezone.utc).isoformat()
+    lang = data.lang or "de"
     
-    # Check if page exists
-    existing = await db.pages.find_one({"page_id": page_id})
+    # Get default title for this language
+    default_content = get_page_content(page_id, lang)
+    default_title = default_content["title"] if default_content else page_id.title()
+    
+    # Check if language-specific page exists
+    existing = await db.pages.find_one({"page_id": page_id, "lang": lang})
     
     update_data = {
         "page_id": page_id,
-        "title": data.title or DEFAULT_PAGES.get(page_id, {}).get("title", page_id.title()),
+        "lang": lang,
+        "title": data.title or default_title,
         "content": data.content,
         "updated_at": now,
         "updated_by": admin["id"]
@@ -400,22 +406,23 @@ async def update_page(page_id: str, data: PageContentUpdate, admin: dict = Depen
     
     if existing:
         await db.pages.update_one(
-            {"page_id": page_id},
+            {"page_id": page_id, "lang": lang},
             {"$set": update_data}
         )
     else:
         update_data["created_at"] = now
         await db.pages.insert_one(update_data)
     
-    logger.info(f"Page '{page_id}' updated by admin {admin['id']}")
+    logger.info(f"Page '{page_id}' ({lang}) updated by admin {admin['id']}")
     
     return {
         "message": f"Seite '{data.title or page_id}' erfolgreich aktualisiert",
-        "page_id": page_id
+        "page_id": page_id,
+        "lang": lang
     }
 
 @router.post("/admin/pages/{page_id}/reset")
-async def reset_page(page_id: str, admin: dict = Depends(get_admin_user)):
+async def reset_page(page_id: str, lang: str = Query(default="de"), admin: dict = Depends(get_admin_user)):
     """Reset page to default content (admin only)"""
     if page_id not in DEFAULT_PAGES:
         raise HTTPException(status_code=404, detail="Keine Standardvorlage für diese Seite")
