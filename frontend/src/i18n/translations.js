@@ -59,7 +59,22 @@ export const translations = {
       offersFound: "Angebote gefunden",
       noOffers: "Keine Angebote gefunden",
       tryAnother: "Versuchen Sie eine andere Kategorie oder Suche",
-      priceNote: "Vergleichspreis = UVP des Herstellers"
+      priceNote: "Vergleichspreis = UVP des Herstellers",
+      auctionOfDay: "Auktion des Tages",
+      liveAuctions: "Live-Auktionen",
+      filters: {
+        live: "Live",
+        beginner: "Anfänger",
+        free: "Gratis",
+        night: "Nacht",
+        ending: "Ende",
+        vip: "VIP"
+      },
+      beginnerAuctions: "Anfänger-Auktionen",
+      freeAuctions: "Gratis-Auktionen",
+      nightAuctions: "Nacht-Auktionen",
+      vipAuctions: "VIP-Auktionen",
+      showAllLive: "Alle Live-Auktionen anzeigen"
     },
     auctionCard: {
       liveNow: "LIVE JETZT", comingSoon: "DEMNÄCHST", ended: "BEENDET",
