@@ -170,41 +170,50 @@ async def websocket_all_auctions_legacy(websocket: WebSocket):
 # ==================== BOT BACKGROUND TASK ====================
 
 async def bot_last_second_bidder():
-    """Background task - bots bid in last seconds until auction price reaches minimum price.
+    """Background task - bots bid continuously until auction price reaches €2-3.
     
     LOGIK:
-    1. STANDARD (kein Zielpreis): Bots bieten bis €2-3, dann hören sie auf
+    1. STANDARD (kein Zielpreis): Bots bieten KONTINUIERLICH bis €2-3
+       - Auktionen bleiben nicht bei €0,01 stecken
        - Echte Kunden können ab €2-3 weitermachen
     2. MIT ZIELPREIS: Bots bieten NUR in den letzten 2-3 Sekunden bis zum Zielpreis
        - Das "sperrt" den Endpreis, echte Kunden haben keine Chance mehr
     """
     global bot_task_running
     
-    logger.info("Bot bidder started - Standard: €2-3, Mit Zielpreis: Spätes Bieten zum Sperren")
+    logger.info("Bot bidder started - Kontinuierliches Bieten bis €2-3")
     last_bot_per_auction = {}
+    last_bid_time_per_auction = {}
     
     # Default price range for auctions WITHOUT explicit target (2.00 - 3.00 Euro)
     DEFAULT_MIN_PRICE = 2.00
     DEFAULT_MAX_PRICE = 3.00
+    
+    # Minimum time between bot bids on same auction (to look realistic)
+    MIN_BID_INTERVAL = 2.0  # seconds
     
     while bot_task_running:
         try:
             # Get ALL active auctions
             active_auctions = await db.auctions.find({
                 "status": "active"
-            }, {"_id": 0}).to_list(100)
+            }, {"_id": 0}).to_list(200)
+            
+            now = datetime.now(timezone.utc)
             
             for auction in active_auctions:
                 try:
                     # CHECK BUSINESS HOURS - Bots don't bid outside 9:00-24:00
-                    now_utc = datetime.now(timezone.utc)
-                    berlin_hour = (now_utc.hour + 1) % 24  # Approximate Berlin time
-                    if berlin_hour < 9 or berlin_hour >= 24:
+                    berlin_hour = (now.hour + 1) % 24  # Approximate Berlin time
+                    if berlin_hour < 9:
                         continue  # Skip bidding outside business hours
                     
                     end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
-                    now = datetime.now(timezone.utc)
                     seconds_left = (end_time - now).total_seconds()
+                    
+                    # Skip if auction already ended
+                    if seconds_left <= 0:
+                        continue
                     
                     current_price = auction.get("current_price", 0)
                     auction_id = auction.get("id")
@@ -216,18 +225,29 @@ async def bot_last_second_bidder():
                     if guaranteed_winner_id and auction.get("last_bidder_id") == guaranteed_winner_id:
                         continue
                     
+                    # Check if enough time has passed since last bot bid on this auction
+                    last_bid_time = last_bid_time_per_auction.get(auction_id, 0)
+                    time_since_last_bid = (now.timestamp() - last_bid_time)
+                    
                     should_bid = False
                     target_price = 0
                     
                     if explicit_target > 0:
                         # MODUS 2: Mit Zielpreis - NUR in letzten 2-3 Sekunden bieten (SPERRE!)
-                        # Das verhindert dass echte Kunden noch überbiten können
                         if 1 <= seconds_left <= 3:
                             target_price = explicit_target
                             if current_price < target_price:
                                 should_bid = True
                     else:
-                        # MODUS 1: Standard - Bots bieten bis €2-3, dann aufhören
+                        # MODUS 1: Standard - Bots bieten KONTINUIERLICH bis €2-3
+                        # Use auction ID hash for consistent target
+                        hash_val = hash(auction_id) % 100
+                        target_price = DEFAULT_MIN_PRICE + (hash_val / 100) * (DEFAULT_MAX_PRICE - DEFAULT_MIN_PRICE)
+                        target_price = round(target_price, 2)
+                        
+                        # Bid if price is below target AND enough time passed since last bid
+                        if current_price < target_price and time_since_last_bid >= MIN_BID_INTERVAL:
+                            should_bid = True
                         # Echte Kunden können ab €2-3 weitermachen
                         if 1 <= seconds_left <= 5:
                             # Use auction ID hash to keep consistent target for same auction
