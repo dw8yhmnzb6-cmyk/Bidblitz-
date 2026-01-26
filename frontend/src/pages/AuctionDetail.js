@@ -443,8 +443,8 @@ export default function AuctionDetail() {
                 className="w-full h-full object-cover"
               />
               {isEnded ? (
-                <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-[#EF4444] text-white font-bold">
-                  {t('auctions.ended')}
+                <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-[#F59E0B] text-white font-bold animate-pulse">
+                  ↻ Neustart...
                 </div>
               ) : isScheduled ? (
                 <div className="absolute top-4 right-4 px-4 py-2 rounded-full bg-[#F59E0B] text-white font-bold">
