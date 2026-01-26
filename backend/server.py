@@ -303,8 +303,7 @@ async def bot_last_second_bidder():
                                 "bidder_message": f"{bot['name']} hat geboten!"
                             })
                             
-                            mode = "SPERRE" if explicit_target > 0 else "STANDARD"
-                            logger.debug(f"[{mode}] Bot '{bot['name']}' bid €{new_price:.2f} on {auction_id[:8]}... (target: €{target_price:.2f})")
+                            logger.info(f"🤖 Bot '{bot['name']}' bid €{new_price:.2f} (target: €{target_price:.2f})")
                             
                 except Exception as e:
                     logger.error(f"Bot bid error for {auction.get('id')}: {e}")
