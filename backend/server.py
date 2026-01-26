@@ -203,10 +203,7 @@ async def bot_last_second_bidder():
             
             for auction in active_auctions:
                 try:
-                    # CHECK BUSINESS HOURS - Bots don't bid outside 9:00-24:00
-                    berlin_hour = (now.hour + 1) % 24  # Approximate Berlin time
-                    if berlin_hour < 9:
-                        continue  # Skip bidding outside business hours
+                    # NOTE: Bots bid 24/7 - no business hours restriction
                     
                     end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
                     seconds_left = (end_time - now).total_seconds()
