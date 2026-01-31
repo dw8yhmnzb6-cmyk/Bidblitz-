@@ -141,25 +141,22 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 3. Data persistence may be lost on server restart
 
 ## Last Updated
-January 31, 2026 (Session 2)
+January 31, 2026 (Session 3)
 
 ## Changelog
+- 2026-01-31: **FEATURE** Influencer Staffelprovisionen (Tiered Commissions)
+  - Bronze: 0-10 Kunden (Basis), Silber: 11-50 (+2%), Gold: 51-100 (+3%), Platin: 100+ (+5%)
+  - Backend calculates effective commission based on unique customers
+  - Frontend shows tier badges, bonuses, and progress to next tier
+- 2026-01-31: **FIXED** Bot-Bieten für neue Auktionen
+  - `/bid-to-price` endpoint now works for scheduled auctions (saves target for later)
+  - Returns success message instead of error for non-active auctions
+- 2026-01-31: **FIXED** WebSocket URLs corrected
+  - Changed `/ws/auctions/all_auctions` to `/api/ws/auctions` in Home.js, Auctions.js, VIPAuctions.js
+  - Fixes "Connection refused" errors in browser console
 - 2026-01-31: **MAJOR REFACTOR** Admin.js reduced from 3461 to 2118 lines (-39%)
-  - Extracted AdminPages component (pages management)
-  - Extracted AdminBanners component (banner management)
-  - Extracted AdminInfluencers component (influencer management)
-  - Extracted AdminWholesale component (B2B customer management)
-  - Extracted AdminGameConfig component (game settings)
+  - Extracted AdminPages, AdminBanners, AdminInfluencers, AdminWholesale, AdminGameConfig
   - All 16 admin components now in /app/frontend/src/components/admin/
-- 2026-01-31: **REFACTORED** User routers consolidated
-  - Merged `/app/backend/routers/users.py` into `/app/backend/routers/user.py`
-  - Added backward-compatible endpoints (/users/* → /user/*)
-  - Deleted redundant `users.py` file
-  - Added `process_referral_reward` helper function
-- 2026-01-31: **IMPROVED** 404 Toast debugging
-  - Added detailed URL logging in axiosConfig.js
-  - Added EXPECTED_404_PATTERNS to suppress known false positives
-  - Identified WebSocket connection issue as potential source
 - 2026-01-31: **FIXED** Voice command "Erstelle X Bots mit Y Namen" now correctly parsed as `create_bots`
   - Improved GPT prompt with clear distinction between create_bots vs start_bots/stop_bots
   - Added trigger words documentation in system prompt
