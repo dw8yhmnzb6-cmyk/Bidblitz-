@@ -363,12 +363,12 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-white">Bot-Mindestpreis (€)</Label>
-                <Input type="number" step="0.10" min="0" placeholder="z.B. 2.50"
+                <Label className="text-white">Bots bieten bis (€)</Label>
+                <Input type="number" step="0.10" min="0" placeholder="z.B. 20.00"
                   value={newAuction.bot_target_price} 
                   onChange={(e) => setNewAuction({...newAuction, bot_target_price: e.target.value})} 
                   className="bg-[#0F0F16] border-white/10 text-white" />
-                <p className="text-[#94A3B8] text-sm">Bots bieten bis zu diesem Preis. Leer = keine Bots.</p>
+                <p className="text-[#94A3B8] text-sm">Bots bieten kontinuierlich bis dieser Preis erreicht ist. Leer = Standard €2-3.</p>
               </div>
               <div className="flex items-center gap-3 p-4 rounded-lg bg-[#0F0F16]">
                 <Zap className="w-8 h-8 text-[#FFD700]" />
@@ -378,6 +378,64 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Auction Type Settings */}
+          <div className="p-4 rounded-lg bg-[#181824] space-y-4">
+            <div className="flex items-center gap-2 text-[#7C3AED]">
+              <Sun className="w-5 h-5" />
+              <span className="font-medium">Auktionstyp</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                type="button"
+                onClick={() => setNewAuction({...newAuction, auction_type: 'day', is_vip_only: false})}
+                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
+                  newAuction.auction_type === 'day'
+                    ? 'border-[#F59E0B] bg-[#F59E0B]/10'
+                    : 'border-[#2D2D3D] bg-[#0F0F16] hover:border-[#3D3D4D]'
+                }`}
+              >
+                <Sun className={`w-8 h-8 ${newAuction.auction_type === 'day' ? 'text-[#F59E0B]' : 'text-[#94A3B8]'}`} />
+                <span className={`font-bold ${newAuction.auction_type === 'day' ? 'text-white' : 'text-[#94A3B8]'}`}>
+                  Tagesaktion
+                </span>
+                <span className="text-xs text-[#666]">06:00 - 23:30 Uhr</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setNewAuction({...newAuction, auction_type: 'night', is_vip_only: false})}
+                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
+                  newAuction.auction_type === 'night'
+                    ? 'border-[#7C3AED] bg-[#7C3AED]/10'
+                    : 'border-[#2D2D3D] bg-[#0F0F16] hover:border-[#3D3D4D]'
+                }`}
+              >
+                <Moon className={`w-8 h-8 ${newAuction.auction_type === 'night' ? 'text-[#7C3AED]' : 'text-[#94A3B8]'}`} />
+                <span className={`font-bold ${newAuction.auction_type === 'night' ? 'text-white' : 'text-[#94A3B8]'}`}>
+                  Nachtaktion
+                </span>
+                <span className="text-xs text-[#666]">23:30 - 06:00 Uhr</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setNewAuction({...newAuction, auction_type: 'vip', is_vip_only: true})}
+                className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center gap-2 ${
+                  newAuction.auction_type === 'vip'
+                    ? 'border-[#FFD700] bg-[#FFD700]/10'
+                    : 'border-[#2D2D3D] bg-[#0F0F16] hover:border-[#3D3D4D]'
+                }`}
+              >
+                <Crown className={`w-8 h-8 ${newAuction.auction_type === 'vip' ? 'text-[#FFD700]' : 'text-[#94A3B8]'}`} />
+                <span className={`font-bold ${newAuction.auction_type === 'vip' ? 'text-white' : 'text-[#94A3B8]'}`}>
+                  VIP-Aktion
+                </span>
+                <span className="text-xs text-[#666]">Nur für VIP-Mitglieder</span>
+              </button>
+            </div>
+          </div>
           </div>
 
           {/* Auto-Restart Settings */}
