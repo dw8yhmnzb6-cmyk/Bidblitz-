@@ -310,6 +310,7 @@ const StatsBar = memo(({ totalBids, activeUsers, activeAuctions }) => (
 
 export default function Home() {
   const { isAuthenticated, token, updateBidsBalance } = useAuth();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   
   const [auctions, setAuctions] = useState([]);
