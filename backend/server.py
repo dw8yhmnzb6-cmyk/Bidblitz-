@@ -236,21 +236,21 @@ async def bot_last_second_bidder():
                     should_bid = False
                     target_price = 0
                     
-                    # Calculate default target (€2-3 range based on auction ID)
-                    hash_val = hash(auction_id) % 100
-                    default_target = DEFAULT_MIN_PRICE + (hash_val / 100) * (DEFAULT_MAX_PRICE - DEFAULT_MIN_PRICE)
-                    default_target = round(default_target, 2)
-                    
-                    # ALWAYS bid up to €2-3 first (regardless of explicit target)
-                    if current_price < default_target and time_since_last_bid >= MIN_BID_INTERVAL:
-                        target_price = default_target
-                        should_bid = True
-                    
-                    # Then, if explicit target is higher than current price AND we're in last 2-3 seconds
-                    # Use the explicit target (SPERRE mode)
+                    # Check if explicit target is set for this auction
+                    # If set, this is the MAXIMUM price bots will bid to
                     if explicit_target and explicit_target > 0:
-                        if 1 <= seconds_left <= 3 and current_price < explicit_target:
+                        # Bot-Zielpreis ist gesetzt - Bots bieten kontinuierlich BIS zu diesem Preis
+                        if current_price < explicit_target and time_since_last_bid >= MIN_BID_INTERVAL:
                             target_price = explicit_target
+                            should_bid = True
+                    else:
+                        # Kein Zielpreis gesetzt - verwende Standard €2-3 Range
+                        hash_val = hash(auction_id) % 100
+                        default_target = DEFAULT_MIN_PRICE + (hash_val / 100) * (DEFAULT_MAX_PRICE - DEFAULT_MIN_PRICE)
+                        default_target = round(default_target, 2)
+                        
+                        if current_price < default_target and time_since_last_bid >= MIN_BID_INTERVAL:
+                            target_price = default_target
                             should_bid = True
                     
                     if should_bid:
