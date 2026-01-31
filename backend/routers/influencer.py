@@ -564,6 +564,36 @@ async def get_payout_history(code: str):
     
     return payouts
 
+# ==================== IN-APP NOTIFICATIONS ====================
+
+@router.get("/notifications/{code}")
+async def get_influencer_notifications(code: str, limit: int = 20):
+    """Get in-app notifications for an influencer"""
+    notifications = await db.influencer_notifications.find(
+        {"influencer_code": code.lower()},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    return notifications
+
+@router.get("/notifications/{code}/unread-count")
+async def get_unread_notification_count(code: str):
+    """Get count of unread notifications"""
+    count = await db.influencer_notifications.count_documents({
+        "influencer_code": code.lower(),
+        "read": False
+    })
+    return {"unread_count": count}
+
+@router.post("/notifications/{code}/mark-read")
+async def mark_notifications_read(code: str):
+    """Mark all notifications as read"""
+    result = await db.influencer_notifications.update_many(
+        {"influencer_code": code.lower(), "read": False},
+        {"$set": {"read": True}}
+    )
+    return {"marked_read": result.modified_count}
+
 # ==================== HELPER FUNCTIONS ====================
 
 async def record_influencer_purchase(user_id: str, purchase_amount: float):
