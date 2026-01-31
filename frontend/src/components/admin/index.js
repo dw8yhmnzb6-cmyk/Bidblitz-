@@ -11,10 +11,10 @@ export { default as AdminLogs } from './AdminLogs';
 export { AdminAuctions } from './AdminAuctions';
 export { AdminVIPAuctions } from './AdminVIPAuctions';
 export { default as AdminVoiceCommand } from './AdminVoiceCommand';
+export { AdminEmail } from './AdminEmail';
 
 // Components still embedded in Admin.js (to be extracted):
 // - AdminStaff
-// - AdminEmail
 // - AdminPages
 // - AdminBanners
 // - AdminInfluencers
