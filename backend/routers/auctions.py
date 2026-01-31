@@ -95,21 +95,34 @@ async def get_featured_auction():
 @router.get("/auctions")
 async def get_auctions():
     """Get all auctions with product details"""
-    auctions = await db.auctions.find({}, {"_id": 0}).sort("created_at", -1).to_list(500)
+    # Include active, day_paused, and night_paused auctions
+    auctions = await db.auctions.find(
+        {"status": {"$in": ["active", "day_paused", "night_paused", "ended", "scheduled"]}},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(500)
     
-    # Check if currently night time
+    # Check if currently night time (Berlin Time)
     now_berlin = datetime.now(timezone.utc) + timedelta(hours=1)
     current_hour = now_berlin.hour + now_berlin.minute / 60
     is_night_time = current_hour >= 23.5 or current_hour < 6
     
-    # Attach product info and night status
+    # Attach product info and pause status
     for auction in auctions:
         product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
         if product:
             auction["product"] = product
         
-        # Mark night auctions as paused during day
-        if auction.get("is_night_auction") and not is_night_time:
+        # Mark paused auctions with appropriate message
+        if auction.get("status") == "day_paused":
+            auction["is_paused"] = True
+            auction["pause_message"] = "☀️ Aktiv ab 06:00 Uhr"
+            auction["pause_type"] = "night_only"
+        elif auction.get("status") == "night_paused":
+            auction["is_paused"] = True
+            auction["pause_message"] = "🌙 Aktiv ab 23:30 Uhr"
+            auction["pause_type"] = "day_only"
+        elif auction.get("is_night_auction") and not is_night_time:
+            # Legacy support for auctions marked as night but not properly paused
             auction["is_night_paused"] = True
             auction["night_message"] = "🌙 Nur 23:30-06:00 Uhr"
     
