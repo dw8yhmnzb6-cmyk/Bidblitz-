@@ -442,7 +442,7 @@ export default function AuctionDetail() {
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-[#181824]">
               <img
                 src={product.image_url || 'https://via.placeholder.com/600'}
-                alt={product.name}
+                alt={productName}
                 className="w-full h-full object-cover"
               />
               {isEnded ? (
@@ -479,7 +479,7 @@ export default function AuctionDetail() {
                   </div>
                 </div>
               </div>
-              <p className="text-[#94A3B8]">{product.description}</p>
+              <p className="text-[#94A3B8]">{productDescription}</p>
             </div>
           </div>
 
@@ -487,7 +487,7 @@ export default function AuctionDetail() {
           <div className="space-y-6">
             <div>
               <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2" data-testid="auction-title">
-                {product.name}
+                {productName}
               </h1>
               <p className="text-[#94A3B8]">Auktion #{auction.id.slice(0, 8)}</p>
             </div>
