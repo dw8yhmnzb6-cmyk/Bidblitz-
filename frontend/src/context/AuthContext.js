@@ -55,8 +55,16 @@ export const AuthProvider = ({ children }) => {
     return userData;
   };
 
+  // Login for influencers - sets token and user from influencer login response
+  const loginAsInfluencer = (tokenData, userData) => {
+    localStorage.setItem('token', tokenData);
+    setToken(tokenData);
+    setUser(userData);
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('influencer_data');
     setToken(null);
     setUser(null);
   };
@@ -85,11 +93,14 @@ export const AuthProvider = ({ children }) => {
       login, 
       register, 
       logout, 
+      loginAsInfluencer,
       updateBidsBalance,
       refreshUser,
       updateUser,
       isAuthenticated: !!user,
-      isAdmin: user?.is_admin || false
+      isAdmin: user?.is_admin || false,
+      isInfluencer: user?.is_influencer || false,
+      isVip: user?.is_vip || false
     }}>
       {children}
     </AuthContext.Provider>
