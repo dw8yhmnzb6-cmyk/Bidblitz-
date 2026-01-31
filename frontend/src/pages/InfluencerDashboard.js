@@ -8,7 +8,8 @@ import { Label } from '../components/ui/label';
 import { 
   Star, TrendingUp, Users, DollarSign, BarChart3, 
   Copy, Check, Eye, ShoppingCart, Calendar, ArrowRight,
-  Instagram, Youtube, Clock, Zap, Gift, LogOut, Gavel, Crown
+  Instagram, Youtube, Clock, Zap, Gift, LogOut, Gavel, Crown,
+  Wallet, CreditCard, Building, History
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -22,6 +23,17 @@ export default function InfluencerDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  
+  // Payout states
+  const [payoutBalance, setPayoutBalance] = useState(null);
+  const [showPayoutModal, setShowPayoutModal] = useState(false);
+  const [payoutMethod, setPayoutMethod] = useState('bank_transfer');
+  const [payoutAmount, setPayoutAmount] = useState('');
+  const [bankIban, setBankIban] = useState('');
+  const [bankName, setBankName] = useState('');
+  const [paypalEmail, setPaypalEmail] = useState('');
+  const [payoutHistory, setPayoutHistory] = useState([]);
+  const [payoutLoading, setPayoutLoading] = useState(false);
   
   // Login form
   const [loginCode, setLoginCode] = useState('');
