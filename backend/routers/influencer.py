@@ -534,6 +534,19 @@ async def request_payout_for_influencer(code: str, data: PayoutRequest):
     
     logger.info(f"💸 Payout request: {influencer['name']} - €{data.amount} via {data.payment_method}")
     
+    # Send confirmation email to influencer
+    if influencer.get("email"):
+        try:
+            await send_influencer_payout_confirmation(
+                influencer_email=influencer["email"],
+                influencer_name=influencer["name"],
+                payout_amount=data.amount,
+                payment_method=data.payment_method,
+                payout_id=payout["id"]
+            )
+        except Exception as e:
+            logger.error(f"Failed to send payout confirmation email: {e}")
+    
     return {
         "success": True,
         "message": f"Auszahlungsanfrage über €{data.amount:.2f} wurde eingereicht",
