@@ -119,3 +119,201 @@ async def send_password_reset_email(to_email: str, reset_code: str, user_name: s
         subject=f"Ihr Passwort-Reset-Code: {reset_code}",
         html_content=html_content
     )
+
+# ==================== INFLUENCER EMAIL NOTIFICATIONS ====================
+
+async def send_influencer_new_sale_notification(
+    influencer_email: str,
+    influencer_name: str,
+    customer_name: str,
+    purchase_amount: float,
+    commission_rate: float,
+    commission_earned: float,
+    total_commission: float
+):
+    """Send notification to influencer when a referred customer makes a purchase."""
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff;">
+            <tr>
+                <td style="background:linear-gradient(135deg,#FFD700,#FFA500); padding:30px; text-align:center;">
+                    <h1 style="color:#111; margin:0; font-size:28px;">💰 Neue Provision!</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:30px;">
+                    <p style="font-size:18px; color:#333;">Hallo <strong>{influencer_name}</strong>,</p>
+                    <p style="font-size:16px; color:#555;">Großartige Neuigkeiten! Ein von Ihnen geworbener Kunde hat eingekauft! 🎉</p>
+                    
+                    <table width="100%" style="background:#f9f9f9; border-radius:10px; padding:20px; margin:20px 0;">
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Kunde:</p>
+                            <p style="margin:5px 0 0; font-size:18px; color:#333; font-weight:bold;">{customer_name}</p>
+                        </td></tr>
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Kaufbetrag:</p>
+                            <p style="margin:5px 0 0; font-size:18px; color:#333;">€{purchase_amount:.2f}</p>
+                        </td></tr>
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Ihre Provision ({commission_rate:.0f}%):</p>
+                            <p style="margin:5px 0 0; font-size:28px; color:#10B981; font-weight:bold;">+€{commission_earned:.2f}</p>
+                        </td></tr>
+                    </table>
+                    
+                    <div style="background:#FFF9E6; border-left:4px solid #FFD700; padding:15px; margin:20px 0; border-radius:0 10px 10px 0;">
+                        <p style="margin:0; font-size:14px; color:#555;">
+                            <strong>Gesamt verfügbare Provision:</strong><br>
+                            <span style="font-size:24px; color:#333; font-weight:bold;">€{total_commission:.2f}</span>
+                        </p>
+                        <p style="margin:10px 0 0; font-size:12px; color:#888;">
+                            Ab €50.00 können Sie eine Auszahlung anfordern.
+                        </p>
+                    </div>
+                    
+                    <div style="text-align:center; margin-top:30px;">
+                        <a href="https://bidblitz.de/influencer-dashboard" 
+                           style="display:inline-block; background:#FFD700; color:#111; padding:15px 30px; 
+                                  text-decoration:none; border-radius:8px; font-weight:bold; font-size:16px;">
+                            Zum Dashboard →
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="background:#f5f5f5; padding:20px; text-align:center;">
+                    <p style="margin:0; font-size:12px; color:#888;">
+                        Vielen Dank, dass Sie Teil des BidBlitz Influencer-Programms sind!
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=influencer_email,
+        subject=f"💰 Neue Provision: +€{commission_earned:.2f} von {customer_name}",
+        html_content=html_content
+    )
+
+async def send_influencer_new_signup_notification(
+    influencer_email: str,
+    influencer_name: str,
+    new_user_name: str
+):
+    """Send notification to influencer when someone signs up with their code."""
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff;">
+            <tr>
+                <td style="background:linear-gradient(135deg,#7C3AED,#A855F7); padding:30px; text-align:center;">
+                    <h1 style="color:#fff; margin:0; font-size:28px;">🌟 Neuer Follower!</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:30px;">
+                    <p style="font-size:18px; color:#333;">Hallo <strong>{influencer_name}</strong>,</p>
+                    <p style="font-size:16px; color:#555;">
+                        Jemand hat sich mit Ihrem Influencer-Code registriert! 🎉
+                    </p>
+                    
+                    <div style="background:#f0f0ff; border-radius:10px; padding:20px; margin:20px 0; text-align:center;">
+                        <p style="margin:0; font-size:14px; color:#888;">Neues Mitglied:</p>
+                        <p style="margin:10px 0 0; font-size:24px; color:#7C3AED; font-weight:bold;">{new_user_name}</p>
+                    </div>
+                    
+                    <p style="font-size:14px; color:#555;">
+                        Bei jedem Kauf dieses Kunden erhalten Sie automatisch Provision! 
+                        Weiter so! 💪
+                    </p>
+                    
+                    <div style="text-align:center; margin-top:30px;">
+                        <a href="https://bidblitz.de/influencer-dashboard" 
+                           style="display:inline-block; background:#7C3AED; color:#fff; padding:15px 30px; 
+                                  text-decoration:none; border-radius:8px; font-weight:bold; font-size:16px;">
+                            Dashboard ansehen →
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=influencer_email,
+        subject=f"🌟 Neuer Follower: {new_user_name} hat sich registriert!",
+        html_content=html_content
+    )
+
+async def send_influencer_payout_confirmation(
+    influencer_email: str,
+    influencer_name: str,
+    payout_amount: float,
+    payment_method: str,
+    payout_id: str
+):
+    """Send confirmation when influencer requests a payout."""
+    method_text = "Banküberweisung" if payment_method == "bank_transfer" else "PayPal"
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff;">
+            <tr>
+                <td style="background:linear-gradient(135deg,#10B981,#059669); padding:30px; text-align:center;">
+                    <h1 style="color:#fff; margin:0; font-size:28px;">✓ Auszahlung beantragt</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:30px;">
+                    <p style="font-size:18px; color:#333;">Hallo <strong>{influencer_name}</strong>,</p>
+                    <p style="font-size:16px; color:#555;">
+                        Ihre Auszahlungsanfrage wurde erfolgreich eingereicht.
+                    </p>
+                    
+                    <table width="100%" style="background:#f9f9f9; border-radius:10px; padding:20px; margin:20px 0;">
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Betrag:</p>
+                            <p style="margin:5px 0 0; font-size:28px; color:#10B981; font-weight:bold;">€{payout_amount:.2f}</p>
+                        </td></tr>
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Zahlungsmethode:</p>
+                            <p style="margin:5px 0 0; font-size:18px; color:#333;">{method_text}</p>
+                        </td></tr>
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Referenz-ID:</p>
+                            <p style="margin:5px 0 0; font-size:14px; color:#888; font-family:monospace;">{payout_id}</p>
+                        </td></tr>
+                    </table>
+                    
+                    <div style="background:#FFF9E6; border-left:4px solid #F59E0B; padding:15px; margin:20px 0; border-radius:0 10px 10px 0;">
+                        <p style="margin:0; font-size:14px; color:#555;">
+                            <strong>Nächste Schritte:</strong><br>
+                            Unser Team wird Ihre Anfrage innerhalb von 1-3 Werktagen bearbeiten.
+                            Sie erhalten eine weitere Benachrichtigung, sobald die Zahlung veranlasst wurde.
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=influencer_email,
+        subject=f"✓ Auszahlung beantragt: €{payout_amount:.2f}",
+        html_content=html_content
+    )
+
