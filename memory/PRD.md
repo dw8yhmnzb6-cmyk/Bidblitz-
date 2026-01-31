@@ -144,6 +144,12 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 January 31, 2026 (Session 3)
 
 ## Changelog
+- 2026-01-31: **FEATURE** Influencer Dashboard komplett überarbeitet
+  - Login mit E-Mail + Code zur Statistik-Ansicht
+  - Tier-Fortschritt mit visueller Progress-Bar
+  - Statistiken: Kunden, Umsatz, Provision, Käufe
+  - Letzte Aktivitäten mit Kunden-Details
+  - Tipps für mehr Erfolg
 - 2026-01-31: **FEATURE** Influencer Staffelprovisionen (Tiered Commissions)
   - Bronze: 0-10 Kunden (Basis), Silber: 11-50 (+2%), Gold: 51-100 (+3%), Platin: 100+ (+5%)
   - Backend calculates effective commission based on unique customers
