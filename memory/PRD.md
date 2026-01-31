@@ -147,3 +147,7 @@ January 31, 2026
 - 2026-01-31: Fixed "NEUSTART" display issue - now shows "BEENDET" for ended auctions
 - 2026-01-31: Tested and verified all 23 admin voice commands
 - 2026-01-31: Added translation keys for auctionEnded in DE and EN
+- 2026-01-31: Added BATCH COMMAND support - combine multiple actions in one command
+- 2026-01-31: Fixed create_auctions bug with product name/description structure
+- 2026-01-31: Improved delete_auctions logic for status="all"
+- 2026-01-31: Added new voice command examples in admin UI
