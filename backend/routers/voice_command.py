@@ -182,6 +182,45 @@ Beispiele:
 async def execute_command(action: str, parameters: dict, admin: dict) -> dict:
     """Execute the parsed command"""
     
+    # ==================== BATCH COMMAND ====================
+    if action == "batch":
+        actions = parameters.get("actions", [])
+        if not actions:
+            return {"success": False, "message": "❌ Keine Aktionen im Batch angegeben"}
+        
+        results = []
+        all_success = True
+        
+        for sub_action in actions:
+            sub_action_name = sub_action.get("action")
+            sub_params = sub_action.get("parameters", {})
+            
+            try:
+                result = await execute_command(sub_action_name, sub_params, admin)
+                results.append({
+                    "action": sub_action_name,
+                    "result": result
+                })
+                if not result.get("success"):
+                    all_success = False
+            except Exception as e:
+                results.append({
+                    "action": sub_action_name,
+                    "result": {"success": False, "message": f"Fehler: {str(e)}"}
+                })
+                all_success = False
+        
+        # Build summary message
+        messages = [r["result"].get("message", "") for r in results]
+        summary = " | ".join(messages)
+        
+        logger.info(f"🎤 Voice command: Batch executed {len(actions)} actions by {admin['name']}")
+        return {
+            "success": all_success,
+            "message": f"📦 Batch ({len(actions)} Aktionen): {summary}",
+            "data": {"results": results}
+        }
+    
     if action == "create_auctions":
         count = parameters.get("count", 10)
         count = min(count, 100)  # Max 100 at a time
