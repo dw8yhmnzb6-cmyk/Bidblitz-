@@ -330,23 +330,71 @@ async def get_influencer_public_stats(code: str):
     if not influencer:
         raise HTTPException(status_code=404, detail="Influencer nicht gefunden")
     
+    # Get unique customers
+    unique_customers = await db.influencer_uses.distinct("user_id", {"influencer_code": code.lower()})
+    total_customers = len(unique_customers)
+    
     # Get all uses
     uses = await db.influencer_uses.find(
         {"influencer_code": code.lower()},
         {"_id": 0}
-    ).sort("created_at", -1).to_list(100)
+    ).sort("created_at", -1).to_list(500)
     
     total_revenue = sum(u.get("purchase_amount", 0) for u in uses)
-    total_commission = total_revenue * (influencer.get("commission_percent", 10) / 100)
     total_purchases = len([u for u in uses if u.get("purchase_amount", 0) > 0])
     
+    # Calculate tiered commission
+    base_commission = influencer.get("commission_percent", 10)
+    custom_tiers = influencer.get("custom_tiers")
+    commission_info = calculate_effective_commission(base_commission, total_customers, custom_tiers)
+    
+    effective_rate = commission_info["effective_commission"]
+    total_commission = total_revenue * (effective_rate / 100)
+    
+    # Get daily stats for chart (last 30 days)
+    daily_stats = {}
+    for use in uses:
+        created_at = use.get("created_at", "")
+        if created_at:
+            date = created_at[:10]
+            if date not in daily_stats:
+                daily_stats[date] = {"signups": 0, "revenue": 0, "purchases": 0}
+            daily_stats[date]["signups"] += 1
+            if use.get("purchase_amount", 0) > 0:
+                daily_stats[date]["revenue"] += use.get("purchase_amount", 0)
+                daily_stats[date]["purchases"] += 1
+    
+    # Format recent activity with customer names
+    recent_activity = []
+    for use in uses[:20]:
+        customer = await db.users.find_one(
+            {"id": use.get("user_id")},
+            {"_id": 0, "name": 1, "email": 1}
+        )
+        recent_activity.append({
+            "type": "purchase" if use.get("purchase_amount", 0) > 0 else "signup",
+            "customer_name": customer.get("name", "Unbekannt") if customer else "Unbekannt",
+            "amount": use.get("purchase_amount", 0),
+            "commission": use.get("purchase_amount", 0) * (effective_rate / 100) if use.get("purchase_amount") else 0,
+            "date": use.get("created_at", "")
+        })
+    
     return {
+        "influencer_name": influencer.get("name"),
+        "code": influencer.get("code"),
+        "total_customers": total_customers,
         "total_uses": len(uses),
         "total_purchases": total_purchases,
         "total_revenue": round(total_revenue, 2),
         "total_commission": round(total_commission, 2),
-        "commission_percent": influencer.get("commission_percent", 10),
-        "recent_uses": uses[:10]  # Last 10 uses
+        "base_commission": base_commission,
+        "effective_commission": effective_rate,
+        "tier_bonus": commission_info["tier_bonus"],
+        "current_tier": commission_info["current_tier"],
+        "next_tier_at": commission_info["next_tier_at"],
+        "customers_to_next_tier": (commission_info["next_tier_at"] - total_customers) if commission_info["next_tier_at"] else 0,
+        "daily_stats": daily_stats,
+        "recent_activity": recent_activity
     }
 
 class InfluencerApply(BaseModel):
