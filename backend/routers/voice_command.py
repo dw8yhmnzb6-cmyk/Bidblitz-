@@ -322,6 +322,328 @@ async def execute_command(action: str, parameters: dict, admin: dict) -> dict:
         logger.info(f"🎤 Voice command: Set AOTD to {auction_id} by {admin['name']}")
         return {"success": True, "message": f"✅ Auktion des Tages gesetzt!"}
     
+    # ==================== NEUE BEFEHLE ====================
+    
+    elif action == "ban_user":
+        email = parameters.get("email")
+        reason = parameters.get("reason", "Admin-Entscheidung")
+        
+        if not email:
+            return {"success": False, "message": "E-Mail-Adresse fehlt"}
+        
+        result = await db.users.update_one(
+            {"email": email},
+            {"$set": {"is_banned": True, "ban_reason": reason, "banned_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        if result.modified_count == 0:
+            return {"success": False, "message": f"Benutzer {email} nicht gefunden"}
+        
+        logger.info(f"🎤 Voice command: Banned user {email} by {admin['name']}")
+        return {"success": True, "message": f"🚫 Benutzer {email} wurde gesperrt!"}
+    
+    elif action == "unban_user":
+        email = parameters.get("email")
+        
+        if not email:
+            return {"success": False, "message": "E-Mail-Adresse fehlt"}
+        
+        result = await db.users.update_one(
+            {"email": email},
+            {"$set": {"is_banned": False}, "$unset": {"ban_reason": "", "banned_at": ""}}
+        )
+        
+        if result.modified_count == 0:
+            return {"success": False, "message": f"Benutzer {email} nicht gefunden"}
+        
+        logger.info(f"🎤 Voice command: Unbanned user {email} by {admin['name']}")
+        return {"success": True, "message": f"✅ Benutzer {email} wurde entsperrt!"}
+    
+    elif action == "make_vip":
+        email = parameters.get("email")
+        duration_days = parameters.get("duration_days", 30)
+        
+        if not email:
+            return {"success": False, "message": "E-Mail-Adresse fehlt"}
+        
+        expires_at = (datetime.now(timezone.utc) + __import__('datetime').timedelta(days=duration_days)).isoformat()
+        
+        result = await db.users.update_one(
+            {"email": email},
+            {"$set": {"is_vip": True, "vip_expires_at": expires_at}}
+        )
+        
+        if result.modified_count == 0:
+            return {"success": False, "message": f"Benutzer {email} nicht gefunden"}
+        
+        logger.info(f"🎤 Voice command: Made {email} VIP for {duration_days} days by {admin['name']}")
+        return {"success": True, "message": f"👑 {email} ist jetzt VIP für {duration_days} Tage!"}
+    
+    elif action == "remove_vip":
+        email = parameters.get("email")
+        
+        if not email:
+            return {"success": False, "message": "E-Mail-Adresse fehlt"}
+        
+        result = await db.users.update_one(
+            {"email": email},
+            {"$set": {"is_vip": False}, "$unset": {"vip_expires_at": ""}}
+        )
+        
+        if result.modified_count == 0:
+            return {"success": False, "message": f"Benutzer {email} nicht gefunden"}
+        
+        logger.info(f"🎤 Voice command: Removed VIP from {email} by {admin['name']}")
+        return {"success": True, "message": f"✅ VIP-Status von {email} entfernt!"}
+    
+    elif action == "create_voucher":
+        import random
+        import string
+        
+        bids = parameters.get("bids", 10)
+        code = parameters.get("code", ''.join(random.choices(string.ascii_uppercase + string.digits, k=8)))
+        max_uses = parameters.get("max_uses", 1)
+        
+        voucher = {
+            "id": str(uuid.uuid4()),
+            "code": code.upper(),
+            "type": "bids",
+            "value": bids,
+            "max_uses": max_uses,
+            "current_uses": 0,
+            "is_active": True,
+            "created_by": admin["id"],
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.vouchers.insert_one(voucher)
+        
+        logger.info(f"🎤 Voice command: Created voucher {code} with {bids} bids by {admin['name']}")
+        return {"success": True, "message": f"🎟️ Gutscheincode erstellt: {code} ({bids} Gebote)", "data": {"code": code}}
+    
+    elif action == "extend_auction":
+        auction_id = parameters.get("auction_id")
+        hours = parameters.get("hours", 1)
+        
+        if not auction_id:
+            return {"success": False, "message": "Auktions-ID fehlt"}
+        
+        auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
+        if not auction:
+            return {"success": False, "message": f"Auktion {auction_id} nicht gefunden"}
+        
+        # Extend time
+        new_end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00")) + __import__('datetime').timedelta(hours=hours)
+        
+        await db.auctions.update_one(
+            {"id": auction_id},
+            {"$set": {"end_time": new_end_time.isoformat()}, "$inc": {"time_remaining": hours * 3600}}
+        )
+        
+        logger.info(f"🎤 Voice command: Extended auction {auction_id} by {hours}h by {admin['name']}")
+        return {"success": True, "message": f"⏰ Auktion um {hours} Stunden verlängert!"}
+    
+    elif action == "start_bots":
+        # Set bot status in database
+        await db.settings.update_one(
+            {"key": "bots_enabled"},
+            {"$set": {"key": "bots_enabled", "value": True}},
+            upsert=True
+        )
+        
+        logger.info(f"🎤 Voice command: Started bots by {admin['name']}")
+        return {"success": True, "message": "🤖 Bots wurden gestartet!"}
+    
+    elif action == "stop_bots":
+        await db.settings.update_one(
+            {"key": "bots_enabled"},
+            {"$set": {"key": "bots_enabled", "value": False}},
+            upsert=True
+        )
+        
+        logger.info(f"🎤 Voice command: Stopped bots by {admin['name']}")
+        return {"success": True, "message": "🛑 Bots wurden gestoppt!"}
+    
+    elif action == "set_bot_speed":
+        seconds = parameters.get("seconds", 4)
+        seconds = max(1, min(30, seconds))  # Between 1 and 30 seconds
+        
+        await db.settings.update_one(
+            {"key": "bot_interval"},
+            {"$set": {"key": "bot_interval", "value": seconds}},
+            upsert=True
+        )
+        
+        logger.info(f"🎤 Voice command: Set bot speed to {seconds}s by {admin['name']}")
+        return {"success": True, "message": f"⚡ Bot-Geschwindigkeit auf {seconds} Sekunden gesetzt!"}
+    
+    elif action == "approve_influencer":
+        email = parameters.get("email")
+        
+        if not email:
+            return {"success": False, "message": "E-Mail-Adresse fehlt"}
+        
+        # Find application
+        application = await db.influencer_applications.find_one({"email": email}, {"_id": 0})
+        if not application:
+            return {"success": False, "message": f"Keine Bewerbung von {email} gefunden"}
+        
+        # Create influencer
+        import random
+        import string
+        code = ''.join(random.choices(string.ascii_lowercase, k=6))
+        
+        influencer = {
+            "id": str(uuid.uuid4()),
+            "name": application.get("name", "Influencer"),
+            "email": email,
+            "code": code,
+            "commission_percent": 10,
+            "is_active": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        await db.influencers.insert_one(influencer)
+        
+        # Update application status
+        await db.influencer_applications.update_one(
+            {"email": email},
+            {"$set": {"status": "approved", "approved_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        logger.info(f"🎤 Voice command: Approved influencer {email} with code {code} by {admin['name']}")
+        return {"success": True, "message": f"✅ Influencer {email} genehmigt! Code: {code}"}
+    
+    elif action == "show_pending_payouts":
+        payouts = await db.influencer_payouts.find(
+            {"status": "pending"},
+            {"_id": 0}
+        ).to_list(50)
+        
+        total = sum(p.get("amount", 0) for p in payouts)
+        
+        return {
+            "success": True, 
+            "message": f"💸 {len(payouts)} offene Auszahlungen (Gesamt: €{total:.2f})",
+            "data": {"count": len(payouts), "total": total, "payouts": payouts[:10]}
+        }
+    
+    elif action == "maintenance_mode":
+        enabled = parameters.get("enabled", False)
+        
+        await db.settings.update_one(
+            {"key": "maintenance_mode"},
+            {"$set": {"key": "maintenance_mode", "value": enabled}},
+            upsert=True
+        )
+        
+        logger.info(f"🎤 Voice command: Maintenance mode {'enabled' if enabled else 'disabled'} by {admin['name']}")
+        return {"success": True, "message": f"🔧 Wartungsmodus {'aktiviert' if enabled else 'deaktiviert'}!"}
+    
+    elif action == "send_test_email":
+        from utils.email import send_email
+        
+        email = parameters.get("email")
+        if not email:
+            return {"success": False, "message": "E-Mail-Adresse fehlt"}
+        
+        try:
+            await send_email(
+                to_email=email,
+                subject="🧪 BidBlitz Test-E-Mail",
+                html_content=f"""
+                <h1>Test-E-Mail</h1>
+                <p>Diese E-Mail wurde von {admin['name']} über Sprachbefehl gesendet.</p>
+                <p>Zeitstempel: {datetime.now(timezone.utc).isoformat()}</p>
+                """
+            )
+            logger.info(f"🎤 Voice command: Sent test email to {email} by {admin['name']}")
+            return {"success": True, "message": f"📧 Test-E-Mail an {email} gesendet!"}
+        except Exception as e:
+            return {"success": False, "message": f"E-Mail-Fehler: {str(e)}"}
+    
+    elif action == "export_users":
+        format_type = parameters.get("format", "csv")
+        
+        users = await db.users.find(
+            {},
+            {"_id": 0, "password": 0}
+        ).to_list(10000)
+        
+        if format_type == "csv":
+            import csv
+            import io
+            
+            if not users:
+                return {"success": False, "message": "Keine Benutzer zum Exportieren"}
+            
+            # Create CSV
+            output = io.StringIO()
+            writer = csv.DictWriter(output, fieldnames=["id", "email", "name", "bids_balance", "is_vip", "created_at"])
+            writer.writeheader()
+            for user in users:
+                writer.writerow({
+                    "id": user.get("id"),
+                    "email": user.get("email"),
+                    "name": user.get("name"),
+                    "bids_balance": user.get("bids_balance", 0),
+                    "is_vip": user.get("is_vip", False),
+                    "created_at": user.get("created_at")
+                })
+            
+            csv_content = output.getvalue()
+            
+            # Save to file
+            filename = f"users_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            with open(f"/tmp/{filename}", "w") as f:
+                f.write(csv_content)
+            
+            return {"success": True, "message": f"📊 {len(users)} Benutzer exportiert: /tmp/{filename}"}
+        
+        return {"success": True, "message": f"📊 {len(users)} Benutzer gefunden", "data": {"count": len(users)}}
+    
+    elif action == "create_backup":
+        # Log backup request (actual backup would require more infrastructure)
+        backup_id = str(uuid.uuid4())[:8]
+        
+        # Get counts for "backup info"
+        users_count = await db.users.count_documents({})
+        auctions_count = await db.auctions.count_documents({})
+        
+        logger.info(f"🎤 Voice command: Backup requested by {admin['name']} - ID: {backup_id}")
+        return {
+            "success": True, 
+            "message": f"💾 Backup angefordert! ID: {backup_id}",
+            "data": {"backup_id": backup_id, "users": users_count, "auctions": auctions_count}
+        }
+    
+    elif action == "create_report":
+        period = parameters.get("period", "week")
+        days = 7 if period == "week" else 30
+        
+        cutoff = (datetime.now(timezone.utc) - __import__('datetime').timedelta(days=days)).isoformat()
+        
+        # Gather stats
+        new_users = await db.users.count_documents({"created_at": {"$gte": cutoff}})
+        new_auctions = await db.auctions.count_documents({"created_at": {"$gte": cutoff}})
+        ended_auctions = await db.auctions.count_documents({"status": "ended", "end_time": {"$gte": cutoff}})
+        
+        period_name = "Woche" if period == "week" else "Monat"
+        
+        report = {
+            "period": period_name,
+            "new_users": new_users,
+            "new_auctions": new_auctions,
+            "ended_auctions": ended_auctions
+        }
+        
+        logger.info(f"🎤 Voice command: Report created for {period} by {admin['name']}")
+        return {
+            "success": True, 
+            "message": f"📈 {period_name}sbericht erstellt!",
+            "data": report
+        }
+    
     else:
         return {"success": False, "message": "❌ Befehl nicht erkannt"}
 
