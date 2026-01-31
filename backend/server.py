@@ -288,7 +288,7 @@ async def bot_last_second_bidder():
                                         "last_bidder_id": f"bot_{bot['id']}",
                                         "last_bidder_name": bot["name"]
                                     },
-                                    "$inc": {"total_bids": 1},
+                                    "$inc": {"total_bids": 1, "bid_count": 1},
                                     "$push": {"bid_history": bid_entry}
                                 }
                             )
