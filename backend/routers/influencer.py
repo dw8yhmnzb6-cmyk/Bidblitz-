@@ -385,6 +385,17 @@ async def use_influencer_code(code: str, user: dict = Depends(get_current_user))
     
     logger.info(f"🌟 Influencer code used: {code} by {user.get('name')}")
     
+    # Send email notification to influencer (async, non-blocking)
+    if influencer.get("email"):
+        try:
+            await send_influencer_new_signup_notification(
+                influencer_email=influencer["email"],
+                influencer_name=influencer["name"],
+                new_user_name=user.get("name", "Neuer Benutzer")
+            )
+        except Exception as e:
+            logger.error(f"Failed to send signup notification: {e}")
+    
     return {
         "success": True,
         "message": f"Code von {influencer['name']} aktiviert!",
