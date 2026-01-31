@@ -69,6 +69,7 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(auction_reminder_processor())
     asyncio.create_task(auction_auto_restart_processor())
     asyncio.create_task(auction_expiry_checker())
+    asyncio.create_task(day_night_auction_scheduler())
     logger.info("BidBlitz server started - Bot bidder, Reminder, Auto-restart & Expiry checker tasks running")
     
     yield
