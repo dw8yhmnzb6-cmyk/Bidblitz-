@@ -289,7 +289,7 @@ export const translations = {
       readyToWin: "Ready to win?",
       freeRegister: "Register for free"
     },
-    auctions: { title: "All Auctions", filter: "Filter", all: "All", active: "Active", ended: "Ended", currentPrice: "Current Price", bids: "Bids", bid: "Bid", live: "Live", lastBidder: "Last Bidder", winner: "Winner", rrp: "RRP" },
+    auctions: { title: "All Auctions", filter: "Filter", all: "All", active: "Active", ended: "ENDED", auctionEnded: "Auction ended", currentPrice: "Current Price", bids: "Bids", bid: "Bid", live: "Live", lastBidder: "Last Bidder", winner: "Winner", rrp: "RRP" },
     auctionPage: {
       title: "Active Auctions",
       searchPlaceholder: "Search offers...",
