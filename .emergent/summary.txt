@@ -1,74 +1,90 @@
 <analysis>**original_problem_statement:**
 The user initially requested a penny auction website modeled after  and . The project's focus has evolved into a complete visual and functional overhaul to match the look, feel, and real-time behavior of .
 
-This session was focused on implementing a series of significant new features based on user requests, including a customer-to-customer gifting system, a full notification system for influencers, and an advanced voice command interface for the admin panel. Additionally, a major effort was made to expand the site's internationalization (i18n) support.
+This session was focused on implementing a series of significant new features and bug fixes based on user requests, including a customer-to-customer gifting system, a full notification system for influencers, an advanced voice command interface for the admin panel, a gift card system, and an automated day/night auction scheduler. Additionally, a major effort was made to expand the site's internationalization (i18n) support by adding a system to auto-translate product descriptions.
 
 **PRODUCT REQUIREMENTS (current focus):**
-- **Seamless User Experience:** Ensure the frontend is smooth and doesn't expose backend processes like auction restarts to the user.
-- **Admin Efficiency:** Empower the admin with powerful, easy-to-use tools like voice commands to manage the platform.
-- **Full Internationalization:** All user-facing pages and text should be fully translatable.
+- **Admin Efficiency:** Empower the admin with powerful, easy-to-use tools like voice commands to manage the platform. This includes creating bots and managing auctions.
+- **Full Internationalization:** All user-facing pages and text should be fully translatable. Product descriptions should change dynamically with the selected language.
+- **Advanced Auction Management:** Provide fine-grained control over auctions, including specifying their type (Day, Night, VIP, Auction of the Day) and duration upon creation.
+- **Robust Bot Behavior:** Bots should bid up to a specific, admin-defined monetary value, and their behavior should be predictable.
 - **Complete  Refactor:** Break down the massive  file into smaller, manageable components.
 
 **User's preferred language**: German. The next agent MUST respond in German.
 
 **what currently exists?**
 A feature-rich, full-stack penny auction application (React, FastAPI, MongoDB). Key systems include:
-- **Core Auction Platform:** Stable auction display, bidding, and a sophisticated dual-mode bot system.
-- **Influencer System:** A complete module for influencers with a dedicated dashboard, automatic and free VIP access, commission tracking, and a full payout/withdrawal system with in-app and email notifications.
-- **Customer Gift System:** A new feature allowing users to send bids to each other using a unique 8-digit Customer Number. The system includes a dedicated page with sending functionality and a history view.
-- **Admin Voice Commands:** An advanced Sprachbefehle (Voice Commands) tab in the admin panel that uses OpenAI Whisper and GPT-4o-mini to parse and execute natural language commands for managing auctions, users, bots, and more.
-- **Internationalization (i18n):** Expanded translation support across most major pages, including the new Gift and Influencer features.
+- **Core Auction Platform:** A stable auction system with a sophisticated bot bidding mechanism. It now includes an automated scheduler that pauses day auctions at night and vice-versa.
+- **Admin Voice Commands:** An advanced Sprachbefehle (Voice Commands) tab in the admin panel that uses OpenAI Whisper and GPT-4o-mini to parse and execute natural language commands. It supports batch operations.
+- **Internationalization (i18n):** Expanded translation support across most pages. A new system allows for automatic AI-powered translation of product names and descriptions, which are displayed dynamically based on the user's selected language.
+- **Gift Systems:**
+    - **Bid Gifting:** Users can send bids to each other using a unique Customer Number.
+    - **Gift Cards:** A new, complete system for purchasing and redeeming gift cards with real money (via Stripe). Includes a dedicated frontend page and backend logic.
+- **Bot Target Pricing:** Admins can set a specific monetary value (e.g., €20) that bots will bid up to on a specific auction.
 
 **Last working item**:
--   **Last item agent was working:** The agent was working on two parallel user requests.
-    1.  **Voice Command Expansion:** The agent implemented the backend logic for approximately 15 new voice commands for the admin panel as requested by the user.
-    2.  **Hide Auction Restart Status:** The user provided a screenshot showing the NEUSTART... (Restarting...) text on an auction card and requested that this process be hidden from customers. Auctions should appear to end and then simply get re-listed later without showing an intermediate restarting state. The agent had just started investigating this by searching for the text in the codebase.
+-   **Last item agent was working:** The agent was addressing two user requests submitted with screenshots:
+    1.  **Auktionsformular erweitern (Extend Auction Form):** The user wants to add options to the auction creation form to define the auction type (Tagesaktion, Nachtaktion, VIP, Aktion des Tages) and ensure the duration is set correctly. The agent had started implementing this by adding the new fields to the state in  and , and was in the process of adding the UI elements.
+    2.  **Sprachbefehl wird falsch erkannt (Voice Command Misinterpretation):** The user reported that the command erstelle 50 neue Bots mit albanischem Namen (create 50 new bots with Albanian names) was being misinterpreted. The agent identified the need for a new  action in the voice command system and began implementing the backend logic for it in .
 -   **Status:** IN PROGRESS
--   **Agent Testing Done:** N (The new voice commands are not tested, and the UI fix has not been implemented).
+-   **Agent Testing Done:** N
 -   **Which testing method agent to use?** both
-    -   **Backend Testing:** Use  or the admin UI to manually test each of the newly implemented voice commands to ensure they parse correctly and trigger the right backend actions.
-    -   **Frontend Testing:** Use the screenshot tool on the main auctions page (). Observe an auction as its timer runs out and verify that the card does not display Neustart or Restarting.... The card should either disappear or be replaced seamlessly when the new auction is created.
+    -   **Backend:** Use  to test the new  voice command action.
+    -   **Frontend:** Use the screenshot tool on the admin page to verify the new fields (Auction Type, Duration) are present in the auction creation form and function correctly.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Hide Restarting... Status from Users (P0)**
--   **Issue 2: Root Cause of Not Found Toast Notification (P2)**
--   **Issue 3: Inconsistent Data Persistence (P2)**
--   **Issue 4: Refactor Overlapping User Routers (P2)**
+-   **Issue 1: Voice command misinterpretation for bot creation (P0)**
+-   **Issue 2: Auction creation form is missing type/duration options (P0)**
+-   **Issue 3: Root Cause of Not Found Toast Notification (P2)**
+-   **Issue 4: Inconsistent Data Persistence (P2)**
+-   **Issue 5: Refactor Overlapping User Routers (P2)**
 
 **Issues Detail:**
--   **Issue 1: Hide Restarting... Status from Users**
-    -   **Attempted fixes:** None. The agent was just starting to investigate.
+-   **Issue 1: Voice command misinterpretation for bot creation**
+    -   **Attempted fixes:** The agent identified that the voice command parser prompt was missing an action for . The agent added  to the prompt and started implementing the corresponding handler function in .
     -   **Next debug checklist:**
-        1.  Analyze  and any  component to find where the  (or similar logic) is rendered.
-        2.  Modify the frontend logic to hide auctions with this status from the main view, or change the text to Beendet (Ended). The user's goal is that the restart process is invisible.
-    -   **Why fix this issue and what will be achieved with the fix?** To provide a cleaner, more professional user experience by hiding backend processes from the customer.
-    -   **Status:** NOT STARTED
+        1.  Complete the implementation of the  action in the  function in .
+        2.  Test with a  command to ensure the command erstelle 50 neue Bots mit albanischem Namen is now correctly parsed and executed.
+    -   **Why fix this issue and what will be achieved with the fix?** To enable admins to create bots using natural language, as requested by the user.
+    -   **Status:** IN PROGRESS
+    -   **Is recurring issue?** Y (Voice command parsing has required several adjustments).
+    -   **Should Test frontend/backend/both after fix?** backend
+    -   **Blocked on other issue:** No
+
+-   **Issue 2: Auction creation form is missing type/duration options**
+    -   **Attempted fixes:** The agent added  to the state in  and . Backend schemas () and creation logic () were updated to support  and . A syntax error in  was fixed. The work is incomplete.
+    -   **Next debug checklist:**
+        1.  Complete the UI implementation in  to add a dropdown for  (Normal, Tag, Nacht, VIP, Aktion des Tages).
+        2.  Ensure the state is correctly passed to the backend API when the form is submitted.
+        3.  Verify the duration field works as expected.
+    -   **Why fix this issue and what will be achieved with the fix?** To give the admin full control over auction creation, as requested by the user.
+    -   **Status:** IN PROGRESS
     -   **Is recurring issue?** N
     -   **Should Test frontend/backend/both after fix?** frontend
     -   **Blocked on other issue:** No
 
--   **Issue 2: Root Cause of Not Found Toast Notification**
-    -   **Attempted fixes:** A global Axios interceptor was previously created as a mitigation. The root cause is still unknown.
-    -   **Next debug checklist:** Use the browser's developer console (Network tab) during active use to identify the specific API call that intermittently returns a 404 status.
+-   **Issue 3: Root Cause of Not Found Toast Notification**
+    -   **Attempted fixes:** A global Axios interceptor in  was improved to catch more 404 errors, but the root cause (which API call is failing) is still unknown.
+    -   **Next debug checklist:** Use browser developer tools (Network tab) to identify which specific API call intermittently returns a 404 status during normal app usage.
     -   **Why fix this issue and what will be achieved with the fix?** Improves platform stability and eliminates a confusing error message for users.
     -   **Status:** NOT STARTED
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** both
     -   **Blocked on other issue:** No
 
--   **Issue 3: Inconsistent Data Persistence**
+-   **Issue 4: Inconsistent Data Persistence**
     -   **Attempted fixes:** None. Known architectural risk.
-    -   **Next debug checklist:** Audit backend code (, services) for any state stored in global Python variables that is not persisted to MongoDB.
+    -   **Next debug checklist:** Audit backend code for any state stored in global Python variables that is not persisted to MongoDB. The recent bot bug that fixed itself on restart points to this as a potential area of concern.
     -   **Why fix this issue and what will be achieved with the fix?** Guarantees data integrity across server restarts.
     -   **Status:** NOT STARTED
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** backend
     -   **Blocked on other issue:** No
 
--   **Issue 4: Refactor Overlapping User Routers**
-    -   **Attempted fixes:** None. Known technical debt.
-    -   **Next debug checklist:** Analyze  and , consolidate all endpoints into one router, and update .
+-   **Issue 5: Refactor Overlapping User Routers**
+    -   **Attempted fixes:** Agent analyzed  and  and confirmed overlapping endpoints. No refactoring was done.
+    -   **Next debug checklist:** Consolidate all user-related endpoints into  and delete . Update  accordingly.
     -   **Why fix this issue and what will be achieved with the fix?** Improves code clarity and maintainability.
     -   **Status:** NOT STARTED
     -   **Is recurring issue?** N
@@ -77,17 +93,10 @@ A feature-rich, full-stack penny auction application (React, FastAPI, MongoDB). 
 
 **In progress Task List**:
 -   **Task 1: Complete  Refactoring (P1)**
-    -   **Where to resume:** Continue extracting the remaining tabs from  into their own components in .
-    -   **What will be achieved with this?** Reduces the complexity of the massive  file, improving maintainability.
-    -   **Status:** IN PROGRESS
+    -   **Where to resume:** The file is over 3000 lines. Continue extracting the remaining tabs (, , , , , , etc.) from  into their own components in .
+    -   **What will be achieved with this?** Reduces the complexity of the massive  file, improving maintainability and performance.
+    -   **Status:** IN PROGRESS (~55% complete)
     -   **Should Test frontend/backend/both after fix?** frontend
-    -   **Blocked on something:** No
-
--   **Task 2: Test & Verify All New Voice Commands (P1)**
-    -   **Where to resume:** The backend logic for ~15 new voice commands was added to . These commands have not been tested.
-    -   **What will be achieved with this?** Ensures the new, powerful admin feature is stable and works as intended.
-    -   **Status:** IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** backend
     -   **Blocked on something:** No
 
 **Upcoming and Future Tasks**
@@ -96,90 +105,71 @@ A feature-rich, full-stack penny auction application (React, FastAPI, MongoDB). 
     -   **P2:** PayPal Integration.
 -   **Future Tasks:**
     -   Live-Chat activation (requires user to provide Tawk.to ID).
-    -   Translate the remaining 11 non-critical frontend pages.
+    -   Translate the remaining non-critical frontend pages.
 
 **Completed work in this session**
--   **Influencer System Major Upgrade:**
-    -   Linked influencer logins to full user accounts with automatic, permanent **free VIP access** and a **100-bid welcome bonus**.
-    -   Implemented a full **payout/withdrawal system** (API & UI) for influencers to claim commissions.
-    -   Added a comprehensive **notification system** (in-app bell icon and backend logic for emails via Resend) for sales, sign-ups, and payout requests.
-    -   Fixed a bug preventing influencers from accessing VIP auctions.
--   **Customer Bid Gifting System:**
-    -   Created a new feature allowing users to gift bids to each other via a unique 8-digit **Customer Number**.
-    -   Built the  page with functionality to find users, select bid amounts, and view gift history.
-    -   Integrated a link to the feature on the main user dashboard.
--   **Admin Voice Command System (Creation & Expansion):**
-    -   Built a new Sprachbefehle tab in the admin panel.
-    -   Integrated **OpenAI Whisper** for speech-to-text and **GPT-4o-mini** for natural language command parsing.
-    -   Implemented a wide range of commands for managing users, auctions, bots, and generating reports.
--   **Internationalization (i18n) Expansion:**
-    -   Added full translation support to the , , and  pages.
-    -   Added dozens of new translation keys to  for German, English, and other languages.
+-   **Gift Card System:** Implemented a full system for users to buy and redeem gift cards via Stripe ( page, new backend router ).
+-   **Automated Day/Night Auction Scheduler:** Created a background task in  to automatically pause/resume day and night auctions based on the time of day (Berlin time).
+-   **AI-Powered Product Translations:** Extended product schema to support multilingual fields (, ). Implemented a voice command and API endpoint to auto-translate all products using an LLM. Frontend now displays the correct language.
+-   **Bot Bidding Logic Overhaul:** Changed bot logic to bid continuously up to a specific admin-set monetary value (Bots bieten bis €X), rather than just bidding at the end.
+-   **Critical Bug Fix (Auction Bidding):** Resolved an issue where bot bids increased the price but didn't update the  or . The fix involved correcting the MongoDB update operation in the bot bidding loop in .
+-   **Voice Command Enhancements:**
+    -   Fixed a bug where complex batch commands failed because parameters were sent in the URL instead of the request body.
+    -   Implemented a command history UI in the admin panel.
+-   **UI & Translation Fixes:**
+    -   Removed the user-facing NEUSTART... (Restarting...) status from auction cards.
+    -   Fixed a missing German translation for Achievements on the dashboard.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: Root Cause of Not Found Toast Notification**
-    -   **Debug checklist:** Use browser developer tools to trace the intermittent 404 API call.
-    -   **Why to solve this issue and what will be achieved with this?** To improve platform stability and user experience.
-    -   **Should Test frontend/backend/both after fix:** both
-    -   **Is recurring issue?** Y
--   **Issue 2: Inconsistent Data Persistence**
-    -   **Debug checklist:** Audit backend code for state stored in global variables instead of the database.
-    -   **Why to solve this issue and what will be achieved with this?** To ensure data integrity across server restarts.
-    -   **Should Test frontend/backend/both after fix:** backend
-    -   **Is recurring issue?** Y
--   **Issue 3: Refactor Overlapping User Routers**
-    -   **Debug checklist:** Consolidate endpoints from  and  into a single file.
-    -   **Why to solve this issue and what will be achieved with this?** To improve code clarity and maintainability.
-    -   **Should Test frontend/backend/both after fix:** backend
-    -   **Is recurring issue?** N
+-   Same as the pending issue list: Not Found Toast, Inconsistent Data Persistence, Overlapping User Routers.
 
 **Known issue recurrence from previous fork**
 -   **Issue recurrence in previous fork:** Not Found Toast Notification.
--   **Recurrence count:** 3
--   **Status:** IN PROGRESS (Mitigated, not resolved)
+-   **Recurrence count:** 4
+-   **Status:** NOT STARTED (Mitigation in place, but root cause not found).
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Speech-to-Action Pipeline:** Utilizes a sequence of Whisper (Speech-to-Text) and a prompted LLM (GPT-4o-mini) to parse natural language admin commands into structured, executable JSON actions.
--   **Hybrid User Roles:** An Influencer is now a regular User with special flags (, ). The login flow was updated to create/link a user account and return a standard JWT, unifying authentication across the platform.
--   **User-to-User Transactions:** The gift system introduces a mechanism for users to transfer assets (bids) to one another, using a non-sensitive, publicly shareable Customer Number as the primary identifier.
--   **Dual-Channel Notifications:** A notification system that triggers both a persistent in-app notification (stored in MongoDB, displayed via a bell icon) and a transient email notification (via Resend) from a single backend event.
+-   **Automated Day/Night Auction Scheduler:** A background  task in  that runs periodically to check the current time (using a specific timezone) and updates the status of auctions in MongoDB ( vs. /).
+-   **AI-Powered Product Translation:** A system where product names/descriptions are stored as dictionaries (e.g., ). A backend endpoint uses an LLM to populate these dictionaries for multiple languages automatically.
+-   **Gift Card Purchase & Redemption Flow:** A complete e-commerce flow involving Stripe Checkout sessions for purchasing, generating a unique code, and a separate mechanism for another user to redeem that code for on-site credit (bids).
+-   **Stateful Bot Logic:** Bot behavior is now directly tied to a  field on the auction document in MongoDB, ensuring their bidding strategy is persistent and predictable.
 
 **key DB schema**
--   **users**: Added  (String),  (Boolean). The  flag is now also set for influencers.
--   **influencer_payouts**: (New) Tracks payout requests: .
--   **gifts**: (New) Tracks bid gifts: .
--   **notifications**: (New) Stores in-app notifications: .
--   **voice_commands_history**: (New) Logs all executed admin voice commands for auditing.
+-   **products**: Added , .
+-   **auctions**: Added , , ,  now includes  and . The  field is now the primary driver for bot bidding.
+-   **gift_cards**: (New) .
 
 **All files of reference**
--    (Core logic for new admin feature)
--    (Core logic for new user feature)
--    (Core logic for influencer upgrades)
--    (UI for new user feature)
--    (UI for influencer upgrades)
--    (UI for new admin feature)
--    (Reference for all UI text)
+-    (File with the pending voice command bug)
+-    (File with the pending form implementation)
+-    (File with the pending form implementation)
+-    (Contains the new day/night scheduler and corrected bot logic)
+-    (Logic for the new gift card system)
+-    (UI for the new gift card system)
+-    (Contains the new translation endpoint)
+-    (Helper for displaying translated text)
 
 **Areas that need refactoring**:
--   **:** The refactoring is still only ~45% complete. 9 more tabs need to be extracted.
--   **:** The  function is a large  block. This could be refactored into a more scalable dictionary mapping command actions to handler functions.
--   **Backend User Routers:** The  and  files still contain overlapping logic and should be consolidated.
+-   **:** This is a critical tech debt item. The file is over 3,400 lines long and urgently needs to be broken down into smaller components for each tab.
+-   **Backend User Routers:** The  and  files must be consolidated to remove duplicate logic and clarify API structure.
+-   **:** The main  function is a large  block that is becoming hard to maintain. It should be refactored into a dictionary mapping command actions to handler functions.
 
 **key api endpoints**
--   : Takes a text command, parses it, and executes the corresponding admin action.
--   : Sends a specified number of bids from the current user to a user identified by their customer number.
--   : Retrieves the history of sent and received gifts for the current user.
--   : Submits a payout request for an influencer's available commission balance.
--   : Fetches in-app notifications for an influencer.
--   : (Modified) Now correctly identifies influencers as having VIP status.
+-   : Creates a Stripe session to purchase a gift card.
+-   : Redeems a gift card code.
+-   : (Admin) Triggers AI translation for all products.
+-   : Used by the admin panel to create new auctions. Needs to be checked to ensure it handles the new  fields.
+-   : (Modified) Now accepts parameters in the request body to support complex batch commands.
 
 **Critical Info for New Agent**
--   Your immediate priority (P0) is to fix the UI so that the NEUSTART... (Restarting) status on auction cards is **not visible** to regular users. This was the user's last explicit request.
--   After that, a large number of new admin voice commands have been implemented in the backend but are **untested**. You must validate that these commands work correctly.
--   The browser context in the screenshot tool is unreliable for testing multi-page user flows (it loses the login session). For such tests, use  for API verification or focused, single-page UI tests.
+-   Your immediate priorities are the two issues the user last reported with screenshots:
+    1.  Fix the voice command parser so it can handle create bots commands.
+    2.  Finish implementing the auction creation form in the admin panel to include  and  fields.
+-   The bot bidding system recently had a critical bug where bid counts weren't updating. It was fixed, but the fact that it resolved after a server restart suggests potential statefulness issues in the backend. Be mindful of this.
+-   The long-standing refactoring of  is a high-priority background task. If you have downtime between user requests, dedicate time to extracting tabs from this file.
 
 **documents and test reports created in this job**
 -    (Updated)
@@ -189,38 +179,38 @@ A feature-rich, full-stack penny auction application (React, FastAPI, MongoDB). 
 -   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **LATEST:** Make all [voice commands]. Agent agrees and implements them.
-2.  User asks for recommendations for new voice commands. Agent provides a prioritized list.
-3.  User requests a voice command system for the admin panel. Agent implements it.
-4.  User reports that translations are incomplete and asks for a full site review. Agent adds translations to several key pages.
-5.  User asks for a gift system where customers can send bids to each other using a customer number. Agent implements it.
-6.  User requests that the influencer VIP benefits description should explicitly mention 100 welcome bids. Agent implements it.
-7.  User reports that the free VIP access for influencers isn't working correctly (directs to payment) and requests a payout function for commissions over €50. Agent implements both fixes.
-8.  User asks to expand the influencer system so they can also act as regular customers (buy bids, participate in auctions) and get free VIP access. Agent implements this.
-9.  User confirms the previous changes (slower bots, influencer demo account) are okay and provides the new requirements for the influencer system.
-10. User says Start from the top, signaling the agent to begin working on the highest priority issue from the handoff (the influencer login bug).
+1.  **LATEST:** User requests adding more options to the auction creation form (Day, Night, VIP, AOTD) and reports that voice commands for creating bots are being misinterpreted, providing screenshots for both issues.
+2.  User requests that the bot target price should make bots bid up to that real money value.
+3.  User requests a day/night system where day auctions are paused at night and vice-versa.
+4.  User reports multiple issues via screenshots: incorrect (Albanian) translations appearing, voice command processing getting stuck, and all auctions showing the same low price/bid count.
+5.  User reports that the voice command execution fails (command is recognized but not executed).
+6.  User requests a gift card system where users can buy cards for themselves or others, payable with Stripe/Crypto, but only redeemable for bids (no cash out).
+7.  User confirms plan for gift card system.
+8.  Agent proposes plan to add gift card system.
+9.  User reports an issue with voice commands and provides a screenshot showing a command was misinterpreted. Requests 3 recommended improvements to be implemented.
+10. Agent finishes implementing voice command fixes and product translation feature.
 
 **Project Health Check:**
 -   **Broken:**
-    -   Nothing is critically broken for the end-user, but the user-facing NEUSTART text is an unwanted UI artifact.
+    -   The voice command for creating bots is not working as intended, which is a key admin feature.
+    -   The auction creation form is incomplete and doesn't allow setting the auction type as requested.
 -   **Mocked:**
-    -   Resend (email service is in sandbox mode; emails are logged but not sent).
+    -   Resend (email service is in sandbox mode).
     -   Tawk.to (live chat requires a user-provided Property ID).
 
 **3rd Party Integrations**
--   **OpenAI Whisper (Speech-to-Text):** NEW. Integrated via  for the admin voice command feature. Uses Emergent LLM Key.
--   **OpenAI GPT-4o-mini (Language Model):** NEW. Integrated via  for parsing voice commands. Uses Emergent LLM Key.
--   **Stripe (Payments):** Integrated with user-provided LIVE API keys.
--   **Tawk.to (Live Chat):** Placeholder script added; requires configuration.
--   **Resend (Email):** Integrated with a sandbox domain.
--   **Coinbase Commerce (Crypto Payments):** Integrated but functionality is currently disabled.
--   **ip-api.com (IP Intelligence):** Used for VPN/proxy detection.
+-   **OpenAI Whisper & GPT-4o-mini:** Used for the admin voice command feature. Uses Emergent LLM Key.
+-   **Stripe (Payments):** Integrated for bid packages and the new gift card system.
+-   **Tawk.to (Live Chat):** Placeholder script exists.
+-   **Resend (Email):** Sandbox integration.
+-   **Coinbase Commerce (Crypto Payments):** Integrated but disabled.
+-   **ip-api.com (IP Intelligence):** Used for fraud detection.
 
 **Testing status**
 -   **Testing agent used after significant changes:** NO
 -   **Troubleshoot agent used after agent stuck in loop:** NO
 -   **Test files created:** None.
--   **Known regressions:** The login session is frequently lost when using the screenshot tool for multi-page navigation tests, making frontend testing less efficient.
+-   **Known regressions:** None from this session, but the intermittent Not Found toast remains a known issue.
 
 **Credentials to test flow:**
 -   **Admin:**  / 
@@ -228,5 +218,5 @@ A feature-rich, full-stack penny auction application (React, FastAPI, MongoDB). 
 -   **Influencer:** Email: , Code: 
 
 **What agent forgot to execute**
--   The agent did not test the ~15 new voice commands after implementing them.
--   The agent prioritized new features over the long-standing refactoring task () and bug fixes (Not Found toast), which is an acceptable trade-off based on user direction.</analysis>
+-   The agent did not complete the implementation for the user's two most recent requests (auction form and  voice command) before the session ended.
+-   The major refactoring tasks (, user routers) and the hunt for the Not Found toast's root cause continue to be deferred in favor of new feature requests from the user.</analysis>
