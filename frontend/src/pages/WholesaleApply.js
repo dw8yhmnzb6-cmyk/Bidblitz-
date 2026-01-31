@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { Building2, Phone, Mail, Globe, Package, MessageSquare, CheckCircle, ArrowRight } from 'lucide-react';
+import { Building2, Phone, Mail, Globe, Package, MessageSquare, CheckCircle, ArrowRight, Percent, Users, CreditCard, HeadphonesIcon } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useLanguage } from '../context/LanguageContext';
+import { Link } from 'react-router-dom';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
 export default function WholesaleApply() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     company_name: '',
     contact_name: '',
@@ -20,10 +23,13 @@ export default function WholesaleApply() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  // Get translations with fallbacks
+  const wt = t('wholesale') || {};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.company_name || !formData.contact_name || !formData.email || !formData.phone || !formData.expected_volume) {
-      toast.error('Bitte füllen Sie alle Pflichtfelder aus');
+      toast.error(wt.fillAllFields || 'Please fill in all required fields');
       return;
     }
 
@@ -31,9 +37,9 @@ export default function WholesaleApply() {
     try {
       await axios.post(`${API}/api/wholesale/apply`, formData);
       setSubmitted(true);
-      toast.success('Bewerbung erfolgreich eingereicht!');
+      toast.success(wt.successTitle || 'Application submitted!');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Einreichen');
+      toast.error(error.response?.data?.detail || wt.submitError || 'Error submitting');
     } finally {
       setLoading(false);
     }
@@ -46,17 +52,15 @@ export default function WholesaleApply() {
           <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-4">Bewerbung eingereicht!</h1>
+          <h1 className="text-3xl font-bold text-white mb-4">{wt.successTitle || 'Application Submitted!'}</h1>
           <p className="text-gray-400 mb-8">
-            Vielen Dank für Ihre Bewerbung als Großkunde. Unser Team wird Ihre Anfrage 
-            innerhalb von 24-48 Stunden prüfen und sich bei Ihnen melden.
+            {wt.successMessage || 'Thank you for your application. Our team will review your request within 24-48 hours and contact you.'}
           </p>
-          <Button 
-            onClick={() => window.location.href = '/'}
-            className="bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black"
-          >
-            Zurück zur Startseite
-          </Button>
+          <Link to="/">
+            <Button className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
+              {wt.backToHome || 'Back to Homepage'}
+            </Button>
+          </Link>
         </div>
       </div>
     );
@@ -65,168 +69,188 @@ export default function WholesaleApply() {
   return (
     <div className="min-h-screen bg-[#050509] py-12 px-4">
       <div className="max-w-6xl mx-auto">
-        {/* Hero Section */}
+        {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFD700]/10 text-[#FFD700] text-sm mb-6">
-            <Building2 className="w-4 h-4" />
-            B2B Großkundenbereich
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 mb-6">
+            <Building2 className="w-5 h-5 text-cyan-400" />
+            <span className="text-cyan-400 font-medium">{wt.badge || 'B2B Wholesale Area'}</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Werden Sie <span className="text-[#FFD700]">Großkunde</span>
-          </h1>
+          <h1 className="text-4xl font-bold text-white mb-4">{wt.title || 'Become a Wholesale Customer'}</h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Profitieren Sie von exklusiven Rabatten, persönlicher Betreuung und 
-            flexiblen Zahlungsbedingungen für Ihr Unternehmen.
+            {wt.subtitle || 'Benefit from exclusive discounts, personal support and flexible payment terms for your business.'}
           </p>
         </div>
 
-        {/* Benefits Grid */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
-          {[
-            { icon: Package, title: 'Mengenrabatte', desc: 'Bis zu 25% Rabatt auf alle Gebotspakete' },
-            { icon: Mail, title: 'Persönlicher Kontakt', desc: 'Ihr dedizierter Ansprechpartner' },
-            { icon: Globe, title: 'Flexible Zahlung', desc: 'Kauf auf Rechnung möglich' }
-          ].map((benefit, i) => (
-            <div key={i} className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-[#FF4D4D]/20 flex items-center justify-center mb-4">
-                <benefit.icon className="w-6 h-6 text-[#FFD700]" />
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Benefits Section */}
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white mb-6">{wt.benefits || 'Your Benefits'}</h2>
+            
+            <div className="grid gap-4">
+              <div className="glass-card p-6 rounded-xl flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center flex-shrink-0">
+                  <Percent className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold mb-1">{wt.benefit1Title || 'Exclusive Discounts'}</h3>
+                  <p className="text-gray-400">{wt.benefit1Desc || 'Up to 40% discount on all bid packages'}</p>
+                </div>
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">{benefit.title}</h3>
-              <p className="text-gray-400 text-sm">{benefit.desc}</p>
+
+              <div className="glass-card p-6 rounded-xl flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center flex-shrink-0">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold mb-1">{wt.benefit2Title || 'Personal Account Manager'}</h3>
+                  <p className="text-gray-400">{wt.benefit2Desc || 'Direct contact person for all your needs'}</p>
+                </div>
+              </div>
+
+              <div className="glass-card p-6 rounded-xl flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold mb-1">{wt.benefit3Title || 'Flexible Payment'}</h3>
+                  <p className="text-gray-400">{wt.benefit3Desc || 'Purchase on invoice with 30 days payment terms'}</p>
+                </div>
+              </div>
+
+              <div className="glass-card p-6 rounded-xl flex items-start gap-4">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center flex-shrink-0">
+                  <HeadphonesIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold mb-1">{wt.benefit4Title || 'Priority Support'}</h3>
+                  <p className="text-gray-400">{wt.benefit4Desc || 'Preferred handling of all requests'}</p>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Application Form */}
-        <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
-          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-            <Building2 className="w-6 h-6 text-[#FFD700]" />
-            Bewerbung als Großkunde
-          </h2>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Company Name */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Firmenname *</label>
+          {/* Application Form */}
+          <div className="glass-card p-8 rounded-xl">
+            <h2 className="text-2xl font-bold text-white mb-6">{wt.formTitle || 'Application Form'}</h2>
+            
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-gray-300 text-sm font-medium">{wt.companyName || 'Company Name'} *</label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <Input
+                    type="text"
                     value={formData.company_name}
                     onChange={(e) => setFormData({...formData, company_name: e.target.value})}
-                    placeholder="Ihre Firma GmbH"
-                    className="pl-10 bg-white/5 border-white/10 text-white"
+                    className="pl-10 bg-[#0F0F16] border-white/10 text-white"
                     required
                   />
                 </div>
               </div>
 
-              {/* Contact Name */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Ansprechpartner *</label>
+              <div className="space-y-2">
+                <label className="text-gray-300 text-sm font-medium">{wt.contactPerson || 'Contact Person'} *</label>
                 <Input
+                  type="text"
                   value={formData.contact_name}
                   onChange={(e) => setFormData({...formData, contact_name: e.target.value})}
-                  placeholder="Max Mustermann"
-                  className="bg-white/5 border-white/10 text-white"
+                  className="bg-[#0F0F16] border-white/10 text-white"
                   required
                 />
               </div>
 
-              {/* Email */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">E-Mail *</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                  <Input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    placeholder="kontakt@firma.de"
-                    className="pl-10 bg-white/5 border-white/10 text-white"
-                    required
-                  />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-gray-300 text-sm font-medium">{wt.email || 'Email'} *</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                    <Input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="pl-10 bg-[#0F0F16] border-white/10 text-white"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-gray-300 text-sm font-medium">{wt.phone || 'Phone'} *</label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                    <Input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      className="pl-10 bg-[#0F0F16] border-white/10 text-white"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Phone */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Telefon *</label>
-                <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-                  <Input
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    placeholder="+49 123 456789"
-                    className="pl-10 bg-white/5 border-white/10 text-white"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Website */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Website (optional)</label>
+              <div className="space-y-2">
+                <label className="text-gray-300 text-sm font-medium">{wt.website || 'Website (optional)'}</label>
                 <div className="relative">
                   <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                   <Input
+                    type="url"
                     value={formData.website}
                     onChange={(e) => setFormData({...formData, website: e.target.value})}
-                    placeholder="https://www.firma.de"
-                    className="pl-10 bg-white/5 border-white/10 text-white"
+                    className="pl-10 bg-[#0F0F16] border-white/10 text-white"
+                    placeholder="https://"
                   />
                 </div>
               </div>
 
-              {/* Expected Volume */}
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Erwartetes monatliches Volumen *</label>
-                <select
-                  value={formData.expected_volume}
-                  onChange={(e) => setFormData({...formData, expected_volume: e.target.value})}
-                  className="w-full px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#FFD700]"
-                  required
-                >
-                  <option value="" className="bg-[#0a0a0f]">Bitte wählen...</option>
-                  <option value="500-1000" className="bg-[#0a0a0f]">500 - 1.000 Gebote</option>
-                  <option value="1000-2500" className="bg-[#0a0a0f]">1.000 - 2.500 Gebote</option>
-                  <option value="2500-5000" className="bg-[#0a0a0f]">2.500 - 5.000 Gebote</option>
-                  <option value="5000-10000" className="bg-[#0a0a0f]">5.000 - 10.000 Gebote</option>
-                  <option value="10000+" className="bg-[#0a0a0f]">Mehr als 10.000 Gebote</option>
-                </select>
+              <div className="space-y-2">
+                <label className="text-gray-300 text-sm font-medium">{wt.expectedVolume || 'Expected Monthly Volume'} *</label>
+                <div className="relative">
+                  <Package className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                  <select
+                    value={formData.expected_volume}
+                    onChange={(e) => setFormData({...formData, expected_volume: e.target.value})}
+                    className="w-full pl-10 pr-4 py-2 bg-[#0F0F16] border border-white/10 rounded-md text-white appearance-none"
+                    required
+                  >
+                    <option value="">{wt.selectVolume || 'Please select'}</option>
+                    <option value="1000-5000">{wt.volume1 || '1,000 - 5,000 bids'}</option>
+                    <option value="5000-10000">{wt.volume2 || '5,000 - 10,000 bids'}</option>
+                    <option value="10000-50000">{wt.volume3 || '10,000 - 50,000 bids'}</option>
+                    <option value="50000+">{wt.volume4 || 'Over 50,000 bids'}</option>
+                  </select>
+                </div>
               </div>
-            </div>
 
-            {/* Message */}
-            <div>
-              <label className="block text-sm text-gray-400 mb-2">Nachricht (optional)</label>
-              <div className="relative">
-                <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
-                <textarea
-                  value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  placeholder="Erzählen Sie uns mehr über Ihre Anforderungen..."
-                  rows={4}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700] resize-none"
-                />
+              <div className="space-y-2">
+                <label className="text-gray-300 text-sm font-medium">{wt.message || 'Message (optional)'}</label>
+                <div className="relative">
+                  <MessageSquare className="absolute left-3 top-3 w-5 h-5 text-gray-500" />
+                  <textarea
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                    className="w-full pl-10 pr-4 py-2 bg-[#0F0F16] border border-white/10 rounded-md text-white min-h-[100px] resize-none"
+                    placeholder={wt.messagePlaceholder || 'Tell us more about your company...'}
+                  />
+                </div>
               </div>
-            </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] text-black font-semibold py-6 text-lg hover:opacity-90"
-            >
-              {loading ? (
-                'Wird gesendet...'
-              ) : (
-                <>
-                  Bewerbung absenden
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </>
-              )}
-            </Button>
-          </form>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white py-3"
+              >
+                {loading ? (
+                  <span>{wt.submitting || 'Submitting...'}</span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    {wt.submitApplication || 'Submit Application'}
+                    <ArrowRight className="w-5 h-5" />
+                  </span>
+                )}
+              </Button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
