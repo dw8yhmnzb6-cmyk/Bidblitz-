@@ -134,8 +134,15 @@ export default function WholesaleApply() {
   
   // Get translations - use local fallbacks if t('wholesale') returns empty or undefined
   const translatedWholesale = t('wholesale');
-  const hasTranslation = translatedWholesale && Object.keys(translatedWholesale).length > 0 && translatedWholesale.title;
-  const wt = hasTranslation ? translatedWholesale : (wholesaleTranslations[language] || wholesaleTranslations.en);
+  // Check if translation exists and has content
+  const hasTranslation = translatedWholesale && typeof translatedWholesale === 'object' && translatedWholesale.title;
+  
+  // ALWAYS use local translations based on language - more reliable
+  const localTranslations = wholesaleTranslations[language] || wholesaleTranslations.en;
+  const wt = hasTranslation ? translatedWholesale : localTranslations;
+  
+  // Debug log
+  console.log('WholesaleApply language:', language, 'hasTranslation:', hasTranslation, 'using:', hasTranslation ? 'global' : 'local');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
