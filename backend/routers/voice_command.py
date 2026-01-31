@@ -223,20 +223,31 @@ async def execute_command(action: str, parameters: dict, admin: dict) -> dict:
     
     elif action == "delete_auctions":
         status = parameters.get("status", "ended")
-        older_than_days = parameters.get("older_than_days", 7)
+        older_than_days = parameters.get("older_than_days", 0)
         
         query = {}
+        
+        # Status filter
         if status == "ended":
             query["status"] = "ended"
+        # If status == "all", no status filter (deletes all)
         
-        if older_than_days:
+        # Time filter (only if older_than_days > 0)
+        if older_than_days and older_than_days > 0:
             cutoff = (datetime.now(timezone.utc) - __import__('datetime').timedelta(days=older_than_days)).isoformat()
             query["end_time"] = {"$lt": cutoff}
         
+        # Count before delete for better feedback
+        count_before = await db.auctions.count_documents(query)
+        
+        if count_before == 0:
+            return {"success": True, "message": "ℹ️ Keine Auktionen gefunden, die den Kriterien entsprechen."}
+        
         result = await db.auctions.delete_many(query)
         
-        logger.info(f"🎤 Voice command: Deleted {result.deleted_count} auctions by {admin['name']}")
-        return {"success": True, "message": f"✅ {result.deleted_count} Auktionen gelöscht!"}
+        status_text = "alle" if status == "all" else "beendeten"
+        logger.info(f"🎤 Voice command: Deleted {result.deleted_count} {status_text} auctions by {admin['name']}")
+        return {"success": True, "message": f"✅ {result.deleted_count} {status_text} Auktionen gelöscht!"}
     
     elif action == "add_bids_to_user":
         email = parameters.get("email")
