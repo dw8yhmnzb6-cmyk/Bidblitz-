@@ -869,11 +869,18 @@ async def execute_voice_command(
 
 @router.post("/confirm-execute")
 async def confirm_and_execute(
-    action: str,
-    parameters: dict,
+    request: Request,
     admin: dict = Depends(get_admin_user)
 ):
     """Execute a confirmed command"""
+    
+    # Get action and parameters from request body
+    body = await request.json()
+    action = body.get("action")
+    parameters = body.get("parameters", {})
+    
+    if not action:
+        raise HTTPException(status_code=400, detail="Action is required")
     
     result = await execute_command(action, parameters, admin)
     
