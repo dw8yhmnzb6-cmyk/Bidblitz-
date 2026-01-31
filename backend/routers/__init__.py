@@ -9,6 +9,7 @@ from routers.user import router as user_router
 from routers.bots import router as bots_router
 from routers.vouchers import router as vouchers_router
 from routers.wholesale import router as wholesale_router
+from routers.giftcards import router as giftcards_router
 
 __all__ = [
     "auth_router",
@@ -20,5 +21,6 @@ __all__ = [
     "user_router",
     "bots_router",
     "vouchers_router",
-    "wholesale_router"
+    "wholesale_router",
+    "giftcards_router"
 ]
