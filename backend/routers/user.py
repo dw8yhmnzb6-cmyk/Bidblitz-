@@ -1,13 +1,13 @@
-"""User router - User profile and dashboard endpoints"""
+"""User router - Consolidated user profile, dashboard, and account endpoints"""
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File
 from datetime import datetime, timezone
 from typing import Optional
 import base64
 import uuid
 
-from config import db, logger
+from config import db, logger, REFERRAL_MIN_DEPOSIT, REFERRER_REWARD_BIDS, REFEREE_REWARD_BIDS
 from dependencies import get_current_user, hash_password, verify_password, validate_password_strength
-from schemas import UpdateProfileRequest, ChangePasswordRequest, WishlistRequest
+from schemas import UpdateProfileRequest, ChangePasswordRequest, WishlistRequest, VoucherRedeem
 
 router = APIRouter(tags=["User"])
 
