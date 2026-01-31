@@ -2,7 +2,7 @@
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from datetime import datetime, timezone, timedelta
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import uuid
 
 from config import db, logger
@@ -15,6 +15,48 @@ from utils.email import (
 
 router = APIRouter(prefix="/influencer", tags=["Influencer"])
 
+# ==================== COMMISSION TIERS ====================
+
+# Default commission tiers - can be overridden per influencer
+DEFAULT_COMMISSION_TIERS = [
+    {"min_customers": 0, "bonus_percent": 0},      # 0-10 customers: base rate
+    {"min_customers": 11, "bonus_percent": 2},     # 11-50 customers: +2%
+    {"min_customers": 51, "bonus_percent": 3},     # 51-100 customers: +3%
+    {"min_customers": 101, "bonus_percent": 5},    # 100+ customers: +5%
+]
+
+def calculate_effective_commission(base_commission: float, total_customers: int, custom_tiers: list = None) -> dict:
+    """Calculate effective commission based on customer count"""
+    tiers = custom_tiers or DEFAULT_COMMISSION_TIERS
+    bonus = 0
+    current_tier = "Bronze"
+    
+    for tier in sorted(tiers, key=lambda x: x["min_customers"], reverse=True):
+        if total_customers >= tier["min_customers"]:
+            bonus = tier["bonus_percent"]
+            if tier["min_customers"] >= 101:
+                current_tier = "Platin"
+            elif tier["min_customers"] >= 51:
+                current_tier = "Gold"
+            elif tier["min_customers"] >= 11:
+                current_tier = "Silber"
+            break
+    
+    return {
+        "base_commission": base_commission,
+        "tier_bonus": bonus,
+        "effective_commission": base_commission + bonus,
+        "current_tier": current_tier,
+        "next_tier_at": get_next_tier_threshold(total_customers, tiers)
+    }
+
+def get_next_tier_threshold(current_customers: int, tiers: list) -> int:
+    """Get the customer count needed for next tier"""
+    for tier in sorted(tiers, key=lambda x: x["min_customers"]):
+        if current_customers < tier["min_customers"]:
+            return tier["min_customers"]
+    return None  # Already at max tier
+
 # ==================== SCHEMAS ====================
 
 class InfluencerCreate(BaseModel):
@@ -25,6 +67,7 @@ class InfluencerCreate(BaseModel):
     instagram: Optional[str] = None
     youtube: Optional[str] = None
     tiktok: Optional[str] = None
+    custom_tiers: Optional[List[dict]] = None  # Custom commission tiers
 
 class InfluencerUpdate(BaseModel):
     name: Optional[str] = None
@@ -34,6 +77,7 @@ class InfluencerUpdate(BaseModel):
     instagram: Optional[str] = None
     youtube: Optional[str] = None
     tiktok: Optional[str] = None
+    custom_tiers: Optional[List[dict]] = None
 
 # ==================== ADMIN ENDPOINTS ====================
 
