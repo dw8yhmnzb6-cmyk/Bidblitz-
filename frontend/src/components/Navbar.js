@@ -111,6 +111,16 @@ export const Navbar = () => {
                 {t('nav.admin')}
               </Link>
             )}
+            {isInfluencer && (
+              <Link 
+                to="/influencer-dashboard" 
+                className="text-[#FFD700] hover:text-[#FCD34D] transition-colors font-medium flex items-center gap-1"
+                data-testid="nav-influencer"
+              >
+                <Star className="w-4 h-4" />
+                Influencer
+              </Link>
+            )}
           </div>
 
           {/* Right side */}
