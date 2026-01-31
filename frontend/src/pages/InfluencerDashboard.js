@@ -16,6 +16,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function InfluencerDashboard() {
   const navigate = useNavigate();
+  const { loginAsInfluencer, logout: authLogout, user: authUser, isInfluencer } = useAuth();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [influencer, setInfluencer] = useState(null);
   const [stats, setStats] = useState(null);
@@ -26,20 +27,36 @@ export default function InfluencerDashboard() {
   const [loginCode, setLoginCode] = useState('');
   const [loginEmail, setLoginEmail] = useState('');
   
-  // Check if already logged in
+  // Check if already logged in (either via localStorage or AuthContext)
   useEffect(() => {
-    const savedInfluencer = localStorage.getItem('influencer_data');
-    if (savedInfluencer) {
-      try {
-        const data = JSON.parse(savedInfluencer);
-        setInfluencer(data);
-        setIsLoggedIn(true);
-        fetchStats(data.code);
-      } catch (e) {
-        localStorage.removeItem('influencer_data');
+    // If logged in via AuthContext as influencer
+    if (authUser && isInfluencer) {
+      const savedInfluencer = localStorage.getItem('influencer_data');
+      if (savedInfluencer) {
+        try {
+          const data = JSON.parse(savedInfluencer);
+          setInfluencer(data);
+          setIsLoggedIn(true);
+          fetchStats(data.code);
+        } catch (e) {
+          localStorage.removeItem('influencer_data');
+        }
+      }
+    } else {
+      // Check localStorage for influencer data
+      const savedInfluencer = localStorage.getItem('influencer_data');
+      if (savedInfluencer) {
+        try {
+          const data = JSON.parse(savedInfluencer);
+          setInfluencer(data);
+          setIsLoggedIn(true);
+          fetchStats(data.code);
+        } catch (e) {
+          localStorage.removeItem('influencer_data');
+        }
       }
     }
-  }, []);
+  }, [authUser, isInfluencer]);
   
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -53,10 +70,17 @@ export default function InfluencerDashboard() {
       });
       
       if (response.data.success) {
+        // Save influencer data
         setInfluencer(response.data.influencer);
         setIsLoggedIn(true);
         localStorage.setItem('influencer_data', JSON.stringify(response.data.influencer));
-        toast.success('Erfolgreich eingeloggt!');
+        
+        // Login to AuthContext with JWT token (enables bidding, VIP features)
+        if (response.data.token && response.data.user) {
+          loginAsInfluencer(response.data.token, response.data.user);
+        }
+        
+        toast.success('Erfolgreich eingeloggt! Sie haben jetzt VIP-Zugang.');
         fetchStats(response.data.influencer.code);
       }
     } catch (error) {
