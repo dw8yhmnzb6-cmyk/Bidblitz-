@@ -305,6 +305,7 @@ async def bot_last_second_bidder():
                                 "last_bidder_name": bot["name"],
                                 "last_bidder_id": f"bot_{bot['id']}",
                                 "total_bids": auction.get("total_bids", 0) + 1,
+                                "bid_count": auction.get("bid_count", 0) + 1,
                                 "end_time": new_end_time.isoformat(),
                                 "bidder_message": f"{bot['name']} hat geboten!"
                             })
