@@ -271,6 +271,79 @@ export default function InfluencerDashboard() {
           </div>
         </div>
 
+        {/* Payout Card */}
+        <div className="glass-card rounded-2xl p-6 border-l-4 border-[#10B981]">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <Wallet className="w-6 h-6 text-[#10B981]" />
+                Auszahlung
+              </h2>
+              <div className="mt-2 grid grid-cols-3 gap-6">
+                <div>
+                  <p className="text-[#94A3B8] text-sm">Gesamt verdient</p>
+                  <p className="text-2xl font-bold text-[#F59E0B]">€{payoutHistory?.total_earned?.toFixed(2) || '0.00'}</p>
+                </div>
+                <div>
+                  <p className="text-[#94A3B8] text-sm">Bereits ausgezahlt</p>
+                  <p className="text-2xl font-bold text-[#94A3B8]">€{payoutHistory?.total_paid?.toFixed(2) || '0.00'}</p>
+                </div>
+                <div>
+                  <p className="text-[#94A3B8] text-sm">Verfügbar</p>
+                  <p className="text-2xl font-bold text-[#10B981]">€{payoutHistory?.available_balance?.toFixed(2) || '0.00'}</p>
+                </div>
+              </div>
+            </div>
+            <Button 
+              onClick={() => setShowPayoutModal(true)}
+              disabled={(payoutHistory?.available_balance || 0) < 10}
+              className="bg-[#10B981] hover:bg-[#059669] px-6"
+            >
+              <Send className="w-4 h-4 mr-2" />
+              Auszahlung anfordern
+            </Button>
+          </div>
+          
+          {(payoutHistory?.available_balance || 0) < 10 && (
+            <p className="text-[#F59E0B] text-sm mt-3">
+              Mindestauszahlung: €10.00
+            </p>
+          )}
+
+          {/* Payout History */}
+          {payoutHistory?.payouts?.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-white/10">
+              <h3 className="text-white font-semibold mb-3">Letzte Auszahlungen</h3>
+              <div className="space-y-2">
+                {payoutHistory.payouts.slice(0, 3).map((payout, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-[#181824] rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <CreditCard className="w-5 h-5 text-[#94A3B8]" />
+                      <div>
+                        <p className="text-white">€{payout.amount.toFixed(2)}</p>
+                        <p className="text-[#94A3B8] text-xs">{payout.payment_method}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className={`px-2 py-1 rounded text-xs ${
+                        payout.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                        payout.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                        'bg-red-500/20 text-red-400'
+                      }`}>
+                        {payout.status === 'completed' ? 'Ausgezahlt' : 
+                         payout.status === 'pending' ? 'In Bearbeitung' : 'Abgelehnt'}
+                      </span>
+                      <p className="text-[#94A3B8] text-xs mt-1">
+                        {new Date(payout.created_at).toLocaleDateString('de-DE')}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Tier Progress */}
         <div className="glass-card rounded-2xl p-6">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
