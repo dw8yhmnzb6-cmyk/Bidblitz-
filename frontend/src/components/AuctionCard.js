@@ -62,6 +62,7 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
   }, [auction.end_time, auction.start_time, auction.status]);
 
   const product = auction.product || {};
+  const productName = getProductName(product, language);
   const isEnded = auction.status === 'ended' || (timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 && auction.status !== 'scheduled');
   const isScheduled = auction.status === 'scheduled';
 
@@ -76,7 +77,7 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
       <div className="relative aspect-square overflow-hidden bg-[#181824]">
         <img
           src={product.image_url || 'https://via.placeholder.com/400'}
-          alt={product.name}
+          alt={productName}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         {/* Overlay gradient */}
@@ -106,8 +107,8 @@ export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
       {/* Content */}
       <div className="p-4 space-y-4">
         {/* Title */}
-        <h3 className="font-bold text-lg text-white truncate" title={product.name}>
-          {product.name}
+        <h3 className="font-bold text-lg text-white truncate" title={productName}>
+          {productName}
         </h3>
 
         {/* Timer */}
