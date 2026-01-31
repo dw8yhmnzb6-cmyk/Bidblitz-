@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 const API = process.env.REACT_APP_BACKEND_URL;
 
 export default function WholesaleApply() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     company_name: '',
     contact_name: '',
