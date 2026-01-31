@@ -81,6 +81,16 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - Admin.js refactoring (~45%)
 - "Not Found" toast issue (mitigated)
 
+### Recently Completed (January 31, 2026)
+- ✅ Hide "NEUSTART" (Restarting) status from customers
+  - AuctionDetail.js: Shows "BEENDET" instead of "NEUSTART" 
+  - Home.js: Timer shows "Beendet" when expired
+  - Updated translations for ended/auctionEnded
+- ✅ Admin Voice Commands tested and verified:
+  - get_stats, create_voucher, add_bids_to_user
+  - make_vip, remove_vip, create_report (week/month)
+  - All 23 commands functional via GPT-4o-mini parsing
+
 ### Pending (📋)
 - 2FA implementation
 - PayPal integration
@@ -120,6 +130,11 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - GET /api/vip/status
 - GET /api/vip/plans
 
+### Voice Commands (Admin)
+- POST /api/voice-command/transcribe (audio file → text → parsed command)
+- POST /api/voice-command/execute (text command → parsed → optional execution)
+- POST /api/voice-command/confirm-execute (execute confirmed action)
+
 ## Known Issues
 1. Influencer login redirect sometimes fails (workaround: localStorage)
 2. "Not Found" toast appears intermittently (404 interceptor added)
@@ -127,3 +142,8 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Last Updated
 January 31, 2026
+
+## Changelog
+- 2026-01-31: Fixed "NEUSTART" display issue - now shows "BEENDET" for ended auctions
+- 2026-01-31: Tested and verified all 23 admin voice commands
+- 2026-01-31: Added translation keys for auctionEnded in DE and EN
