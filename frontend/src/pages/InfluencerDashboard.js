@@ -384,11 +384,11 @@ export default function InfluencerDashboard() {
           loginAsInfluencer(response.data.token, response.data.user);
         }
         
-        toast.success('Erfolgreich eingeloggt! Sie haben jetzt VIP-Zugang.');
+        toast.success(t.loginSuccess);
         fetchStats(response.data.influencer.code);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Login fehlgeschlagen. Bitte prüfen Sie Ihren Code und E-Mail.');
+      toast.error(error.response?.data?.detail || t.loginError);
     } finally {
       setLoading(false);
     }
