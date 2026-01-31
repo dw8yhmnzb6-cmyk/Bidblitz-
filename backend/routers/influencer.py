@@ -180,7 +180,9 @@ class InfluencerLogin(BaseModel):
 
 @router.post("/login")
 async def influencer_login(data: InfluencerLogin):
-    """Login for influencers to access their dashboard"""
+    """Login for influencers - creates/links user account with VIP access"""
+    from dependencies import create_token, hash_password
+    
     influencer = await db.influencers.find_one(
         {"code": data.code.lower(), "email": data.email, "is_active": True},
         {"_id": 0}
@@ -189,11 +191,66 @@ async def influencer_login(data: InfluencerLogin):
     if not influencer:
         raise HTTPException(status_code=401, detail="Ungültiger Code oder E-Mail")
     
-    logger.info(f"🌟 Influencer login: {influencer['name']}")
+    # Check if user account exists for this influencer
+    user = await db.users.find_one({"email": data.email}, {"_id": 0})
+    
+    if not user:
+        # Create new user account for influencer with VIP status
+        user_id = str(uuid.uuid4())
+        # Generate a secure random password (influencer logs in with code+email)
+        temp_password = str(uuid.uuid4())[:16] + "Aa1!"
+        
+        user = {
+            "id": user_id,
+            "email": data.email,
+            "name": influencer["name"],
+            "password": hash_password(temp_password),
+            "bids_balance": 100,  # Welcome bonus for influencers
+            "is_admin": False,
+            "is_vip": True,  # FREE VIP access
+            "vip_expires_at": None,  # Never expires for influencers
+            "is_influencer": True,
+            "influencer_code": influencer["code"],
+            "total_bids_placed": 0,
+            "total_deposits": 0,
+            "won_auctions": [],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "is_verified": True  # Auto-verified
+        }
+        await db.users.insert_one(user)
+        logger.info(f"🌟 Created user account for influencer: {influencer['name']}")
+    else:
+        # Update existing user to have VIP and influencer status
+        await db.users.update_one(
+            {"email": data.email},
+            {"$set": {
+                "is_vip": True,
+                "vip_expires_at": None,  # Never expires
+                "is_influencer": True,
+                "influencer_code": influencer["code"]
+            }}
+        )
+        # Refresh user data
+        user = await db.users.find_one({"email": data.email}, {"_id": 0})
+        logger.info(f"🌟 Updated existing user with influencer VIP status: {influencer['name']}")
+    
+    # Create JWT token for the user
+    token = create_token(user["id"], is_admin=user.get("is_admin", False))
+    
+    logger.info(f"🌟 Influencer login: {influencer['name']} (VIP access granted)")
     
     return {
         "success": True,
-        "influencer": influencer
+        "influencer": influencer,
+        "token": token,
+        "user": {
+            "id": user["id"],
+            "email": user["email"],
+            "name": user["name"],
+            "bids_balance": user.get("bids_balance", 0),
+            "is_vip": True,
+            "is_influencer": True
+        }
     }
 
 @router.get("/stats/{code}")
