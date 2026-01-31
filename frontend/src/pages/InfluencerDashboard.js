@@ -9,7 +9,7 @@ import {
   Star, TrendingUp, Users, DollarSign, BarChart3, 
   Copy, Check, Eye, ShoppingCart, Calendar, ArrowRight,
   Instagram, Youtube, Clock, Zap, Gift, LogOut, Gavel, Crown,
-  Wallet, CreditCard, Building, History
+  Wallet, CreditCard, Building, History, Bell, X
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -23,6 +23,11 @@ export default function InfluencerDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  
+  // Notifications state
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
   
   // Payout states
   const [payoutBalance, setPayoutBalance] = useState(null);
