@@ -1,112 +1,129 @@
-# BidBlitz Penny Auction Platform - PRD
+# BidBlitz Penny Auction - Product Requirements Document
 
 ## Original Problem Statement
-Build a penny auction website modeled after `dealdash.com` and `snipster.de` with full German localization and real-time bidding functionality.
+Create a penny auction website modeled after `dealdash.com` and `snipster.de` with complete visual and functional overhaul.
 
-## Core Features
+## Core Features Implemented
 
-### Implemented ✅
-- **User Authentication**: JWT-based auth with email verification
-- **Auction System**: Real-time penny auctions with WebSocket updates
-- **Bot System**: AI bots that bid automatically (€1-2 range or admin-set targets)
-- **Admin Panel**: Complete management of auctions, users, products, bots
-- **Payment Integration**: Stripe (live keys), Coinbase Commerce (disabled)
-- **VIP System**: VIP membership with exclusive auctions
-- **Internationalization**: German/English support
-- **Auction Types**: Standard, Beginner, Free, Night, VIP auctions
-- **Auto-Restart**: Ended auctions automatically restart after 5 minutes
-- **Affiliate System**: Referral tracking and commission
-- **Voucher System**: Discount codes and promotions
-- **Static Pages**: AGB, Impressum, Datenschutz with multi-language support
+### User System
+- User registration with email verification
+- JWT-based authentication
+- Customer numbers (8-digit) for gifting
+- VIP membership tiers
+- Influencer accounts with free VIP access
 
-### User Personas
-1. **Bidders**: Users who purchase bid packages and participate in auctions
-2. **Admins**: Manage auctions, products, users, and platform settings
-3. **VIP Members**: Premium users with access to exclusive auctions
+### Auction System
+- Real-time penny auctions with WebSocket updates
+- Bot system (dual-mode: activity & sniper)
+- Auction of the Day feature
+- VIP-only auctions
+- Auto-restart (3s delay)
+- Timer extension on bids (10-15s)
+
+### Payment Integration
+- Stripe (LIVE keys configured)
+- Bid packages
+- Coinbase Commerce (disabled)
+
+### Gift System (NEW)
+- Customer numbers for all users
+- Gift bids to friends/family
+- Gift history tracking
+- Notifications for recipients
+
+### Influencer System
+- Influencer login with code + email
+- Free VIP access (never expires)
+- 100 welcome bids
+- Commission tracking (default 10%)
+- Payout requests (min €50)
+- Bank transfer / PayPal payouts
+
+### Internationalization
+- 5+ languages: DE, EN, TR, FR, SQ
+- Multi-language product names
+- Full page translations
 
 ## Technical Architecture
 
-### Stack
-- **Frontend**: React 18, TailwindCSS, Shadcn/UI
-- **Backend**: FastAPI, Python 3.11
-- **Database**: MongoDB
-- **Real-time**: WebSockets
-- **Payments**: Stripe
+### Frontend
+- React 18 with React Router
+- Tailwind CSS + Shadcn/UI
+- WebSocket for real-time updates
+- i18n context for translations
+
+### Backend
+- FastAPI with async support
+- MongoDB database
+- JWT authentication
+- WebSocket manager
 
 ### Key Files
-- `/app/frontend/src/pages/Auctions.js` - Main auction page with stable card positioning
-- `/app/frontend/src/pages/Admin.js` - Admin panel (refactoring ~50% complete)
-- `/app/frontend/src/components/admin/` - Extracted admin components
-- `/app/backend/server.py` - Main server with bot AI logic
-- `/app/backend/routers/` - API routes
+- `/app/backend/server.py` - Main server + bot logic
+- `/app/frontend/src/pages/Auctions.js` - Main auction display
+- `/app/frontend/src/pages/Admin.js` - Admin panel (refactoring in progress)
+- `/app/backend/routers/gifts.py` - Gift system
+- `/app/backend/routers/influencer.py` - Influencer system
 
-## Current Session Work (Jan 2025)
+## Completion Status
 
-### Completed ✅
-- **Fixed "Jumping" Auction Cards**: Implemented stable positioning using `useRef`
-- **Fixed "Auction of the Day" Timer**: Timer now counts down correctly, expired auctions are replaced
-- **Admin.js Refactoring Progress**:
-  - Extracted `AdminAuctions.js` (~350 lines)
-  - Extracted `AdminVIPAuctions.js` (~230 lines)
-  - Reduced Admin.js from 3993 to 3435 lines (-14%)
+### Completed (✅)
+- User authentication
+- Auction system with bots
+- Stripe payments
+- VIP system
+- Influencer system with VIP + payouts
+- Gift bidding system
+- Multi-language support
+- Admin panel (basic)
 
-### Test Results
-- Frontend testing: 100% pass rate (9/9 tests)
-- Card stability verified over 30+ seconds observation
-- Admin Auctions tab fully functional
+### In Progress (🔄)
+- Admin.js refactoring (~45%)
+- "Not Found" toast issue (mitigated)
 
-## Refactoring Status
+### Pending (📋)
+- 2FA implementation
+- PayPal integration
+- Live chat (needs Tawk.to ID)
+- Router consolidation (user.py + users.py)
 
-### Extracted Components ✅
-1. AdminDashboard
-2. AdminProducts
-3. AdminUsers
-4. AdminBots
-5. AdminVouchers
-6. AdminPayments
-7. AdminLogs
-8. **AdminAuctions** (NEW)
-9. **AdminVIPAuctions** (NEW)
+## Test Credentials
+- **Admin:** admin@bidblitz.de / Admin123!
+- **Customer:** kunde@bidblitz.de / Kunde123!
+- **Influencer:** Code: demo, Email: demo@influencer.test
 
-### Still in Admin.js (To Extract)
-- AdminStaff
-- AdminEmail
-- AdminPages
-- AdminBanners
-- AdminInfluencers
-- AdminWholesale
-- AdminGameConfig
+## API Endpoints
 
-## Priority Backlog
+### Authentication
+- POST /api/auth/login
+- POST /api/auth/register
+- GET /api/auth/me
 
-### P1 - High Priority
-- [ ] Continue Admin.js refactoring (remaining 7 components)
+### Auctions
+- GET /api/auctions
+- POST /api/auctions/{id}/bid
+- GET /api/auction-of-the-day
 
-### P2 - Medium Priority  
-- [ ] Root cause of "Not Found" toast (mitigated, not resolved)
-- [ ] Inconsistent data persistence audit
-- [ ] Refactor overlapping user routers (`user.py` + `users.py`)
-- [ ] Two-Factor Authentication (2FA)
-- [ ] PayPal Integration
+### Gifts
+- GET /api/gifts/my-customer-number
+- GET /api/gifts/lookup/{number}
+- POST /api/gifts/send
+- GET /api/gifts/history
 
-### P3 - Low Priority / Future
-- [ ] Live-Chat activation (requires Tawk.to ID from user)
+### Influencer
+- POST /api/influencer/login
+- GET /api/influencer/stats/{code}
+- GET /api/influencer/payout/balance/{code}
+- POST /api/influencer/payout/request/{code}
+
+### VIP
+- GET /api/vip/status
+- GET /api/vip/plans
 
 ## Known Issues
+1. Influencer login redirect sometimes fails (workaround: localStorage)
+2. "Not Found" toast appears intermittently (404 interceptor added)
+3. Data persistence may be lost on server restart
 
-### Mitigated (Not Resolved)
-- **"Not Found" Toast**: Global Axios interceptor suppresses 404 toasts, but root cause unknown
-
-### Technical Debt
-- `Admin.js` still has ~3435 lines - needs more component extraction
-- Two user router files with overlapping logic
-
-## Credentials
-- **Admin**: admin@bidblitz.de / Admin123!
-- **Customer**: kunde@bidblitz.de / Kunde123!
-
-## 3rd Party Integrations
-- **Stripe**: Live API keys integrated
-- **Resend**: Email service (sandbox mode)
-- **Tawk.to**: Live chat placeholder (needs user configuration)
-- **ip-api.com**: VPN/proxy detection
+## Last Updated
+January 31, 2026
