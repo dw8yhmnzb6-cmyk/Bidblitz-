@@ -132,17 +132,9 @@ export default function WholesaleApply() {
     }
   };
   
-  // Get translations - use local fallbacks if t('wholesale') returns empty or undefined
-  const translatedWholesale = t('wholesale');
-  // Check if translation exists and has content
-  const hasTranslation = translatedWholesale && typeof translatedWholesale === 'object' && translatedWholesale.title;
-  
-  // ALWAYS use local translations based on language - more reliable
-  const localTranslations = wholesaleTranslations[language] || wholesaleTranslations.en;
-  const wt = hasTranslation ? translatedWholesale : localTranslations;
-  
-  // Debug log
-  console.log('WholesaleApply language:', language, 'hasTranslation:', hasTranslation, 'using:', hasTranslation ? 'global' : 'local');
+  // ALWAYS use local translations for wholesale page - more reliable than global translations
+  // This ensures Albanian, US English, and other languages work correctly
+  const wt = wholesaleTranslations[language] || wholesaleTranslations.en;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
