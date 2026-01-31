@@ -44,6 +44,7 @@ import InfluencerDashboard from "./pages/InfluencerDashboard";
 import InfluencerBecome from "./pages/InfluencerBecome";
 import WholesaleApply from "./pages/WholesaleApply";
 import WholesaleDashboard from "./pages/WholesaleDashboard";
+import GiftBids from "./pages/GiftBids";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
