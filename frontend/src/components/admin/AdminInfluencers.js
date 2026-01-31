@@ -78,9 +78,9 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
           <p className="text-2xl font-bold text-white">{influencers.length}</p>
         </div>
         <div className="glass-card rounded-xl p-4">
-          <p className="text-[#94A3B8] text-sm">Gesamt Code-Nutzungen</p>
+          <p className="text-[#94A3B8] text-sm">Gesamt Kunden</p>
           <p className="text-2xl font-bold text-[#06B6D4]">
-            {influencers.reduce((sum, i) => sum + (i.total_uses || 0), 0)}
+            {influencers.reduce((sum, i) => sum + (i.total_customers || 0), 0)}
           </p>
         </div>
         <div className="glass-card rounded-xl p-4">
@@ -94,6 +94,20 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
           <p className="text-2xl font-bold text-[#F59E0B]">
             €{influencers.reduce((sum, i) => sum + (i.total_commission || 0), 0).toFixed(2)}
           </p>
+        </div>
+      </div>
+
+      {/* Commission Tiers Info */}
+      <div className="glass-card rounded-xl p-4 border-l-4 border-[#FFD700]">
+        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
+          <Star className="w-5 h-5 text-[#FFD700]" />
+          Staffelprovisionen - Je mehr Kunden, desto mehr Provision!
+        </h3>
+        <div className="flex flex-wrap gap-4 text-sm">
+          <span className="px-3 py-1 rounded-full bg-[#CD7F32]/20 text-[#CD7F32]">🥉 Bronze: 0-10 Kunden (Basis)</span>
+          <span className="px-3 py-1 rounded-full bg-[#C0C0C0]/20 text-[#C0C0C0]">🥈 Silber: 11-50 (+2%)</span>
+          <span className="px-3 py-1 rounded-full bg-[#FFD700]/20 text-[#FFD700]">🥇 Gold: 51-100 (+3%)</span>
+          <span className="px-3 py-1 rounded-full bg-[#E5E4E2]/20 text-[#E5E4E2]">💎 Platin: 100+ (+5%)</span>
         </div>
       </div>
 
