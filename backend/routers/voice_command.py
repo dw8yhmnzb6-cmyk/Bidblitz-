@@ -59,7 +59,7 @@ Verfügbare Aktionen:
 
 === AUKTIONEN ===
 1. create_auctions - Neue Auktionen erstellen
-   Parameter: count (Anzahl), category (optional), duration_days (optional)
+   Parameter: count (Anzahl), category (optional), duration_days (optional), auction_type (optional: "day", "night", "vip")
    
 2. delete_auctions - Auktionen löschen
    Parameter: status ("ended" = nur beendete, "all" = alle Auktionen), older_than_days (optional, Standard: 0 = keine Zeitbegrenzung)
@@ -91,49 +91,53 @@ Verfügbare Aktionen:
     Parameter: bids (Anzahl Gebote), code (optional, wird generiert), max_uses (optional)
 
 === BOTS ===
-11. start_bots - Bots starten
+11. create_bots - Neue Bots erstellen
+    Parameter: count (Anzahl Bots), nationality (z.B. "german", "albanian", "turkish", "arabic")
+    Beispiel: "Erstelle 50 Bots mit albanischen Namen" -> {"action": "create_bots", "parameters": {"count": 50, "nationality": "albanian"}}
+
+12. start_bots - Bots starten
     Parameter: keine
 
-12. stop_bots - Bots stoppen
+13. stop_bots - Bots stoppen
     Parameter: keine
 
-13. set_bot_speed - Bot-Geschwindigkeit setzen
+14. set_bot_speed - Bot-Geschwindigkeit setzen
     Parameter: seconds (Intervall in Sekunden)
 
 === PRODUKTE ===
-14. translate_products - Alle Produkte übersetzen
+15. translate_products - Alle Produkte übersetzen
     Parameter: languages (Liste: en, tr, fr, sq, ar - optional, Standard: en, tr, fr)
 
 === INFLUENCER ===
-15. approve_influencer - Influencer-Bewerbung genehmigen
+16. approve_influencer - Influencer-Bewerbung genehmigen
     Parameter: email
 
-16. show_pending_payouts - Offene Auszahlungsanfragen zeigen
+17. show_pending_payouts - Offene Auszahlungsanfragen zeigen
     Parameter: keine
 
 === SYSTEM ===
-17. get_stats - Statistiken abrufen
+18. get_stats - Statistiken abrufen
     Parameter: type (users/auctions/revenue/today)
 
-18. send_notification - Benachrichtigung an alle senden
+19. send_notification - Benachrichtigung an alle senden
     Parameter: title, message
 
-19. maintenance_mode - Wartungsmodus ein/ausschalten
+20. maintenance_mode - Wartungsmodus ein/ausschalten
     Parameter: enabled (true/false)
 
-20. send_test_email - Test-E-Mail senden
+21. send_test_email - Test-E-Mail senden
     Parameter: email
 
-21. export_users - Benutzer exportieren
+22. export_users - Benutzer exportieren
     Parameter: format (csv/json)
 
-22. create_backup - Datenbank-Backup erstellen
+23. create_backup - Datenbank-Backup erstellen
     Parameter: keine
 
-23. create_report - Bericht erstellen (Woche/Monat)
+24. create_report - Bericht erstellen (Woche/Monat)
     Parameter: period (week/month)
 
-23. unknown - Wenn der Befehl nicht erkannt wird
+25. unknown - Wenn der Befehl nicht erkannt wird
 
 Antworte NUR mit einem JSON-Objekt im folgenden Format:
 {
