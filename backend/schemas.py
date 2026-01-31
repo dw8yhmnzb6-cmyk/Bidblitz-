@@ -45,12 +45,23 @@ class ResetPasswordRequest(BaseModel):
 
 # ==================== PRODUCT MODELS ====================
 
+class ProductTranslations(BaseModel):
+    """Translations for product name and description"""
+    de: Optional[str] = None
+    en: Optional[str] = None
+    tr: Optional[str] = None
+    fr: Optional[str] = None
+    sq: Optional[str] = None
+    ar: Optional[str] = None
+
 class ProductCreate(BaseModel):
     name: str
     description: str
     image_url: str
     retail_price: float
     category: str
+    name_translations: Optional[Dict[str, str]] = None
+    description_translations: Optional[Dict[str, str]] = None
 
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
@@ -58,6 +69,8 @@ class ProductUpdate(BaseModel):
     image_url: Optional[str] = None
     retail_price: Optional[float] = None
     category: Optional[str] = None
+    name_translations: Optional[Dict[str, str]] = None
+    description_translations: Optional[Dict[str, str]] = None
 
 # ==================== AUCTION MODELS ====================
 
