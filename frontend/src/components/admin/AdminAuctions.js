@@ -39,7 +39,8 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
         bid_increment: parseFloat(newAuction.bid_increment),
         bot_target_price: newAuction.bot_target_price ? parseFloat(newAuction.bot_target_price) : null,
         is_night_auction: newAuction.auction_type === 'night',
-        is_vip_only: newAuction.auction_type === 'vip' || newAuction.is_vip_only
+        is_vip_only: newAuction.auction_type === 'vip' || newAuction.is_vip_only,
+        is_auction_of_day: newAuction.auction_type === 'aotd'
       };
 
       if (newAuction.scheduling_mode === 'immediate') {
@@ -73,6 +74,20 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
           );
         } catch (e) {
           console.error('Failed to set night mode:', e);
+        }
+      }
+      
+      // Set as Auction of the Day
+      if (newAuction.auction_type === 'aotd') {
+        try {
+          await axios.post(
+            `${API}/admin/auction-of-the-day/${response.data.id}`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          toast.success('🏆 Als Auktion des Tages gesetzt!');
+        } catch (e) {
+          console.error('Failed to set auction of the day:', e);
         }
       }
       
