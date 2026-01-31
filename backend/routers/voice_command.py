@@ -100,33 +100,37 @@ Verfügbare Aktionen:
 13. set_bot_speed - Bot-Geschwindigkeit setzen
     Parameter: seconds (Intervall in Sekunden)
 
+=== PRODUKTE ===
+14. translate_products - Alle Produkte übersetzen
+    Parameter: languages (Liste: en, tr, fr, sq, ar - optional, Standard: en, tr, fr)
+
 === INFLUENCER ===
-14. approve_influencer - Influencer-Bewerbung genehmigen
+15. approve_influencer - Influencer-Bewerbung genehmigen
     Parameter: email
 
-15. show_pending_payouts - Offene Auszahlungsanfragen zeigen
+16. show_pending_payouts - Offene Auszahlungsanfragen zeigen
     Parameter: keine
 
 === SYSTEM ===
-16. get_stats - Statistiken abrufen
+17. get_stats - Statistiken abrufen
     Parameter: type (users/auctions/revenue/today)
 
-17. send_notification - Benachrichtigung an alle senden
+18. send_notification - Benachrichtigung an alle senden
     Parameter: title, message
 
-18. maintenance_mode - Wartungsmodus ein/ausschalten
+19. maintenance_mode - Wartungsmodus ein/ausschalten
     Parameter: enabled (true/false)
 
-19. send_test_email - Test-E-Mail senden
+20. send_test_email - Test-E-Mail senden
     Parameter: email
 
-20. export_users - Benutzer exportieren
+21. export_users - Benutzer exportieren
     Parameter: format (csv/json)
 
-21. create_backup - Datenbank-Backup erstellen
+22. create_backup - Datenbank-Backup erstellen
     Parameter: keine
 
-22. create_report - Bericht erstellen (Woche/Monat)
+23. create_report - Bericht erstellen (Woche/Monat)
     Parameter: period (week/month)
 
 23. unknown - Wenn der Befehl nicht erkannt wird
