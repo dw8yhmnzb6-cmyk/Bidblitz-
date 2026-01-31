@@ -187,11 +187,15 @@ async def get_me(user: dict = Depends(get_current_user)):
         "name": user["name"],
         "bids_balance": user["bids_balance"],
         "is_admin": user.get("is_admin", False),
+        "is_vip": user.get("is_vip", False),
+        "is_influencer": user.get("is_influencer", False),
+        "influencer_code": user.get("influencer_code"),
         "referral_code": user.get("referral_code", user["id"][:8].upper()),
         "two_factor_enabled": user.get("two_factor_enabled", False),
         "avatar_url": user.get("avatar_url"),
         "vip_status": user.get("vip_status"),
         "vip_period_end": user.get("vip_period_end"),
+        "vip_expires_at": user.get("vip_expires_at"),
         "login_streak": user.get("login_streak", 0),
         "last_daily_reward": user.get("last_daily_reward")
     }
