@@ -291,17 +291,17 @@ export default function GiftBids() {
   const sendGift = async () => {
     const amount = parseInt(giftAmount);
     if (!amount || amount < 1) {
-      toast.error('Bitte geben Sie eine gültige Anzahl ein');
+      toast.error(t.enterValidAmount);
       return;
     }
 
     if (amount > (user?.bids_balance || 0)) {
-      toast.error('Nicht genügend Gebote vorhanden');
+      toast.error(t.notEnoughBids);
       return;
     }
 
     if (!recipientInfo) {
-      toast.error('Bitte suchen Sie zuerst einen Empfänger');
+      toast.error(t.searchFirst);
       return;
     }
 
@@ -325,7 +325,7 @@ export default function GiftBids() {
         fetchHistory();
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Senden des Geschenks');
+      toast.error(error.response?.data?.detail || t.notFound);
     } finally {
       setLoading(false);
     }
@@ -334,7 +334,7 @@ export default function GiftBids() {
   const copyCustomerNumber = () => {
     navigator.clipboard.writeText(customerNumber);
     setCopied(true);
-    toast.success('Kundennummer kopiert!');
+    toast.success(t.copied);
     setTimeout(() => setCopied(false), 2000);
   };
 
