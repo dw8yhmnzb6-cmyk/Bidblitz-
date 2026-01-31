@@ -81,8 +81,8 @@ const LiveTimer = memo(({ endTime, onExpired }) => {
   
   if (time.expired) {
     return (
-      <div className="bg-gradient-to-r from-amber-600 to-amber-700 rounded-full px-4 py-2">
-        <span className="text-white text-sm font-bold animate-pulse">Neustart...</span>
+      <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-full px-4 py-2">
+        <span className="text-white text-sm font-bold">Beendet</span>
       </div>
     );
   }
