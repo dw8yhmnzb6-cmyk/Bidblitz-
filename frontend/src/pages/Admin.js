@@ -904,7 +904,7 @@ export default function Admin() {
     const duration = prompt('Auto-Neustart Dauer in Minuten (0 = deaktiviert):', currentAutoRestart || '10');
     if (duration === null) return;
     
-    const botPrice = prompt('Bot-Mindestpreis (€) für Auto-Neustart (leer = kein Bot):', '');
+    const botPrice = prompt('Bots bieten bis (€) für Auto-Neustart:\n\nBots bieten kontinuierlich bis zu diesem Preis.\nLeer = Standard €2-3:', '');
     
     try {
       await axios.put(
