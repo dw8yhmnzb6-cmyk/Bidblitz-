@@ -1347,6 +1347,11 @@ export default function Admin() {
             </div>
           )}
 
+          {/* Voice Commands Tab */}
+          {activeTab === 'voice' && (
+            <AdminVoiceCommand />
+          )}
+
           {/* Products Tab */}
           {activeTab === 'products' && (
             <div className="space-y-8">
