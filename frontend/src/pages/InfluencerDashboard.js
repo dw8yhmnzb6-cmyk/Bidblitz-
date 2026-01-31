@@ -483,6 +483,103 @@ export default function InfluencerDashboard() {
           </ul>
         </div>
       </div>
+
+      {/* Payout Modal */}
+      {showPayoutModal && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#0F0F16] rounded-2xl p-6 w-full max-w-md border border-white/10">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <Send className="w-5 h-5 text-[#10B981]" />
+                Auszahlung anfordern
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowPayoutModal(false)}
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 bg-[#181824] rounded-xl">
+                <p className="text-[#94A3B8] text-sm">Verfügbares Guthaben</p>
+                <p className="text-3xl font-bold text-[#10B981]">
+                  €{payoutHistory?.available_balance?.toFixed(2) || '0.00'}
+                </p>
+              </div>
+
+              <div>
+                <Label className="text-white">Auszahlungsbetrag (€)</Label>
+                <Input
+                  type="number"
+                  min="10"
+                  step="0.01"
+                  max={payoutHistory?.available_balance || 0}
+                  value={payoutForm.amount}
+                  onChange={(e) => setPayoutForm({...payoutForm, amount: e.target.value})}
+                  placeholder="Min. 10.00"
+                  className="mt-1 bg-[#181824] border-white/10 text-white"
+                />
+              </div>
+
+              <div>
+                <Label className="text-white">Zahlungsmethode</Label>
+                <Select 
+                  value={payoutForm.payment_method}
+                  onValueChange={(v) => setPayoutForm({...payoutForm, payment_method: v})}
+                >
+                  <SelectTrigger className="mt-1 bg-[#181824] border-white/10 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#181824] border-white/10">
+                    <SelectItem value="paypal">PayPal</SelectItem>
+                    <SelectItem value="bank_transfer">Banküberweisung</SelectItem>
+                    <SelectItem value="crypto">Kryptowährung</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label className="text-white">
+                  {payoutForm.payment_method === 'paypal' ? 'PayPal E-Mail' :
+                   payoutForm.payment_method === 'bank_transfer' ? 'IBAN' :
+                   'Wallet-Adresse'}
+                </Label>
+                <Input
+                  value={payoutForm.payment_details}
+                  onChange={(e) => setPayoutForm({...payoutForm, payment_details: e.target.value})}
+                  placeholder={
+                    payoutForm.payment_method === 'paypal' ? 'ihre@email.de' :
+                    payoutForm.payment_method === 'bank_transfer' ? 'DE89370400440532013000' :
+                    '0x...'
+                  }
+                  className="mt-1 bg-[#181824] border-white/10 text-white"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setShowPayoutModal(false)}
+                className="border-white/20 text-white"
+              >
+                Abbrechen
+              </Button>
+              <Button
+                onClick={handlePayoutRequest}
+                disabled={!payoutForm.amount || parseFloat(payoutForm.amount) < 10 || !payoutForm.payment_details}
+                className="bg-[#10B981] hover:bg-[#059669]"
+              >
+                <Send className="w-4 h-4 mr-1" />
+                Anfordern
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
