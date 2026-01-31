@@ -123,9 +123,11 @@ export default function Admin() {
     product_id: '', starting_price: '0.01', bid_increment: '0.01', 
     duration_value: '10', duration_unit: 'minutes', // minutes, hours, days
     start_time: '', end_time: '', scheduling_mode: 'immediate',
-    bot_target_price: '', // Minimum price for bots to bid up to
+    bot_target_price: '', // Maximum price for bots to bid up to
     auto_restart: false, // Enable auto-restart when auction ends
-    auto_restart_duration: '10' // Duration in minutes for auto-restart
+    auto_restart_duration: '10', // Duration in minutes for auto-restart
+    auction_type: 'day', // day, night, vip
+    is_vip_only: false
   });
   const [newVoucher, setNewVoucher] = useState({
     code: '', bids: '10', max_uses: '1', expires_at: ''
