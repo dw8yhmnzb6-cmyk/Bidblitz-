@@ -75,7 +75,7 @@ const AuctionTimer = ({ endTime, isPaused = false }) => {
 
 export default function VIPAuctions() {
   const { t } = useLanguage();
-  const { user, token } = useAuth();
+  const { user, token, isVip: authIsVip, isInfluencer } = useAuth();
   const navigate = useNavigate();
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -94,13 +94,14 @@ export default function VIPAuctions() {
       
       setAuctions(auctionsRes.data || []);
       setBusinessHours(businessHoursRes.data || { is_open: true });
-      setIsVip(userRes.data?.is_vip || userRes.data?.vip_status === 'active');
+      // Use VIP status from API or from AuthContext (for influencers)
+      setIsVip(userRes.data?.is_vip || userRes.data?.vip_status === 'active' || authIsVip || isInfluencer);
     } catch (error) {
       console.error('Error:', error);
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, authIsVip, isInfluencer]);
 
   useEffect(() => {
     fetchVIPAuctions();
