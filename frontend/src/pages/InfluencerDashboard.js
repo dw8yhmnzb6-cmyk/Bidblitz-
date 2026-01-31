@@ -376,6 +376,186 @@ export default function InfluencerDashboard() {
           </div>
         </div>
         
+        {/* Payout Section */}
+        <div className="glass-card rounded-xl p-6 mb-8 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                <Wallet className="w-5 h-5 text-green-400" />
+                Auszahlung
+              </h3>
+              <div className="flex items-center gap-4">
+                <div>
+                  <p className="text-gray-400 text-sm">Verfügbares Guthaben</p>
+                  <p className="text-3xl font-bold text-green-400">€{(payoutBalance?.available_balance || 0).toFixed(2)}</p>
+                </div>
+                <div className="border-l border-white/10 pl-4">
+                  <p className="text-gray-400 text-sm">Bereits ausgezahlt</p>
+                  <p className="text-xl font-bold text-gray-300">€{(payoutBalance?.total_paid || 0).toFixed(2)}</p>
+                </div>
+              </div>
+              <p className="text-gray-500 text-xs mt-2">Mindestbetrag für Auszahlung: €50</p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={() => {
+                  fetchPayoutHistory(influencer?.code);
+                  setShowPayoutModal(true);
+                }}
+                disabled={!payoutBalance?.can_withdraw}
+                className={`${payoutBalance?.can_withdraw 
+                  ? 'bg-green-500 hover:bg-green-600' 
+                  : 'bg-gray-600 cursor-not-allowed'} text-white font-bold px-6`}
+              >
+                <CreditCard className="w-4 h-4 mr-2" />
+                Auszahlung anfordern
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Payout Modal */}
+        {showPayoutModal && (
+          <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+            <div className="glass-card rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <Wallet className="w-6 h-6 text-green-400" />
+                Auszahlung anfordern
+              </h3>
+              
+              {/* Balance Info */}
+              <div className="bg-[#181824] rounded-lg p-4 mb-4">
+                <p className="text-gray-400 text-sm">Verfügbares Guthaben</p>
+                <p className="text-2xl font-bold text-green-400">€{(payoutBalance?.available_balance || 0).toFixed(2)}</p>
+              </div>
+              
+              {/* Amount Input */}
+              <div className="mb-4">
+                <Label className="text-white">Betrag (min. €50)</Label>
+                <Input
+                  type="number"
+                  value={payoutAmount}
+                  onChange={(e) => setPayoutAmount(e.target.value)}
+                  placeholder="z.B. 50.00"
+                  min="50"
+                  max={payoutBalance?.available_balance || 0}
+                  className="bg-[#181824] border-white/10 text-white"
+                />
+              </div>
+              
+              {/* Payment Method */}
+              <div className="mb-4">
+                <Label className="text-white mb-2 block">Zahlungsmethode</Label>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    onClick={() => setPayoutMethod('bank_transfer')}
+                    className={`flex-1 ${payoutMethod === 'bank_transfer' 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-[#181824] text-gray-400 border border-white/10'}`}
+                  >
+                    <Building className="w-4 h-4 mr-2" />
+                    Banküberweisung
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => setPayoutMethod('paypal')}
+                    className={`flex-1 ${payoutMethod === 'paypal' 
+                      ? 'bg-blue-500 text-white' 
+                      : 'bg-[#181824] text-gray-400 border border-white/10'}`}
+                  >
+                    PayPal
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Bank Transfer Fields */}
+              {payoutMethod === 'bank_transfer' && (
+                <div className="space-y-3 mb-4">
+                  <div>
+                    <Label className="text-white">IBAN</Label>
+                    <Input
+                      value={bankIban}
+                      onChange={(e) => setBankIban(e.target.value)}
+                      placeholder="DE89 3704 0044 0532 0130 00"
+                      className="bg-[#181824] border-white/10 text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-white">Bank Name</Label>
+                    <Input
+                      value={bankName}
+                      onChange={(e) => setBankName(e.target.value)}
+                      placeholder="z.B. Deutsche Bank"
+                      className="bg-[#181824] border-white/10 text-white"
+                    />
+                  </div>
+                </div>
+              )}
+              
+              {/* PayPal Fields */}
+              {payoutMethod === 'paypal' && (
+                <div className="mb-4">
+                  <Label className="text-white">PayPal E-Mail</Label>
+                  <Input
+                    type="email"
+                    value={paypalEmail}
+                    onChange={(e) => setPaypalEmail(e.target.value)}
+                    placeholder="ihre@paypal-email.de"
+                    className="bg-[#181824] border-white/10 text-white"
+                  />
+                </div>
+              )}
+              
+              {/* Payout History */}
+              {payoutHistory.length > 0 && (
+                <div className="mb-4">
+                  <Label className="text-white mb-2 block flex items-center gap-2">
+                    <History className="w-4 h-4" />
+                    Letzte Auszahlungen
+                  </Label>
+                  <div className="bg-[#181824] rounded-lg p-3 max-h-32 overflow-y-auto">
+                    {payoutHistory.slice(0, 5).map((payout, idx) => (
+                      <div key={idx} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                        <div>
+                          <p className="text-white text-sm">€{payout.amount?.toFixed(2)}</p>
+                          <p className="text-gray-500 text-xs">{new Date(payout.created_at).toLocaleDateString('de-DE')}</p>
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          payout.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                          payout.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-red-500/20 text-red-400'
+                        }`}>
+                          {payout.status === 'completed' ? 'Ausgezahlt' : 
+                           payout.status === 'pending' ? 'In Bearbeitung' : 'Abgelehnt'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Actions */}
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => setShowPayoutModal(false)}
+                  variant="outline"
+                  className="flex-1 border-white/20 text-white"
+                >
+                  Abbrechen
+                </Button>
+                <Button
+                  onClick={handlePayoutRequest}
+                  disabled={payoutLoading || !payoutAmount || parseFloat(payoutAmount) < 50}
+                  className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold"
+                >
+                  {payoutLoading ? 'Wird gesendet...' : 'Auszahlung anfordern'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Promo Tools */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Share Link */}
