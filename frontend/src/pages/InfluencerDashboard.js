@@ -500,7 +500,7 @@ export default function InfluencerDashboard() {
     setIsLoggedIn(false);
     setInfluencer(null);
     setStats(null);
-    toast.success('Ausgeloggt');
+    toast.success(t.loggedOut);
     navigate('/');
   };
   
@@ -508,7 +508,7 @@ export default function InfluencerDashboard() {
     if (influencer?.code) {
       navigator.clipboard.writeText(influencer.code);
       setCopied(true);
-      toast.success('Code kopiert!');
+      toast.success(t.copied);
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -516,7 +516,7 @@ export default function InfluencerDashboard() {
   const copyLink = () => {
     const link = `https://bidblitz.de/register?ref=${influencer?.code}`;
     navigator.clipboard.writeText(link);
-    toast.success('Link kopiert!');
+    toast.success(t.copied);
   };
   
   // Login Page
