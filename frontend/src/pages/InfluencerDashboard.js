@@ -529,32 +529,30 @@ export default function InfluencerDashboard() {
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center mx-auto mb-4">
               <Star className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">Influencer Login</h1>
-            <p className="text-gray-400">
-              Melden Sie sich an, um Ihre Statistiken und Einnahmen zu sehen
-            </p>
+            <h1 className="text-3xl font-bold text-white mb-2">{t.login}</h1>
+            <p className="text-gray-400">{t.loginDesc}</p>
           </div>
           
           {/* Login Form */}
           <div className="glass-card rounded-2xl p-6">
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <Label className="text-white">Ihr Influencer-Code</Label>
+                <Label className="text-white">{t.code}</Label>
                 <Input
                   value={loginCode}
                   onChange={(e) => setLoginCode(e.target.value)}
-                  placeholder="z.B. maxpower"
+                  placeholder={t.codePlaceholder}
                   className="bg-[#181824] border-white/10 text-white"
                   required
                 />
               </div>
               <div>
-                <Label className="text-white">E-Mail-Adresse</Label>
+                <Label className="text-white">{t.email}</Label>
                 <Input
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="ihre@email.de"
+                  placeholder={t.emailPlaceholder}
                   className="bg-[#181824] border-white/10 text-white"
                   required
                 />
@@ -564,18 +562,9 @@ export default function InfluencerDashboard() {
                 disabled={loading || !loginCode || !loginEmail}
                 className="w-full py-3 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold"
               >
-                {loading ? 'Wird geprüft...' : 'Anmelden'}
+                {loading ? t.checking : t.loginBtn}
               </Button>
             </form>
-            
-            <div className="mt-6 pt-6 border-t border-white/10 text-center">
-              <p className="text-gray-400 text-sm mb-3">Noch kein Influencer?</p>
-              <Link to="/influencer-werden">
-                <Button variant="outline" className="border-yellow-400/50 text-yellow-400 hover:bg-yellow-400/10">
-                  Jetzt Partner werden →
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
       </div>
