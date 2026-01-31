@@ -36,7 +36,12 @@ import {
   AdminAuctions,
   AdminVIPAuctions,
   AdminVoiceCommand,
-  AdminEmail
+  AdminEmail,
+  AdminPages,
+  AdminBanners,
+  AdminInfluencers,
+  AdminWholesale,
+  AdminGameConfig
 } from '../components/admin';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
