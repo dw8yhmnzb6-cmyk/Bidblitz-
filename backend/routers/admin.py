@@ -977,6 +977,64 @@ async def bulk_create_auctions(data: BulkAuctionCreate, admin: dict = Depends(ge
 
 # ==================== PRODUCT BULK IMPORT ====================
 
+@router.post("/auctions/{auction_id}/set-day-night")
+async def set_auction_day_night(auction_id: str, is_night: bool, admin: dict = Depends(get_admin_user)):
+    """Set an auction as day-only or night-only"""
+    auction = await db.auctions.find_one({"id": auction_id})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auction not found")
+    
+    # Check current time to determine correct status
+    now_berlin = datetime.now(timezone.utc) + timedelta(hours=1)
+    current_hour = now_berlin.hour + now_berlin.minute / 60
+    is_night_time = current_hour >= 23.5 or current_hour < 6
+    
+    update = {"is_night_auction": is_night}
+    
+    if is_night:
+        # Converting to night auction
+        if is_night_time:
+            update["status"] = "active"
+        else:
+            update["status"] = "night_paused"
+    else:
+        # Converting to day auction
+        if is_night_time:
+            update["status"] = "day_paused"
+        else:
+            update["status"] = "active"
+    
+    await db.auctions.update_one({"id": auction_id}, {"$set": update})
+    
+    logger.info(f"Auction {auction_id} set to {'night' if is_night else 'day'} by admin {admin['id']}")
+    return {"success": True, "message": f"Auktion auf {'Nacht' if is_night else 'Tag'}-Modus gesetzt"}
+
+
+@router.post("/auctions/bulk-set-day-night")
+async def bulk_set_day_night(auction_ids: List[str], is_night: bool, admin: dict = Depends(get_admin_user)):
+    """Set multiple auctions as day-only or night-only"""
+    now_berlin = datetime.now(timezone.utc) + timedelta(hours=1)
+    current_hour = now_berlin.hour + now_berlin.minute / 60
+    is_night_time = current_hour >= 23.5 or current_hour < 6
+    
+    status = "active"
+    if is_night and not is_night_time:
+        status = "night_paused"
+    elif not is_night and is_night_time:
+        status = "day_paused"
+    
+    result = await db.auctions.update_many(
+        {"id": {"$in": auction_ids}},
+        {"$set": {"is_night_auction": is_night, "status": status}}
+    )
+    
+    logger.info(f"Bulk set {result.modified_count} auctions to {'night' if is_night else 'day'} by admin {admin['id']}")
+    return {
+        "success": True,
+        "message": f"{result.modified_count} Auktionen auf {'Nacht' if is_night else 'Tag'}-Modus gesetzt"
+    }
+
+
 class ProductImport(BaseModel):
     name: str
     description: str = ""
