@@ -45,6 +45,8 @@ import InfluencerBecome from "./pages/InfluencerBecome";
 import WholesaleApply from "./pages/WholesaleApply";
 import WholesaleDashboard from "./pages/WholesaleDashboard";
 import GiftBids from "./pages/GiftBids";
+import GiftCards from "./pages/GiftCards";
+import GiftCardSuccess from "./pages/GiftCardSuccess";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
