@@ -493,6 +493,7 @@ export default function Home() {
                 product={products[auction.product_id]}
                 onBid={handleBid}
                 onRefresh={fetchData}
+                language={language}
               />
             ))}
           </div>
