@@ -715,6 +715,74 @@ async def execute_command(action: str, parameters: dict, admin: dict) -> dict:
             "data": report
         }
     
+    elif action == "translate_products":
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        import os as os_module
+        
+        api_key = os_module.getenv("EMERGENT_LLM_KEY")
+        if not api_key:
+            return {"success": False, "message": "❌ API Key nicht konfiguriert"}
+        
+        target_languages = parameters.get("languages", ["en", "tr", "fr"])
+        
+        # Get all products without translations
+        products = await db.products.find({}, {"_id": 0}).to_list(100)
+        
+        translated_count = 0
+        for product in products:
+            # Skip if already has all requested translations
+            existing = product.get("name_translations", {})
+            if all(lang in existing for lang in target_languages):
+                continue
+            
+            # Create translation prompt
+            system_prompt = """Du bist ein professioneller Übersetzer für E-Commerce-Produktbeschreibungen.
+Übersetze den gegebenen deutschen Produktnamen und die Beschreibung in die angeforderten Sprachen.
+Antworte NUR mit einem JSON-Objekt im Format:
+{"name_translations": {"en": "...", "tr": "...", ...}, "description_translations": {"en": "...", "tr": "...", ...}}"""
+            
+            chat = LlmChat(
+                api_key=api_key,
+                session_id=f"translate-{product['id']}",
+                system_message=system_prompt
+            ).with_model("openai", "gpt-4o-mini")
+            
+            user_prompt = f"""Übersetze in: {', '.join(target_languages)}
+Produktname: {product['name']}
+Beschreibung: {product['description']}"""
+            
+            try:
+                response = await chat.send_message(UserMessage(text=user_prompt))
+                
+                # Parse response
+                response_text = response.strip()
+                if "```" in response_text:
+                    response_text = response_text.split("```")[1].replace("json", "").strip()
+                
+                translations = json.loads(response_text)
+                
+                # Build translations with German original
+                name_trans = {"de": product["name"], **translations.get("name_translations", {})}
+                desc_trans = {"de": product["description"], **translations.get("description_translations", {})}
+                
+                # Update product
+                await db.products.update_one(
+                    {"id": product["id"]},
+                    {"$set": {"name_translations": name_trans, "description_translations": desc_trans}}
+                )
+                translated_count += 1
+                
+            except Exception as e:
+                logger.error(f"Translation error for {product['id']}: {str(e)}")
+                continue
+        
+        logger.info(f"🎤 Voice command: Translated {translated_count} products by {admin['name']}")
+        return {
+            "success": True,
+            "message": f"🌐 {translated_count} Produkte in {len(target_languages)} Sprachen übersetzt!",
+            "data": {"translated": translated_count, "languages": target_languages}
+        }
+    
     else:
         return {"success": False, "message": "❌ Befehl nicht erkannt"}
 
