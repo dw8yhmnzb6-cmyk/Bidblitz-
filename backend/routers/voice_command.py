@@ -48,14 +48,21 @@ async def parse_command(text: str) -> dict:
     system_prompt = """Du bist ein Admin-Assistent für eine Penny-Auction-Plattform (BidBlitz).
 Analysiere den Befehl und gib eine strukturierte JSON-Antwort zurück.
 
+WICHTIG: Bei kombinierten Befehlen (z.B. "Lösche alle Auktionen und erstelle 50 neue") verwende die "batch" Aktion!
+
 Verfügbare Aktionen:
+
+=== BATCH (FÜR KOMBINIERTE BEFEHLE) ===
+0. batch - Mehrere Aktionen nacheinander ausführen
+   Parameter: actions (Array von Aktionen, jede mit "action" und "parameters")
+   Beispiel: {"action": "batch", "parameters": {"actions": [{"action": "delete_auctions", "parameters": {"status": "ended"}}, {"action": "create_auctions", "parameters": {"count": 50}}]}}
 
 === AUKTIONEN ===
 1. create_auctions - Neue Auktionen erstellen
    Parameter: count (Anzahl), category (optional), duration_days (optional)
    
 2. delete_auctions - Auktionen löschen
-   Parameter: status (ended/all), older_than_days (optional)
+   Parameter: status ("ended" = nur beendete, "all" = alle Auktionen), older_than_days (optional, Standard: 0 = keine Zeitbegrenzung)
 
 3. extend_auction - Auktion verlängern
    Parameter: auction_id, hours (Stunden)
@@ -135,7 +142,7 @@ Antworte NUR mit einem JSON-Objekt im folgenden Format:
 Beispiele:
 - "Erstelle 50 neue Auktionen" -> {"action": "create_auctions", "parameters": {"count": 50}, "confirmation_message": "Soll ich 50 neue Auktionen erstellen?", "needs_confirmation": true}
 - "Sperre Benutzer test@email.de" -> {"action": "ban_user", "parameters": {"email": "test@email.de"}, "confirmation_message": "Soll ich den Benutzer test@email.de sperren?", "needs_confirmation": true}
-- "Erstelle Gutscheincode mit 100 Geboten" -> {"action": "create_voucher", "parameters": {"bids": 100}, "confirmation_message": "Soll ich einen Gutscheincode mit 100 Geboten erstellen?", "needs_confirmation": true}
+- "Lösche alle Auktionen und erstelle 50 neue" -> {"action": "batch", "parameters": {"actions": [{"action": "delete_auctions", "parameters": {"status": "all"}}, {"action": "create_auctions", "parameters": {"count": 50}}]}, "confirmation_message": "Soll ich alle Auktionen löschen und dann 50 neue erstellen?", "needs_confirmation": true}
 - "Stoppe die Bots" -> {"action": "stop_bots", "parameters": {}, "confirmation_message": "Soll ich alle Bots stoppen?", "needs_confirmation": true}
 - "Zeige heutige Einnahmen" -> {"action": "get_stats", "parameters": {"type": "today"}, "confirmation_message": "Ich zeige Ihnen die heutigen Einnahmen.", "needs_confirmation": false}
 """
