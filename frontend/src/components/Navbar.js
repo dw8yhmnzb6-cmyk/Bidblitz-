@@ -61,6 +61,14 @@ export const Navbar = () => {
               {t('nav.buyBids')}
             </Link>
             <Link 
+              to="/giftcards" 
+              className="text-[#F59E0B] hover:text-[#FBBF24] transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-giftcards"
+            >
+              <Gift className="w-4 h-4" />
+              Geschenkkarten
+            </Link>
+            <Link 
               to="/vip-auctions" 
               className="text-[#FFA500] hover:text-[#FFD700] transition-colors font-medium flex items-center gap-1"
               data-testid="nav-vip-auctions"
