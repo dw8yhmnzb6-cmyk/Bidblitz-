@@ -436,7 +436,6 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
               </button>
             </div>
           </div>
-          </div>
 
           {/* Auto-Restart Settings */}
           <div className="p-4 rounded-lg bg-[#181824] space-y-4">
