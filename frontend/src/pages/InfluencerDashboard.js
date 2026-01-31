@@ -4,11 +4,12 @@ import axios from 'axios';
 import { 
   Star, Users, DollarSign, TrendingUp, Award, 
   ChevronRight, LogOut, Copy, CheckCircle, Clock,
-  ArrowUp, Gift, Target, Crown
+  ArrowUp, Gift, Target, Crown, Wallet, CreditCard, Send, X
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -28,6 +29,13 @@ export default function InfluencerDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', code: '' });
+  const [payoutHistory, setPayoutHistory] = useState(null);
+  const [showPayoutModal, setShowPayoutModal] = useState(false);
+  const [payoutForm, setPayoutForm] = useState({
+    amount: '',
+    payment_method: 'paypal',
+    payment_details: ''
+  });
   const [copied, setCopied] = useState(false);
 
   // Check if already logged in
