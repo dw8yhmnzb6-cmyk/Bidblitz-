@@ -83,6 +83,8 @@ class AuctionCreate(BaseModel):
     end_time: Optional[str] = None
     bot_target_price: Optional[float] = None
     buy_now_price: Optional[float] = None
+    is_night_auction: Optional[bool] = False
+    is_vip_only: Optional[bool] = False
 
 class AuctionUpdate(BaseModel):
     duration_seconds: Optional[int] = None
