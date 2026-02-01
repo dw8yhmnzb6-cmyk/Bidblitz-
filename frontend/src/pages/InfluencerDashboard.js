@@ -229,13 +229,13 @@ export default function InfluencerDashboard() {
             <div>
               <h1 className="text-2xl font-bold text-white">{influencer?.name}</h1>
               <p className="text-[#94A3B8]">
-                <span style={{ color: tierConfig.color }}>{currentTier}</span> Influencer
+                <span style={{ color: tierConfig.color }}>{currentTier}</span> {t('influencer.title') || 'Influencer'}
               </p>
             </div>
           </div>
           <Button onClick={handleLogout} variant="outline" className="border-white/10 text-white">
             <LogOut className="w-4 h-4 mr-2" />
-            Abmelden
+            {t('influencer.logout') || 'Abmelden'}
           </Button>
         </div>
 
@@ -244,7 +244,7 @@ export default function InfluencerDashboard() {
           {/* Mobile: Stack vertically, Desktop: Side by side */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex-1">
-              <p className="text-[#94A3B8] text-sm mb-1">Dein Influencer-Code</p>
+              <p className="text-[#94A3B8] text-sm mb-1">{t('influencer.yourCode') || 'Dein Influencer-Code'}</p>
               <div className="flex items-center gap-3">
                 <code className="text-2xl md:text-3xl font-bold text-[#FFD700] tracking-wider">
                   {influencer?.code?.toUpperCase()}
@@ -254,18 +254,18 @@ export default function InfluencerDashboard() {
                 </Button>
               </div>
               <p className="text-[#94A3B8] text-xs md:text-sm mt-2 leading-relaxed">
-                Teile diesen Code mit deiner Community - sie erhalten Rabatt, du verdienst Provision!
+                {t('influencer.shareCode') || 'Teile diesen Code mit deiner Community - sie erhalten Rabatt, du verdienst Provision!'}
               </p>
             </div>
             {/* Commission display - visible on mobile too */}
             <div className="flex md:block items-center justify-between md:text-right bg-[#181824] md:bg-transparent p-3 md:p-0 rounded-lg">
-              <span className="text-[#94A3B8] text-sm md:hidden">Aktuelle Provision</span>
+              <span className="text-[#94A3B8] text-sm md:hidden">{t('influencer.currentCommission') || 'Aktuelle Provision'}</span>
               <p className="text-3xl md:text-5xl font-bold" style={{ color: tierConfig.color }}>
                 {stats?.effective_commission || 10}%
               </p>
-              <p className="text-[#94A3B8] text-sm hidden md:block">Aktuelle Provision</p>
+              <p className="text-[#94A3B8] text-sm hidden md:block">{t('influencer.currentCommission') || 'Aktuelle Provision'}</p>
               {stats?.tier_bonus > 0 && (
-                <p className="text-green-400 text-xs mt-1 hidden md:block">+{stats.tier_bonus}% Tier-Bonus</p>
+                <p className="text-green-400 text-xs mt-1 hidden md:block">+{stats.tier_bonus}% {t('influencer.tierBonus') || 'Tier-Bonus'}</p>
               )}
             </div>
           </div>
@@ -276,7 +276,7 @@ export default function InfluencerDashboard() {
           <div className="glass-card rounded-xl p-5">
             <div className="flex items-center gap-3 mb-2">
               <Users className="w-5 h-5 text-[#06B6D4]" />
-              <span className="text-[#94A3B8] text-sm">Kunden</span>
+              <span className="text-[#94A3B8] text-sm">{t('influencer.customers') || 'Kunden'}</span>
             </div>
             <p className="text-3xl font-bold text-white">{stats?.total_customers || 0}</p>
           </div>
@@ -284,7 +284,7 @@ export default function InfluencerDashboard() {
           <div className="glass-card rounded-xl p-5">
             <div className="flex items-center gap-3 mb-2">
               <DollarSign className="w-5 h-5 text-[#10B981]" />
-              <span className="text-[#94A3B8] text-sm">Umsatz</span>
+              <span className="text-[#94A3B8] text-sm">{t('influencer.revenue') || 'Umsatz'}</span>
             </div>
             <p className="text-3xl font-bold text-[#10B981]">€{stats?.total_revenue?.toFixed(2) || '0.00'}</p>
           </div>
