@@ -1146,7 +1146,9 @@ export const translations = {
     influencer: {
       title: "Influencer",
       login: "Influencer Girişi",
+      loginSubtitle: "İstatistiklerinizi görmek için giriş yapın",
       email: "E-posta",
+      emailPlaceholder: "email@adresiniz.com",
       code: "Kodunuz",
       loginButton: "Giriş yap",
       logout: "Çıkış",
