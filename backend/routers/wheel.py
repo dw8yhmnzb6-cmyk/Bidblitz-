@@ -57,6 +57,10 @@ async def get_spin_status(current_user: dict = Depends(get_current_user)):
     if isinstance(last_spin, str):
         last_spin = datetime.fromisoformat(last_spin.replace('Z', '+00:00'))
     
+    # Ensure last_spin has timezone info
+    if last_spin.tzinfo is None:
+        last_spin = last_spin.replace(tzinfo=timezone.utc)
+    
     # Check if 24 hours have passed
     now = datetime.now(timezone.utc)
     next_spin_time = last_spin + timedelta(hours=24)
