@@ -124,15 +124,15 @@ export default function AdminQuickActions({ onRefresh, stats }) {
               key={action.id}
               onClick={action.onClick}
               disabled={loading[action.id]}
-              className={`bg-gradient-to-r ${action.color} text-white text-xs md:text-sm px-3 py-2 h-auto`}
+              className={`bg-gradient-to-r ${action.color} text-white text-xs md:text-sm px-3 py-2 h-auto flex-col sm:flex-row`}
               size="sm"
             >
               {loading[action.id] ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <action.icon className="w-4 h-4 mr-1" />
+                <action.icon className="w-4 h-4 sm:mr-1" />
               )}
-              <span className="hidden sm:inline">{action.label}</span>
+              <span className="text-[10px] sm:text-xs">{action.label}</span>
             </Button>
           ))}
         </div>
