@@ -1166,10 +1166,18 @@ export default function Admin() {
               </button>
             ))}
           </nav>
-          <div className="px-4 mt-8">
+          <div className="px-4 mt-8 space-y-3">
             <Button onClick={handleSeedData} variant="outline" className="w-full border-white/10 text-white hover:bg-white/10">
               <Plus className="w-4 h-4 mr-2" />{t('admin.seedData')}
             </Button>
+            
+            {/* Keyboard Shortcuts Hint */}
+            <div className="text-xs text-gray-500 space-y-1 pt-2 border-t border-white/5">
+              <p className="font-medium text-gray-400">Tastenkürzel:</p>
+              <p><kbd className="px-1 py-0.5 bg-white/10 rounded">/</kbd> Suche</p>
+              <p><kbd className="px-1 py-0.5 bg-white/10 rounded">Ctrl</kbd>+<kbd className="px-1 py-0.5 bg-white/10 rounded">J</kbd> KI-Chat</p>
+              <p><kbd className="px-1 py-0.5 bg-white/10 rounded">Esc</kbd> Schließen</p>
+            </div>
           </div>
         </aside>
 
