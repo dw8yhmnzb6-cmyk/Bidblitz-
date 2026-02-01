@@ -309,33 +309,23 @@ export const Navbar = () => {
                 <Globe className="w-4 h-4" />
                 {t('nav.language') || 'Sprache'}
               </p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { code: 'de', flag: '🇩🇪', name: 'DE' },
-                  { code: 'en', flag: '🇬🇧', name: 'EN' },
-                  { code: 'tr', flag: '🇹🇷', name: 'TR' },
-                  { code: 'fr', flag: '🇫🇷', name: 'FR' },
-                  { code: 'es', flag: '🇪🇸', name: 'ES' },
-                  { code: 'it', flag: '🇮🇹', name: 'IT' },
-                  { code: 'ru', flag: '🇷🇺', name: 'RU' },
-                  { code: 'ar', flag: '🇸🇦', name: 'AR' },
-                  { code: 'sq', flag: '🇦🇱', name: 'SQ' },
-                ].map((lang) => (
+              <div className="grid grid-cols-4 gap-1.5 max-h-48 overflow-y-auto">
+                {Object.entries(languageList).map(([code, { flag, name }]) => (
                   <button
-                    key={lang.code}
+                    key={code}
                     onClick={() => {
-                      localStorage.setItem('language', lang.code);
+                      localStorage.setItem('language', code);
                       setMobileMenuOpen(false);
                       setTimeout(() => window.location.href = window.location.pathname, 100);
                     }}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      language === lang.code 
+                    className={`flex flex-col items-center justify-center p-2 rounded-lg text-xs font-medium transition-all ${
+                      language === code 
                         ? 'bg-[#7C3AED] text-white border-2 border-[#FFD700]' 
                         : 'bg-[#181824] text-gray-300 hover:bg-[#252532] border border-white/10'
                     }`}
                   >
-                    <span className="text-lg">{lang.flag}</span>
-                    <span>{lang.name}</span>
+                    <span className="text-lg">{flag}</span>
+                    <span className="truncate w-full text-center">{code.toUpperCase()}</span>
                   </button>
                 ))}
               </div>
