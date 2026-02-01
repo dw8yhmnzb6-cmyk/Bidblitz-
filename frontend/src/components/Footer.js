@@ -2,8 +2,113 @@ import { Link } from 'react-router-dom';
 import { Gavel, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
+// Footer translations
+const footerTexts = {
+  de: {
+    description: 'Die führende Penny-Auktion-Plattform in Dubai. Bieten Sie auf Premium-Produkte und sparen Sie bis zu 95%!',
+    quickLinks: 'Schnelllinks',
+    liveAuctions: 'Live Auktionen',
+    buyBids: 'Gebote kaufen',
+    register: 'Registrieren',
+    login: 'Anmelden',
+    extras: 'Extras',
+    becomeInfluencer: 'Influencer werden',
+    influencerLogin: 'Influencer Login',
+    wholesale: 'Großkunden (B2B)',
+    vipMembership: 'VIP Mitgliedschaft',
+    winners: 'Gewinner',
+    legal: 'Rechtliches',
+    imprint: 'Impressum',
+    privacy: 'Datenschutz',
+    terms: 'AGB',
+    contact: 'Kontakt',
+    allRights: 'Alle Rechte vorbehalten'
+  },
+  en: {
+    description: 'The leading penny auction platform in Dubai. Bid on premium products and save up to 95%!',
+    quickLinks: 'Quick Links',
+    liveAuctions: 'Live Auctions',
+    buyBids: 'Buy Bids',
+    register: 'Register',
+    login: 'Login',
+    extras: 'Extras',
+    becomeInfluencer: 'Become Influencer',
+    influencerLogin: 'Influencer Login',
+    wholesale: 'Wholesale (B2B)',
+    vipMembership: 'VIP Membership',
+    winners: 'Winners',
+    legal: 'Legal',
+    imprint: 'Imprint',
+    privacy: 'Privacy Policy',
+    terms: 'Terms & Conditions',
+    contact: 'Contact',
+    allRights: 'All rights reserved'
+  },
+  sq: {
+    description: 'Platforma kryesore e ankandeve penny në Dubai. Ofroni për produkte premium dhe kurseni deri në 95%!',
+    quickLinks: 'Lidhje të Shpejta',
+    liveAuctions: 'Ankande Live',
+    buyBids: 'Bli Oferta',
+    register: 'Regjistrohu',
+    login: 'Hyr',
+    extras: 'Ekstra',
+    becomeInfluencer: 'Bëhu Influencer',
+    influencerLogin: 'Hyrja e Influencer',
+    wholesale: 'Klientë B2B',
+    vipMembership: 'Anëtarësim VIP',
+    winners: 'Fituesit',
+    legal: 'Ligjore',
+    imprint: 'Impresi',
+    privacy: 'Privatësia',
+    terms: 'Kushtet',
+    contact: 'Kontakti',
+    allRights: 'Të gjitha të drejtat e rezervuara'
+  },
+  tr: {
+    description: 'Dubai\'nin önde gelen kuruş açık artırma platformu. Premium ürünlere teklif verin ve %95\'e kadar tasarruf edin!',
+    quickLinks: 'Hızlı Linkler',
+    liveAuctions: 'Canlı Açık Artırmalar',
+    buyBids: 'Teklif Satın Al',
+    register: 'Kayıt Ol',
+    login: 'Giriş',
+    extras: 'Ekstralar',
+    becomeInfluencer: 'Influencer Ol',
+    influencerLogin: 'Influencer Girişi',
+    wholesale: 'Toptan (B2B)',
+    vipMembership: 'VIP Üyelik',
+    winners: 'Kazananlar',
+    legal: 'Yasal',
+    imprint: 'Künye',
+    privacy: 'Gizlilik Politikası',
+    terms: 'Şartlar ve Koşullar',
+    contact: 'İletişim',
+    allRights: 'Tüm hakları saklıdır'
+  },
+  fr: {
+    description: 'La principale plateforme d\'enchères au centime à Dubaï. Enchérissez sur des produits premium et économisez jusqu\'à 95%!',
+    quickLinks: 'Liens Rapides',
+    liveAuctions: 'Enchères en Direct',
+    buyBids: 'Acheter des Enchères',
+    register: 'S\'inscrire',
+    login: 'Connexion',
+    extras: 'Extras',
+    becomeInfluencer: 'Devenir Influenceur',
+    influencerLogin: 'Connexion Influenceur',
+    wholesale: 'Grossistes (B2B)',
+    vipMembership: 'Adhésion VIP',
+    winners: 'Gagnants',
+    legal: 'Juridique',
+    imprint: 'Mentions Légales',
+    privacy: 'Politique de Confidentialité',
+    terms: 'CGV',
+    contact: 'Contact',
+    allRights: 'Tous droits réservés'
+  }
+};
+
 export const Footer = () => {
-  const { t } = useLanguage();
+  const { language } = useLanguage();
+  const ft = footerTexts[language] || footerTexts.de;
   const currentYear = new Date().getFullYear();
 
   return (
@@ -19,8 +124,7 @@ export const Footer = () => {
               <span className="text-xl font-bold text-white">BidBlitz</span>
             </Link>
             <p className="text-[#94A3B8] text-sm">
-              Die führende Penny-Auktion-Plattform in Dubai. Bieten Sie auf Premium-Produkte 
-              und sparen Sie bis zu 95%!
+              {ft.description}
             </p>
             {/* Social Links */}
             <div className="flex gap-3">
@@ -41,62 +145,62 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-white font-bold">Schnelllinks</h4>
+            <h4 className="text-white font-bold">{ft.quickLinks}</h4>
             <nav className="flex flex-col gap-2">
               <Link to="/auctions" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Live Auktionen
+                {ft.liveAuctions}
               </Link>
               <Link to="/buy-bids" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Gebote kaufen
+                {ft.buyBids}
               </Link>
               <Link to="/register" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Registrieren
+                {ft.register}
               </Link>
               <Link to="/login" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Anmelden
+                {ft.login}
               </Link>
             </nav>
           </div>
 
           {/* Extras */}
           <div className="space-y-4">
-            <h4 className="text-white font-bold">Extras</h4>
+            <h4 className="text-white font-bold">{ft.extras}</h4>
             <nav className="flex flex-col gap-2">
               <Link to="/influencer-werden" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Influencer werden
+                {ft.becomeInfluencer}
               </Link>
               <Link to="/influencer-login" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Influencer Login
+                {ft.influencerLogin}
               </Link>
               <Link to="/wholesale/apply" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Großkunden (B2B)
+                {ft.wholesale}
               </Link>
               <Link to="/vip" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                VIP Mitgliedschaft
+                {ft.vipMembership}
               </Link>
               <Link to="/winners" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Gewinner
+                {ft.winners}
               </Link>
             </nav>
           </div>
           <div className="space-y-4">
-            <h4 className="text-white font-bold">Rechtliches</h4>
+            <h4 className="text-white font-bold">{ft.legal}</h4>
             <nav className="flex flex-col gap-2">
               <Link to="/impressum" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Impressum
+                {ft.imprint}
               </Link>
               <Link to="/datenschutz" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                Datenschutz
+                {ft.privacy}
               </Link>
               <Link to="/agb" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
-                AGB
+                {ft.terms}
               </Link>
             </nav>
           </div>
 
           {/* Contact */}
           <div className="space-y-4">
-            <h4 className="text-white font-bold">Kontakt</h4>
+            <h4 className="text-white font-bold">{ft.contact}</h4>
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-[#94A3B8]">
                 <Mail className="w-5 h-5 text-[#FFD700]" />
@@ -110,7 +214,7 @@ export const Footer = () => {
               </div>
               <div className="flex items-start gap-3 text-[#94A3B8]">
                 <MapPin className="w-5 h-5 text-[#FFD700] flex-shrink-0" />
-                <span>Dubai Silicon Oasis<br />DDP Building A1, Dubai, VAE</span>
+                <span>Dubai Silicon Oasis<br />DDP Building A1, Dubai, UAE</span>
               </div>
             </div>
           </div>
@@ -119,7 +223,7 @@ export const Footer = () => {
         {/* Bottom */}
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[#94A3B8] text-sm">
-            © {currentYear} BidBlitz FZCO. Alle Rechte vorbehalten. CEO: Afrim Krasniqi
+            © {currentYear} BidBlitz FZCO. {ft.allRights}. CEO: Afrim Krasniqi
           </p>
           <div className="flex items-center gap-4">
             <img src="https://cdn-icons-png.flaticon.com/128/349/349221.png" alt="Visa" className="h-6 opacity-70" />
