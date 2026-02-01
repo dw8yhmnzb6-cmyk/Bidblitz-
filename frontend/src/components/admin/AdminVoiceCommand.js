@@ -315,44 +315,52 @@ export default function AdminVoiceCommand() {
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && processTextCommand()}
-              placeholder="z.B. Erstelle 20 neue Auktionen..."
-              className="flex-1 bg-[#181824] border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
+              placeholder="z.B. Erstelle 20 Auktionen"
+              className="flex-1 min-w-0 bg-[#181824] border border-white/10 rounded-lg px-3 md:px-4 py-2 md:py-3 text-sm md:text-base text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
             />
             <Button
               onClick={processTextCommand}
               disabled={isProcessing || !textInput.trim()}
-              className="bg-purple-500 hover:bg-purple-600 px-6"
+              className="bg-purple-500 hover:bg-purple-600 px-3 md:px-6 shrink-0"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </div>
         </div>
 
-        {/* Image Upload Section */}
-        <div className="mt-6 pt-6 border-t border-white/10">
-          <p className="text-gray-400 text-sm text-center mb-4">
-            <Camera className="w-4 h-4 inline mr-1" />
-            Oder laden Sie ein Bild hoch für KI-Analyse:
+        {/* Image/Video Upload Section - More compact on mobile */}
+        <div className="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-white/10">
+          <p className="text-gray-400 text-xs md:text-sm text-center mb-3 md:mb-4">
+            <Camera className="w-3 h-3 md:w-4 md:h-4 inline mr-1" />
+            Bild oder Video für KI-Analyse:
           </p>
           
-          {/* Hidden file input */}
+          {/* Hidden file input - accepts images AND videos */}
           <input
             type="file"
             ref={fileInputRef}
             onChange={handleImageSelect}
-            accept="image/*"
+            accept="image/*,video/*"
             className="hidden"
           />
           
-          <div className="flex flex-col items-center gap-4">
-            {/* Image Preview */}
+          <div className="flex flex-col items-center gap-3 md:gap-4">
+            {/* Preview */}
             {imagePreview ? (
-              <div className="relative">
-                <img 
-                  src={imagePreview} 
-                  alt="Preview" 
-                  className="max-h-48 rounded-lg border border-white/20"
-                />
+              <div className="relative w-full max-w-xs">
+                {selectedImage?.type?.startsWith('video/') ? (
+                  <video 
+                    src={imagePreview} 
+                    className="w-full max-h-32 md:max-h-48 rounded-lg border border-white/20 object-contain"
+                    controls
+                  />
+                ) : (
+                  <img 
+                    src={imagePreview} 
+                    alt="Preview" 
+                    className="w-full max-h-32 md:max-h-48 rounded-lg border border-white/20 object-contain"
+                  />
+                )}
                 <button
                   onClick={removeImage}
                   className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
@@ -363,17 +371,17 @@ export default function AdminVoiceCommand() {
             ) : (
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full max-w-md py-8 border-2 border-dashed border-white/20 rounded-lg hover:border-purple-500/50 transition-colors flex flex-col items-center gap-2"
+                className="w-full max-w-xs py-6 md:py-8 border-2 border-dashed border-white/20 rounded-lg hover:border-purple-500/50 transition-colors flex flex-col items-center gap-2"
               >
-                <Image className="w-8 h-8 text-gray-400" />
-                <span className="text-gray-400 text-sm">Klicken zum Hochladen</span>
-                <span className="text-gray-500 text-xs">PNG, JPG bis 10MB</span>
+                <Image className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
+                <span className="text-gray-400 text-xs md:text-sm">Klicken zum Hochladen</span>
+                <span className="text-gray-500 text-xs">Bild/Video bis 10MB</span>
               </button>
             )}
             
             {/* Analyze Button */}
             {selectedImage && (
-              <div className="flex gap-2 w-full max-w-md">
+              <div className="flex gap-2 w-full max-w-xs">
                 <input
                   type="text"
                   value={textInput}
