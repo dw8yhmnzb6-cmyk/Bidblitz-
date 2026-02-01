@@ -43,7 +43,24 @@ const vipTexts = {
     paymentCanceled: "Zahlung abgebrochen",
     subscriptionActive: "VIP-Mitgliedschaft aktiviert!",
     loginRequired: "Bitte melden Sie sich an",
-    perMonth: "pro Monat"
+    perMonth: "pro Monat",
+    active: "AKTIV",
+    currentSub: "Aktuelles Abo",
+    becomeVip: "Jetzt VIP werden",
+    processing: "Wird verarbeitet...",
+    whyVip: "Warum VIP werden?",
+    freeBids: "Gratis-Gebote",
+    freeBidsDesc: "Jeden Monat neue Gebote automatisch auf Ihr Konto",
+    discounts: "Rabatte",
+    discountsDesc: "Bis zu 15% Rabatt auf alle Gebotspakete",
+    exclusive: "Exklusiv",
+    exclusiveDesc: "Zugang zu exklusiven Auktionen nur für VIPs",
+    support: "Support",
+    supportDesc: "Prioritäts-Support für alle Ihre Fragen",
+    vipQuestions: "Fragen zu VIP?",
+    findAnswersHere: "Hier finden Sie Antworten",
+    cancelConfirm: "Möchten Sie Ihr VIP-Abo wirklich kündigen?",
+    cancelFailed: "Kündigung fehlgeschlagen"
   },
   en: {
     title: "VIP Membership",
@@ -68,7 +85,24 @@ const vipTexts = {
     paymentCanceled: "Payment canceled",
     subscriptionActive: "VIP membership activated!",
     loginRequired: "Please log in",
-    perMonth: "per month"
+    perMonth: "per month",
+    active: "ACTIVE",
+    currentSub: "Current subscription",
+    becomeVip: "Become VIP now",
+    processing: "Processing...",
+    whyVip: "Why become VIP?",
+    freeBids: "Free Bids",
+    freeBidsDesc: "New bids automatically added to your account every month",
+    discounts: "Discounts",
+    discountsDesc: "Up to 15% discount on all bid packages",
+    exclusive: "Exclusive",
+    exclusiveDesc: "Access to exclusive auctions only for VIPs",
+    support: "Support",
+    supportDesc: "Priority support for all your questions",
+    vipQuestions: "Questions about VIP?",
+    findAnswersHere: "Find answers here",
+    cancelConfirm: "Do you really want to cancel your VIP subscription?",
+    cancelFailed: "Cancellation failed"
   },
   sq: {
     title: "Anëtarësimi VIP",
@@ -93,7 +127,24 @@ const vipTexts = {
     paymentCanceled: "Pagesa u anulua",
     subscriptionActive: "Anëtarësimi VIP u aktivizua!",
     loginRequired: "Ju lutem hyni",
-    perMonth: "për muaj"
+    perMonth: "për muaj",
+    active: "AKTIV",
+    currentSub: "Abonamenti aktual",
+    becomeVip: "Bëhu VIP tani",
+    processing: "Duke u përpunuar...",
+    whyVip: "Pse të bëheni VIP?",
+    freeBids: "Oferta Falas",
+    freeBidsDesc: "Oferta të reja shtohen automatikisht çdo muaj",
+    discounts: "Zbritje",
+    discountsDesc: "Deri në 15% zbritje në të gjitha paketat",
+    exclusive: "Ekskluziv",
+    exclusiveDesc: "Qasje në ankande ekskluzive vetëm për VIP",
+    support: "Mbështetje",
+    supportDesc: "Mbështetje me prioritet për të gjitha pyetjet tuaja",
+    vipQuestions: "Pyetje për VIP?",
+    findAnswersHere: "Gjeni përgjigjet këtu",
+    cancelConfirm: "Dëshironi të anuloni abonimin VIP?",
+    cancelFailed: "Anulimi dështoi"
   },
   tr: {
     title: "VIP Üyelik",
@@ -118,7 +169,24 @@ const vipTexts = {
     paymentCanceled: "Ödeme iptal edildi",
     subscriptionActive: "VIP üyelik aktifleştirildi!",
     loginRequired: "Lütfen giriş yapın",
-    perMonth: "aylık"
+    perMonth: "aylık",
+    active: "AKTİF",
+    currentSub: "Mevcut abonelik",
+    becomeVip: "Şimdi VIP ol",
+    processing: "İşleniyor...",
+    whyVip: "Neden VIP olmalısınız?",
+    freeBids: "Ücretsiz Teklifler",
+    freeBidsDesc: "Her ay otomatik olarak yeni teklifler hesabınıza eklenir",
+    discounts: "İndirimler",
+    discountsDesc: "Tüm teklif paketlerinde %15'e kadar indirim",
+    exclusive: "Özel",
+    exclusiveDesc: "Sadece VIP'ler için özel açık artırmalara erişim",
+    support: "Destek",
+    supportDesc: "Tüm sorularınız için öncelikli destek",
+    vipQuestions: "VIP hakkında sorularınız mı var?",
+    findAnswersHere: "Cevapları burada bulun",
+    cancelConfirm: "VIP aboneliğinizi iptal etmek istediğinizden emin misiniz?",
+    cancelFailed: "İptal başarısız"
   },
   fr: {
     title: "Adhésion VIP",
@@ -143,7 +211,24 @@ const vipTexts = {
     paymentCanceled: "Paiement annulé",
     subscriptionActive: "Adhésion VIP activée!",
     loginRequired: "Veuillez vous connecter",
-    perMonth: "par mois"
+    perMonth: "par mois",
+    active: "ACTIF",
+    currentSub: "Abonnement actuel",
+    becomeVip: "Devenez VIP maintenant",
+    processing: "Traitement...",
+    whyVip: "Pourquoi devenir VIP?",
+    freeBids: "Enchères Gratuites",
+    freeBidsDesc: "Nouvelles enchères ajoutées automatiquement chaque mois",
+    discounts: "Réductions",
+    discountsDesc: "Jusqu'à 15% de réduction sur tous les forfaits",
+    exclusive: "Exclusif",
+    exclusiveDesc: "Accès aux enchères exclusives réservées aux VIP",
+    support: "Support",
+    supportDesc: "Support prioritaire pour toutes vos questions",
+    vipQuestions: "Questions sur VIP?",
+    findAnswersHere: "Trouvez les réponses ici",
+    cancelConfirm: "Voulez-vous vraiment annuler votre abonnement VIP?",
+    cancelFailed: "Échec de l'annulation"
   }
 };
 
@@ -248,7 +333,7 @@ export default function VIP() {
   };
 
   const handleCancel = async () => {
-    if (!confirm('Möchten Sie Ihr VIP-Abo wirklich kündigen?')) return;
+    if (!confirm(texts.cancelConfirm)) return;
     
     try {
       const response = await axios.post(
@@ -259,7 +344,7 @@ export default function VIP() {
       toast.success(response.data.message);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Kündigung fehlgeschlagen');
+      toast.error(error.response?.data?.detail || texts.cancelFailed);
     }
   };
 
@@ -341,7 +426,7 @@ export default function VIP() {
                 
                 {isCurrentPlan && (
                   <div className="absolute -top-3 right-4 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
-                    {language === 'en' ? 'ACTIVE' : language === 'sq' ? 'AKTIV' : language === 'tr' ? 'AKTİF' : language === 'fr' ? 'ACTIF' : 'AKTIV'}
+                    {texts.active}
                   </div>
                 )}
                 
@@ -358,7 +443,7 @@ export default function VIP() {
                 <div className="flex items-center gap-2 mb-6 p-3 rounded-lg bg-[#FFD700]/10">
                   <Gift className="w-5 h-5 text-[#FFD700]" />
                   <span className="text-[#FFD700] font-bold">{plan.monthly_bids} {texts.bonusBids}</span>
-                  <span className="text-gray-400 text-sm">/Monat</span>
+                  <span className="text-gray-400 text-sm">/{texts.month}</span>
                 </div>
                 
                 <ul className="space-y-3 mb-6">
@@ -382,13 +467,13 @@ export default function VIP() {
                   {subscribing === plan.id ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                      Wird verarbeitet...
+                      {texts.processing}
                     </>
                   ) : isCurrentPlan ? (
-                    'Aktuelles Abo'
+                    texts.currentSub
                   ) : (
                     <>
-                      Jetzt VIP werden
+                      {texts.becomeVip}
                       <ChevronRight className="w-4 h-4 ml-1" />
                     </>
                   )}
@@ -401,7 +486,7 @@ export default function VIP() {
         {/* Benefits Overview */}
         <div className="bg-[#1a3a52]/30 rounded-2xl p-8 border border-gray-700/50">
           <h2 className="text-2xl font-bold text-white mb-6 text-center">
-            Warum VIP werden?
+            {texts.whyVip}
           </h2>
           
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -409,32 +494,32 @@ export default function VIP() {
               <div className="w-14 h-14 rounded-full bg-[#FFD700]/20 flex items-center justify-center mx-auto mb-3">
                 <Gift className="w-7 h-7 text-[#FFD700]" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Gratis-Gebote</h4>
-              <p className="text-gray-400 text-sm">Jeden Monat neue Gebote automatisch auf Ihr Konto</p>
+              <h4 className="text-white font-semibold mb-1">{texts.freeBids}</h4>
+              <p className="text-gray-400 text-sm">{texts.freeBidsDesc}</p>
             </div>
             
             <div className="text-center">
               <div className="w-14 h-14 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-3">
                 <Sparkles className="w-7 h-7 text-green-400" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Rabatte</h4>
-              <p className="text-gray-400 text-sm">Bis zu 15% Rabatt auf alle Gebotspakete</p>
+              <h4 className="text-white font-semibold mb-1">{texts.discounts}</h4>
+              <p className="text-gray-400 text-sm">{texts.discountsDesc}</p>
             </div>
             
             <div className="text-center">
               <div className="w-14 h-14 rounded-full bg-purple-500/20 flex items-center justify-center mx-auto mb-3">
                 <Star className="w-7 h-7 text-purple-400" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Exklusiv</h4>
-              <p className="text-gray-400 text-sm">Zugang zu exklusiven Auktionen nur für VIPs</p>
+              <h4 className="text-white font-semibold mb-1">{texts.exclusive}</h4>
+              <p className="text-gray-400 text-sm">{texts.exclusiveDesc}</p>
             </div>
             
             <div className="text-center">
               <div className="w-14 h-14 rounded-full bg-cyan-500/20 flex items-center justify-center mx-auto mb-3">
                 <Shield className="w-7 h-7 text-cyan-400" />
               </div>
-              <h4 className="text-white font-semibold mb-1">Support</h4>
-              <p className="text-gray-400 text-sm">Prioritäts-Support für alle Ihre Fragen</p>
+              <h4 className="text-white font-semibold mb-1">{texts.support}</h4>
+              <p className="text-gray-400 text-sm">{texts.supportDesc}</p>
             </div>
           </div>
         </div>
@@ -442,7 +527,7 @@ export default function VIP() {
         {/* FAQ */}
         <div className="mt-12 text-center">
           <p className="text-gray-400">
-            Fragen zu VIP? <a href="/faq" className="text-[#FFD700] hover:underline">Hier finden Sie Antworten</a>
+            {texts.vipQuestions} <a href="/faq" className="text-[#FFD700] hover:underline">{texts.findAnswersHere}</a>
           </p>
         </div>
       </div>
