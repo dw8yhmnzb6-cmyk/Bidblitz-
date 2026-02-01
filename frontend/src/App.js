@@ -194,6 +194,17 @@ function AppContent() {
           {/* Leaderboard */}
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/rangliste" element={<Leaderboard />} />
+          {/* Beginner Auctions */}
+          <Route path="/beginner-auctions" element={
+            <ProtectedRoute>
+              <BeginnerAuctions />
+            </ProtectedRoute>
+          } />
+          <Route path="/anfaenger-auktionen" element={
+            <ProtectedRoute>
+              <BeginnerAuctions />
+            </ProtectedRoute>
+          } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
