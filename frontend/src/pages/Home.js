@@ -486,6 +486,9 @@ export default function Home() {
   // ALL other auctions (no limit - show everything on one page)
   const otherAuctions = auctions.filter(a => a.id !== premiumAuction?.id);
   
+  // Get translations
+  const ht = homeTexts[language] || homeTexts.de;
+  
   if (loading) {
     return (
       <div className="min-h-screen bg-[#87CEEB] flex items-center justify-center">
@@ -503,6 +506,7 @@ export default function Home() {
           totalBids={stats.totalBids}
           activeUsers={stats.activeUsers}
           activeAuctions={auctions.length}
+          language={language}
         />
         
         {/* Premium Auction */}
@@ -512,6 +516,7 @@ export default function Home() {
             product={products[premiumAuction.product_id]}
             onBid={handleBid}
             onRefresh={fetchData}
+            language={language}
           />
         )}
         
@@ -519,7 +524,7 @@ export default function Home() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-gray-800">
-              Live-Auktionen ({otherAuctions.length})
+              {ht.liveAuctions} ({otherAuctions.length})
             </h2>
           </div>
           
