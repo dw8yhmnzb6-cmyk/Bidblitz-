@@ -291,13 +291,13 @@ const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de' 
         </div>
         
         {/* Activity Index */}
-        <ActivityIndex auctionId={auction.id} />
+        <ActivityIndex auctionId={auction.id} language={language} />
       </div>
       
       {/* Last Sold Footer */}
       <div className="bg-cyan-600 px-3 py-2 text-center">
         <p className="text-white text-xs">
-          Zuletzt versteigert für nur <span className="font-bold">€ {(product.retail_price * 0.025).toFixed(2).replace('.', ',')}</span>
+          {ht.lastSold} <span className="font-bold">€ {(product.retail_price * 0.025).toFixed(2).replace('.', ',')}</span>
         </p>
       </div>
     </div>
@@ -305,35 +305,46 @@ const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de' 
 });
 
 // Stats Bar
-const StatsBar = memo(({ totalBids, activeUsers, activeAuctions }) => (
-  <div className="bg-gradient-to-r from-[#2D5A7B] to-[#4A7C9B] rounded-xl p-4 mb-6">
-    <div className="flex justify-around text-center">
-      <div>
-        <div className="flex items-center justify-center gap-1 text-yellow-300 mb-1">
-          <Zap className="w-4 h-4" />
-          <span className="font-bold text-xl">{activeAuctions}</span>
+const StatsBar = memo(({ totalBids, activeUsers, activeAuctions, language = 'de' }) => {
+  const statsTexts = {
+    de: { liveAuctions: 'Live Auktionen', activeBidders: 'Aktive Bieter', bidsToday: 'Gebote heute' },
+    en: { liveAuctions: 'Live Auctions', activeBidders: 'Active Bidders', bidsToday: 'Bids Today' },
+    sq: { liveAuctions: 'Ankande Live', activeBidders: 'Ofertues Aktiv', bidsToday: 'Oferta Sot' },
+    tr: { liveAuctions: 'Canlı Açık Artırmalar', activeBidders: 'Aktif Teklifçiler', bidsToday: 'Bugünkü Teklifler' },
+    fr: { liveAuctions: 'Enchères en Direct', activeBidders: 'Enchérisseurs Actifs', bidsToday: 'Enchères Aujourd\'hui' }
+  };
+  const st = statsTexts[language] || statsTexts.de;
+  
+  return (
+    <div className="bg-gradient-to-r from-[#2D5A7B] to-[#4A7C9B] rounded-xl p-4 mb-6">
+      <div className="flex justify-around text-center">
+        <div>
+          <div className="flex items-center justify-center gap-1 text-yellow-300 mb-1">
+            <Zap className="w-4 h-4" />
+            <span className="font-bold text-xl">{activeAuctions}</span>
+          </div>
+          <p className="text-white/80 text-xs">{st.liveAuctions}</p>
         </div>
-        <p className="text-white/80 text-xs">Live Auktionen</p>
-      </div>
-      <div className="border-l border-white/20" />
-      <div>
-        <div className="flex items-center justify-center gap-1 text-cyan-300 mb-1">
-          <Users className="w-4 h-4" />
-          <span className="font-bold text-xl">{activeUsers}</span>
+        <div className="border-l border-white/20" />
+        <div>
+          <div className="flex items-center justify-center gap-1 text-cyan-300 mb-1">
+            <Users className="w-4 h-4" />
+            <span className="font-bold text-xl">{activeUsers}</span>
+          </div>
+          <p className="text-white/80 text-xs">{st.activeBidders}</p>
         </div>
-        <p className="text-white/80 text-xs">Aktive Bieter</p>
-      </div>
-      <div className="border-l border-white/20" />
-      <div>
-        <div className="flex items-center justify-center gap-1 text-green-300 mb-1">
-          <TrendingUp className="w-4 h-4" />
-          <span className="font-bold text-xl">{totalBids}</span>
+        <div className="border-l border-white/20" />
+        <div>
+          <div className="flex items-center justify-center gap-1 text-green-300 mb-1">
+            <TrendingUp className="w-4 h-4" />
+            <span className="font-bold text-xl">{totalBids}</span>
+          </div>
+          <p className="text-white/80 text-xs">{st.bidsToday}</p>
         </div>
-        <p className="text-white/80 text-xs">Gebote heute</p>
       </div>
     </div>
-  </div>
-));
+  );
+});
 
 export default function Home() {
   const { isAuthenticated, token, updateBidsBalance } = useAuth();
