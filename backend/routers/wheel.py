@@ -9,14 +9,14 @@ router = APIRouter(prefix="/wheel", tags=["wheel"])
 
 # Prize configuration with probabilities
 PRIZES = [
-    {"type": "bids", "value": 1, "probability": 25},
-    {"type": "bids", "value": 2, "probability": 20},
-    {"type": "bids", "value": 3, "probability": 15},
-    {"type": "bids", "value": 5, "probability": 10},
-    {"type": "discount", "value": 10, "probability": 12},  # 10% discount code
-    {"type": "vip_day", "value": 1, "probability": 5},      # 1 day VIP
-    {"type": "retry", "value": 0, "probability": 8},        # Free retry
-    {"type": "bids", "value": 10, "probability": 5},        # Jackpot: 10 bids
+    {"type": "bids", "value": 1, "probability": 25, "label": "1 Gebot"},
+    {"type": "bids", "value": 2, "probability": 20, "label": "2 Gebote"},
+    {"type": "bids", "value": 3, "probability": 15, "label": "3 Gebote"},
+    {"type": "bids", "value": 5, "probability": 10, "label": "5 Gebote"},
+    {"type": "discount", "value": 10, "probability": 12, "label": "10% Rabatt"},
+    {"type": "vip_day", "value": 1, "probability": 5, "label": "1 Tag VIP"},
+    {"type": "retry", "value": 0, "probability": 8, "label": "Nochmal!"},
+    {"type": "bids", "value": 10, "probability": 5, "label": "10 Gebote!"},
 ]
 
 def select_prize():
@@ -28,16 +28,19 @@ def select_prize():
     for prize in PRIZES:
         cumulative += prize["probability"]
         if r <= cumulative:
-            return {"type": prize["type"], "value": prize["value"]}
+            return {"type": prize["type"], "value": prize["value"], "label": prize["label"]}
     
-    return PRIZES[0]  # Fallback
+    return {"type": PRIZES[0]["type"], "value": PRIZES[0]["value"], "label": PRIZES[0]["label"]}
+
+
+@router.get("/prizes")
+async def get_prizes():
+    """Get the list of possible prizes for the wheel"""
+    return {"prizes": [{"type": p["type"], "value": p["value"], "label": p["label"]} for p in PRIZES]}
 
 
 @router.get("/status")
-async def get_spin_status(
-    db=Depends(get_db),
-    current_user=Depends(get_current_user)
-):
+async def get_spin_status(current_user: dict = Depends(get_current_user)):
     """Check if user can spin today"""
     user_id = current_user["id"]
     
@@ -68,29 +71,40 @@ async def get_spin_status(
 
 
 @router.post("/spin")
-async def spin_wheel(
-    db=Depends(get_db),
-    current_user=Depends(get_current_user)
-):
+async def spin_wheel(current_user: dict = Depends(get_current_user)):
     """Spin the wheel and win a prize"""
     user_id = current_user["id"]
     
     # Check if user can spin
-    status = await get_spin_status(db, current_user)
-    if not status["can_spin"]:
+    spin_record = await db.wheel_spins.find_one(
+        {"user_id": user_id},
+        sort=[("created_at", -1)]
+    )
+    
+    can_spin = True
+    if spin_record:
+        last_spin = spin_record["created_at"]
+        if isinstance(last_spin, str):
+            last_spin = datetime.fromisoformat(last_spin.replace('Z', '+00:00'))
+        now = datetime.now(timezone.utc)
+        if now < last_spin + timedelta(hours=24):
+            can_spin = False
+    
+    if not can_spin:
         raise HTTPException(status_code=400, detail="Du hast heute schon gedreht! Komm morgen wieder.")
     
     # Select prize
     prize = select_prize()
     
     # Record the spin
-    spin_record = {
+    spin_data = {
         "user_id": user_id,
         "prize_type": prize["type"],
         "prize_value": prize["value"],
+        "prize_label": prize["label"],
         "created_at": datetime.now(timezone.utc)
     }
-    await db.wheel_spins.insert_one(spin_record)
+    result = await db.wheel_spins.insert_one(spin_data)
     
     # Award the prize
     if prize["type"] == "bids":
@@ -138,21 +152,18 @@ async def spin_wheel(
         
     elif prize["type"] == "retry":
         # Delete the spin record so user can spin again
-        await db.wheel_spins.delete_one({"_id": spin_record.get("_id")})
+        await db.wheel_spins.delete_one({"_id": result.inserted_id})
         logger.info(f"🎰 Wheel: User {user_id} won a free retry")
     
     return {
         "success": True,
         "prize": prize,
-        "message": f"Congratulations! You won: {prize['type']} - {prize['value']}"
+        "message": f"Gewonnen: {prize['label']}"
     }
 
 
 @router.get("/history")
-async def get_spin_history(
-    db=Depends(get_db),
-    current_user=Depends(get_current_user)
-):
+async def get_spin_history(current_user: dict = Depends(get_current_user)):
     """Get user's spin history"""
     user_id = current_user["id"]
     
