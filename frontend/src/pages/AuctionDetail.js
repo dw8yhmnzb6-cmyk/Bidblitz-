@@ -882,7 +882,7 @@ export default function AuctionDetail() {
                           data-testid="show-autobidder-btn"
                         >
                           <Zap className="w-5 h-5 mr-2" />
-                          🤖 Bid Buddy aktivieren
+                          {dtl.bidBuddy}
                         </Button>
                       )}
 
@@ -891,57 +891,57 @@ export default function AuctionDetail() {
                         <div className="space-y-4 p-4 rounded-lg bg-[#181824]" data-testid="autobidder-form">
                           <div className="flex items-center gap-2 text-[#7C3AED]">
                             <Zap className="w-5 h-5" />
-                            <span className="font-bold">🤖 Bid Buddy einrichten</span>
+                            <span className="font-bold">{dtl.bidBuddy}</span>
                           </div>
                           <p className="text-[#94A3B8] text-sm">
-                            Ihr Bid Buddy bietet automatisch in den letzten Sekunden für Sie!
+                            {dtl.bidBuddyDesc}
                           </p>
                           
                           {/* Max Bids */}
                           <div className="space-y-2">
-                            <Label className="text-white">Maximale Anzahl Gebote</Label>
+                            <Label className="text-white">{language === 'en' ? 'Maximum bids' : language === 'sq' ? 'Oferta maksimale' : language === 'tr' ? 'Maksimum teklif' : language === 'fr' ? 'Enchères maximum' : 'Maximale Anzahl Gebote'}</Label>
                             <Input
                               type="number"
                               min="1"
                               max={user?.bids_balance || 100}
                               value={maxBids}
                               onChange={(e) => setMaxBids(e.target.value)}
-                              placeholder="z.B. 10"
+                              placeholder={language === 'en' ? 'e.g. 10' : language === 'sq' ? 'p.sh. 10' : language === 'tr' ? 'örn. 10' : language === 'fr' ? 'ex. 10' : 'z.B. 10'}
                               className="bg-[#0F0F16] border-white/10 text-white"
                               data-testid="max-bids-input"
                             />
-                            <p className="text-[#94A3B8] text-xs">Verfügbar: {user?.bids_balance || 0} Gebote</p>
+                            <p className="text-[#94A3B8] text-xs">{language === 'en' ? 'Available' : language === 'sq' ? 'Në dispozicion' : language === 'tr' ? 'Mevcut' : language === 'fr' ? 'Disponible' : 'Verfügbar'}: {user?.bids_balance || 0}</p>
                           </div>
 
                           {/* Max Price (optional) */}
                           <div className="space-y-2">
-                            <Label className="text-white">Maximaler Preis (€) <span className="text-[#94A3B8]">- optional</span></Label>
+                            <Label className="text-white">{language === 'en' ? 'Max price (€)' : language === 'sq' ? 'Çmimi maks (€)' : language === 'tr' ? 'Maks fiyat (€)' : language === 'fr' ? 'Prix max (€)' : 'Maximaler Preis (€)'} <span className="text-[#94A3B8]">- {language === 'en' ? 'optional' : language === 'sq' ? 'opsionale' : language === 'tr' ? 'isteğe bağlı' : language === 'fr' ? 'optionnel' : 'optional'}</span></Label>
                             <Input
                               type="number"
                               step="0.01"
                               min={auction.current_price + 0.01}
                               value={maxPrice}
                               onChange={(e) => setMaxPrice(e.target.value)}
-                              placeholder={`z.B. ${(auction.current_price * 2).toFixed(2)}`}
+                              placeholder={`${language === 'en' ? 'e.g.' : language === 'sq' ? 'p.sh.' : language === 'tr' ? 'örn.' : language === 'fr' ? 'ex.' : 'z.B.'} ${(auction.current_price * 2).toFixed(2)}`}
                               className="bg-[#0F0F16] border-white/10 text-white"
                               data-testid="max-price-input"
                             />
-                            <p className="text-[#94A3B8] text-xs">Stoppt wenn dieser Preis erreicht ist</p>
+                            <p className="text-[#94A3B8] text-xs">{language === 'en' ? 'Stops when this price is reached' : language === 'sq' ? 'Ndalet kur arrihet ky çmim' : language === 'tr' ? 'Bu fiyata ulaşıldığında durur' : language === 'fr' ? 'S\'arrête quand ce prix est atteint' : 'Stoppt wenn dieser Preis erreicht ist'}</p>
                           </div>
 
                           {/* Bid in Last Seconds */}
                           <div className="space-y-2">
-                            <Label className="text-white">Bieten in letzten Sekunden</Label>
+                            <Label className="text-white">{language === 'en' ? 'Bid in last seconds' : language === 'sq' ? 'Ofertohet në sekondat e fundit' : language === 'tr' ? 'Son saniyelerde teklif ver' : language === 'fr' ? 'Enchérir dans les dernières secondes' : 'Bieten in letzten Sekunden'}</Label>
                             <select
                               value={bidInLastSeconds}
                               onChange={(e) => setBidInLastSeconds(e.target.value)}
                               className="w-full h-10 px-3 bg-[#0F0F16] border border-white/10 rounded-md text-white"
                               data-testid="bid-seconds-select"
                             >
-                              <option value="5">5 Sekunden</option>
-                              <option value="10">10 Sekunden</option>
-                              <option value="15">15 Sekunden</option>
-                              <option value="20">20 Sekunden</option>
+                              <option value="5">5 {language === 'en' ? 'seconds' : language === 'sq' ? 'sekonda' : language === 'tr' ? 'saniye' : language === 'fr' ? 'secondes' : 'Sekunden'}</option>
+                              <option value="10">10 {language === 'en' ? 'seconds' : language === 'sq' ? 'sekonda' : language === 'tr' ? 'saniye' : language === 'fr' ? 'secondes' : 'Sekunden'}</option>
+                              <option value="15">15 {language === 'en' ? 'seconds' : language === 'sq' ? 'sekonda' : language === 'tr' ? 'saniye' : language === 'fr' ? 'secondes' : 'Sekunden'}</option>
+                              <option value="20">20 {language === 'en' ? 'seconds' : language === 'sq' ? 'sekonda' : language === 'tr' ? 'saniye' : language === 'fr' ? 'secondes' : 'Sekunden'}</option>
                             </select>
                           </div>
 
@@ -952,14 +952,14 @@ export default function AuctionDetail() {
                               className="flex-1 bg-[#7C3AED] hover:bg-[#6D28D9]"
                               data-testid="activate-autobidder-btn"
                             >
-                              {settingAutobidder ? '...' : '🚀 Aktivieren'}
+                              {settingAutobidder ? '...' : (language === 'en' ? 'Activate' : language === 'sq' ? 'Aktivizo' : language === 'tr' ? 'Aktifleştir' : language === 'fr' ? 'Activer' : 'Aktivieren')}
                             </Button>
                             <Button
                               onClick={() => setShowAutobidder(false)}
                               variant="outline"
                               className="border-white/10 text-white hover:bg-white/10"
                             >
-                              {t('common.cancel') || 'Abbrechen'}
+                              {language === 'en' ? 'Cancel' : language === 'sq' ? 'Anulo' : language === 'tr' ? 'İptal' : language === 'fr' ? 'Annuler' : 'Abbrechen'}
                             </Button>
                           </div>
                         </div>
@@ -973,8 +973,8 @@ export default function AuctionDetail() {
               {isScheduled && (
                 <div className="p-4 rounded-lg bg-[#F59E0B]/10 border border-[#F59E0B]/30">
                   <p className="text-[#F59E0B] text-center font-medium">
-                    Diese Auktion ist geplant und startet am{' '}
-                    {auction.start_time && new Date(auction.start_time).toLocaleString('de-DE', {dateStyle: 'medium', timeStyle: 'short'})}
+                    {dtl.scheduledAuction}{' '}
+                    {auction.start_time && new Date(auction.start_time).toLocaleString(language === 'en' ? 'en-US' : language === 'fr' ? 'fr-FR' : language === 'tr' ? 'tr-TR' : 'de-DE', {dateStyle: 'medium', timeStyle: 'short'})}
                   </p>
                 </div>
               )}
