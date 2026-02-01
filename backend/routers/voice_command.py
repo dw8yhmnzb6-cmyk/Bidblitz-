@@ -1063,25 +1063,37 @@ async def analyze_image_command(
     if len(content) > max_size:
         raise HTTPException(status_code=400, detail=f"Datei zu groß (max {20 if is_video else 10}MB)")
     
-    # Determine MIME type
-    ext = image.filename.split(".")[-1].lower() if image.filename else "png"
-    mime_types = {
-        "png": "image/png",
-        "jpg": "image/jpeg",
-        "jpeg": "image/jpeg",
-        "gif": "image/gif",
-        "webp": "image/webp",
-        "mp4": "video/mp4",
-        "mov": "video/quicktime",
-        "webm": "video/webm",
-        "avi": "video/x-msvideo",
-        "mkv": "video/x-matroska"
-    }
-    mime_type = mime_types.get(ext, "image/png")
+    # For images, convert to PNG format for better compatibility
+    if is_image:
+        from PIL import Image as PILImage
+        import io
+        
+        try:
+            # Open image with PIL
+            img = PILImage.open(io.BytesIO(content))
+            
+            # Convert to RGB if necessary (for RGBA or other modes)
+            if img.mode in ('RGBA', 'LA', 'P'):
+                img = img.convert('RGB')
+            
+            # Resize if too large (max 2000x2000)
+            max_dim = 2000
+            if img.width > max_dim or img.height > max_dim:
+                ratio = min(max_dim / img.width, max_dim / img.height)
+                new_size = (int(img.width * ratio), int(img.height * ratio))
+                img = img.resize(new_size, PILImage.LANCZOS)
+            
+            # Convert to PNG bytes
+            buffer = io.BytesIO()
+            img.save(buffer, format='PNG')
+            content = buffer.getvalue()
+            
+            logger.info(f"Image converted to PNG: {img.width}x{img.height}")
+        except Exception as e:
+            logger.warning(f"Could not convert image: {str(e)}")
     
-    # Convert to base64 with data URL format for GPT-4o
+    # Convert to base64
     base64_content = base64.b64encode(content).decode('utf-8')
-    data_url = f"data:{mime_type};base64,{base64_content}"
     
     try:
         # Create chat with GPT-4o for vision
@@ -1101,10 +1113,9 @@ Antworte auf Deutsch und sei präzise und hilfreich."""
             system_message=system_prompt
         ).with_model("openai", "gpt-4o")
         
-        # Create content object with proper MIME type
+        # Create content object
         media_content = ImageContent(
-            image_base64=base64_content,
-            media_type=mime_type
+            image_base64=base64_content
         )
         
         # Create message with media attachment
