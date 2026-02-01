@@ -41,7 +41,11 @@ import {
   AdminBanners,
   AdminInfluencers,
   AdminWholesale,
-  AdminGameConfig
+  AdminGameConfig,
+  AdminQuickActions,
+  AdminLiveWidgets,
+  AdminGlobalSearch,
+  AdminAIChat
 } from '../components/admin';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
