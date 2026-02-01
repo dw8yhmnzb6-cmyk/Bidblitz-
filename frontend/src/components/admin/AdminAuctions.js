@@ -35,22 +35,29 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
   const handleCreateAuction = async (e) => {
     e.preventDefault();
     try {
-      // Parse duration value
-      const durationValue = parseInt(newAuction.duration_value) || 10;
+      // Parse duration value - ensure it's a number
+      const durationValue = parseInt(newAuction.duration_value, 10) || 10;
       let durationSeconds = durationValue;
       
       // Convert to seconds based on unit
-      if (newAuction.duration_unit === 'minutes') {
-        durationSeconds = durationValue * 60;
-      } else if (newAuction.duration_unit === 'hours') {
-        durationSeconds = durationValue * 60 * 60;
-      } else if (newAuction.duration_unit === 'days') {
-        durationSeconds = durationValue * 60 * 60 * 24;
-      } else if (newAuction.duration_unit === 'seconds') {
-        durationSeconds = durationValue;
+      switch (newAuction.duration_unit) {
+        case 'seconds':
+          durationSeconds = durationValue;
+          break;
+        case 'minutes':
+          durationSeconds = durationValue * 60;
+          break;
+        case 'hours':
+          durationSeconds = durationValue * 3600; // 60 * 60
+          break;
+        case 'days':
+          durationSeconds = durationValue * 86400; // 60 * 60 * 24
+          break;
+        default:
+          durationSeconds = durationValue * 60; // Default to minutes
       }
       
-      console.log(`Duration: ${durationValue} ${newAuction.duration_unit} = ${durationSeconds} seconds`);
+      console.log(`🕐 Auktionsdauer: ${durationValue} ${newAuction.duration_unit} = ${durationSeconds} Sekunden (${durationSeconds / 3600} Stunden)`);
 
       const auctionData = {
         product_id: newAuction.product_id,
@@ -78,7 +85,7 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
         }
       }
       
-      console.log('Auction data being sent:', JSON.stringify(auctionData, null, 2));
+      console.log('📦 Auktionsdaten:', JSON.stringify(auctionData, null, 2));
 
       const response = await axios.post(`${API}/admin/auctions`, auctionData, { 
         headers: { Authorization: `Bearer ${token}` } 
