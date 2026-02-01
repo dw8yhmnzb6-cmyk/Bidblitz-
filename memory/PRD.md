@@ -311,12 +311,19 @@ February 1, 2026 (Session 4)
   - **Influencer-Portal** zeigt jetzt alle Texte in der gewählten Sprache an
   - **Navigation** zeigt "Gift Cards" und "VIP Auctions" in allen Sprachen an
 
+- 2026-02-01: **FEATURE** KI-Assistent beantwortet jetzt allgemeine Fragen
+  - **Neuer "chat" Modus**: Der KI-Assistent kann jetzt allgemeine Fragen beantworten und Empfehlungen geben
+  - **Beispiele**: "Was empfiehlst du mir?", "Wie funktioniert das Bot-System?", "Was sind die besten Features?"
+  - **Intelligente Erkennung**: System erkennt automatisch ob es eine Frage oder eine Aktion ist
+  - **Aktionen funktionieren weiterhin**: "Starte Bots", "Erstelle Auktionen" etc. werden weiterhin ausgeführt
+
 ## Pending Issues
 
 ### P1 - Resolved ✅
 1. ~~**Incorrect auction duration calculation**~~ - Code verbessert, Backend-Tests bestätigen korrekte Berechnung
 2. ~~**Voice Command führt Aktionen nicht aus**~~ - Aktionen werden jetzt bei Bildanalyse automatisch erkannt und ausgeführt
 3. ~~**Website-Übersetzungen für Influencer**~~ - 10 Sprachen mit vollständigen Influencer-Übersetzungen
+4. ~~**KI-Assistent beantwortet keine Fragen**~~ - Neuer "chat" Modus für allgemeine Fragen und Empfehlungen
 
 ### P2 - Pending Features
 2. **Admin email notifications for payout requests** - Email an Admin bei neuen Influencer-Auszahlungsanfragen
