@@ -1038,6 +1038,22 @@ Beschreibung (Deutsch): {german_desc if german_desc else "Keine Beschreibung vor
             }
         }
     
+    elif action == "chat":
+        # Handle general questions and conversations
+        response_text = parameters.get("response", "")
+        if response_text:
+            logger.info(f"🎤 Voice command: Chat response to {admin['name']}")
+            return {
+                "success": True,
+                "message": response_text,
+                "is_chat": True
+            }
+        else:
+            return {
+                "success": False,
+                "message": "❌ Keine Antwort generiert"
+            }
+    
     else:
         return {"success": False, "message": "❌ Befehl nicht erkannt"}
 
