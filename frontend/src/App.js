@@ -186,6 +186,9 @@ function AppContent() {
             </ProtectedRoute>
           } />
           <Route path="/geschenkkarten" element={<GiftCards />} />
+          {/* Leaderboard */}
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/rangliste" element={<Leaderboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
