@@ -392,9 +392,29 @@ export const Navbar = () => {
               <Trophy className="w-4 h-4" />
               {t('nav.winners')}
             </Link>
+            <Link 
+              to="/leaderboard" 
+              className="block text-[#A855F7] hover:text-[#C084FC] py-2 flex items-center gap-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Trophy className="w-4 h-4" />
+              {language === 'de' ? 'Rangliste' : language === 'en' ? 'Leaderboard' : 'Rangliste'}
+            </Link>
+            {isAuthenticated && (
+              <button 
+                onClick={() => { setWheelOpen(true); setMobileMenuOpen(false); }}
+                className="block text-[#F59E0B] hover:text-[#FFD700] py-2 flex items-center gap-2 w-full text-left"
+              >
+                <Sparkles className="w-4 h-4" />
+                {language === 'de' ? 'Glücksrad' : language === 'en' ? 'Lucky Wheel' : 'Glücksrad'}
+              </button>
+            )}
           </div>
         </div>
       )}
+      
+      {/* Spin Wheel Modal */}
+      <SpinWheel isOpen={wheelOpen} onClose={() => setWheelOpen(false)} />
     </nav>
   );
 };
