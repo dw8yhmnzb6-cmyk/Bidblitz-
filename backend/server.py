@@ -40,6 +40,7 @@ from routers.voice_command import router as voice_command_router
 from routers.giftcards import router as giftcards_router
 from routers.wheel import router as wheel_router
 from routers.leaderboard import router as leaderboard_router
+from routers.gamification import router as gamification_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
