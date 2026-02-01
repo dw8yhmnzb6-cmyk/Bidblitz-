@@ -249,36 +249,37 @@ export default function AdminVoiceCommand() {
   };
   
   return (
-    <div className="space-y-6" data-testid="admin-voice-command">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 md:space-y-6" data-testid="admin-voice-command">
+      {/* Header - Responsive */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-            <Command className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
+            <Command className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">Sprachbefehle</h2>
-            <p className="text-gray-400 text-sm">Steuern Sie die Plattform mit Ihrer Stimme</p>
+            <h2 className="text-lg md:text-xl font-bold text-white">Sprachbefehle</h2>
+            <p className="text-gray-400 text-xs md:text-sm">Steuern Sie die Plattform mit Ihrer Stimme</p>
           </div>
         </div>
         <Button
           onClick={() => setShowHistory(!showHistory)}
           variant="outline"
-          className="border-white/20 text-white"
+          className="border-white/20 text-white text-sm self-start sm:self-auto"
+          size="sm"
         >
-          <History className="w-4 h-4 mr-2" />
+          <History className="w-4 h-4 mr-1 md:mr-2" />
           Verlauf
         </Button>
       </div>
       
-      {/* Main Recording Area */}
-      <div className="glass-card rounded-2xl p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30">
+      {/* Main Recording Area - More compact on mobile */}
+      <div className="glass-card rounded-xl md:rounded-2xl p-4 md:p-8 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30">
         <div className="text-center">
-          {/* Microphone Button */}
+          {/* Microphone Button - Smaller on mobile */}
           <button
             onClick={isRecording ? stopRecording : startRecording}
             disabled={isProcessing}
-            className={`w-32 h-32 rounded-full mx-auto mb-6 flex items-center justify-center transition-all transform hover:scale-105 ${
+            className={`w-20 h-20 md:w-32 md:h-32 rounded-full mx-auto mb-4 md:mb-6 flex items-center justify-center transition-all transform hover:scale-105 ${
               isRecording 
                 ? 'bg-red-500 animate-pulse shadow-lg shadow-red-500/50' 
                 : isProcessing
@@ -287,27 +288,27 @@ export default function AdminVoiceCommand() {
             }`}
           >
             {isProcessing ? (
-              <Loader2 className="w-12 h-12 text-white animate-spin" />
+              <Loader2 className="w-8 h-8 md:w-12 md:h-12 text-white animate-spin" />
             ) : isRecording ? (
-              <MicOff className="w-12 h-12 text-white" />
+              <MicOff className="w-8 h-8 md:w-12 md:h-12 text-white" />
             ) : (
-              <Mic className="w-12 h-12 text-white" />
+              <Mic className="w-8 h-8 md:w-12 md:h-12 text-white" />
             )}
           </button>
           
-          <p className="text-white font-medium mb-2">
-            {isRecording ? '🔴 Aufnahme läuft... Klicken zum Stoppen' :
+          <p className="text-white font-medium text-sm md:text-base mb-1 md:mb-2">
+            {isRecording ? '🔴 Aufnahme läuft...' :
              isProcessing ? '⏳ Verarbeitung...' :
-             '🎤 Klicken Sie, um einen Befehl zu sprechen'}
+             '🎤 Klicken zum Sprechen'}
           </p>
-          <p className="text-gray-400 text-sm">
-            Beispiel: "Erstelle 50 neue Auktionen" oder "Zeige mir die Statistiken"
+          <p className="text-gray-400 text-xs md:text-sm">
+            Beispiel: "Erstelle 50 Auktionen"
           </p>
         </div>
         
-        {/* Or Text Input */}
-        <div className="mt-8 pt-6 border-t border-white/10">
-          <p className="text-gray-400 text-sm text-center mb-4">Oder geben Sie den Befehl als Text ein:</p>
+        {/* Or Text Input - More compact */}
+        <div className="mt-4 md:mt-8 pt-4 md:pt-6 border-t border-white/10">
+          <p className="text-gray-400 text-xs md:text-sm text-center mb-3 md:mb-4">Text-Befehl:</p>
           <div className="flex gap-2">
             <input
               type="text"
