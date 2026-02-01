@@ -1764,67 +1764,18 @@ export default function Admin() {
 
           {/* Vouchers Tab */}
           {activeTab === 'vouchers' && (
-            <div className="space-y-8">
-              <h1 className="text-2xl font-bold text-white">Gutscheine verwalten</h1>
-              <div className="glass-card rounded-xl p-6">
-                <h3 className="text-lg font-bold text-white mb-4">Neuer Gutschein</h3>
-                <form onSubmit={handleCreateVoucher} className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-white">Code</Label>
-                    <Input value={newVoucher.code} onChange={(e) => setNewVoucher({...newVoucher, code: e.target.value.toUpperCase()})} required className="bg-[#181824] border-white/10 text-white uppercase" placeholder="WELCOME10" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white">Gebote</Label>
-                    <Input type="number" value={newVoucher.bids} onChange={(e) => setNewVoucher({...newVoucher, bids: e.target.value})} required className="bg-[#181824] border-white/10 text-white" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white">Max. Verwendungen</Label>
-                    <Input type="number" value={newVoucher.max_uses} onChange={(e) => setNewVoucher({...newVoucher, max_uses: e.target.value})} required className="bg-[#181824] border-white/10 text-white" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white">Gültig bis</Label>
-                    <Input type="datetime-local" value={newVoucher.expires_at} onChange={(e) => setNewVoucher({...newVoucher, expires_at: e.target.value})} className="bg-[#181824] border-white/10 text-white" />
-                  </div>
-                  <div className="md:col-span-4">
-                    <Button type="submit" className="btn-primary"><Plus className="w-4 h-4 mr-2" />Gutschein erstellen</Button>
-                  </div>
-                </form>
-              </div>
-              <div className="glass-card rounded-xl overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-[#181824]">
-                      <tr>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Code</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Gebote</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Verwendet</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Gültig bis</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Status</th>
-                        <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Aktionen</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10">
-                      {(vouchers || []).map((voucher) => (
-                        <tr key={voucher.id} className={`hover:bg-white/5 ${!voucher.is_active ? 'opacity-50' : ''}`}>
-                          <td className="px-4 py-3"><span className="font-mono font-bold text-[#7C3AED] bg-[#7C3AED]/10 px-2 py-1 rounded">{voucher.code}</span></td>
-                          <td className="px-4 py-3"><span className="flex items-center gap-1 text-[#06B6D4]"><Zap className="w-4 h-4" />{voucher.bids}</span></td>
-                          <td className="px-4 py-3 text-white">{voucher.times_used} / {voucher.max_uses}</td>
-                          <td className="px-4 py-3 text-[#94A3B8]">{voucher.expires_at ? new Date(voucher.expires_at).toLocaleDateString('de-DE') : 'Unbegrenzt'}</td>
-                          <td className="px-4 py-3"><span className={`px-2 py-1 rounded-full text-xs font-bold ${voucher.is_active ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/20 text-[#EF4444]'}`}>{voucher.is_active ? 'Aktiv' : 'Inaktiv'}</span></td>
-                          <td className="px-4 py-3">
-                            <div className="flex items-center gap-2">
-                              <Button size="sm" variant="ghost" className={voucher.is_active ? "text-[#F59E0B] hover:bg-[#F59E0B]/10" : "text-[#10B981] hover:bg-[#10B981]/10"} onClick={() => handleToggleVoucher(voucher.id)}>{voucher.is_active ? <Ban className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}</Button>
-                              <Button size="sm" variant="ghost" className="text-[#EF4444] hover:bg-[#EF4444]/10" onClick={() => handleDeleteVoucher(voucher.id)}><Trash2 className="w-4 h-4" /></Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                      {(vouchers || []).length === 0 && (<tr><td colSpan={6} className="px-4 py-8 text-center text-[#94A3B8]">Noch keine Gutscheine erstellt</td></tr>)}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+            <AdminVouchers
+              vouchers={vouchers}
+              newVoucher={newVoucher}
+              setNewVoucher={setNewVoucher}
+              handleCreateVoucher={handleCreateVoucher}
+              handleToggleVoucher={handleToggleVoucher}
+              handleDeleteVoucher={handleDeleteVoucher}
+              t={t}
+              token={token}
+              API={API}
+              fetchVouchers={fetchData}
+            />
           )}
 
           {/* Bots Tab */}
