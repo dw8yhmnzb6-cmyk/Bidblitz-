@@ -794,7 +794,7 @@ export const translations = {
     }
   },
   es: {
-    nav: { auctions: "Subastas", buyBids: "Comprar pujas", dashboard: "Panel", admin: "Admin", login: "Iniciar sesión", register: "Registrarse", logout: "Cerrar sesión", bids: "Pujas", winners: "Ganadores", inviteFriends: "Invitar amigos", wishlist: "Lista de deseos", howItWorks: "Cómo funciona", vip: "Membresía VIP", faq: "FAQ", contact: "Contacto" },
+    nav: { auctions: "Subastas", buyBids: "Comprar pujas", dashboard: "Panel", admin: "Admin", login: "Iniciar sesión", register: "Registrarse", logout: "Cerrar sesión", bids: "Pujas", winners: "Ganadores", inviteFriends: "Invitar amigos", wishlist: "Lista de deseos", howItWorks: "Cómo funciona", vip: "Membresía VIP", faq: "FAQ", contact: "Contacto", giftCards: "Tarjetas Regalo", vipAuctions: "Subastas VIP" },
     home: {
       badge: "10 pujas gratis al registrarse",
       heroTitle1: "Gana",
