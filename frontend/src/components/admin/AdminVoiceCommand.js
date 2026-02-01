@@ -104,8 +104,18 @@ export default function AdminVoiceCommand() {
           success: true,
           message: response.data.analysis
         });
-        setParsedCommand({ action: 'analyze_image', parameters: {} });
-        toast.success('Bildanalyse abgeschlossen!');
+        
+        // Check if an action was executed
+        if (response.data.action_executed) {
+          setParsedCommand({ 
+            action: response.data.action_executed, 
+            parameters: response.data.action_result || {} 
+          });
+          toast.success(`Aktion '${response.data.action_executed}' ausgeführt!`);
+        } else {
+          setParsedCommand({ action: 'analyze_image', parameters: {} });
+          toast.success('Bildanalyse abgeschlossen!');
+        }
       } else {
         toast.error(response.data.message || 'Bildanalyse fehlgeschlagen');
       }
