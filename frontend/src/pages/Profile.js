@@ -574,6 +574,9 @@ export default function Profile() {
                 </Button>
               </form>
             </div>
+            
+            {/* Telegram Notifications */}
+            <TelegramConnect />
           </div>
         </div>
       </div>
