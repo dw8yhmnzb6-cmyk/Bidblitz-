@@ -276,7 +276,7 @@ const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de' 
               }}
               className="mt-3 w-full py-2 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-300 hover:to-cyan-400 text-white font-bold text-sm rounded-full transition-all"
             >
-              BIETEN
+              {ht.bid}
             </button>
           </div>
           
