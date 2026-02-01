@@ -1080,35 +1080,36 @@ Antworte auf Deutsch und sei präzise und hilfreich."""
 
         chat = LlmChat(
             api_key=api_key,
-            session_id=f"image-analysis-{uuid.uuid4()}",
+            session_id=f"media-analysis-{uuid.uuid4()}",
             system_message=system_prompt
         ).with_model("openai", "gpt-4o")
         
-        # Create image content object for the message
-        image_content = ImageContent(
-            image_base64=base64_image
+        # Create content object for the message
+        media_content = ImageContent(
+            image_base64=base64_content
         )
         
-        # Create message with image attachment using file_contents
+        # Create message with media attachment
+        media_type = "Video" if is_video else "Bild"
         user_prompt = f"""Benutzeranfrage: {text}
 
-Bitte analysiere das hochgeladene Bild und beantworte die Frage des Administrators."""
+Bitte analysiere das hochgeladene {media_type} und beantworte die Frage des Administrators."""
         
         response = await chat.send_message(UserMessage(
             text=user_prompt,
-            file_contents=[image_content]
+            file_contents=[media_content]
         ))
         
-        logger.info(f"🖼️ Image analyzed by {admin['name']}: {text[:50]}...")
+        logger.info(f"🖼️ {media_type} analyzed by {admin['name']}: {text[:50]}...")
         
         # Log to history
         await db.voice_command_history.insert_one({
             "id": str(uuid.uuid4()),
             "admin_id": admin["id"],
             "admin_name": admin["name"],
-            "transcription": f"[Bildanalyse] {text}",
+            "transcription": f"[{media_type}analyse] {text}",
             "action": "analyze_image",
-            "parameters": {},
+            "parameters": {"type": "video" if is_video else "image"},
             "result": {"success": True, "message": response[:200] + "..." if len(response) > 200 else response},
             "created_at": datetime.now(timezone.utc)
         })
@@ -1116,7 +1117,8 @@ Bitte analysiere das hochgeladene Bild und beantworte die Frage des Administrato
         return {
             "success": True,
             "analysis": response,
-            "query": text
+            "query": text,
+            "type": "video" if is_video else "image"
         }
         
     except Exception as e:
