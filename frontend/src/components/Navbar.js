@@ -344,7 +344,7 @@ export const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               <Crown className="w-4 h-4" />
-              VIP Auktionen
+              {t('nav.vipAuctions') || 'VIP Auktionen'}
             </Link>
             <Link 
               to="/vip" 
