@@ -175,6 +175,8 @@ ANDERE BEISPIELE:
 - "Sperre Benutzer test@email.de" -> {"action": "ban_user", "parameters": {"email": "test@email.de"}, "confirmation_message": "Soll ich den Benutzer test@email.de sperren?", "needs_confirmation": true}
 - "Lösche alle Auktionen und erstelle 50 neue" -> {"action": "batch", "parameters": {"actions": [{"action": "delete_auctions", "parameters": {"status": "all"}}, {"action": "create_auctions", "parameters": {"count": 50}}]}, "confirmation_message": "Soll ich alle Auktionen löschen und dann 50 neue erstellen?", "needs_confirmation": true}
 - "Zeige heutige Einnahmen" -> {"action": "get_stats", "parameters": {"type": "today"}, "confirmation_message": "Ich zeige Ihnen die heutigen Einnahmen.", "needs_confirmation": false}
+- "Übersetze alle Produkte" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}, "confirmation_message": "Soll ich alle Produkte in die verfügbaren Sprachen übersetzen?", "needs_confirmation": true}
+- "Die Seite soll komplett übersetzt werden" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}, "confirmation_message": "Soll ich alle Produkte in die verfügbaren Sprachen übersetzen?", "needs_confirmation": true}
 """
     
     chat = LlmChat(
