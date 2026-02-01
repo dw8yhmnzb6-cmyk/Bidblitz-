@@ -1029,8 +1029,8 @@ async def analyze_image_command(
     image: UploadFile = File(...),
     admin: dict = Depends(get_admin_user)
 ):
-    """Analyze an uploaded image using GPT-4 Vision"""
-    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    """Analyze an uploaded image using GPT-4o Vision"""
+    from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
     import base64
     
     # Get text from form data
@@ -1058,16 +1058,6 @@ async def analyze_image_command(
     # Convert to base64
     base64_image = base64.b64encode(content).decode('utf-8')
     
-    # Determine mime type
-    ext = image.filename.split(".")[-1].lower() if image.filename else "png"
-    mime_type = {
-        "png": "image/png",
-        "jpg": "image/jpeg",
-        "jpeg": "image/jpeg",
-        "gif": "image/gif",
-        "webp": "image/webp"
-    }.get(ext, "image/png")
-    
     try:
         # Create chat with GPT-4o for vision
         system_prompt = """Du bist ein hilfreicher Admin-Assistent für die BidBlitz Penny-Auktions-Plattform.
@@ -1086,18 +1076,19 @@ Antworte auf Deutsch und sei präzise und hilfreich."""
             system_message=system_prompt
         ).with_model("openai", "gpt-4o")
         
-        # Create message with image
+        # Create image content object for the message
+        image_content = ImageContent(
+            image_base64=base64_image
+        )
+        
+        # Create message with image attachment using file_contents
         user_prompt = f"""Benutzeranfrage: {text}
 
 Bitte analysiere das hochgeladene Bild und beantworte die Frage des Administrators."""
         
-        # GPT-4o vision requires special message format
-        # Using the chat interface with image URL
-        image_url = f"data:{mime_type};base64,{base64_image}"
-        
         response = await chat.send_message(UserMessage(
             text=user_prompt,
-            image_urls=[image_url]
+            file_contents=[image_content]
         ))
         
         logger.info(f"🖼️ Image analyzed by {admin['name']}: {text[:50]}...")
