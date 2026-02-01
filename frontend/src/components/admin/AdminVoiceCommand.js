@@ -386,20 +386,21 @@ export default function AdminVoiceCommand() {
                   type="text"
                   value={textInput}
                   onChange={(e) => setTextInput(e.target.value)}
-                  placeholder="Frage zum Bild (optional)..."
-                  className="flex-1 bg-[#181824] border border-white/10 rounded-lg px-4 py-2 text-white text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500"
+                  placeholder="Frage (optional)"
+                  className="flex-1 min-w-0 bg-[#181824] border border-white/10 rounded-lg px-3 py-2 text-white text-xs md:text-sm placeholder-gray-500 focus:outline-none focus:border-purple-500"
                 />
                 <Button
                   onClick={analyzeImage}
                   disabled={isAnalyzingImage}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-xs md:text-sm px-3 shrink-0"
                 >
                   {isAnalyzingImage ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      Analysieren
+                      <Sparkles className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                      <span className="hidden sm:inline">Analysieren</span>
+                      <span className="sm:hidden">KI</span>
                     </>
                   )}
                 </Button>
@@ -409,23 +410,23 @@ export default function AdminVoiceCommand() {
         </div>
       </div>
       
-      {/* Transcription & Parsed Command */}
+      {/* Transcription & Parsed Command - More compact */}
       {transcription && (
-        <div className="glass-card rounded-xl p-6">
-          <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-cyan-400" />
+        <div className="glass-card rounded-xl p-4 md:p-6">
+          <h3 className="text-white font-bold text-sm md:text-base mb-3 md:mb-4 flex items-center gap-2">
+            <MessageSquare className="w-4 h-4 md:w-5 md:h-5 text-cyan-400" />
             Erkannter Befehl
           </h3>
           
           {/* Transcription */}
-          <div className="bg-[#181824] rounded-lg p-4 mb-4">
+          <div className="bg-[#181824] rounded-lg p-3 md:p-4 mb-3 md:mb-4">
             <p className="text-gray-400 text-xs mb-1">Transkription:</p>
-            <p className="text-white text-lg">"{transcription}"</p>
+            <p className="text-white text-sm md:text-lg">"{transcription}"</p>
           </div>
           
           {/* Parsed Command */}
           {parsedCommand && (
-            <div className={`rounded-lg p-4 mb-4 ${
+            <div className={`rounded-lg p-3 md:p-4 mb-3 md:mb-4 ${
               parsedCommand.action === 'unknown' 
                 ? 'bg-red-500/10 border border-red-500/30' 
                 : 'bg-green-500/10 border border-green-500/30'
