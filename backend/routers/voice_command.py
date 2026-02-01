@@ -1029,40 +1029,48 @@ async def analyze_image_command(
     image: UploadFile = File(...),
     admin: dict = Depends(get_admin_user)
 ):
-    """Analyze an uploaded image using GPT-4o Vision"""
+    """Analyze an uploaded image or video using GPT-4o Vision"""
     from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
     import base64
     
     # Get text from form data
     form = await request.form()
-    text = form.get("text", "Analysiere dieses Bild und beschreibe was du siehst.")
+    text = form.get("text", "Analysiere diese Datei und beschreibe was du siehst.")
     
     api_key = os.getenv("EMERGENT_LLM_KEY")
     if not api_key:
         raise HTTPException(status_code=500, detail="API Key nicht konfiguriert")
     
-    # Check file type
+    # Check file type - accept images and videos
     content_type = image.content_type or ""
-    if not content_type.startswith("image/"):
-        ext = image.filename.split(".")[-1].lower() if image.filename else ""
-        if ext not in ["png", "jpg", "jpeg", "gif", "webp"]:
-            raise HTTPException(status_code=400, detail="Ungültiges Bildformat. Erlaubt: PNG, JPG, GIF, WebP")
+    is_video = content_type.startswith("video/")
+    is_image = content_type.startswith("image/")
     
-    # Read image content
+    if not is_image and not is_video:
+        ext = image.filename.split(".")[-1].lower() if image.filename else ""
+        if ext in ["png", "jpg", "jpeg", "gif", "webp"]:
+            is_image = True
+        elif ext in ["mp4", "mov", "avi", "webm", "mkv"]:
+            is_video = True
+        else:
+            raise HTTPException(status_code=400, detail="Ungültiges Format. Erlaubt: PNG, JPG, GIF, WebP, MP4, MOV, WEBM")
+    
+    # Read content
     content = await image.read()
     
-    # Check file size (max 10MB)
-    if len(content) > 10 * 1024 * 1024:
-        raise HTTPException(status_code=400, detail="Bild zu groß (max 10MB)")
+    # Check file size (max 20MB for videos, 10MB for images)
+    max_size = 20 * 1024 * 1024 if is_video else 10 * 1024 * 1024
+    if len(content) > max_size:
+        raise HTTPException(status_code=400, detail=f"Datei zu groß (max {20 if is_video else 10}MB)")
     
     # Convert to base64
-    base64_image = base64.b64encode(content).decode('utf-8')
+    base64_content = base64.b64encode(content).decode('utf-8')
     
     try:
         # Create chat with GPT-4o for vision
         system_prompt = """Du bist ein hilfreicher Admin-Assistent für die BidBlitz Penny-Auktions-Plattform.
         
-Wenn dir ein Screenshot gezeigt wird:
+Wenn dir ein Screenshot oder Video gezeigt wird:
 1. Beschreibe was du siehst
 2. Identifiziere mögliche Probleme oder Bugs
 3. Schlage Lösungen vor
