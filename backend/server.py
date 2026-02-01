@@ -121,6 +121,8 @@ app.include_router(wholesale_router, prefix="/api")
 app.include_router(gifts_router, prefix="/api")
 app.include_router(voice_command_router, prefix="/api")
 app.include_router(giftcards_router, prefix="/api")
+app.include_router(wheel_router, prefix="/api")
+app.include_router(leaderboard_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
