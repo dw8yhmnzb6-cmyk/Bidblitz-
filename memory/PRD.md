@@ -364,3 +364,18 @@ February 1, 2026 (Session 4)
   - Klarere Meldung wenn alle Produkte bereits übersetzt sind
   - Neuer Parameter `force: true` um Produkte erneut zu übersetzen
   - Beispiel: "Produkte erneut übersetzen" erzwingt neue Übersetzung
+
+- 2026-02-01: **COMPLETED** Footer vollständig internationalisiert
+  - Alle Footer-Links übersetzt (Quick Links, Extras, Legal, Contact)
+  - Unterstützte Sprachen: DE, EN, SQ, TR, FR
+  - Datei: `/app/frontend/src/components/Footer.js`
+
+- 2026-02-01: **COMPLETED** Home-Seite vollständig internationalisiert
+  - LiveTimer, PremiumAuction, AuctionCard, StatsBar mit Übersetzungen
+  - "Auction of the Day", "Live Auctions", "Activity Index" etc.
+  - Datei: `/app/frontend/src/pages/Home.js`
+
+- 2026-02-01: **EXPANDED** Französische und Albanische Übersetzungen
+  - `auctionPage` Sektion erweitert für FR und SQ
+  - Alle Filter und Auktionstypen übersetzt
+  - Datei: `/app/frontend/src/i18n/translations.js`
