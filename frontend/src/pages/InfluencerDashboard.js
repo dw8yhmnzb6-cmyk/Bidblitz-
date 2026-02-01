@@ -131,10 +131,13 @@ export default function InfluencerDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('influencer_data');
+    localStorage.removeItem('influencer_token');
     localStorage.removeItem('token');
     setIsLoggedIn(false);
     setInfluencer(null);
     setStats(null);
+    setPayoutHistory(null);
+    toast.success('Erfolgreich abgemeldet');
   };
 
   const copyCode = () => {
