@@ -9,10 +9,19 @@ import { toast } from 'sonner';
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 // Activity Index - Snipster Style with colored squares (always 30-60%)
-const ActivityIndex = memo(({ auctionId = '' }) => {
+const ActivityIndex = memo(({ auctionId = '', language = 'de' }) => {
   // Calculate filled squares (3-6 out of 10) based on auction ID
   const hash = auctionId ? auctionId.split('').reduce((a, b) => a + b.charCodeAt(0), 0) : 50;
   const filledCount = 3 + (hash % 4); // 3, 4, 5, or 6 filled (30-60%)
+  
+  // Activity index label translations
+  const activityLabel = {
+    de: 'Aktivitätsindex:',
+    en: 'Activity Index:',
+    sq: 'Indeksi i Aktivitetit:',
+    tr: 'Aktivite Endeksi:',
+    fr: "Indice d'Activité:"
+  };
   
   // Colors for each square position
   const getColor = (index, filled) => {
@@ -27,7 +36,7 @@ const ActivityIndex = memo(({ auctionId = '' }) => {
   return (
     <div className="mt-3">
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-gray-400">Aktivitätsindex:</span>
+        <span className="text-[11px] text-gray-400">{activityLabel[language] || activityLabel.de}</span>
         <div className="flex gap-0.5">
           {[...Array(10)].map((_, i) => (
             <div 
@@ -42,10 +51,20 @@ const ActivityIndex = memo(({ auctionId = '' }) => {
   );
 });
 
+// Home page translations
+const homeTexts = {
+  de: { ended: 'Beendet', hrs: 'STD.', min: 'MIN.', sec: 'SEK.', startPrice: 'Startpreis', beFirst: 'Sei der Erste!', bid: 'BIETEN', comparePrice: 'Vergleichspreis*', lastSold: 'Zuletzt versteigert für nur', liveAuctions: 'Live Auktionen', loading: 'Auktionen werden geladen...', noAuctions: 'Derzeit keine aktiven Auktionen', pleaseTryLater: 'Bitte schauen Sie später wieder vorbei' },
+  en: { ended: 'Ended', hrs: 'HRS', min: 'MIN', sec: 'SEC', startPrice: 'Start Price', beFirst: 'Be the first!', bid: 'BID', comparePrice: 'Compare at*', lastSold: 'Last sold for only', liveAuctions: 'Live Auctions', loading: 'Loading auctions...', noAuctions: 'No active auctions currently', pleaseTryLater: 'Please check back later' },
+  sq: { ended: 'Përfundoi', hrs: 'ORË', min: 'MIN', sec: 'SEK', startPrice: 'Çmimi Fillestar', beFirst: 'Bëhu i pari!', bid: 'OFERTOHU', comparePrice: 'Krahasoni me*', lastSold: 'Shitur për vetëm', liveAuctions: 'Ankande Live', loading: 'Duke ngarkuar ankandet...', noAuctions: 'Asnjë ankand aktiv aktualisht', pleaseTryLater: 'Ju lutem kontrolloni më vonë' },
+  tr: { ended: 'Bitti', hrs: 'SAAT', min: 'DAK', sec: 'SN', startPrice: 'Başlangıç Fiyatı', beFirst: 'İlk sen ol!', bid: 'TEKLİF VER', comparePrice: 'Karşılaştırma*', lastSold: 'Son satış sadece', liveAuctions: 'Canlı Açık Artırmalar', loading: 'Açık artırmalar yükleniyor...', noAuctions: 'Şu anda aktif açık artırma yok', pleaseTryLater: 'Lütfen daha sonra tekrar kontrol edin' },
+  fr: { ended: 'Terminé', hrs: 'H', min: 'MIN', sec: 'SEC', startPrice: 'Prix de départ', beFirst: 'Soyez le premier!', bid: 'ENCHÉRIR', comparePrice: 'Comparez à*', lastSold: 'Vendu dernièrement pour seulement', liveAuctions: 'Enchères en Direct', loading: 'Chargement des enchères...', noAuctions: 'Pas d\'enchères actives actuellement', pleaseTryLater: 'Veuillez revenir plus tard' }
+};
+
 // Live Timer - Only updates the timer, not the whole card
-const LiveTimer = memo(({ endTime, onExpired }) => {
+const LiveTimer = memo(({ endTime, onExpired, language = 'de' }) => {
   const [time, setTime] = useState({ h: 0, m: 0, s: 0, expired: false });
   const expiredCalled = useRef(false);
+  const ht = homeTexts[language] || homeTexts.de;
   
   useEffect(() => {
     if (!endTime) return;
@@ -83,7 +102,7 @@ const LiveTimer = memo(({ endTime, onExpired }) => {
   if (time.expired) {
     return (
       <div className="bg-gradient-to-r from-red-600 to-red-700 rounded-full px-4 py-2">
-        <span className="text-white text-sm font-bold">Beendet</span>
+        <span className="text-white text-sm font-bold">{ht.ended}</span>
       </div>
     );
   }
@@ -94,33 +113,40 @@ const LiveTimer = memo(({ endTime, onExpired }) => {
     <div className={`rounded-full px-4 py-2 ${urgent ? 'bg-gradient-to-r from-red-600 to-red-700' : 'bg-gradient-to-r from-gray-800 to-gray-900'}`}>
       <div className="flex items-center gap-1 text-white">
         <span className="font-mono text-lg font-bold">{pad(time.h)}</span>
-        <span className="text-xs text-gray-400">STD.</span>
+        <span className="text-xs text-gray-400">{ht.hrs}</span>
         <span className="font-mono text-lg font-bold">{pad(time.m)}</span>
-        <span className="text-xs text-gray-400">MIN.</span>
+        <span className="text-xs text-gray-400">{ht.min}</span>
         <span className={`font-mono text-lg font-bold ${urgent ? 'text-yellow-300' : ''}`}>{pad(time.s)}</span>
-        <span className="text-xs text-gray-400">SEK.</span>
+        <span className="text-xs text-gray-400">{ht.sec}</span>
       </div>
     </div>
   );
 });
 
 // Live Price Display - Only updates price and bidder
-const LivePrice = memo(({ price, bidderName }) => (
-  <div className="text-center my-4">
-    <p className="text-4xl font-black text-gray-800">
-      € {price?.toFixed(2).replace('.', ',')}
-    </p>
-    <p className="text-cyan-600 text-sm mt-1">
-      {bidderName || 'Startpreis'}
-    </p>
-  </div>
-));
+const LivePrice = memo(({ price, bidderName, language = 'de' }) => {
+  const ht = homeTexts[language] || homeTexts.de;
+  return (
+    <div className="text-center my-4">
+      <p className="text-4xl font-black text-gray-800">
+        € {price?.toFixed(2).replace('.', ',')}
+      </p>
+      <p className="text-cyan-600 text-sm mt-1">
+        {bidderName || ht.startPrice}
+      </p>
+    </div>
+  );
+});
 
 // Premium Featured Auction - Snipster Style
-const PremiumAuction = memo(({ auction, product, onBid, onRefresh }) => {
+const PremiumAuction = memo(({ auction, product, onBid, onRefresh, language = 'de' }) => {
   const navigate = useNavigate();
+  const ht = homeTexts[language] || homeTexts.de;
   
   if (!auction || !product) return null;
+  
+  // Get translated product name
+  const productName = product.name_translations?.[language] || product.name;
   
   return (
     <div 
@@ -133,7 +159,7 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh }) => {
       <div className="p-6">
         {/* Timer */}
         <div className="flex justify-center mb-4">
-          <LiveTimer endTime={auction.end_time} onExpired={onRefresh} />
+          <LiveTimer endTime={auction.end_time} onExpired={onRefresh} language={language} />
         </div>
         
         {/* Price and Bidder */}
@@ -142,7 +168,7 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh }) => {
             € {auction.current_price?.toFixed(2).replace('.', ',')}
           </p>
           <p className="text-cyan-700 text-lg mt-2">
-            {auction.last_bidder_name || 'Sei der Erste!'}
+            {auction.last_bidder_name || ht.beFirst}
           </p>
         </div>
         
@@ -155,13 +181,13 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh }) => {
             }}
             className="px-16 py-3 bg-gradient-to-r from-cyan-400 to-cyan-500 hover:from-cyan-300 hover:to-cyan-400 text-white font-bold text-xl rounded-full shadow-lg transition-all transform hover:scale-105"
           >
-            BIETEN
+            {ht.bid}
           </button>
         </div>
         
         {/* Activity Index */}
         <div className="flex justify-center">
-          <ActivityIndex auctionId={auction.id} />
+          <ActivityIndex auctionId={auction.id} language={language} />
         </div>
       </div>
       
@@ -172,7 +198,7 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh }) => {
           <div className="w-24 h-24 bg-white rounded-lg flex items-center justify-center flex-shrink-0 shadow-md">
             <img 
               src={product.image_url || 'https://via.placeholder.com/96'}
-              alt={product.name}
+              alt={productName}
               className="max-w-full max-h-full object-contain p-2"
             />
           </div>
@@ -180,10 +206,10 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh }) => {
           {/* Product Details */}
           <div className="flex-1">
             <h2 className="text-lg font-bold text-gray-800 leading-tight mb-1">
-              {product.name?.toUpperCase()}
+              {productName?.toUpperCase()}
             </h2>
             <p className="text-gray-600 text-sm">
-              Vergleichspreis*: € {product.retail_price?.toLocaleString('de-DE')},-
+              {ht.comparePrice}: € {product.retail_price?.toLocaleString(language === 'de' ? 'de-DE' : 'en-US')},-
             </p>
           </div>
         </div>
@@ -192,7 +218,7 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh }) => {
       {/* Last Sold Footer */}
       <div className="bg-cyan-600 px-4 py-2 text-center">
         <p className="text-white text-sm">
-          Zuletzt versteigert für nur <span className="font-bold">€ {(product.retail_price * 0.025).toFixed(2).replace('.', ',')}</span>
+          {ht.lastSold} <span className="font-bold">€ {(product.retail_price * 0.025).toFixed(2).replace('.', ',')}</span>
         </p>
       </div>
     </div>
