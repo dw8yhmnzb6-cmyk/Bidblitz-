@@ -544,7 +544,11 @@ export default function Home() {
         
         {/* Footer Note */}
         <p className="text-center text-xs text-gray-600 mt-8">
-          * Vergleichspreis entspricht der unverbindlichen Preisempfehlung des Herstellers
+          * {language === 'en' ? 'Compare price is the manufacturer\'s suggested retail price' : 
+             language === 'sq' ? 'Çmimi krahasues është çmimi i rekomanduar nga prodhuesi' :
+             language === 'tr' ? 'Karşılaştırma fiyatı üreticinin önerdiği perakende fiyatıdır' :
+             language === 'fr' ? 'Le prix comparé correspond au prix de vente conseillé par le fabricant' :
+             'Vergleichspreis entspricht der unverbindlichen Preisempfehlung des Herstellers'}
         </p>
       </div>
     </div>
