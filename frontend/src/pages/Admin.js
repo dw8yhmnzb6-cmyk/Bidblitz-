@@ -144,7 +144,7 @@ export default function Admin() {
     is_vip_only: false
   });
   const [newVoucher, setNewVoucher] = useState({
-    code: '', bids: '10', max_uses: '1', expires_at: ''
+    code: '', type: 'bids', value: '10', max_uses: '1'
   });
   const [newBot, setNewBot] = useState({ name: '' });
   const [botBid, setBotBid] = useState({
