@@ -375,8 +375,8 @@ export default function AdminVoiceCommand() {
           {[
             { cmd: "Erstelle 50 neue Auktionen", desc: "Neue Auktionen erstellen" },
             { cmd: "Lösche alle beendeten Auktionen", desc: "Alte Auktionen löschen" },
-            { cmd: "Lösche alle Auktionen und erstelle 50 neue", desc: "Batch-Befehl" },
             { cmd: "Übersetze alle Produkte", desc: "Produkte in alle Sprachen übersetzen" },
+            { cmd: "Übersetzung überprüfen", desc: "Übersetzungsstatus anzeigen" },
             { cmd: "Zeige mir die Statistiken", desc: "Plattform-Statistiken" },
             { cmd: "Setze die Auktion des Tages", desc: "AOTD automatisch setzen" },
             { cmd: "Füge 100 Gebote zu kunde@email.de hinzu", desc: "Gebote vergeben" },
