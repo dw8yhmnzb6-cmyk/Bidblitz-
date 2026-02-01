@@ -104,7 +104,7 @@ export const AuctionOfTheDay = () => {
       {/* Badge */}
       <div className="absolute top-0 left-0 bg-gradient-to-r from-[#FFD700] to-[#FF4D4D] text-black font-bold text-sm px-4 py-2 rounded-br-xl flex items-center gap-2">
         <Trophy className="w-4 h-4" />
-        AUKTION DES TAGES
+        {t('auctionPage.auctionOfDay') || 'AUKTION DES TAGES'}
       </div>
 
       <div className="p-6 pt-12">
@@ -113,7 +113,7 @@ export const AuctionOfTheDay = () => {
           <div className="relative w-full md:w-48 h-48 flex-shrink-0">
             <img
               src={product.image_url || 'https://via.placeholder.com/200'}
-              alt={product.name}
+              alt={product.name_translations?.[language] || product.name}
               className="w-full h-full object-contain rounded-xl bg-white/5 p-2"
             />
             {savings > 0 && (
@@ -128,14 +128,14 @@ export const AuctionOfTheDay = () => {
             <div>
               <p className="text-[#94A3B8] text-sm mb-1">{product.category}</p>
               <h3 className="text-xl md:text-2xl font-bold text-white">
-                {product.name}
+                {product.name_translations?.[language] || product.name}
               </h3>
             </div>
 
             {/* Price & Timer */}
             <div className="flex flex-wrap items-center gap-4">
               <div>
-                <p className="text-[#94A3B8] text-xs">Aktueller Preis</p>
+                <p className="text-[#94A3B8] text-xs">{t('auctionPage.currentPrice') || 'Aktueller Preis'}</p>
                 <p className="text-3xl font-bold text-[#FFD700] font-mono">
                   €{auction.current_price?.toFixed(2)}
                 </p>
@@ -144,7 +144,7 @@ export const AuctionOfTheDay = () => {
               <div className="h-12 w-px bg-white/10 hidden sm:block"></div>
               
               <div>
-                <p className="text-[#94A3B8] text-xs">UVP</p>
+                <p className="text-[#94A3B8] text-xs">{t('auctionPage.uvp') || 'UVP'}</p>
                 <p className="text-lg text-white/50 line-through font-mono">
                   €{product.retail_price?.toFixed(2)}
                 </p>
@@ -154,10 +154,10 @@ export const AuctionOfTheDay = () => {
 
               <div>
                 <p className="text-[#94A3B8] text-xs flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> Verbleibend
+                  <Clock className="w-3 h-3" /> {t('auctionPage.remaining') || 'Verbleibend'}
                 </p>
                 <p className={`text-lg font-bold font-mono ${
-                  timeLeft === 'Beendet' ? 'text-[#FF4D4D]' : 'text-[#10B981]'
+                  timeLeft === (t('auctions.ended') || 'Beendet') ? 'text-[#FF4D4D]' : 'text-[#10B981]'
                 }`}>
                   {timeLeft || '--:--:--'}
                 </p>
@@ -168,7 +168,7 @@ export const AuctionOfTheDay = () => {
             <div className="flex items-center gap-4 text-sm text-[#94A3B8]">
               <span className="flex items-center gap-1">
                 <Zap className="w-4 h-4 text-[#FFD700]" />
-                {auction.total_bids || 0} Gebote
+                {auction.total_bids || 0} {t('auctions.bids') || 'Gebote'}
               </span>
               {auction.last_bidder_name && (
                 <span>
