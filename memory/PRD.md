@@ -317,6 +317,54 @@ February 1, 2026 (Session 4)
   - **Intelligente Erkennung**: System erkennt automatisch ob es eine Frage oder eine Aktion ist
   - **Aktionen funktionieren weiterhin**: "Starte Bots", "Erstelle Auktionen" etc. werden weiterhin ausgeführt
 
+## February 1, 2026 Session 3 - Top 5 Features Implementation
+
+- 2026-02-01: **NEW FEATURE** Glücksrad (Lucky Wheel)
+  - Backend Router: `/app/backend/routers/wheel.py`
+  - Frontend Component: `/app/frontend/src/components/SpinWheel.js`
+  - 8 Preise: 1-3-5-10 Gebote, 10% Rabatt, 1 Tag VIP, Nochmal!, Jackpot
+  - Täglich einmal drehen (24h Cooldown)
+  - Animated wheel mit CSS Transitions
+  - Integration: Dashboard + Navbar
+  - API: GET `/api/wheel/status`, POST `/api/wheel/spin`, GET `/api/wheel/history`
+
+- 2026-02-01: **NEW FEATURE** Wochen-Rangliste (Weekly Leaderboard)
+  - Backend Router: `/app/backend/routers/leaderboard.py`
+  - Frontend Page: `/app/frontend/src/pages/Leaderboard.js`
+  - Top 10 gewinnen am Sonntag Gratis-Gebote
+  - Preise: #1=100, #2=75, #3=50, #4=30, #5=25, #6=20, #7=15, #8=12, #9=10, #10=8 Gebote
+  - Aggregiert Gebote von Montag bis Sonntag
+  - Public & Authenticated Endpoints
+  - Route: `/leaderboard` und `/rangliste`
+  - API: GET `/api/leaderboard`, GET `/api/leaderboard/public`
+
+- 2026-02-01: **VERIFIED** Push-Benachrichtigungen (schon implementiert)
+  - Backend: `/app/backend/routers/notifications.py`
+  - VAPID Web Push Support
+  - Automatische 5-Minuten-Benachrichtigung für endende Auktionen
+  - Auction Reminders für Benutzer
+  - Notification Preferences pro Benutzer
+
+- 2026-02-01: **VERIFIED** Gebote-Zurück-Garantie (schon implementiert)
+  - Bei "Sofort-Kaufen" werden alle Gebote der Auktion zurückerstattet
+  - Implementiert in POST `/api/auctions/{id}/buy-now`
+  - Feld `bids_refunded` in Won Auctions
+
+- 2026-02-01: **BUGFIX** Timezone-Handling in wheel.py
+  - Problem: 500 Server Error beim Drehen nach 24h
+  - Ursache: Timezone-naive datetime Vergleich
+  - Fix: `if last_spin.tzinfo is None: last_spin = last_spin.replace(tzinfo=timezone.utc)`
+
+## Top 5 Features Status
+
+| Feature | Status | Backend | Frontend |
+|---------|--------|---------|----------|
+| Glücksrad | ✅ Fertig | wheel.py | SpinWheel.js |
+| Rangliste | ✅ Fertig | leaderboard.py | Leaderboard.js |
+| Push-Benachrichtigungen | ✅ Vorhanden | notifications.py | - |
+| Gebote-Zurück-Garantie | ✅ Vorhanden | auctions.py | - |
+| WhatsApp/Telegram Bot | 🔄 Ausstehend | - | - |
+
 ## Pending Issues
 
 ### P1 - Resolved ✅
