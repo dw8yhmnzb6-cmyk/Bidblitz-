@@ -47,6 +47,7 @@ import WholesaleDashboard from "./pages/WholesaleDashboard";
 import GiftBids from "./pages/GiftBids";
 import GiftCards from "./pages/GiftCards";
 import GiftCardSuccess from "./pages/GiftCardSuccess";
+import Leaderboard from "./pages/Leaderboard";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
