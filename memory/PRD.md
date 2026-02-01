@@ -229,6 +229,14 @@ February 1, 2026 (Session 4)
   - Shows skipped count for already-translated products
   - Better German confirmation messages
 
+- 2026-02-01: **NEW** Voice Command "check_translations" / "Übersetzung überprüfen"
+  - New command to check translation status of all products
+  - Shows: total products, fully translated, partially translated, not translated
+  - Lists missing translations by language
+  - Shows overall translation percentage
+  - Provides helpful tip to translate missing products
+  - Trigger words: "Übersetzung überprüfen", "Übersetzungen prüfen", "funktioniert nicht so richtig"
+
 - 2026-02-01: **TESTED** All bug fixes verified by testing agent (100% pass rate)
   - Test file created: /app/backend/tests/test_voice_translation.py
 
