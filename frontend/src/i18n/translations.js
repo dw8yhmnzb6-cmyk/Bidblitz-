@@ -1654,7 +1654,9 @@ export const translations = {
     influencer: {
       title: "Influencer",
       login: "Hyrja e Influencerit",
+      loginSubtitle: "Hyni për të parë statistikat tuaja",
       email: "Email",
+      emailPlaceholder: "tuaj@email.com",
       code: "Kodi juaj",
       loginButton: "Hyr",
       logout: "Dil",
@@ -1873,7 +1875,9 @@ export const translations = {
     influencer: {
       title: "Influencer",
       login: "Hyrja e Influencerit",
+      loginSubtitle: "Hyni për të parë statistikat tuaja",
       email: "Email",
+      emailPlaceholder: "tuaj@email.com",
       code: "Kodi juaj",
       loginButton: "Hyr",
       logout: "Dil",
