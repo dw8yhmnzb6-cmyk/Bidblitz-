@@ -430,7 +430,9 @@ export const translations = {
     influencer: {
       title: "Influencer",
       login: "Influencer Login",
+      loginSubtitle: "Sign in to view your statistics",
       email: "Email",
+      emailPlaceholder: "your@email.com",
       code: "Your Code",
       loginButton: "Login",
       logout: "Logout",
