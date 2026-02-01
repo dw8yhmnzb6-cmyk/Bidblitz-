@@ -812,6 +812,7 @@ async def buy_now(auction_id: str, user: dict = Depends(get_current_user)):
     """
     Execute Buy It Now purchase.
     This ends the auction and assigns the product to the user.
+    BONUS: User gets ALL their bids back! (Bid-Back Guarantee)
     """
     auction = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
     if not auction:
@@ -833,6 +834,15 @@ async def buy_now(auction_id: str, user: dict = Depends(get_current_user)):
     min_price = rrp * 0.5
     final_price = round(max(min_price, rrp - bid_discount), 2)
     
+    # BID-BACK GUARANTEE: Return ALL bids used in this auction to the user!
+    bids_refunded = user_bids
+    if bids_refunded > 0:
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$inc": {"bids_balance": bids_refunded}}
+        )
+        logger.info(f"💰 Bid-Back Guarantee: Refunded {bids_refunded} bids to user {user['id']}")
+    
     # Create buy-now order
     order_id = str(uuid.uuid4())
     order = {
@@ -844,6 +854,7 @@ async def buy_now(auction_id: str, user: dict = Depends(get_current_user)):
         "type": "buy_now",
         "rrp": rrp,
         "user_bids_used": user_bids,
+        "bids_refunded": bids_refunded,  # Track refunded bids
         "bid_discount": round(bid_discount, 2),
         "final_price": final_price,
         "status": "pending_payment",
