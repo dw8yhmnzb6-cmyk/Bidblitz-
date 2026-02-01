@@ -228,6 +228,7 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh, language = 'd
 // Small Auction Card - Snipster Style
 const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de' }) => {
   const navigate = useNavigate();
+  const ht = homeTexts[language] || homeTexts.de;
   
   if (!auction || !product) return null;
   
@@ -244,7 +245,7 @@ const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de' 
     >
       {/* Header with Timer */}
       <div className="p-3 flex justify-end">
-        <LiveTimer endTime={auction.end_time} onExpired={onRefresh} />
+        <LiveTimer endTime={auction.end_time} onExpired={onRefresh} language={language} />
       </div>
       
       {/* Content */}
@@ -256,7 +257,7 @@ const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de' 
               {productName?.toUpperCase()}
             </h3>
             <p className="text-gray-500 text-xs mb-3">
-              Vergleichspreis*: € {product.retail_price?.toLocaleString('de-DE')},-
+              {ht.comparePrice}: € {product.retail_price?.toLocaleString(language === 'de' ? 'de-DE' : 'en-US')},-
             </p>
             
             {/* Price */}
@@ -264,7 +265,7 @@ const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de' 
               € {auction.current_price?.toFixed(2).replace('.', ',')}
             </p>
             <p className="text-cyan-600 text-xs">
-              {auction.last_bidder_name || 'Startpreis'}
+              {auction.last_bidder_name || ht.startPrice}
             </p>
             
             {/* Bid Button */}
