@@ -355,6 +355,33 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
             logger.info(f"Outbid notification sent to {previous_bidder_id}")
         except Exception as e:
             logger.error(f"Error sending outbid notification: {e}")
+        
+        # Send EMAIL notification when outbid
+        try:
+            await send_outbid_email(previous_bidder_id, auction_id, new_price, user["name"])
+        except Exception as e:
+            logger.error(f"Error sending outbid email: {e}")
+        
+        # Send TELEGRAM notification when outbid
+        try:
+            from routers.telegram import send_auction_alert
+            product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+            await send_auction_alert(previous_bidder_id, "outbid", {
+                "product_name": product.get("name", "Auktion") if product else "Auktion",
+                "current_price": new_price,
+                "new_bidder": user["name"],
+                "url": f"https://bidblitz.de/auctions/{auction_id}"
+            })
+        except Exception as e:
+            logger.error(f"Error sending Telegram outbid alert: {e}")
+        
+        # Check if previous bidder has AUTOBIDDER active
+        try:
+            autobid_result = await process_autobid(previous_bidder_id, auction_id, new_price)
+            if autobid_result:
+                logger.info(f"🤖 Autobidder triggered for user {previous_bidder_id}")
+        except Exception as e:
+            logger.error(f"Error processing autobid: {e}")
     
     # Check for STREAK BONUS
     streak_reward = None
