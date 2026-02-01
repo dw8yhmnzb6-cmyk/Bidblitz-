@@ -356,12 +356,27 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
         except Exception as e:
             logger.error(f"Error sending outbid notification: {e}")
     
-    return {
+    # Check for STREAK BONUS
+    streak_reward = None
+    try:
+        from routers.gamification import check_and_award_streak
+        streak_reward = await check_and_award_streak(user["id"], auction_id)
+        if streak_reward:
+            logger.info(f"🔥 Streak bonus awarded: {streak_reward}")
+    except Exception as e:
+        logger.error(f"Error checking streak: {e}")
+    
+    response = {
         "message": "Bid placed successfully",
         "new_price": new_price,
         "new_end_time": new_end_time.isoformat(),
         "bids_remaining": user["bids_balance"] - 1
     }
+    
+    if streak_reward:
+        response["streak_reward"] = streak_reward
+    
+    return response
 
 # ==================== WISHLIST ====================
 
