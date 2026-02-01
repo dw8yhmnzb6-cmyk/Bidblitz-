@@ -1025,13 +1025,17 @@ class TextCommandRequest(BaseModel):
 
 @router.post("/analyze-image")
 async def analyze_image_command(
+    request: Request,
     image: UploadFile = File(...),
-    text: str = "Analysiere dieses Bild und beschreibe was du siehst.",
     admin: dict = Depends(get_admin_user)
 ):
     """Analyze an uploaded image using GPT-4 Vision"""
     from emergentintegrations.llm.chat import LlmChat, UserMessage
     import base64
+    
+    # Get text from form data
+    form = await request.form()
+    text = form.get("text", "Analysiere dieses Bild und beschreibe was du siehst.")
     
     api_key = os.getenv("EMERGENT_LLM_KEY")
     if not api_key:
