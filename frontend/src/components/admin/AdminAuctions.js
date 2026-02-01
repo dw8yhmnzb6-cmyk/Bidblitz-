@@ -523,11 +523,49 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
       
       {/* Auctions Table */}
       <div className="glass-card rounded-xl overflow-hidden">
+        {/* Filter Tabs for Day/Night */}
+        <div className="p-4 border-b border-white/10 flex flex-wrap items-center gap-2">
+          <span className="text-[#94A3B8] text-sm mr-2">Filter:</span>
+          <button
+            onClick={() => setAuctionFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              auctionFilter === 'all' 
+                ? 'bg-[#7C3AED] text-white' 
+                : 'bg-[#181824] text-gray-400 hover:bg-[#252532]'
+            }`}
+          >
+            Alle ({(auctions || []).length})
+          </button>
+          <button
+            onClick={() => setAuctionFilter('day')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1 ${
+              auctionFilter === 'day' 
+                ? 'bg-[#F59E0B] text-white' 
+                : 'bg-[#181824] text-gray-400 hover:bg-[#252532]'
+            }`}
+          >
+            <Sun className="w-4 h-4" />
+            Tag ({(auctions || []).filter(a => !a.is_night_auction).length})
+          </button>
+          <button
+            onClick={() => setAuctionFilter('night')}
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all flex items-center gap-1 ${
+              auctionFilter === 'night' 
+                ? 'bg-[#7C3AED] text-white' 
+                : 'bg-[#181824] text-gray-400 hover:bg-[#252532]'
+            }`}
+          >
+            <Moon className="w-4 h-4" />
+            Nacht ({(auctions || []).filter(a => a.is_night_auction).length})
+          </button>
+        </div>
+        
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-[#181824]">
               <tr>
                 <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.product')}</th>
+                <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Typ</th>
                 <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.price')}</th>
                 <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">
                   <div className="flex items-center gap-1">
@@ -541,7 +579,7 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
-              {(auctions || []).map((auction) => {
+              {filteredAuctions.map((auction) => {
                 const botTarget = auction.bot_target_price || 0;
                 const currentPrice = auction.current_price || 0;
                 const botActive = botTarget > 0 && currentPrice < botTarget && auction.status === 'active';
@@ -550,6 +588,19 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
                 return (
                   <tr key={auction.id} className="hover:bg-white/5">
                     <td className="px-4 py-3 text-white">{auction.product?.name || 'N/A'}</td>
+                    <td className="px-4 py-3">
+                      {auction.is_night_auction ? (
+                        <span className="flex items-center gap-1 text-[#7C3AED]">
+                          <Moon className="w-4 h-4" />
+                          <span className="text-xs">Nacht</span>
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 text-[#F59E0B]">
+                          <Sun className="w-4 h-4" />
+                          <span className="text-xs">Tag</span>
+                        </span>
+                      )}
+                    </td>
                     <td className="px-4 py-3 text-[#06B6D4] font-mono">€{currentPrice.toFixed(2)}</td>
                     <td className="px-4 py-3">
                       <button onClick={() => handleUpdateBotTarget(auction.id, botTarget)} 
