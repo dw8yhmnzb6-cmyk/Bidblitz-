@@ -926,6 +926,94 @@ Beschreibung (Deutsch): {german_desc if german_desc else "Keine Beschreibung vor
             "data": {"translated": translated_count, "skipped": skipped_count, "languages": target_languages}
         }
     
+    elif action == "check_translations":
+        """Check translation status for all products"""
+        # Get all products
+        products = await db.products.find({}, {"_id": 0}).to_list(200)
+        
+        if not products:
+            return {"success": False, "message": "❌ Keine Produkte in der Datenbank gefunden"}
+        
+        total_products = len(products)
+        
+        # Languages to check
+        languages = ["de", "en", "tr", "fr", "sq", "ar"]
+        lang_names = {"de": "Deutsch", "en": "Englisch", "tr": "Türkisch", "fr": "Französisch", "sq": "Albanisch", "ar": "Arabisch"}
+        
+        # Count products with translations
+        fully_translated = 0
+        partially_translated = 0
+        not_translated = 0
+        
+        # Track which languages are missing
+        missing_by_language = {lang: 0 for lang in languages}
+        
+        for product in products:
+            name_trans = product.get("name_translations", {})
+            
+            if not name_trans:
+                not_translated += 1
+                for lang in languages:
+                    missing_by_language[lang] += 1
+            else:
+                missing_langs = [lang for lang in languages if lang not in name_trans]
+                
+                if not missing_langs:
+                    fully_translated += 1
+                else:
+                    partially_translated += 1
+                    for lang in missing_langs:
+                        missing_by_language[lang] += 1
+        
+        # Build status message
+        status_lines = [
+            f"📊 **Übersetzungsstatus:**",
+            f"",
+            f"📦 Gesamt Produkte: {total_products}",
+            f"✅ Vollständig übersetzt: {fully_translated}",
+            f"⚠️ Teilweise übersetzt: {partially_translated}",
+            f"❌ Nicht übersetzt: {not_translated}",
+            f"",
+            f"📝 **Fehlende Übersetzungen nach Sprache:**"
+        ]
+        
+        for lang in languages:
+            if lang == "de":
+                continue  # Skip German as it's the source language
+            count = missing_by_language[lang]
+            status = "✅" if count == 0 else "⚠️"
+            status_lines.append(f"{status} {lang_names[lang]}: {count} fehlend")
+        
+        # Calculate overall translation percentage
+        max_translations = total_products * (len(languages) - 1)  # Exclude German
+        actual_translations = sum(
+            len([l for l in product.get("name_translations", {}).keys() if l != "de"])
+            for product in products
+        )
+        percentage = round((actual_translations / max_translations) * 100, 1) if max_translations > 0 else 0
+        
+        status_lines.append(f"")
+        status_lines.append(f"📈 Gesamtfortschritt: {percentage}%")
+        
+        if percentage < 100:
+            status_lines.append(f"")
+            status_lines.append(f"💡 Tipp: Sagen Sie 'Übersetze alle Produkte' um fehlende Übersetzungen zu erstellen")
+        
+        logger.info(f"🎤 Voice command: Translation check by {admin['name']} - {percentage}% complete")
+        
+        return {
+            "success": True,
+            "message": "\n".join(status_lines),
+            "data": {
+                "total_products": total_products,
+                "fully_translated": fully_translated,
+                "partially_translated": partially_translated,
+                "not_translated": not_translated,
+                "missing_by_language": missing_by_language,
+                "percentage": percentage
+            }
+        }
+    
     else:
         return {"success": False, "message": "❌ Befehl nicht erkannt"}
 
