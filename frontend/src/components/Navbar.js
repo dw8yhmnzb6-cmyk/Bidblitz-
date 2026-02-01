@@ -71,6 +71,24 @@ export const Navbar = () => {
               {t('nav.giftCards') || 'Geschenkkarten'}
             </Link>
             <Link 
+              to="/leaderboard" 
+              className="text-[#A855F7] hover:text-[#C084FC] transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-leaderboard"
+            >
+              <Trophy className="w-4 h-4" />
+              {language === 'de' ? 'Rangliste' : language === 'en' ? 'Leaderboard' : 'Rangliste'}
+            </Link>
+            {isAuthenticated && (
+              <button 
+                onClick={() => setWheelOpen(true)}
+                className="text-[#F59E0B] hover:text-[#FFD700] transition-colors font-medium flex items-center gap-1"
+                data-testid="nav-wheel"
+              >
+                <Sparkles className="w-4 h-4" />
+                {language === 'de' ? 'Glücksrad' : language === 'en' ? 'Lucky Wheel' : 'Glücksrad'}
+              </button>
+            )}
+            <Link 
               to="/vip-auctions" 
               className="text-[#FFA500] hover:text-[#FFD700] transition-colors font-medium flex items-center gap-1"
               data-testid="nav-vip-auctions"
