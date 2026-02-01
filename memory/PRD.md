@@ -354,3 +354,13 @@ February 1, 2026 (Session 4)
   - Alle 10 getesteten Seiten zeigen korrekte Übersetzungen
   - Sprachauswahl funktioniert auf Desktop und Mobile
   - 100% Erfolgsrate bei Frontend-Tests (iteration_18.json)
+
+- 2026-02-01: **FIXED** Admin Schnell-Aktionen Labels auf Mobile
+  - Labels sind jetzt immer sichtbar (nicht mehr mit `hidden sm:inline`)
+  - Vertikales Layout auf Mobile (Icons oben, Text unten)
+  - Kleinere Schriftgröße für Mobile (text-[10px])
+
+- 2026-02-01: **IMPROVED** Produktübersetzung Feedback
+  - Klarere Meldung wenn alle Produkte bereits übersetzt sind
+  - Neuer Parameter `force: true` um Produkte erneut zu übersetzen
+  - Beispiel: "Produkte erneut übersetzen" erzwingt neue Übersetzung
