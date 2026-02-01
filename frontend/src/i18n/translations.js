@@ -1,7 +1,7 @@
 // Complete translations for 20 languages
 export const translations = {
   de: {
-    nav: { auctions: "Auktionen", buyBids: "Gebote kaufen", dashboard: "Dashboard", admin: "Admin", login: "Anmelden", register: "Registrieren", logout: "Abmelden", bids: "Gebote", winners: "Gewinner", inviteFriends: "Freunde werben", wishlist: "Wunschliste", howItWorks: "So funktioniert's", vip: "VIP Mitgliedschaft", faq: "FAQ", contact: "Kontakt", giftCards: "Geschenkkarten", vipAuctions: "VIP Auktionen" },
+    nav: { language: "Sprache", auctions: "Auktionen", buyBids: "Gebote kaufen", dashboard: "Dashboard", admin: "Admin", login: "Anmelden", register: "Registrieren", logout: "Abmelden", bids: "Gebote", winners: "Gewinner", inviteFriends: "Freunde werben", wishlist: "Wunschliste", howItWorks: "So funktioniert's", vip: "VIP Mitgliedschaft", faq: "FAQ", contact: "Kontakt", giftCards: "Geschenkkarten", vipAuctions: "VIP Auktionen" },
     home: {
       badge: "10 kostenlose Gebote bei Registrierung",
       heroTitle1: "Gewinnen Sie",
@@ -335,7 +335,7 @@ export const translations = {
     }
   },
   en: {
-    nav: { auctions: "Auctions", buyBids: "Buy Bids", dashboard: "Dashboard", admin: "Admin", login: "Login", register: "Register", logout: "Logout", bids: "Bids", winners: "Winners", inviteFriends: "Invite Friends", wishlist: "Wishlist", howItWorks: "How it works", vip: "VIP Membership", faq: "FAQ", contact: "Contact", giftCards: "Gift Cards", vipAuctions: "VIP Auctions" },
+    nav: { language: "Language", auctions: "Auctions", buyBids: "Buy Bids", dashboard: "Dashboard", admin: "Admin", login: "Login", register: "Register", logout: "Logout", bids: "Bids", winners: "Winners", inviteFriends: "Invite Friends", wishlist: "Wishlist", howItWorks: "How it works", vip: "VIP Membership", faq: "FAQ", contact: "Contact", giftCards: "Gift Cards", vipAuctions: "VIP Auctions" },
     home: {
       badge: "10 free bids on registration",
       heroTitle1: "Win",
@@ -544,7 +544,7 @@ export const translations = {
     }
   },
   us: {
-    nav: { auctions: "Auctions", buyBids: "Buy Bids", dashboard: "Dashboard", admin: "Admin", login: "Login", register: "Register", logout: "Logout", bids: "Bids", winners: "Winners", inviteFriends: "Invite Friends", wishlist: "Wishlist", howItWorks: "How it works", vip: "VIP Membership", faq: "FAQ", contact: "Contact" },
+    nav: { language: "Language", auctions: "Auctions", buyBids: "Buy Bids", dashboard: "Dashboard", admin: "Admin", login: "Login", register: "Register", logout: "Logout", bids: "Bids", winners: "Winners", inviteFriends: "Invite Friends", wishlist: "Wishlist", howItWorks: "How it works", vip: "VIP Membership", faq: "FAQ", contact: "Contact" },
     home: {
       badge: "10 free bids on registration",
       heroTitle1: "Win",
