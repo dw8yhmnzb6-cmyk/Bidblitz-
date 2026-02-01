@@ -1023,6 +1023,103 @@ class TextCommandRequest(BaseModel):
     text: str
     execute: bool = False
 
+@router.post("/analyze-image")
+async def analyze_image_command(
+    image: UploadFile = File(...),
+    text: str = "Analysiere dieses Bild und beschreibe was du siehst.",
+    admin: dict = Depends(get_admin_user)
+):
+    """Analyze an uploaded image using GPT-4 Vision"""
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+    import base64
+    
+    api_key = os.getenv("EMERGENT_LLM_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="API Key nicht konfiguriert")
+    
+    # Check file type
+    content_type = image.content_type or ""
+    if not content_type.startswith("image/"):
+        ext = image.filename.split(".")[-1].lower() if image.filename else ""
+        if ext not in ["png", "jpg", "jpeg", "gif", "webp"]:
+            raise HTTPException(status_code=400, detail="Ungültiges Bildformat. Erlaubt: PNG, JPG, GIF, WebP")
+    
+    # Read image content
+    content = await image.read()
+    
+    # Check file size (max 10MB)
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Bild zu groß (max 10MB)")
+    
+    # Convert to base64
+    base64_image = base64.b64encode(content).decode('utf-8')
+    
+    # Determine mime type
+    ext = image.filename.split(".")[-1].lower() if image.filename else "png"
+    mime_type = {
+        "png": "image/png",
+        "jpg": "image/jpeg",
+        "jpeg": "image/jpeg",
+        "gif": "image/gif",
+        "webp": "image/webp"
+    }.get(ext, "image/png")
+    
+    try:
+        # Create chat with GPT-4o for vision
+        system_prompt = """Du bist ein hilfreicher Admin-Assistent für die BidBlitz Penny-Auktions-Plattform.
+        
+Wenn dir ein Screenshot gezeigt wird:
+1. Beschreibe was du siehst
+2. Identifiziere mögliche Probleme oder Bugs
+3. Schlage Lösungen vor
+4. Wenn es sich um UI-Probleme handelt, beschreibe konkret was verbessert werden sollte
+
+Antworte auf Deutsch und sei präzise und hilfreich."""
+
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"image-analysis-{uuid.uuid4()}",
+            system_message=system_prompt
+        ).with_model("openai", "gpt-4o")
+        
+        # Create message with image
+        user_prompt = f"""Benutzeranfrage: {text}
+
+Bitte analysiere das hochgeladene Bild und beantworte die Frage des Administrators."""
+        
+        # GPT-4o vision requires special message format
+        # Using the chat interface with image URL
+        image_url = f"data:{mime_type};base64,{base64_image}"
+        
+        response = await chat.send_message(UserMessage(
+            text=user_prompt,
+            image_urls=[image_url]
+        ))
+        
+        logger.info(f"🖼️ Image analyzed by {admin['name']}: {text[:50]}...")
+        
+        # Log to history
+        await db.voice_command_history.insert_one({
+            "id": str(uuid.uuid4()),
+            "admin_id": admin["id"],
+            "admin_name": admin["name"],
+            "transcription": f"[Bildanalyse] {text}",
+            "action": "analyze_image",
+            "parameters": {},
+            "result": {"success": True, "message": response[:200] + "..." if len(response) > 200 else response},
+            "created_at": datetime.now(timezone.utc)
+        })
+        
+        return {
+            "success": True,
+            "analysis": response,
+            "query": text
+        }
+        
+    except Exception as e:
+        logger.error(f"Image analysis error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Bildanalyse fehlgeschlagen: {str(e)}")
+
 @router.post("/transcribe")
 async def transcribe_voice_command(
     audio: UploadFile = File(...),
