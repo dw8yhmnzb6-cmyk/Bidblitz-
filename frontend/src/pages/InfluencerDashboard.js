@@ -25,6 +25,7 @@ const TIERS = {
 
 export default function InfluencerDashboard() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [influencer, setInfluencer] = useState(null);
   const [stats, setStats] = useState(null);
