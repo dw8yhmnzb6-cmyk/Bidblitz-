@@ -38,15 +38,42 @@ export default function InfluencerDashboard() {
   });
   const [copied, setCopied] = useState(false);
 
-  // Check if already logged in
+  // Check if already logged in and validate session
   useEffect(() => {
-    const savedInfluencer = localStorage.getItem('influencer_data');
-    if (savedInfluencer) {
-      const data = JSON.parse(savedInfluencer);
-      setInfluencer(data);
-      setIsLoggedIn(true);
-      fetchStats(data.code);
-    }
+    const checkSavedSession = async () => {
+      const savedInfluencer = localStorage.getItem('influencer_data');
+      const savedToken = localStorage.getItem('influencer_token');
+      
+      if (savedInfluencer && savedToken) {
+        try {
+          const data = JSON.parse(savedInfluencer);
+          
+          // Verify the session is still valid by fetching stats
+          const res = await axios.get(`${API}/influencer/stats/${data.code}`);
+          
+          if (res.data) {
+            setInfluencer(data);
+            setIsLoggedIn(true);
+            setStats(res.data);
+            
+            // Also fetch payout history
+            try {
+              const payoutRes = await axios.get(`${API}/influencer/payout/history/${data.code}`);
+              setPayoutHistory(payoutRes.data);
+            } catch (e) {
+              console.log('Payout history not available');
+            }
+          }
+        } catch (error) {
+          // Session invalid - clear storage
+          console.log('Session expired, clearing storage');
+          localStorage.removeItem('influencer_data');
+          localStorage.removeItem('influencer_token');
+        }
+      }
+    };
+    
+    checkSavedSession();
   }, []);
 
   const fetchStats = async (code) => {
@@ -68,8 +95,10 @@ export default function InfluencerDashboard() {
       const res = await axios.post(`${API}/influencer/login`, loginForm);
       setInfluencer(res.data.influencer);
       setIsLoggedIn(true);
+      // Save both influencer data AND token with consistent naming
       localStorage.setItem('influencer_data', JSON.stringify(res.data.influencer));
-      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('influencer_token', res.data.token);
+      localStorage.setItem('token', res.data.token); // Also save as general token for API calls
       toast.success(`Willkommen, ${res.data.influencer.name}!`);
       fetchStats(res.data.influencer.code);
     } catch (error) {
