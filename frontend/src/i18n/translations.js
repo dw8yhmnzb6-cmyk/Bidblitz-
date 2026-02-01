@@ -706,7 +706,7 @@ export const translations = {
     }
   },
   fr: {
-    nav: { auctions: "Enchères", buyBids: "Acheter des offres", dashboard: "Tableau de bord", admin: "Admin", login: "Connexion", register: "S'inscrire", logout: "Déconnexion", bids: "Offres", winners: "Gagnants", inviteFriends: "Inviter des amis", wishlist: "Liste de souhaits", howItWorks: "Comment ça marche", vip: "Adhésion VIP", faq: "FAQ", contact: "Contact" },
+    nav: { auctions: "Enchères", buyBids: "Acheter des offres", dashboard: "Tableau de bord", admin: "Admin", login: "Connexion", register: "S'inscrire", logout: "Déconnexion", bids: "Offres", winners: "Gagnants", inviteFriends: "Inviter des amis", wishlist: "Liste de souhaits", howItWorks: "Comment ça marche", vip: "Adhésion VIP", faq: "FAQ", contact: "Contact", giftCards: "Cartes Cadeaux", vipAuctions: "Enchères VIP" },
     home: {
       badge: "10 offres gratuites à l'inscription",
       heroTitle1: "Gagnez",
