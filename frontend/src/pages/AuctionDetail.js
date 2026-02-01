@@ -384,13 +384,13 @@ export default function AuctionDetail() {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success(t('autobidder.activated') || 'Bid Buddy aktiviert! Er bietet automatisch für Sie.');
+      toast.success(dtl.bidBuddyActivated);
       setShowAutobidder(false);
       setMaxPrice('');
       setMaxBids('10');
       fetchAutobidder(); // Refresh autobidder status
     } catch (error) {
-      toast.error(error.response?.data?.detail || t('autobidder.activateError') || 'Fehler beim Aktivieren');
+      toast.error(error.response?.data?.detail || (language === 'en' ? 'Activation error' : language === 'sq' ? 'Gabim aktivizimi' : language === 'tr' ? 'Aktivasyon hatası' : language === 'fr' ? 'Erreur d\'activation' : 'Fehler beim Aktivieren'));
     } finally {
       setSettingAutobidder(false);
     }
