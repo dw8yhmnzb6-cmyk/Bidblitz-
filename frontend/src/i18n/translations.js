@@ -1339,7 +1339,9 @@ export const translations = {
     influencer: {
       title: "مؤثر",
       login: "تسجيل دخول المؤثر",
+      loginSubtitle: "سجل الدخول لعرض إحصائياتك",
       email: "البريد الإلكتروني",
+      emailPlaceholder: "بريدك@email.com",
       code: "الكود الخاص بك",
       loginButton: "تسجيل الدخول",
       logout: "تسجيل الخروج",
