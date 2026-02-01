@@ -145,7 +145,27 @@ export const Navbar = () => {
                 {Object.keys(languageList).map((lang) => (
                   <DropdownMenuItem 
                     key={lang} 
-                    onClick={() => changeLanguage(lang)}
+                    onClick={() => {
+                      changeLanguage(lang);
+                      // Also trigger Google Translate if available
+                      const googleLangMap = {
+                        'de': 'de', 'en': 'en', 'tr': 'tr', 'fr': 'fr', 'es': 'es', 'it': 'it',
+                        'ru': 'ru', 'ar': 'ar', 'sq': 'sq', 'nl': 'nl', 'pt': 'pt', 'pl': 'pl',
+                        'zh': 'zh-CN', 'ja': 'ja', 'ko': 'ko', 'sv': 'sv', 'no': 'no', 'da': 'da',
+                        'fi': 'fi', 'cs': 'cs', 'el': 'el', 'he': 'he', 'hi': 'hi', 'th': 'th',
+                        'vi': 'vi', 'id': 'id', 'ms': 'ms', 'ro': 'ro', 'hu': 'hu', 'uk': 'uk',
+                        'bg': 'bg', 'hr': 'hr', 'sk': 'sk', 'sl': 'sl', 'lt': 'lt', 'lv': 'lv'
+                      };
+                      const gtLang = googleLangMap[lang] || lang;
+                      if (window.google && window.google.translate) {
+                        // Try to change Google Translate language
+                        const select = document.querySelector('.goog-te-combo');
+                        if (select) {
+                          select.value = gtLang;
+                          select.dispatchEvent(new Event('change'));
+                        }
+                      }
+                    }}
                     className={`text-white hover:bg-white/10 cursor-pointer ${language === lang ? 'bg-white/5' : ''}`}
                   >
                     {languageList[lang]?.flag} {languageList[lang]?.name}
