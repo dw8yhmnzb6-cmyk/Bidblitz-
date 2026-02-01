@@ -80,9 +80,6 @@ function AppContent() {
       {/* Noise overlay */}
       <div className="noise-overlay" />
       
-      {/* Google Translate Element */}
-      <div id="google_translate_element"></div>
-      
       <Navbar />
       
       <main className="flex-grow">
