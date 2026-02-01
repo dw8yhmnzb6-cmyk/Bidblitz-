@@ -836,7 +836,9 @@ export const translations = {
     influencer: {
       title: "Influencer",
       login: "Inicio de sesión de Influencer",
+      loginSubtitle: "Inicia sesión para ver tus estadísticas",
       email: "Correo",
+      emailPlaceholder: "tu@email.es",
       code: "Tu Código",
       loginButton: "Iniciar sesión",
       logout: "Cerrar sesión",
