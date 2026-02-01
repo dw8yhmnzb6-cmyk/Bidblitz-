@@ -352,7 +352,7 @@ export default function InfluencerDashboard() {
           {/* Payout History */}
           {payoutHistory?.payouts?.length > 0 && (
             <div className="mt-4 pt-4 border-t border-white/10">
-              <h3 className="text-white font-semibold mb-3">Letzte Auszahlungen</h3>
+              <h3 className="text-white font-semibold mb-3">{t('influencer.recentPayouts') || 'Letzte Auszahlungen'}</h3>
               <div className="space-y-2">
                 {payoutHistory.payouts.slice(0, 3).map((payout, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-[#181824] rounded-lg">
@@ -369,8 +369,8 @@ export default function InfluencerDashboard() {
                         payout.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
                         'bg-red-500/20 text-red-400'
                       }`}>
-                        {payout.status === 'completed' ? 'Ausgezahlt' : 
-                         payout.status === 'pending' ? 'In Bearbeitung' : 'Abgelehnt'}
+                        {payout.status === 'completed' ? (t('common.completed') || 'Ausgezahlt') : 
+                         payout.status === 'pending' ? (t('common.pending') || 'In Bearbeitung') : (t('common.rejected') || 'Abgelehnt')}
                       </span>
                       <p className="text-[#94A3B8] text-xs mt-1">
                         {new Date(payout.created_at).toLocaleDateString('de-DE')}
@@ -387,7 +387,7 @@ export default function InfluencerDashboard() {
         <div className="glass-card rounded-2xl p-6">
           <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
             <Crown className="w-6 h-6" style={{ color: tierConfig.color }} />
-            Dein Tier-Fortschritt
+            {t('influencer.tierProgress') || 'Dein Tier-Fortschritt'}
           </h2>
           
           <div className="space-y-6">
@@ -404,7 +404,7 @@ export default function InfluencerDashboard() {
               </div>
               {stats?.next_tier_at && (
                 <p className="text-center text-[#94A3B8] text-sm mt-2">
-                  Noch <span className="text-white font-bold">{stats.customers_to_next_tier}</span> Kunden bis zum nächsten Tier
+                  {t('influencer.customersNeeded') || 'Noch'} <span className="text-white font-bold">{stats.customers_to_next_tier}</span> {t('influencer.customers') || 'Kunden'} {t('influencer.nextTier') || 'bis zum nächsten Tier'}
                 </p>
               )}
             </div>
