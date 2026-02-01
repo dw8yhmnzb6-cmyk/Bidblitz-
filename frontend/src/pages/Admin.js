@@ -124,6 +124,10 @@ export default function Admin() {
   
   // Mobile menu state (must be before any conditional returns)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // New Dashboard Widget States
+  const [showGlobalSearch, setShowGlobalSearch] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
 
   // Form states
   const [newProduct, setNewProduct] = useState({
