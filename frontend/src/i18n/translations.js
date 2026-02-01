@@ -1198,7 +1198,7 @@ export const translations = {
     }
   },
   ru: {
-    nav: { auctions: "Аукционы", buyBids: "Купить ставки", dashboard: "Панель", admin: "Админ", login: "Войти", register: "Регистрация", logout: "Выйти", bids: "Ставки", winners: "Победители", inviteFriends: "Пригласить друзей", wishlist: "Список желаний", howItWorks: "Как это работает", vip: "VIP Членство", faq: "FAQ", contact: "Контакт" },
+    nav: { auctions: "Аукционы", buyBids: "Купить ставки", dashboard: "Панель", admin: "Админ", login: "Войти", register: "Регистрация", logout: "Выйти", bids: "Ставки", winners: "Победители", inviteFriends: "Пригласить друзей", wishlist: "Список желаний", howItWorks: "Как это работает", vip: "VIP Членство", faq: "FAQ", contact: "Контакт", giftCards: "Подарочные карты", vipAuctions: "VIP Аукционы" },
     home: {
       badge: "10 бесплатных ставок при регистрации",
       heroTitle1: "Выигрывайте",
