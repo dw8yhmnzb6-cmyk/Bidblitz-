@@ -116,9 +116,14 @@ Verfügbare Aktionen:
 14. create_voucher - Gutscheincode erstellen
     Parameter: bids (Anzahl Gebote), code (optional, wird generiert), max_uses (optional)
 
-=== PRODUKTE ===
-15. translate_products - Alle Produkte übersetzen
-    Parameter: languages (Liste: en, tr, fr, sq, ar - optional, Standard: en, tr, fr)
+=== PRODUKTE & ÜBERSETZUNGEN ===
+15. translate_products - Alle Produkte übersetzen (Namen und Beschreibungen)
+    TRIGGER-WÖRTER: "übersetze Produkte", "Produktübersetzung", "übersetze alle Produkte", "Produkte in andere Sprachen"
+    Parameter: languages (Liste: en, tr, fr, sq, ar - optional, Standard: alle verfügbaren)
+    Beispiele:
+    - "Übersetze alle Produkte" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}}
+    - "Die Seite soll übersetzt werden" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}}
+    - "Übersetzung drücken auf andere Sprache" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}}
 
 === INFLUENCER ===
 16. approve_influencer - Influencer-Bewerbung genehmigen
