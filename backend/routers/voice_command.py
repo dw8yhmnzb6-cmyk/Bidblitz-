@@ -1063,8 +1063,25 @@ async def analyze_image_command(
     if len(content) > max_size:
         raise HTTPException(status_code=400, detail=f"Datei zu groß (max {20 if is_video else 10}MB)")
     
-    # Convert to base64
+    # Determine MIME type
+    ext = image.filename.split(".")[-1].lower() if image.filename else "png"
+    mime_types = {
+        "png": "image/png",
+        "jpg": "image/jpeg",
+        "jpeg": "image/jpeg",
+        "gif": "image/gif",
+        "webp": "image/webp",
+        "mp4": "video/mp4",
+        "mov": "video/quicktime",
+        "webm": "video/webm",
+        "avi": "video/x-msvideo",
+        "mkv": "video/x-matroska"
+    }
+    mime_type = mime_types.get(ext, "image/png")
+    
+    # Convert to base64 with data URL format for GPT-4o
     base64_content = base64.b64encode(content).decode('utf-8')
+    data_url = f"data:{mime_type};base64,{base64_content}"
     
     try:
         # Create chat with GPT-4o for vision
@@ -1084,13 +1101,14 @@ Antworte auf Deutsch und sei präzise und hilfreich."""
             system_message=system_prompt
         ).with_model("openai", "gpt-4o")
         
-        # Create content object for the message
+        # Create content object with proper MIME type
         media_content = ImageContent(
-            image_base64=base64_content
+            image_base64=base64_content,
+            media_type=mime_type
         )
         
         # Create message with media attachment
-        media_type = "Video" if is_video else "Bild"
+        media_type_text = "Video" if is_video else "Bild"
         user_prompt = f"""Benutzeranfrage: {text}
 
 Bitte analysiere das hochgeladene {media_type} und beantworte die Frage des Administrators."""
