@@ -257,10 +257,10 @@ export default function Profile() {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAvatarUrl(null);
-      toast.success('Profilbild erfolgreich gelöscht');
+      toast.success(texts.photoRemoved);
       if (refreshUser) await refreshUser();
     } catch (error) {
-      toast.error('Fehler beim Löschen');
+      toast.error(error.response?.data?.detail || 'Error');
     } finally {
       setUploadingAvatar(false);
     }
@@ -284,9 +284,9 @@ export default function Profile() {
         headers: { Authorization: `Bearer ${token}` }
       });
       updateUser(response.data.user);
-      toast.success('Profil erfolgreich aktualisiert');
+      toast.success(texts.profileUpdated);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Aktualisieren');
+      toast.error(error.response?.data?.detail || 'Error');
     } finally {
       setSaving(false);
     }
@@ -296,12 +296,17 @@ export default function Profile() {
     e.preventDefault();
     
     if (newPassword !== confirmPassword) {
-      toast.error('Passwörter stimmen nicht überein');
+      toast.error(texts.passwordMismatch);
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('Neues Passwort muss mindestens 6 Zeichen lang sein');
+      const minLengthMsg = language === 'en' ? 'Password must be at least 6 characters' : 
+                          language === 'sq' ? 'Fjalëkalimi duhet të ketë së paku 6 karaktere' :
+                          language === 'tr' ? 'Şifre en az 6 karakter olmalıdır' :
+                          language === 'fr' ? 'Le mot de passe doit contenir au moins 6 caractères' :
+                          'Neues Passwort muss mindestens 6 Zeichen lang sein';
+      toast.error(minLengthMsg);
       return;
     }
 
@@ -313,12 +318,12 @@ export default function Profile() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Passwort erfolgreich geändert');
+      toast.success(texts.passwordChanged);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Ändern des Passworts');
+      toast.error(error.response?.data?.detail || 'Error');
     } finally {
       setChangingPassword(false);
     }
@@ -337,7 +342,7 @@ export default function Profile() {
       <div className="max-w-4xl mx-auto">
         <Link to="/dashboard" className="inline-flex items-center gap-2 text-[#94A3B8] hover:text-white mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />
-          Zurück zum Dashboard
+          {texts.back}
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -373,7 +378,7 @@ export default function Profile() {
                   onClick={handleAvatarClick}
                   disabled={uploadingAvatar}
                   className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-[#181824] border-2 border-[#FFD700] flex items-center justify-center hover:bg-[#FFD700]/20 transition-colors disabled:opacity-50"
-                  title="Profilbild ändern"
+                  title={texts.changePhoto}
                 >
                   {uploadingAvatar ? (
                     <Loader2 className="w-5 h-5 text-[#FFD700] animate-spin" />
@@ -391,7 +396,7 @@ export default function Profile() {
                   className="inline-flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
                 >
                   <Trash2 className="w-3 h-3" />
-                  Bild entfernen
+                  {texts.removePhoto}
                 </button>
               )}
 
@@ -407,21 +412,21 @@ export default function Profile() {
                     <Zap className="w-5 h-5" />
                     <span className="text-2xl font-bold">{user.bids_balance || 0}</span>
                   </div>
-                  <p className="text-[#94A3B8] text-xs">Gebote</p>
+                  <p className="text-[#94A3B8] text-xs">{language === 'en' ? 'Bids' : language === 'sq' ? 'Oferta' : language === 'tr' ? 'Teklifler' : language === 'fr' ? 'Enchères' : 'Gebote'}</p>
                 </div>
                 <div className="text-center">
                   <div className="flex items-center justify-center gap-1 text-[#10B981]">
                     <Trophy className="w-5 h-5" />
                     <span className="text-2xl font-bold">{user.won_auctions?.length || 0}</span>
                   </div>
-                  <p className="text-[#94A3B8] text-xs">Gewonnen</p>
+                  <p className="text-[#94A3B8] text-xs">{texts.auctionsWon}</p>
                 </div>
               </div>
 
               {/* Member since */}
               <div className="flex items-center justify-center gap-2 text-[#94A3B8] text-sm pt-4 border-t border-white/10">
                 <Calendar className="w-4 h-4" />
-                <span>Mitglied seit {new Date(user.created_at || Date.now()).toLocaleDateString('de-DE', { month: 'long', year: 'numeric' })}</span>
+                <span>{texts.memberSince} {new Date(user.created_at || Date.now()).toLocaleDateString(language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : language === 'tr' ? 'tr-TR' : 'en-US', { month: 'long', year: 'numeric' })}</span>
               </div>
             </div>
 
@@ -429,11 +434,11 @@ export default function Profile() {
             <div className="glass-card rounded-2xl p-4 mt-4 space-y-2">
               <Link to="/bid-history" className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-[#94A3B8] hover:text-white">
                 <Zap className="w-5 h-5" />
-                <span>Gebots-Historie</span>
+                <span>{language === 'en' ? 'Bid History' : language === 'sq' ? 'Historiku i Ofertave' : language === 'tr' ? 'Teklif Geçmişi' : language === 'fr' ? 'Historique des Enchères' : 'Gebots-Historie'}</span>
               </Link>
               <Link to="/purchases" className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-[#94A3B8] hover:text-white">
                 <Trophy className="w-5 h-5" />
-                <span>Meine Käufe</span>
+                <span>{language === 'en' ? 'My Purchases' : language === 'sq' ? 'Blerjet e Mia' : language === 'tr' ? 'Satın Alımlarım' : language === 'fr' ? 'Mes Achats' : 'Meine Käufe'}</span>
               </Link>
             </div>
           </div>
@@ -447,15 +452,15 @@ export default function Profile() {
                   <User className="w-5 h-5 text-[#FFD700]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Persönliche Daten</h3>
-                  <p className="text-[#94A3B8] text-sm">Aktualisieren Sie Ihre Kontoinformationen</p>
+                  <h3 className="text-lg font-bold text-white">{texts.personalInfo}</h3>
+                  <p className="text-[#94A3B8] text-sm">{language === 'en' ? 'Update your account information' : language === 'sq' ? 'Përditësoni informacionin e llogarisë' : language === 'tr' ? 'Hesap bilgilerinizi güncelleyin' : language === 'fr' ? 'Mettez à jour vos informations' : 'Aktualisieren Sie Ihre Kontoinformationen'}</p>
                 </div>
               </div>
 
               <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-white">Name</Label>
+                    <Label className="text-white">{texts.name}</Label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                       <Input
@@ -467,7 +472,7 @@ export default function Profile() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">E-Mail</Label>
+                    <Label className="text-white">{texts.email}</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                       <Input
@@ -491,7 +496,7 @@ export default function Profile() {
                   ) : (
                     <Save className="w-5 h-5 mr-2" />
                   )}
-                  Änderungen speichern
+                  {texts.saveChanges}
                 </Button>
               </form>
             </div>
@@ -503,14 +508,14 @@ export default function Profile() {
                   <Shield className="w-5 h-5 text-[#7C3AED]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Passwort ändern</h3>
-                  <p className="text-[#94A3B8] text-sm">Sichern Sie Ihr Konto mit einem starken Passwort</p>
+                  <h3 className="text-lg font-bold text-white">{texts.changePassword}</h3>
+                  <p className="text-[#94A3B8] text-sm">{language === 'en' ? 'Secure your account with a strong password' : language === 'sq' ? 'Siguroni llogarinë me një fjalëkalim të fortë' : language === 'tr' ? 'Hesabınızı güçlü bir şifre ile güvence altına alın' : language === 'fr' ? 'Sécurisez votre compte avec un mot de passe fort' : 'Sichern Sie Ihr Konto mit einem starken Passwort'}</p>
                 </div>
               </div>
 
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="text-white">Aktuelles Passwort</Label>
+                  <Label className="text-white">{texts.currentPassword}</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                     <Input
@@ -525,28 +530,28 @@ export default function Profile() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label className="text-white">Neues Passwort</Label>
+                    <Label className="text-white">{texts.newPassword}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                       <Input
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Mindestens 6 Zeichen"
+                        placeholder={language === 'en' ? 'At least 6 characters' : language === 'sq' ? 'Së paku 6 karaktere' : language === 'tr' ? 'En az 6 karakter' : language === 'fr' ? 'Au moins 6 caractères' : 'Mindestens 6 Zeichen'}
                         className="bg-[#181824] border-white/10 text-white pl-10 h-12"
                         data-testid="new-password-input"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-white">Passwort bestätigen</Label>
+                    <Label className="text-white">{texts.confirmPassword}</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                       <Input
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Wiederholen"
+                        placeholder={language === 'en' ? 'Repeat' : language === 'sq' ? 'Përsërit' : language === 'tr' ? 'Tekrarla' : language === 'fr' ? 'Répéter' : 'Wiederholen'}
                         className="bg-[#181824] border-white/10 text-white pl-10 h-12"
                         data-testid="confirm-password-input"
                       />
@@ -564,7 +569,7 @@ export default function Profile() {
                   ) : (
                     <Lock className="w-5 h-5 mr-2" />
                   )}
-                  Passwort ändern
+                  {texts.updatePassword}
                 </Button>
               </form>
             </div>
