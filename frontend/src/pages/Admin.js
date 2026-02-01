@@ -800,13 +800,14 @@ export default function Admin() {
     e.preventDefault();
     try {
       await axios.post(`${API}/admin/vouchers`, {
-        code: newVoucher.code,
-        bids: parseInt(newVoucher.bids),
-        max_uses: parseInt(newVoucher.max_uses),
-        expires_at: newVoucher.expires_at || null
+        code: newVoucher.code || null,
+        type: newVoucher.type || 'bids',
+        value: parseInt(newVoucher.value || newVoucher.bids || 10),
+        max_uses: parseInt(newVoucher.max_uses) || 1,
+        expires_days: 30
       }, { headers: { Authorization: `Bearer ${token}` } });
       toast.success('Gutschein erstellt');
-      setNewVoucher({ code: '', bids: '10', max_uses: '1', expires_at: '' });
+      setNewVoucher({ code: '', type: 'bids', value: '10', max_uses: '1' });
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Fehler');
