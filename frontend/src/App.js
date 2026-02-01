@@ -82,6 +82,9 @@ function AppContent() {
       {/* Noise overlay */}
       <div className="noise-overlay" />
       
+      {/* Happy Hour Banner */}
+      <HappyHourBanner />
+      
       <Navbar />
       
       <main className="flex-grow">
