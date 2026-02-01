@@ -118,12 +118,20 @@ Verfügbare Aktionen:
 
 === PRODUKTE & ÜBERSETZUNGEN ===
 15. translate_products - Alle Produkte übersetzen (Namen und Beschreibungen)
-    TRIGGER-WÖRTER: "übersetze Produkte", "Produktübersetzung", "übersetze alle Produkte", "Produkte in andere Sprachen"
+    TRIGGER-WÖRTER: "übersetze Produkte", "Produktübersetzung", "übersetze alle Produkte", "Produkte in andere Sprachen", "Die Seite soll übersetzt werden"
     Parameter: languages (Liste: en, tr, fr, sq, ar - optional, Standard: alle verfügbaren)
     Beispiele:
     - "Übersetze alle Produkte" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}}
     - "Die Seite soll übersetzt werden" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}}
-    - "Übersetzung drücken auf andere Sprache" -> {"action": "translate_products", "parameters": {"languages": ["en", "tr", "fr", "sq", "ar"]}}
+
+16. check_translations - Übersetzungen überprüfen und Status anzeigen
+    TRIGGER-WÖRTER: "Übersetzung überprüfen", "Übersetzungen prüfen", "Übersetzung funktioniert nicht", "Übersetzungsstatus", "Seitenübersetzung prüfen", "check translation"
+    Parameter: keine
+    Beispiele:
+    - "Überprüfe die Übersetzungen" -> {"action": "check_translations", "parameters": {}}
+    - "Übersetzung überprüfen" -> {"action": "check_translations", "parameters": {}}
+    - "Die Übersetzung funktioniert nicht so richtig" -> {"action": "check_translations", "parameters": {}}
+    - "Du musst die Übersetzung überprüfen" -> {"action": "check_translations", "parameters": {}}
 
 === INFLUENCER ===
 16. approve_influencer - Influencer-Bewerbung genehmigen
