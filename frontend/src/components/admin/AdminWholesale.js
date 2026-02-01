@@ -47,19 +47,19 @@ export function AdminWholesale({
   const handleRejectWholesale = async (id) => {
     if (!window.confirm('Bewerbung wirklich ablehnen?')) return;
     try {
-      await axios.post(`${API}/wholesale/admin/${id}/reject`, {}, {
+      await axios.post(`${API}/admin/wholesale/reject/${id}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Bewerbung abgelehnt');
       setWholesaleApplications(wholesaleApplications.filter(a => a.id !== id));
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(error.response?.data?.detail || 'Fehler beim Ablehnen');
     }
   };
 
   const handleUpdateWholesale = async (id) => {
     try {
-      await axios.put(`${API}/wholesale/admin/${id}`, wholesaleForm, {
+      await axios.put(`${API}/admin/wholesale/${id}`, wholesaleForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Großkunde aktualisiert');
@@ -67,20 +67,20 @@ export function AdminWholesale({
       setSelectedWholesale(null);
       fetchData();
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(error.response?.data?.detail || 'Fehler beim Aktualisieren');
     }
   };
 
   const handleDeleteWholesale = async (id) => {
     if (!window.confirm('Großkunde wirklich löschen?')) return;
     try {
-      await axios.delete(`${API}/wholesale/admin/${id}`, {
+      await axios.delete(`${API}/admin/wholesale/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Großkunde gelöscht');
       setWholesaleCustomers(wholesaleCustomers.filter(c => c.id !== id));
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(error.response?.data?.detail || 'Fehler beim Löschen');
     }
   };
 
