@@ -467,6 +467,16 @@ async def request_payout(data: PayoutRequest):
     
     logger.info(f"Payout request from {influencer.get('name')}: €{data.amount}")
     
+    # Send admin notification email
+    await send_admin_payout_notification(
+        influencer_name=influencer.get("name"),
+        influencer_code=data.code,
+        payout_amount=data.amount,
+        payment_method=data.payment_method,
+        payment_details=data.payment_details,
+        request_type="influencer"
+    )
+    
     return {
         "success": True,
         "message": f"Auszahlungsanfrage über €{data.amount:.2f} eingereicht",
