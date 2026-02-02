@@ -2716,7 +2716,7 @@ export default function Admin() {
               </div>
 
               {/* Last Winner Info */}
-              {jackpotData?.last_winner && (
+              {jackpotData?.last_winner && jackpotData?.last_won_amount && (
                 <div className="glass-card rounded-xl p-6 border border-[#FFD700]/30">
                   <h3 className="text-white font-bold mb-2">Letzter Gewinner</h3>
                   <div className="flex items-center gap-4">
@@ -2724,7 +2724,7 @@ export default function Admin() {
                     <div>
                       <p className="text-xl font-bold text-white">{jackpotData.last_winner}</p>
                       <p className="text-[#94A3B8]">
-                        Gewonnen: {jackpotData.last_won_amount} Gebote (€{(jackpotData.last_won_amount * 0.50).toFixed(2)})
+                        Gewonnen: {jackpotData.last_won_amount || 0} Gebote (€{((jackpotData.last_won_amount || 0) * 0.50).toFixed(2)})
                       </p>
                     </div>
                   </div>
