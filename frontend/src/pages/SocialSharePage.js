@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getFeatureTranslation } from '../i18n/featureTranslations';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
@@ -19,45 +20,8 @@ const SocialSharePage = () => {
   const [loading, setLoading] = useState(true);
   const [sharing, setSharing] = useState(null);
 
-  const texts = {
-    de: {
-      title: 'Teilen & Verdienen',
-      subtitle: 'Teile deine Gewinne auf Social Media und erhalte Bonus-Gebote!',
-      bonusPerShare: 'Bonus pro Share',
-      bids: 'Gebote',
-      shareNow: 'Jetzt teilen',
-      alreadyShared: 'Bereits geteilt',
-      noWins: 'Noch keine Gewinne',
-      noWinsDesc: 'Gewinne deine erste Auktion um sie zu teilen!',
-      totalEarned: 'Verdiente Bonus-Gebote',
-      totalShares: 'Geteilte Gewinne',
-      shareOn: 'Teilen auf',
-      savings: 'Ersparnis',
-      wonFor: 'Gewonnen für',
-      shareableWins: 'Teilbare Gewinne',
-      shareHistory: 'Share-Verlauf',
-      platform: 'Plattform',
-      earnedBids: 'Verdient'
-    },
-    en: {
-      title: 'Share & Earn',
-      subtitle: 'Share your wins on social media and earn bonus bids!',
-      bonusPerShare: 'Bonus per Share',
-      bids: 'bids',
-      shareNow: 'Share Now',
-      alreadyShared: 'Already Shared',
-      noWins: 'No wins yet',
-      noWinsDesc: 'Win your first auction to share it!',
-      totalEarned: 'Total Bonus Earned',
-      totalShares: 'Wins Shared',
-      shareOn: 'Share on',
-      savings: 'Savings',
-      wonFor: 'Won for',
-      shareableWins: 'Shareable Wins',
-      shareHistory: 'Share History',
-      platform: 'Platform',
-      earnedBids: 'Earned'
-    }
+  // Use centralized translations
+  const t = getFeatureTranslation('socialShare', language);
   };
   const t = texts[language] || texts.de;
 
