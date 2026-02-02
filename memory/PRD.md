@@ -546,3 +546,28 @@ February 1, 2026 (Session 4)
   - `auctionPage` Sektion erweitert für FR und SQ
   - Alle Filter und Auktionstypen übersetzt
   - Datei: `/app/frontend/src/i18n/translations.js`
+
+
+## February 2, 2026 Changelog - Battle Pass Implementation
+
+- 2026-02-02: **NEW FEATURE** Battle Pass System - Vollständig implementiert
+  - Backend Router: `/app/backend/routers/battle_pass.py`
+  - Frontend Page: `/app/frontend/src/pages/BattlePassPage.js`
+  - 50-Tier Progressions-System mit XP (100 XP pro Tier)
+  - Free Track: Belohnungen alle 5 Tier (Gebote, XP-Boosts)
+  - Premium Track: Belohnungen jeden Tier (Gebote, Glücksrad-Spins, VIP-Tage)
+  - Premium €9.99 / Premium+ €19.99 (mit 25 Tier-Skips)
+  - Stripe-Integration für Käufe
+  - Tier 50 MEGA Belohnung: 50 Gebote + 14 Tage VIP
+  - Saisonen-System: 30 Tage pro Saison, automatische Rotation
+  - 6 Themen: Frühlings-Fieber, Sommer-Sensation, Herbst-Ernte, Winter-Wunder, Neon-Nächte, Cyber-Blitz
+  - Routes: /battle-pass, /battlepass, /pass
+  - Navbar-Link integriert (data-testid="nav-battle-pass")
+  - API: GET /api/battle-pass/current, POST /api/battle-pass/purchase, POST /api/battle-pass/claim/{tier}
+  - Test-Report: /app/test_reports/iteration_23.json - 100% Erfolgsrate
+
+- 2026-02-02: **VERIFIED** Lucky Wheel Preis-Gutschrift funktioniert korrekt
+  - Admin-Test: 883.5 → 885.5 Gebote (+2 nach Spin)
+  - API: POST /api/wheel/spin gibt Preis zurück UND aktualisiert bids_balance
+  - 24h Cooldown funktioniert
+  - 8 Preis-Typen mit gewichteten Wahrscheinlichkeiten
