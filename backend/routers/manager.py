@@ -436,10 +436,10 @@ async def get_manager_dashboard(manager_id: str):
 async def approve_influencer(manager_id: str, influencer_id: str):
     """Approve/activate an influencer (Manager only)"""
     manager = await get_current_manager(manager_id)
-    cities = manager.get("cities", [])
+    cities = manager.get("cities", manager.get("managed_cities", []))
     
     # Check if influencer is in manager's cities
-    influencer = await db.influencers.find_one({"id": influencer_id})
+    influencer = await db.influencers.find_one({"id": influencer_id}, {"_id": 0})
     if not influencer:
         raise HTTPException(status_code=404, detail="Influencer nicht gefunden")
     
@@ -451,21 +451,30 @@ async def approve_influencer(manager_id: str, influencer_id: str):
         {"$set": {
             "is_active": True,
             "is_approved": True,
+            "manager_id": manager_id,
             "approved_by": manager_id,
             "approved_at": datetime.now(timezone.utc).isoformat()
         }}
     )
     
-    logger.info(f"Manager {manager['name']} approved influencer {influencer['name']}")
+    # Log activity
+    await log_manager_activity(
+        manager_id, 
+        "influencer_approved",
+        f"Influencer '{influencer.get('name', influencer.get('code'))}' freigeschaltet",
+        {"influencer_id": influencer_id, "influencer_name": influencer.get("name"), "influencer_code": influencer.get("code")}
+    )
+    
+    logger.info(f"Manager {manager['name']} approved influencer {influencer.get('name')}")
     return {"success": True, "message": "Influencer freigeschaltet"}
 
 @router.post("/{manager_id}/influencer/block/{influencer_id}")
 async def block_influencer(manager_id: str, influencer_id: str):
     """Block/deactivate an influencer (Manager only)"""
     manager = await get_current_manager(manager_id)
-    cities = manager.get("cities", [])
+    cities = manager.get("cities", manager.get("managed_cities", []))
     
-    influencer = await db.influencers.find_one({"id": influencer_id})
+    influencer = await db.influencers.find_one({"id": influencer_id}, {"_id": 0})
     if not influencer:
         raise HTTPException(status_code=404, detail="Influencer nicht gefunden")
     
