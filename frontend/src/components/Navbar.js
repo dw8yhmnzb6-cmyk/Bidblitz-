@@ -167,6 +167,13 @@ export const Navbar = () => {
                 {language === 'de' ? 'Freunde werben' : 'Refer Friends'}
               </Link>
             )}
+            <Link 
+              to="/gallery" 
+              className="text-[#94A3B8] hover:text-white transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-gallery"
+            >
+              {language === 'de' ? 'Galerie' : 'Gallery'}
+            </Link>
           </div>
 
           {/* Right side */}
