@@ -77,12 +77,6 @@ export default function ReferralPage() {
 
   const t = texts[language] || texts.de;
 
-  useEffect(() => {
-    if (token) {
-      fetchReferralData();
-    }
-  }, [token]);
-
   const fetchReferralData = async () => {
     try {
       const res = await fetch(`${API_URL}/api/referral/my-stats`, {
@@ -101,6 +95,13 @@ export default function ReferralPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (token) {
+      fetchReferralData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   const copyCode = () => {
     navigator.clipboard.writeText(referralCode);
