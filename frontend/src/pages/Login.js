@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -17,12 +17,57 @@ export default function Login() {
   const texts = usePageTranslations(language);
   const { refreshUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [requires2FA, setRequires2FA] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  // Handle Google OAuth callback
+  useEffect(() => {
+    const hash = location.hash;
+    if (hash && hash.includes('session_id=')) {
+      const sessionId = hash.split('session_id=')[1]?.split('&')[0];
+      if (sessionId) {
+        handleGoogleCallback(sessionId);
+      }
+    }
+  }, [location]);
+
+  const handleGoogleCallback = async (sessionId) => {
+    setGoogleLoading(true);
+    try {
+      const response = await axios.post(`${API}/auth/google`, { session_id: sessionId });
+      const { token, user, is_new_user } = response.data;
+      
+      localStorage.setItem('token', token);
+      await refreshUser();
+      
+      if (is_new_user) {
+        toast.success('Willkommen bei BidBlitz! 10 Gratis-Gebote wurden gutgeschrieben.');
+      } else {
+        toast.success(texts.loginSuccess);
+      }
+      
+      // Clear hash and redirect
+      window.history.replaceState(null, '', '/login');
+      window.location.href = '/dashboard';
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Google-Login fehlgeschlagen');
+      window.history.replaceState(null, '', '/login');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = () => {
+    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    const redirectUrl = window.location.origin + '/login';
+    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+  };
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
