@@ -416,6 +416,16 @@ February 1, 2026 (Session 4)
 | **Power Hour** | ✅ Fertig | power_hour.py | DailyRewardsPage.js |
 | **Schnäppchen-Alarm** | ✅ Fertig | price_alerts.py | - (API ready) |
 | **Social Share Bonus** | ✅ Fertig | social_share.py | - (API ready) |
+| **Battle Pass System** | ✅ Fertig | battle_pass.py | BattlePassPage.js |
+
+### Battle Pass Details (neu - Feb 2, 2026)
+- **50 Tier-System**: Mit Free und Premium Reward Tracks
+- **XP-Progression**: 100 XP pro Tier, XP-Boost möglich
+- **Preise**: Premium €9.99, Premium+ €19.99 (inkl. 25 Tier-Skips)
+- **Belohnungen Free Track**: Alle 5 Tier: 2-10 Gebote, Doppel-XP Boosts
+- **Belohnungen Premium Track**: Jeder Tier: 1-15 Gebote, Glücksrad-Spins, VIP-Tage
+- **Mega-Belohnung (Tier 50)**: 50 Gebote + 14 Tage VIP
+- **Saisonen**: 30 Tage pro Saison mit Themen
 
 ### Level-System Details (neu)
 - **5 Level**: Bronze → Silber (500 XP) → Gold (2000 XP) → Platin (5000 XP) → Diamant (15000 XP)
