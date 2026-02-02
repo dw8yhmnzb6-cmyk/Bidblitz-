@@ -13,6 +13,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function ManagerDashboard() {
   const { language } = useLanguage();
+  const { user, isManager, logout: authLogout } = useAuth();
   const [manager, setManager] = useState(null);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(false);
