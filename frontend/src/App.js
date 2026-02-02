@@ -206,6 +206,10 @@ function AppContent() {
               <BeginnerAuctions />
             </ProtectedRoute>
           } />
+          {/* Referral System */}
+          <Route path="/referral" element={<ReferralDashboard />} />
+          <Route path="/freunde-werben" element={<ReferralDashboard />} />
+          <Route path="/empfehlen" element={<ReferralDashboard />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
