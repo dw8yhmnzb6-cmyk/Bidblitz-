@@ -84,7 +84,7 @@ export default function ManagerDashboard() {
       pendingPayout: 'Pending Payout',
       requestPayout: 'Request Payout',
       influencers: 'Your Influencers',
-      noInfluencers: 'No influencers in your cities yet',
+      noInfluencers: 'No influencers assigned yet',
       approve: 'Approve',
       block: 'Block',
       edit: 'Edit',
