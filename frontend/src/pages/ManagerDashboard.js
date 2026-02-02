@@ -4,8 +4,9 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import { Users, MapPin, Euro, TrendingUp, CheckCircle, XCircle, LogOut, Building2 } from 'lucide-react';
+import { Users, MapPin, Euro, TrendingUp, CheckCircle, XCircle, LogOut, Building2, Edit, X, Save } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -15,6 +16,12 @@ export default function ManagerDashboard() {
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedInfluencer, setSelectedInfluencer] = useState(null);
+  const [editForm, setEditForm] = useState({
+    city: '',
+    commission_percent: 10
+  });
 
   const texts = {
     de: {
@@ -38,6 +45,7 @@ export default function ManagerDashboard() {
       noInfluencers: 'Noch keine Influencer in Ihren Städten',
       approve: 'Freischalten',
       block: 'Sperren',
+      edit: 'Bearbeiten',
       city: 'Stadt',
       revenue: 'Umsatz',
       commission: 'Provision',
@@ -50,7 +58,11 @@ export default function ManagerDashboard() {
       approved: 'Influencer freigeschaltet',
       blockedMsg: 'Influencer gesperrt',
       payoutRequested: 'Auszahlung angefordert',
-      minPayout: 'Mindestens €10 erforderlich'
+      minPayout: 'Mindestens €10 erforderlich',
+      editInfluencer: 'Influencer bearbeiten',
+      save: 'Speichern',
+      cancel: 'Abbrechen',
+      saved: 'Änderungen gespeichert'
     },
     en: {
       title: 'Manager Dashboard',
@@ -73,6 +85,7 @@ export default function ManagerDashboard() {
       noInfluencers: 'No influencers in your cities yet',
       approve: 'Approve',
       block: 'Block',
+      edit: 'Edit',
       city: 'City',
       revenue: 'Revenue',
       commission: 'Commission',
@@ -85,7 +98,11 @@ export default function ManagerDashboard() {
       approved: 'Influencer approved',
       blockedMsg: 'Influencer blocked',
       payoutRequested: 'Payout requested',
-      minPayout: 'Minimum €10 required'
+      minPayout: 'Minimum €10 required',
+      editInfluencer: 'Edit Influencer',
+      save: 'Save',
+      cancel: 'Cancel',
+      saved: 'Changes saved'
     }
   };
 
@@ -163,6 +180,37 @@ export default function ManagerDashboard() {
       if (res.ok) {
         toast.success(t.blockedMsg);
         fetchDashboard(manager.id);
+      }
+    } catch (err) {
+      toast.error('Error');
+    }
+  };
+
+  const handleEditInfluencer = (influencer) => {
+    setSelectedInfluencer(influencer);
+    setEditForm({
+      city: influencer.city || '',
+      commission_percent: influencer.commission_percent || 10
+    });
+    setShowEditModal(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedInfluencer || !manager) return;
+    try {
+      const res = await fetch(`${API_URL}/api/manager/${manager.id}/influencer/${selectedInfluencer.id}/update`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editForm)
+      });
+      if (res.ok) {
+        toast.success(t.saved);
+        setShowEditModal(false);
+        setSelectedInfluencer(null);
+        fetchDashboard(manager.id);
+      } else {
+        const data = await res.json();
+        toast.error(data.detail || 'Error');
       }
     } catch (err) {
       toast.error('Error');
@@ -361,7 +409,11 @@ export default function ManagerDashboard() {
                         {dashboard.influencers.map((inf) => (
                           <tr key={inf.id} className="border-b border-white/5 hover:bg-white/5">
                             <td className="py-3 px-2 text-white font-medium">{inf.name}</td>
-                            <td className="py-3 px-2 text-[#7C3AED]">{inf.code}</td>
+                            <td className="py-3 px-2">
+                              <code className="bg-[#7C3AED]/20 text-[#7C3AED] px-2 py-0.5 rounded text-sm">
+                                {inf.code}
+                              </code>
+                            </td>
                             <td className="py-3 px-2 text-[#94A3B8]">{inf.city || '-'}</td>
                             <td className="py-3 px-2 text-white text-right">{inf.total_customers}</td>
                             <td className="py-3 px-2 text-white text-right">€{inf.total_revenue}</td>
@@ -374,27 +426,39 @@ export default function ManagerDashboard() {
                               )}
                             </td>
                             <td className="py-3 px-2 text-right">
-                              {inf.is_active ? (
+                              <div className="flex items-center justify-end gap-1">
                                 <Button 
                                   size="sm" 
-                                  variant="outline"
-                                  onClick={() => handleBlock(inf.id)}
-                                  className="border-red-500/30 text-red-500 hover:bg-red-500/10"
+                                  variant="ghost"
+                                  onClick={() => handleEditInfluencer(inf)}
+                                  className="text-[#7C3AED] hover:bg-[#7C3AED]/10"
+                                  title={t.edit}
+                                  data-testid={`edit-influencer-${inf.id}`}
                                 >
-                                  <XCircle className="w-3 h-3 mr-1" />
-                                  {t.block}
+                                  <Edit className="w-3 h-3" />
                                 </Button>
-                              ) : (
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => handleApprove(inf.id)}
-                                  className="border-[#10B981]/30 text-[#10B981] hover:bg-[#10B981]/10"
-                                >
-                                  <CheckCircle className="w-3 h-3 mr-1" />
-                                  {t.approve}
-                                </Button>
-                              )}
+                                {inf.is_active ? (
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost"
+                                    onClick={() => handleBlock(inf.id)}
+                                    className="text-red-500 hover:bg-red-500/10"
+                                    title={t.block}
+                                  >
+                                    <XCircle className="w-3 h-3" />
+                                  </Button>
+                                ) : (
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost"
+                                    onClick={() => handleApprove(inf.id)}
+                                    className="text-[#10B981] hover:bg-[#10B981]/10"
+                                    title={t.approve}
+                                  >
+                                    <CheckCircle className="w-3 h-3" />
+                                  </Button>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -405,6 +469,78 @@ export default function ManagerDashboard() {
               </CardContent>
             </Card>
           </>
+        )}
+
+        {/* Edit Influencer Modal */}
+        {showEditModal && selectedInfluencer && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div className="bg-[#1A1A2E] rounded-xl p-6 max-w-md w-full border border-white/10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <Edit className="w-5 h-5 text-[#7C3AED]" />
+                  {t.editInfluencer}
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedInfluencer(null);
+                  }}
+                  className="text-[#94A3B8] hover:text-white"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              {/* Influencer Info */}
+              <div className="mb-4 p-3 bg-[#0D0D14] rounded-lg">
+                <p className="text-white font-medium">{selectedInfluencer.name}</p>
+                <code className="bg-[#7C3AED]/20 text-[#7C3AED] px-2 py-0.5 rounded text-sm">
+                  {selectedInfluencer.code}
+                </code>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-white flex items-center gap-1 mb-2">
+                    <MapPin className="w-3 h-3" /> {t.city}
+                  </Label>
+                  <select
+                    value={editForm.city}
+                    onChange={(e) => setEditForm({...editForm, city: e.target.value})}
+                    className="w-full bg-[#0D0D14] border border-white/10 text-white rounded-lg px-3 py-2"
+                  >
+                    <option value="">-- Stadt wählen --</option>
+                    {manager.cities.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                  <p className="text-[#94A3B8] text-xs mt-1">
+                    Sie können nur Städte aus Ihrem Bereich zuweisen
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 mt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedInfluencer(null);
+                  }}
+                  className="border-white/20 text-white"
+                >
+                  {t.cancel}
+                </Button>
+                <Button
+                  onClick={handleSaveEdit}
+                  className="bg-[#7C3AED] hover:bg-[#7C3AED]/80"
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  {t.save}
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
