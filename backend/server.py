@@ -61,7 +61,7 @@ from routers.price_alerts import router as price_alerts_router
 from routers.social_share import router as social_share_router
 from routers.battle_pass import router as battle_pass_router
 from routers.bundles import bundles_router
-from routers.flash_sales_v2 import flash_sales_router
+from routers.flash_sales_v2 import flash_sales_router as flash_sales_v2_router
 from routers.vip_subscription import vip_subscription_router
 from routers.last_chance import last_chance_router
 from routers.reviews_v2 import reviews_router as reviews_v2_router
@@ -170,7 +170,7 @@ app.include_router(price_alerts_router, prefix="/api")
 app.include_router(social_share_router, prefix="/api")
 app.include_router(battle_pass_router, prefix="/api")
 app.include_router(bundles_router, prefix="/api")
-app.include_router(flash_sales_router, prefix="/api")
+app.include_router(flash_sales_v2_router, prefix="/api")
 app.include_router(vip_subscription_router, prefix="/api")
 app.include_router(last_chance_router, prefix="/api")
 app.include_router(reviews_v2_router, prefix="/api")
