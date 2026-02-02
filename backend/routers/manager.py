@@ -209,6 +209,44 @@ async def get_manager_influencers(manager_id: str, admin: dict = Depends(get_adm
         "total_count": len(influencers)
     }
 
+@router.get("/admin/{manager_id}/activities")
+async def get_manager_activities(manager_id: str, limit: int = 50, admin: dict = Depends(get_admin_user)):
+    """Get activity log for a specific manager (Admin only)"""
+    manager = await db.managers.find_one({"id": manager_id}, {"_id": 0})
+    if not manager:
+        raise HTTPException(status_code=404, detail="Manager nicht gefunden")
+    
+    activities = await db.manager_activities.find(
+        {"manager_id": manager_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    return {
+        "manager_id": manager_id,
+        "manager_name": manager.get("name"),
+        "activities": activities,
+        "total_count": len(activities)
+    }
+
+@router.get("/admin/all-activities")
+async def get_all_manager_activities(limit: int = 100, admin: dict = Depends(get_admin_user)):
+    """Get all manager activities (Admin only)"""
+    activities = await db.manager_activities.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Enrich with manager names
+    manager_cache = {}
+    for activity in activities:
+        mgr_id = activity.get("manager_id")
+        if mgr_id not in manager_cache:
+            mgr = await db.managers.find_one({"id": mgr_id}, {"_id": 0, "name": 1})
+            manager_cache[mgr_id] = mgr.get("name") if mgr else "Unknown"
+        activity["manager_name"] = manager_cache[mgr_id]
+    
+    return {"activities": activities, "total_count": len(activities)}
+
 @router.get("/admin/cities")
 async def get_all_cities(admin: dict = Depends(get_admin_user)):
     """Get list of all cities with managers and influencers (Admin only)"""
