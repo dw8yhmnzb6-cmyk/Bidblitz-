@@ -5,6 +5,14 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Completion Status (February 2, 2026)
 
+### ✅ Admin Panel UI Bugs Fixed (February 2, 2026)
+**Bug Fixes Verified:**
+1. ✅ **Manager Details Modal** - Responsive auf Mobilgeräten (2x2 Grid)
+2. ✅ **Jackpot Panel** - Benutzer-Dropdown funktioniert (7 Benutzer laden), Betrag-Eingabe funktioniert
+3. ✅ **Letzter Gewinner Anzeige** - €NaN Bug behoben (null-check hinzugefügt)
+
+**Test Report:** `/app/test_reports/iteration_31.json`
+
 ### ✅ Session Summary: Neue Auktionen + Globaler Jackpot
 
 **Neu implementiert (February 2, 2026):**
