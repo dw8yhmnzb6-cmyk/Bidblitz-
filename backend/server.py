@@ -201,6 +201,16 @@ app.include_router(achievements_router, prefix="/api")
 app.include_router(testimonials_router, prefix="/api")
 app.include_router(countdown_alarm_router, prefix="/api")
 app.include_router(win_notifications_router, prefix="/api")
+app.include_router(favorites_router, prefix="/api")
+app.include_router(teams_router, prefix="/api")
+app.include_router(bid_refund_router, prefix="/api")
+app.include_router(auction_replay_router, prefix="/api")
+app.include_router(flash_coupons_router, prefix="/api")
+app.include_router(vip_lounge_router, prefix="/api")
+app.include_router(birthday_router, prefix="/api")
+app.include_router(insurance_router, prefix="/api")
+app.include_router(wishlist_router, prefix="/api")
+app.include_router(streak_protection_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
