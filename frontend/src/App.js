@@ -63,6 +63,10 @@ import BattlePassPage from "./pages/BattlePassPage";
 import MysteryBoxPage from "./pages/MysteryBoxPage";
 import PriceAlertsPage from "./pages/PriceAlertsPage";
 import SocialSharePage from "./pages/SocialSharePage";
+import BundlesPage from "./pages/BundlesPage";
+import LastChancePage from "./pages/LastChancePage";
+import FriendBattlePage from "./pages/FriendBattlePage";
+import ReviewsPage from "./pages/ReviewsPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
