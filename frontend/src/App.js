@@ -74,6 +74,10 @@ import AchievementsPage from "./pages/AchievementsPage";
 import SubscriptionPage from "./pages/SubscriptionPage";
 import ReferralPage from "./pages/ReferralPage";
 import VideoTestimonialsPage from "./pages/VideoTestimonialsPage";
+import TeamAuctionsPage from "./pages/TeamAuctionsPage";
+import BirthdayBonusPage from "./pages/BirthdayBonusPage";
+import WishlistPage from "./pages/WishlistPage";
+import StreakProtectionPage from "./pages/StreakProtectionPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
