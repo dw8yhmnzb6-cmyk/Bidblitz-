@@ -133,6 +133,10 @@ app.include_router(leaderboard_router, prefix="/api")
 app.include_router(gamification_router, prefix="/api")
 app.include_router(telegram_router, prefix="/api")
 app.include_router(referral_router, prefix="/api")
+app.include_router(challenges_router, prefix="/api")
+app.include_router(events_router, prefix="/api")
+app.include_router(gallery_router, prefix="/api")
+app.include_router(subscriptions_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
