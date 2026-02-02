@@ -12,7 +12,7 @@ from dependencies import get_current_user
 
 router = APIRouter(prefix="/vip-subscription", tags=["vip-subscription"])
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 # VIP Plans
 VIP_PLANS = {
