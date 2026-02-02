@@ -344,7 +344,9 @@ class TestBirthdayAPI:
         assert response.status_code == 200
         data = response.json()
         assert "has_birthday" in data
-        assert "bonus_amount" in data
+        # bonus_amount only present if birthday is set
+        if data["has_birthday"]:
+            assert "bonus_amount" in data
     
     def test_set_birthday(self, token):
         """POST /api/birthday/set - Set birthday"""
