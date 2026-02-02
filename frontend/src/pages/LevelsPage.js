@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getFeatureTranslation } from '../i18n/featureTranslations';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { 
@@ -41,13 +42,15 @@ const LevelsPage = () => {
   const [xpHistory, setXpHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const texts = {
-    de: {
-      title: 'Level-System',
-      subtitle: 'Steige auf und schalte exklusive Vorteile frei!',
-      currentLevel: 'Aktuelles Level',
-      xpProgress: 'XP Fortschritt',
-      nextLevel: 'Nächstes Level',
+  // Use centralized translations
+  const ft = getFeatureTranslation('levels', language);
+  const t = {
+    ...ft,
+    title: language === 'de' ? 'Level-System' : 'Level System',
+    subtitle: ft.subtitle || 'Level up and unlock exclusive benefits!',
+    currentLevel: ft.currentLevel || 'Current Level',
+    xpProgress: language === 'de' ? 'XP Fortschritt' : 'XP Progress',
+    nextLevel: language === 'de' ? 'Nächstes Level' : 'Next Level',
       xpNeeded: 'XP benötigt',
       yourPerks: 'Deine Vorteile',
       allLevels: 'Alle Level',
