@@ -128,6 +128,11 @@ export default function Admin() {
   const [loadingManagerDetails, setLoadingManagerDetails] = useState(false);
   const [managerForm, setManagerForm] = useState({
     name: '',
+
+  // Jackpot states
+  const [jackpotData, setJackpotData] = useState(null);
+  const [jackpotHistory, setJackpotHistory] = useState([]);
+  const [jackpotAmount, setJackpotAmount] = useState(500);
     email: '',
     password: '',
     cities: '',
