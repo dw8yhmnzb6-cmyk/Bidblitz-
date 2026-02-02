@@ -606,3 +606,63 @@ February 1, 2026 (Session 4)
   - Verwendet `getFeatureTranslation(feature, language)` Helper-Funktion
   - Google Login Button übersetzt: "Mit Google anmelden" / "Sign in with Google" etc.
   - Verifiziert: Mystery Box Seite zeigt korrekt Türkisch an ("Gizem Kutuları")
+
+
+## February 2, 2026 - Feature Batch Completion
+
+- 2026-02-02: **COMPLETED** Feature Batch (Bundles, Last Chance, Friend Battle, Reviews)
+  - **Bundles** (`/bundles`, `/pakete`)
+    - Backend: `/app/backend/routers/bundles.py`
+    - Frontend: `/app/frontend/src/pages/BundlesPage.js`
+    - 4 Pakete: Starter (€29.99), Pro (€69.99), Ultimate (€149.99), VIP Jahresabo (€299.99)
+    - Stripe-Integration für Käufe
+    - API: GET /api/bundles/available, POST /api/bundles/purchase
+  
+  - **Last Chance** (`/last-chance`, `/letzte-chance`)
+    - Backend: `/app/backend/routers/last_chance.py`
+    - Frontend: `/app/frontend/src/pages/LastChancePage.js`
+    - Live Countdown-Timer für Auktionen die enden
+    - Zeit-Kategorien: Unter 1 Min, Unter 5 Min, Unter 15 Min, Unter 1 Stunde
+    - API: GET /api/last-chance/ending-soon, /hot, /auctions
+
+  - **Friend Battle** (`/friend-battle`, `/freunde-battle`)
+    - Backend: `/app/backend/routers/friend_battle.py`
+    - Frontend: `/app/frontend/src/pages/FriendBattlePage.js`
+    - 4 Battle-Typen: most_bids, first_win, most_savings, bid_streak
+    - Challenge/Accept/Decline Flow mit Leaderboard
+    - API: GET /api/friend-battle/types, /my-battles, /leaderboard, POST /challenge
+
+  - **Reviews** (`/reviews`, `/bewertungen`)
+    - Backend: `/app/backend/routers/reviews_v2.py`
+    - Frontend: `/app/frontend/src/pages/ReviewsPage.js`
+    - Verifizierte Gewinner-Bewertungen (+2 Gebote Bonus)
+    - Admin-Genehmigung für Reviews
+    - API: GET /api/reviews/public, /my-pending, POST /create
+
+- 2026-02-02: **COMPLETED** Apple Login Button
+  - Hinzugefügt zu `/login` und `/register` Seiten
+  - Button zeigt Info-Toast: Apple Developer Credentials müssen konfiguriert werden
+  - data-testid: apple-login-btn, apple-register-btn
+  - Deutsche & Englische Übersetzung: "Mit Apple anmelden" / "Sign in with Apple"
+
+- 2026-02-02: **FIXED** Backend Router Import Errors
+  - Alle neuen Router verwendeten falsche Imports (.database, .auth)
+  - Korrigiert zu: `from config import db` und `from dependencies import get_current_user`
+  - Betrifft: bundles.py, last_chance.py, friend_battle.py, reviews_v2.py, flash_sales_v2.py, vip_subscription.py
+
+- 2026-02-02: **TESTED** Feature Batch (iteration_25.json)
+  - Backend: 100% (22/22 Tests bestanden)
+  - Frontend: 100% (Alle Seiten laden korrekt)
+  - Social Login Buttons: Google & Apple vorhanden
+
+### Ausstehende Tasks (P1)
+1. **i18n Vervollständigung** - Einige Komponenten zeigen noch nicht übersetzte Texte
+2. **VIP Exklusive Auktionen** - Noch nicht implementiert
+3. **Flash Sales v2** - Gerüst vorhanden, UI fehlt
+4. **Social Media Story-Sharing** - Gerüst vorhanden, UI fehlt
+
+### Ausstehende Bugs (P2)
+1. **Auktionsdauer-Bug** - Admin-Formular "1 Tag" Berechnung prüfen
+2. **Admin Payout E-Mails** - E-Mail-Benachrichtigungen für Auszahlungen
+3. **"Not Found" Toast** - Ursache identifizieren
+
