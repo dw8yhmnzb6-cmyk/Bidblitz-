@@ -272,14 +272,14 @@ class TestFlashCouponsAPI:
         assert isinstance(data["coupons"], list)
     
     def test_get_my_coupons(self, token):
-        """GET /api/flash-coupons/my-coupons - Get user's claimed coupons"""
+        """GET /api/flash-coupons/my-discounts - Get user's discounts from coupons"""
         response = requests.get(
-            f"{BASE_URL}/api/flash-coupons/my-coupons",
+            f"{BASE_URL}/api/flash-coupons/my-discounts",
             headers={"Authorization": f"Bearer {token}"}
         )
         assert response.status_code == 200
         data = response.json()
-        assert "coupons" in data
+        assert "discounts" in data
 
 
 # ==================== VIP LOUNGE API TESTS ====================
