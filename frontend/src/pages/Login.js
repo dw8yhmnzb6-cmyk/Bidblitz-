@@ -92,14 +92,19 @@ export default function Login() {
       }
 
       // Login successful
-      const { token } = response.data;
+      const { token, user: userData } = response.data;
       localStorage.setItem('token', token);
       await refreshUser();
       toast.success(texts.loginSuccess);
       
+      // Check user role and redirect accordingly
+      const redirectPath = (userData?.is_manager || userData?.role === 'manager') 
+        ? '/manager-dashboard' 
+        : (userData?.is_admin ? '/admin' : '/dashboard');
+      
       // Force navigation with window.location as fallback
       setTimeout(() => {
-        window.location.href = '/dashboard';
+        window.location.href = redirectPath;
       }, 100);
     } catch (error) {
       const errorMsg = error.response?.data?.detail || texts.loginFailed;
