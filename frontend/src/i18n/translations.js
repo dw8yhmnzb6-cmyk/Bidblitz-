@@ -2142,15 +2142,18 @@ export const languageList = {
 };
 
 // Language mapping for regional variants
-const langMapping = {
+export const langMapping = {
   'xk': 'sq',  // Kosovo -> Albanian
   'us': 'en',  // US English -> English  
   'ae': 'ar', // UAE -> Arabic
 };
 
+// Helper function to get mapped language
+export const getMappedLanguage = (lang) => langMapping[lang] || lang;
+
 export const getTranslation = (lang, key) => {
   // Map regional languages to their base language
-  const mappedLang = langMapping[lang] || lang;
+  const mappedLang = getMappedLanguage(lang);
   
   const keys = key.split('.');
   let value = translations[mappedLang] || translations[lang] || translations.de;
