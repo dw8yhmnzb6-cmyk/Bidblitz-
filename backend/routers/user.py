@@ -304,7 +304,7 @@ async def checkout_won_auction(auction_id: str, user: dict = Depends(get_current
     import stripe
     import os
     
-    stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+    stripe.api_key = os.environ.get("STRIPE_API_KEY")
     
     # Verify user won this auction
     won_auction = await db.won_auctions.find_one(

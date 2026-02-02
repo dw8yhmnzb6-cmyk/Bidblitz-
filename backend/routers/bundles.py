@@ -15,7 +15,7 @@ from dependencies import get_current_user
 router = APIRouter(prefix="/bundles", tags=["bundles"])
 
 # Stripe Setup
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 # Bundle Definitionen
 BUNDLES = {

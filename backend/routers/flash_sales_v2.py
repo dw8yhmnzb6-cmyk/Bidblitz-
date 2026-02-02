@@ -12,7 +12,7 @@ from dependencies import get_current_user, get_admin_user as get_current_admin
 
 router = APIRouter(prefix="/flash-sales", tags=["flash-sales"])
 
-stripe.api_key = os.environ.get("STRIPE_SECRET_KEY")
+stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 
 @router.get("/active")
