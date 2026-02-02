@@ -453,12 +453,12 @@ async def get_manager_dashboard(manager_id: str):
             "id": manager["id"],
             "name": manager["name"],
             "email": manager["email"],
-            "cities": cities,
+            "cities": manager.get("cities", []),
             "commission_percent": manager_commission_rate
         },
         "statistics": {
-            "total_influencers": len(all_influencers),
-            "active_influencers": len([i for i in all_influencers if i.get("is_active", True)]),
+            "total_influencers": len(influencers),
+            "active_influencers": len([i for i in influencers if i.get("is_active", True)]),
             "total_influencer_revenue": round(total_influencer_revenue, 2),
             "total_influencer_commission": round(total_influencer_commission, 2),
             "manager_commission": round(manager_commission, 2),
