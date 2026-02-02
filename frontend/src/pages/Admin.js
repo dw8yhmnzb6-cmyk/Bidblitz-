@@ -2583,38 +2583,39 @@ export default function Admin() {
           {/* Jackpot Tab */}
           {activeTab === 'jackpot' && (
             <div className="space-y-6">
-              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
                 <Trophy className="w-6 h-6 text-[#FFD700]" />
                 Jackpot Verwaltung
               </h1>
 
               {/* Current Jackpot */}
-              <div className="glass-card rounded-xl p-6 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-yellow-500/30">
+              <div className="glass-card rounded-xl p-4 sm:p-6 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-yellow-500/30">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-[#94A3B8] text-sm">Aktueller Jackpot</p>
-                    <p className="text-4xl font-black text-[#FFD700]">
+                    <p className="text-3xl sm:text-4xl font-black text-[#FFD700]">
                       {jackpotData?.current_amount?.toLocaleString('de-DE') || 0} Gebote
                     </p>
                     <p className="text-white text-lg mt-1">
                       Wert: €{((jackpotData?.current_amount || 0) * 0.50).toFixed(2)}
                     </p>
                   </div>
-                  <Trophy className="w-16 h-16 text-[#FFD700] opacity-50" />
+                  <Trophy className="w-12 h-12 sm:w-16 sm:h-16 text-[#FFD700] opacity-50" />
                 </div>
               </div>
 
               {/* Jackpot Controls */}
-              <div className="glass-card rounded-xl p-6">
+              <div className="glass-card rounded-xl p-4 sm:p-6">
                 <h3 className="text-white font-bold mb-4">Jackpot anpassen</h3>
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
                   <div className="flex-1">
                     <Label className="text-[#94A3B8]">Neuer Jackpot-Betrag (Gebote)</Label>
                     <Input
                       type="number"
                       value={jackpotAmount}
                       onChange={(e) => setJackpotAmount(parseInt(e.target.value) || 0)}
-                      className="bg-[#181824] border-white/10 text-white"
+                      className="bg-[#181824] border-white/10 text-white text-lg"
+                      min={0}
                     />
                   </div>
                   <Button
@@ -2630,22 +2631,26 @@ export default function Admin() {
                         toast.error('Fehler beim Setzen');
                       }
                     }}
-                    className="bg-[#FFD700] text-black hover:bg-[#FFD700]/80"
+                    className="bg-[#FFD700] text-black hover:bg-[#FFD700]/80 h-10"
                   >
                     <Save className="w-4 h-4 mr-1" />
                     Setzen
                   </Button>
                 </div>
+                <p className="text-[#94A3B8] text-xs mt-2">
+                  Aktuell: {jackpotData?.current_amount || 0} Gebote = €{((jackpotData?.current_amount || 0) * 0.50).toFixed(2)}
+                </p>
               </div>
 
               {/* Award Jackpot */}
-              <div className="glass-card rounded-xl p-6">
-                <h3 className="text-white font-bold mb-4">Jackpot vergeben</h3>
-                <div className="flex items-center gap-4">
-                  <div className="flex-1">
-                    <Label className="text-[#94A3B8]">Benutzer auswählen</Label>
+              <div className="glass-card rounded-xl p-4 sm:p-6">
+                <h3 className="text-white font-bold mb-4">🏆 Jackpot vergeben</h3>
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-[#94A3B8]">Benutzer auswählen ({users.length} verfügbar)</Label>
                     <Select onValueChange={async (userId) => {
                       if (!userId) return;
+                      if (!window.confirm(`Jackpot von ${jackpotData?.current_amount || 0} Geboten wirklich vergeben?`)) return;
                       try {
                         const res = await axios.post(
                           `${API}/excitement/global-jackpot/award/${userId}`,
@@ -2659,20 +2664,26 @@ export default function Admin() {
                       }
                     }}>
                       <SelectTrigger className="bg-[#181824] border-white/10 text-white">
-                        <SelectValue placeholder="Benutzer wählen..." />
+                        <SelectValue placeholder="Benutzer wählen zum Vergeben..." />
                       </SelectTrigger>
-                      <SelectContent className="bg-[#181824] border-white/10">
-                        {users.map((user) => (
-                          <SelectItem key={user.id} value={user.id} className="text-white">
-                            {user.name} ({user.email})
+                      <SelectContent className="bg-[#181824] border-white/10 max-h-60">
+                        {users.length === 0 ? (
+                          <SelectItem value="none" disabled className="text-[#94A3B8]">
+                            Keine Benutzer geladen
                           </SelectItem>
-                        ))}
+                        ) : (
+                          users.map((user) => (
+                            <SelectItem key={user.id} value={user.id} className="text-white">
+                              {user.name} ({user.email})
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-                <p className="text-[#94A3B8] text-sm mt-2">
-                  Der ausgewählte Benutzer erhält den kompletten Jackpot von {jackpotData?.current_amount || 0} Geboten
+                <p className="text-[#F59E0B] text-sm mt-3 p-2 bg-[#F59E0B]/10 rounded">
+                  ⚠️ Der ausgewählte Benutzer erhält sofort <strong>{jackpotData?.current_amount || 0} Gebote</strong> (€{((jackpotData?.current_amount || 0) * 0.50).toFixed(2)})
                 </p>
               </div>
 
