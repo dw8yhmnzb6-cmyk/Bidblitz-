@@ -1265,6 +1265,7 @@ async def create_auction(auction: AuctionCreate, admin: dict = Depends(get_admin
         "is_vip_only": auction.is_vip_only or False,
         "is_beginner_auction": auction.is_beginner_auction or False,
         "is_gift_auction": auction.is_gift_auction or False,
+        "is_free_auction": auction.is_free_auction or False,
         "auction_type": auction.auction_type or "normal",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
