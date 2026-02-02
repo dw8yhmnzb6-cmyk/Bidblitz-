@@ -14,7 +14,7 @@ import {
 } from './ui/dropdown-menu';
 
 export const Navbar = () => {
-  const { user, isAuthenticated, isAdmin, isInfluencer, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, isInfluencer, isManager, logout } = useAuth();
   const { t, language, changeLanguage, languages } = useLanguage();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
