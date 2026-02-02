@@ -60,6 +60,9 @@ import MyStatsPage from "./pages/MyStatsPage";
 import LevelsPage from "./pages/LevelsPage";
 import DailyRewardsPage from "./pages/DailyRewardsPage";
 import BattlePassPage from "./pages/BattlePassPage";
+import MysteryBoxPage from "./pages/MysteryBoxPage";
+import PriceAlertsPage from "./pages/PriceAlertsPage";
+import SocialSharePage from "./pages/SocialSharePage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
