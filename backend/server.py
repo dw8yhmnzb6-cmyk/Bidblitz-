@@ -84,6 +84,7 @@ from routers.birthday import birthday_router
 from routers.insurance import insurance_router
 from routers.wishlist import wishlist_router as product_wishlist_router
 from routers.streak_protection import streak_protection_router
+from routers.weekly_winners import weekly_winners_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
