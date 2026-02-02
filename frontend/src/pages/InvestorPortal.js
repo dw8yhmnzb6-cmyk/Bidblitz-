@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { 
   TrendingUp, Users, DollarSign, BarChart3, 
   Briefcase, Target, ArrowUpRight, CheckCircle,
-  Clock, Building2, PieChart, Wallet
+  Clock, Building2, Wallet, Star, Shield, Gift, Check
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
 import {
-  LineChart, Line, AreaChart, Area, XAxis, YAxis, 
-  CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartPie, Pie, Cell
+  AreaChart, Area, XAxis, YAxis, 
+  CartesianGrid, Tooltip, ResponsiveContainer, Line
 } from 'recharts';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -27,7 +26,7 @@ const StatCard = ({ icon: Icon, label, value, subValue, color, trend }) => (
         <p className={`text-xl sm:text-2xl font-bold ${color || 'text-white'} mt-1`}>{value}</p>
         {subValue && <p className="text-[#94A3B8] text-xs mt-1">{subValue}</p>}
       </div>
-      <div className={`p-2 sm:p-3 rounded-xl ${color?.replace('text-', 'bg-').replace('[', '[').split(' ')[0]}/20`}>
+      <div className={`p-2 sm:p-3 rounded-xl bg-white/5`}>
         <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${color}`} />
       </div>
     </div>
@@ -40,50 +39,50 @@ const StatCard = ({ icon: Icon, label, value, subValue, color, trend }) => (
   </div>
 );
 
-// Crowdfunding Project Card
-const ProjectCard = ({ project, onInvest }) => {
-  const progress = project.progress_percent || 0;
+// Package Card Component
+const PackageCard = ({ pkg, selected, onSelect, onInvest, loading }) => {
+  const isPopular = pkg.id === 'standard';
   
   return (
-    <div className="glass-card rounded-xl overflow-hidden">
-      {project.image_url && (
-        <img src={project.image_url} alt={project.title} className="w-full h-32 object-cover" />
+    <div 
+      className={`relative glass-card rounded-2xl p-6 border-2 transition-all cursor-pointer ${
+        selected ? 'border-[#7C3AED] bg-[#7C3AED]/10' : 'border-transparent hover:border-white/20'
+      }`}
+      onClick={() => onSelect(pkg.id)}
+    >
+      {isPopular && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#7C3AED] rounded-full text-xs font-bold text-white">
+          BELIEBT
+        </div>
       )}
-      <div className="p-4">
-        <h3 className="text-white font-bold text-lg">{project.title}</h3>
-        <p className="text-[#94A3B8] text-sm mt-1 line-clamp-2">{project.description}</p>
-        
-        {/* Progress Bar */}
-        <div className="mt-4">
-          <div className="flex justify-between text-xs text-[#94A3B8] mb-1">
-            <span>€{project.total_funded?.toLocaleString('de-DE') || 0}</span>
-            <span>Ziel: €{project.target_amount?.toLocaleString('de-DE')}</span>
-          </div>
-          <div className="h-2 bg-[#181824] rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-[#7C3AED] to-[#06B6D4] rounded-full transition-all"
-              style={{ width: `${Math.min(progress, 100)}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs mt-1">
-            <span className="text-[#10B981]">{progress.toFixed(1)}% finanziert</span>
-            <span className="text-[#94A3B8]">{project.investor_count || 0} Investoren</span>
-          </div>
-        </div>
-        
-        <div className="flex items-center justify-between mt-4">
-          <span className="text-[#94A3B8] text-xs">
-            Min: €{project.min_investment?.toLocaleString('de-DE')}
-          </span>
-          <Button 
-            onClick={() => onInvest(project)}
-            className="btn-primary text-sm"
-            size="sm"
-          >
-            Investieren
-          </Button>
-        </div>
+      
+      <div className="text-center mb-4">
+        <h3 className="text-xl font-bold text-white">{pkg.label}</h3>
+        <p className="text-3xl font-bold text-[#FFD700] mt-2">
+          €{pkg.amount.toLocaleString('de-DE')}
+        </p>
+        <p className="text-[#10B981] font-medium mt-1">{pkg.equity} Anteil</p>
       </div>
+      
+      <div className="space-y-2 mb-6">
+        {pkg.perks.map((perk, i) => (
+          <div key={i} className="flex items-center gap-2 text-sm text-[#94A3B8]">
+            <Check className="w-4 h-4 text-[#10B981]" />
+            {perk}
+          </div>
+        ))}
+      </div>
+      
+      <Button
+        onClick={(e) => {
+          e.stopPropagation();
+          onInvest(pkg.id);
+        }}
+        disabled={loading}
+        className={`w-full ${selected ? 'btn-primary' : 'bg-white/10 hover:bg-white/20'}`}
+      >
+        {loading ? 'Wird geladen...' : 'Jetzt investieren'}
+      </Button>
     </div>
   );
 };
@@ -91,19 +90,60 @@ const ProjectCard = ({ project, onInvest }) => {
 export default function InvestorPortal() {
   const { user, token } = useAuth();
   const { language } = useLanguage();
+  const [searchParams] = useSearchParams();
   
   const [stats, setStats] = useState(null);
   const [chartData, setChartData] = useState([]);
-  const [projects, setProjects] = useState([]);
+  const [packages, setPackages] = useState([]);
   const [myInvestments, setMyInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedPackage, setSelectedPackage] = useState('standard');
   
-  // Investment form
-  const [investAmount, setInvestAmount] = useState('');
-  const [investType, setInvestType] = useState('standard');
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [showInvestModal, setShowInvestModal] = useState(false);
+  // Check for return from Stripe
+  useEffect(() => {
+    const sessionId = searchParams.get('session_id');
+    const success = searchParams.get('success');
+    const cancelled = searchParams.get('cancelled');
+    
+    if (sessionId && success) {
+      // Poll payment status
+      pollPaymentStatus(sessionId);
+    } else if (cancelled) {
+      toast.error('Zahlung abgebrochen');
+    }
+  }, [searchParams]);
+  
+  const pollPaymentStatus = async (sessionId, attempts = 0) => {
+    const maxAttempts = 5;
+    
+    if (attempts >= maxAttempts) {
+      toast.error('Zahlung konnte nicht bestätigt werden. Bitte kontaktieren Sie uns.');
+      return;
+    }
+    
+    try {
+      const res = await axios.get(`${API}/investor/checkout/status/${sessionId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (res.data.payment_status === 'paid') {
+        toast.success(`Investition von €${res.data.amount.toLocaleString('de-DE')} erfolgreich! Willkommen als Investor!`);
+        fetchData();
+        setActiveTab('my-investments');
+        return;
+      } else if (res.data.status === 'expired') {
+        toast.error('Zahlungssitzung abgelaufen');
+        return;
+      }
+      
+      // Continue polling
+      setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), 2000);
+    } catch (error) {
+      console.error('Payment status error:', error);
+    }
+  };
   
   useEffect(() => {
     fetchData();
@@ -111,74 +151,56 @@ export default function InvestorPortal() {
   
   const fetchData = async () => {
     try {
-      // Public stats - no auth needed
-      const statsRes = await axios.get(`${API}/investor/public/stats`);
+      // Public stats
+      const [statsRes, chartRes, packagesRes] = await Promise.all([
+        axios.get(`${API}/investor/public/stats`),
+        axios.get(`${API}/investor/public/growth-chart`),
+        axios.get(`${API}/investor/packages`)
+      ]);
+      
       setStats(statsRes.data);
-      
-      const chartRes = await axios.get(`${API}/investor/public/growth-chart`);
       setChartData(chartRes.data.chart_data || []);
+      setPackages(packagesRes.data.packages || []);
       
-      const projectsRes = await axios.get(`${API}/investor/crowdfunding/projects`);
-      setProjects(projectsRes.data.projects || []);
-      
-      // User investments (if logged in)
+      // User investments
       if (token) {
         try {
-          const myInvRes = await axios.get(`${API}/investor/investments`, {
+          const invRes = await axios.get(`${API}/investor/investments`, {
             headers: { Authorization: `Bearer ${token}` }
           });
-          setMyInvestments(myInvRes.data.investments || []);
-        } catch (e) {
-          // User not logged in or no investments
-        }
+          setMyInvestments(invRes.data.investments || []);
+        } catch (e) {}
       }
     } catch (error) {
-      console.error('Error fetching investor data:', error);
+      console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
   };
   
-  const handleInvest = async (e) => {
-    e.preventDefault();
+  const handleInvest = async (packageId) => {
     if (!token) {
       toast.error('Bitte melden Sie sich an, um zu investieren');
       return;
     }
     
-    const amount = parseFloat(investAmount);
-    if (isNaN(amount) || amount <= 0) {
-      toast.error('Bitte geben Sie einen gültigen Betrag ein');
-      return;
-    }
+    setCheckoutLoading(true);
     
     try {
-      if (selectedProject) {
-        // Crowdfunding investment
-        await axios.post(`${API}/investor/crowdfunding/invest`, {
-          project_id: selectedProject.id,
-          amount
-        }, { headers: { Authorization: `Bearer ${token}` } });
-        toast.success(`Investition von €${amount} in "${selectedProject.title}" eingereicht!`);
-      } else {
-        // Direct investment
-        await axios.post(`${API}/investor/investments`, {
-          amount,
-          investment_type: investType
-        }, { headers: { Authorization: `Bearer ${token}` } });
-        toast.success(`Investitionsanfrage von €${amount} eingereicht!`);
-      }
+      const res = await axios.post(`${API}/investor/checkout`, {
+        package_id: packageId,
+        origin_url: window.location.origin
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       
-      setShowInvestModal(false);
-      setInvestAmount('');
-      setSelectedProject(null);
-      fetchData();
+      // Redirect to Stripe
+      window.location.href = res.data.checkout_url;
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler bei der Investition');
+      toast.error(error.response?.data?.detail || 'Fehler bei der Zahlungsverarbeitung');
+      setCheckoutLoading(false);
     }
   };
-  
-  const COLORS = ['#7C3AED', '#06B6D4', '#10B981', '#F59E0B'];
   
   if (loading) {
     return (
@@ -198,9 +220,7 @@ export default function InvestorPortal() {
             💼 Investor Portal
           </h1>
           <p className="text-[#94A3B8]">
-            {language === 'de' 
-              ? 'Investieren Sie in die Zukunft von BidBlitz' 
-              : 'Invest in the future of BidBlitz'}
+            Investieren Sie in die Zukunft von BidBlitz
           </p>
         </div>
         
@@ -208,7 +228,6 @@ export default function InvestorPortal() {
         <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
           {[
             { id: 'overview', label: 'Übersicht', icon: BarChart3 },
-            { id: 'crowdfunding', label: 'Crowdfunding', icon: Target },
             { id: 'invest', label: 'Investieren', icon: Wallet },
             { id: 'my-investments', label: 'Meine Investitionen', icon: Briefcase }
           ].map(tab => (
@@ -306,7 +325,7 @@ export default function InvestorPortal() {
               </div>
             </div>
             
-            {/* Investment Opportunities */}
+            {/* Why Invest Section */}
             <div className="glass-card rounded-xl p-6">
               <h3 className="text-white font-bold text-lg mb-4">Warum in BidBlitz investieren?</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -339,103 +358,68 @@ export default function InvestorPortal() {
                 </div>
               </div>
             </div>
-          </div>
-        )}
-        
-        {/* Crowdfunding Tab */}
-        {activeTab === 'crowdfunding' && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">Aktive Projekte</h2>
-              <span className="text-[#94A3B8] text-sm">{projects.length} Projekte</span>
-            </div>
             
-            {projects.length === 0 ? (
-              <div className="glass-card rounded-xl p-8 text-center">
-                <Target className="w-12 h-12 text-[#94A3B8] mx-auto mb-3" />
-                <p className="text-[#94A3B8]">Derzeit keine aktiven Crowdfunding-Projekte</p>
-                <p className="text-[#94A3B8] text-sm mt-1">Neue Projekte werden bald veröffentlicht</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {projects.map(project => (
-                  <ProjectCard 
-                    key={project.id} 
-                    project={project}
-                    onInvest={(p) => {
-                      setSelectedProject(p);
-                      setShowInvestModal(true);
-                    }}
-                  />
-                ))}
-              </div>
-            )}
+            {/* CTA */}
+            <div className="glass-card rounded-xl p-6 text-center bg-gradient-to-r from-[#7C3AED]/20 to-[#06B6D4]/20 border border-[#7C3AED]/30">
+              <h3 className="text-2xl font-bold text-white mb-2">Werden Sie Teil unserer Erfolgsgeschichte</h3>
+              <p className="text-[#94A3B8] mb-4">Investieren Sie jetzt und profitieren Sie vom Wachstum</p>
+              <Button 
+                onClick={() => setActiveTab('invest')}
+                className="btn-primary text-lg px-8"
+              >
+                Jetzt investieren
+              </Button>
+            </div>
           </div>
         )}
         
         {/* Invest Tab */}
         {activeTab === 'invest' && (
-          <div className="max-w-2xl mx-auto">
-            <div className="glass-card rounded-xl p-6">
-              <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <Wallet className="w-5 h-5 text-[#7C3AED]" />
-                Direkt investieren
-              </h2>
-              
-              <form onSubmit={handleInvest} className="space-y-4">
-                <div>
-                  <Label className="text-white">Investitionsbetrag (EUR)</Label>
-                  <Input
-                    type="number"
-                    min="500"
-                    step="100"
-                    value={investAmount}
-                    onChange={(e) => setInvestAmount(e.target.value)}
-                    placeholder="z.B. 5000"
-                    className="bg-[#181824] border-white/10 text-white"
-                    required
-                  />
-                  <p className="text-[#94A3B8] text-xs mt-1">Mindestinvestition: €500</p>
-                </div>
-                
-                <div>
-                  <Label className="text-white">Investitionstyp</Label>
-                  <div className="grid grid-cols-3 gap-2 mt-2">
-                    {[
-                      { id: 'standard', label: 'Standard', desc: 'Ab €500' },
-                      { id: 'premium', label: 'Premium', desc: 'Ab €5.000' },
-                      { id: 'partner', label: 'Partner', desc: 'Ab €25.000' }
-                    ].map(type => (
-                      <button
-                        key={type.id}
-                        type="button"
-                        onClick={() => setInvestType(type.id)}
-                        className={`p-3 rounded-lg border transition-all ${
-                          investType === type.id
-                            ? 'border-[#7C3AED] bg-[#7C3AED]/10'
-                            : 'border-white/10 bg-[#181824]'
-                        }`}
-                      >
-                        <p className={`font-medium ${investType === type.id ? 'text-[#7C3AED]' : 'text-white'}`}>
-                          {type.label}
-                        </p>
-                        <p className="text-[#94A3B8] text-xs">{type.desc}</p>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-[#F59E0B]/10 border border-[#F59E0B]/30 rounded-lg">
-                  <p className="text-[#F59E0B] text-sm">
-                    ⚠️ Dies ist eine unverbindliche Interessensbekundung. 
-                    Nach Einreichung werden Sie von unserem Team kontaktiert.
-                  </p>
-                </div>
-                
-                <Button type="submit" className="w-full btn-primary">
-                  Investitionsanfrage senden
-                </Button>
-              </form>
+          <div className="space-y-6">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-white mb-2">Wählen Sie Ihr Investment-Paket</h2>
+              <p className="text-[#94A3B8]">Transparente Konditionen • Sofortige Zahlung • Sichere Abwicklung</p>
+            </div>
+            
+            {/* Package Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {packages.map(pkg => (
+                <PackageCard
+                  key={pkg.id}
+                  pkg={pkg}
+                  selected={selectedPackage === pkg.id}
+                  onSelect={setSelectedPackage}
+                  onInvest={handleInvest}
+                  loading={checkoutLoading}
+                />
+              ))}
+            </div>
+            
+            {/* Trust Badges */}
+            <div className="flex flex-wrap justify-center gap-6 mt-8">
+              <div className="flex items-center gap-2 text-[#94A3B8]">
+                <Shield className="w-5 h-5 text-[#10B981]" />
+                <span className="text-sm">SSL-verschlüsselt</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#94A3B8]">
+                <Star className="w-5 h-5 text-[#F59E0B]" />
+                <span className="text-sm">Stripe-Zahlungen</span>
+              </div>
+              <div className="flex items-center gap-2 text-[#94A3B8]">
+                <CheckCircle className="w-5 h-5 text-[#7C3AED]" />
+                <span className="text-sm">DSGVO-konform</span>
+              </div>
+            </div>
+            
+            {/* Info Box */}
+            <div className="glass-card rounded-xl p-6 border border-[#F59E0B]/30 bg-[#F59E0B]/5">
+              <h4 className="text-[#F59E0B] font-bold mb-2">Was Sie als Investor erhalten:</h4>
+              <ul className="text-[#94A3B8] text-sm space-y-1">
+                <li>• Anteil am Unternehmen gemäß gewähltem Paket</li>
+                <li>• Regelmäßige Updates zur Geschäftsentwicklung</li>
+                <li>• Exklusiver Zugang zu Investor-Events</li>
+                <li>• Mitspracherecht bei wichtigen Entscheidungen (Partner-Paket)</li>
+              </ul>
             </div>
           </div>
         )}
@@ -470,8 +454,9 @@ export default function InvestorPortal() {
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="glass-card rounded-xl p-4">
-                  <div className="flex items-center justify-between">
+                {/* Summary Card */}
+                <div className="glass-card rounded-xl p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                       <p className="text-[#94A3B8] text-sm">Gesamtinvestition</p>
                       <p className="text-2xl font-bold text-[#10B981]">
@@ -479,79 +464,57 @@ export default function InvestorPortal() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-[#94A3B8] text-sm">Anzahl</p>
-                      <p className="text-2xl font-bold text-white">{myInvestments.length}</p>
+                      <p className="text-[#94A3B8] text-sm">Anteil</p>
+                      <p className="text-2xl font-bold text-[#7C3AED]">
+                        {myInvestments[0]?.equity || '0%'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[#94A3B8] text-sm">Status</p>
+                      <p className="text-2xl font-bold text-white">Aktiv</p>
+                    </div>
+                    <div>
+                      <p className="text-[#94A3B8] text-sm">Seit</p>
+                      <p className="text-2xl font-bold text-white">
+                        {myInvestments[0] ? new Date(myInvestments[0].created_at).toLocaleDateString('de-DE', {month: 'short', year: 'numeric'}) : '-'}
+                      </p>
                     </div>
                   </div>
                 </div>
                 
+                {/* Investment History */}
+                <h3 className="text-white font-bold text-lg">Investitions-Historie</h3>
                 {myInvestments.map(inv => (
                   <div key={inv.id} className="glass-card rounded-xl p-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-white font-medium">€{inv.amount?.toLocaleString('de-DE')}</p>
                         <p className="text-[#94A3B8] text-xs">
-                          {new Date(inv.created_at).toLocaleDateString('de-DE')}
+                          {new Date(inv.created_at).toLocaleDateString('de-DE')} • {inv.investment_type}
                         </p>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                         inv.status === 'completed' ? 'bg-[#10B981]/20 text-[#10B981]' :
-                        inv.status === 'approved' ? 'bg-[#06B6D4]/20 text-[#06B6D4]' :
                         inv.status === 'pending' ? 'bg-[#F59E0B]/20 text-[#F59E0B]' :
                         'bg-red-500/20 text-red-500'
                       }`}>
                         {inv.status === 'completed' ? 'Abgeschlossen' :
-                         inv.status === 'approved' ? 'Genehmigt' :
-                         inv.status === 'pending' ? 'Ausstehend' : 'Abgelehnt'}
+                         inv.status === 'pending' ? 'Ausstehend' : inv.status}
                       </span>
                     </div>
+                    {inv.perks && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {inv.perks.map((perk, i) => (
+                          <span key={i} className="px-2 py-1 bg-white/5 rounded text-xs text-[#94A3B8]">
+                            {perk}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
             )}
-          </div>
-        )}
-        
-        {/* Investment Modal */}
-        {showInvestModal && (
-          <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-            <div className="bg-[#1A1A2E] rounded-xl border border-white/10 max-w-md w-full p-6">
-              <h3 className="text-xl font-bold text-white mb-4">
-                {selectedProject ? `In "${selectedProject.title}" investieren` : 'Investieren'}
-              </h3>
-              
-              <form onSubmit={handleInvest} className="space-y-4">
-                <div>
-                  <Label className="text-white">Betrag (EUR)</Label>
-                  <Input
-                    type="number"
-                    min={selectedProject?.min_investment || 100}
-                    value={investAmount}
-                    onChange={(e) => setInvestAmount(e.target.value)}
-                    placeholder={`Min: €${selectedProject?.min_investment || 100}`}
-                    className="bg-[#181824] border-white/10 text-white"
-                    required
-                  />
-                </div>
-                
-                <div className="flex gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setShowInvestModal(false);
-                      setSelectedProject(null);
-                    }}
-                    className="flex-1"
-                  >
-                    Abbrechen
-                  </Button>
-                  <Button type="submit" className="flex-1 btn-primary">
-                    Investieren
-                  </Button>
-                </div>
-              </form>
-            </div>
           </div>
         )}
         
