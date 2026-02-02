@@ -2122,6 +2122,190 @@ export default function Admin() {
             />
           )}
 
+          {/* Manager Tab */}
+          {activeTab === 'managers' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-bold text-white">
+                  {language === 'en' ? 'Regional Managers' : 'Regionale Manager'}
+                </h1>
+                <Button 
+                  onClick={() => setShowManagerModal(true)}
+                  className="bg-[#7C3AED]"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  {language === 'en' ? 'New Manager' : 'Neuer Manager'}
+                </Button>
+              </div>
+              
+              <p className="text-[#94A3B8]">
+                {language === 'en' 
+                  ? 'Managers supervise influencers in their assigned cities and receive 15% of influencer commissions.'
+                  : 'Manager verwalten Influencer in ihren zugewiesenen Städten und erhalten 15% der Influencer-Provisionen.'}
+              </p>
+
+              {/* Manager List */}
+              <div className="bg-[#1A1A2E] rounded-xl border border-white/10 overflow-hidden">
+                <table className="w-full">
+                  <thead className="bg-white/5">
+                    <tr>
+                      <th className="text-left text-[#94A3B8] py-3 px-4 text-sm">Name</th>
+                      <th className="text-left text-[#94A3B8] py-3 px-4 text-sm">E-Mail</th>
+                      <th className="text-left text-[#94A3B8] py-3 px-4 text-sm">{language === 'en' ? 'Cities' : 'Städte'}</th>
+                      <th className="text-right text-[#94A3B8] py-3 px-4 text-sm">Influencer</th>
+                      <th className="text-right text-[#94A3B8] py-3 px-4 text-sm">{language === 'en' ? 'Inf. Commission' : 'Inf. Provision'}</th>
+                      <th className="text-right text-[#94A3B8] py-3 px-4 text-sm">{language === 'en' ? 'Manager 15%' : 'Manager 15%'}</th>
+                      <th className="text-center text-[#94A3B8] py-3 px-4 text-sm">Status</th>
+                      <th className="text-right text-[#94A3B8] py-3 px-4 text-sm">Aktionen</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {managers.map((mgr) => (
+                      <tr key={mgr.id} className="border-t border-white/5 hover:bg-white/5">
+                        <td className="py-3 px-4 text-white font-medium">{mgr.name}</td>
+                        <td className="py-3 px-4 text-[#94A3B8]">{mgr.email}</td>
+                        <td className="py-3 px-4">
+                          <div className="flex flex-wrap gap-1">
+                            {mgr.cities?.map((city) => (
+                              <span key={city} className="px-2 py-0.5 bg-[#7C3AED]/20 text-[#7C3AED] rounded text-xs">
+                                {city}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 text-white text-right">{mgr.influencer_count || 0}</td>
+                        <td className="py-3 px-4 text-[#F59E0B] text-right">€{(mgr.total_influencer_commission || 0).toFixed(2)}</td>
+                        <td className="py-3 px-4 text-[#10B981] text-right font-medium">€{(mgr.manager_commission || 0).toFixed(2)}</td>
+                        <td className="py-3 px-4 text-center">
+                          {mgr.is_active ? (
+                            <span className="px-2 py-1 bg-[#10B981]/20 text-[#10B981] rounded text-xs">Aktiv</span>
+                          ) : (
+                            <span className="px-2 py-1 bg-red-500/20 text-red-500 rounded text-xs">Inaktiv</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-right">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={async () => {
+                              try {
+                                await axios.delete(`${API}/manager/admin/${mgr.id}`, {
+                                  headers: { Authorization: `Bearer ${token}` }
+                                });
+                                toast.success('Manager deaktiviert');
+                                fetchData();
+                              } catch (err) {
+                                toast.error('Fehler');
+                              }
+                            }}
+                            className="border-red-500/30 text-red-500 hover:bg-red-500/10"
+                          >
+                            <Ban className="w-3 h-3 mr-1" />
+                            Sperren
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                    {managers.length === 0 && (
+                      <tr>
+                        <td colSpan="8" className="py-8 text-center text-[#94A3B8]">
+                          {language === 'en' ? 'No managers yet' : 'Noch keine Manager'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Create Manager Modal */}
+              {showManagerModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowManagerModal(false)}>
+                  <div className="bg-[#1A1A2E] rounded-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+                    <h2 className="text-xl font-bold text-white mb-4">
+                      {language === 'en' ? 'Create Manager' : 'Manager erstellen'}
+                    </h2>
+                    <form onSubmit={async (e) => {
+                      e.preventDefault();
+                      try {
+                        await axios.post(`${API}/manager/admin/create`, {
+                          ...managerForm,
+                          cities: managerForm.cities.split(',').map(c => c.trim()).filter(c => c)
+                        }, {
+                          headers: { Authorization: `Bearer ${token}` }
+                        });
+                        toast.success('Manager erstellt!');
+                        setShowManagerModal(false);
+                        setManagerForm({ name: '', email: '', password: '', cities: '', commission_percent: 15 });
+                        fetchData();
+                      } catch (err) {
+                        toast.error(err.response?.data?.detail || 'Fehler');
+                      }
+                    }} className="space-y-4">
+                      <div>
+                        <Label className="text-[#94A3B8]">Name</Label>
+                        <Input 
+                          value={managerForm.name}
+                          onChange={(e) => setManagerForm({...managerForm, name: e.target.value})}
+                          className="bg-[#0D0D14] border-white/10 text-white"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-[#94A3B8]">E-Mail</Label>
+                        <Input 
+                          type="email"
+                          value={managerForm.email}
+                          onChange={(e) => setManagerForm({...managerForm, email: e.target.value})}
+                          className="bg-[#0D0D14] border-white/10 text-white"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-[#94A3B8]">{language === 'en' ? 'Password' : 'Passwort'}</Label>
+                        <Input 
+                          type="password"
+                          value={managerForm.password}
+                          onChange={(e) => setManagerForm({...managerForm, password: e.target.value})}
+                          className="bg-[#0D0D14] border-white/10 text-white"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-[#94A3B8]">{language === 'en' ? 'Cities (comma separated)' : 'Städte (Komma getrennt)'}</Label>
+                        <Input 
+                          value={managerForm.cities}
+                          onChange={(e) => setManagerForm({...managerForm, cities: e.target.value})}
+                          className="bg-[#0D0D14] border-white/10 text-white"
+                          placeholder="Berlin, Hamburg, München"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-[#94A3B8]">{language === 'en' ? 'Commission %' : 'Provision %'}</Label>
+                        <Input 
+                          type="number"
+                          value={managerForm.commission_percent}
+                          onChange={(e) => setManagerForm({...managerForm, commission_percent: parseFloat(e.target.value)})}
+                          className="bg-[#0D0D14] border-white/10 text-white"
+                          min="0"
+                          max="50"
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <Button type="button" variant="outline" onClick={() => setShowManagerModal(false)} className="flex-1 border-white/10 text-white">
+                          {language === 'en' ? 'Cancel' : 'Abbrechen'}
+                        </Button>
+                        <Button type="submit" className="flex-1 bg-[#7C3AED]">
+                          {language === 'en' ? 'Create' : 'Erstellen'}
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Wholesale/B2B Tab */}
           {activeTab === 'wholesale' && (
             <AdminWholesale
