@@ -436,7 +436,10 @@ class TestWishlistAPI:
         product_name = f"TestProduct_{uuid.uuid4().hex[:6]}"
         response = requests.post(
             f"{BASE_URL}/api/wishlist/suggest",
-            headers={"Authorization": f"Bearer {token}"},
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            },
             json={
                 "product_name": product_name,
                 "category": "electronics",
