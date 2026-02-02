@@ -21,9 +21,6 @@ const PriceAlertsPage = () => {
 
   // Use centralized translations
   const t = getFeatureTranslation('priceAlerts', language);
-    }
-  };
-  const t = texts[language] || texts.de;
 
   useEffect(() => {
     if (isAuthenticated) {
