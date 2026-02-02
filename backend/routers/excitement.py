@@ -42,6 +42,115 @@ class MysteryAuctionCreate(BaseModel):
     hint: str = "Wert: €100-€500"
     reveal_at_end: bool = True
 
+# ==================== GLOBAL JACKPOT SYSTEM ====================
+
+@router.get("/global-jackpot")
+async def get_global_jackpot():
+    """Get the global jackpot status - visible to everyone"""
+    jackpot = await db.global_jackpot.find_one({"type": "global"}, {"_id": 0})
+    if not jackpot:
+        # Create default if not exists
+        jackpot = {
+            "id": "global-jackpot",
+            "type": "global",
+            "current_amount": 500,
+            "contribution_per_bid": 1,
+            "last_winner": None,
+            "last_won_at": None,
+            "total_won": 0
+        }
+        await db.global_jackpot.insert_one(jackpot)
+    
+    return {
+        "current_amount": jackpot.get("current_amount", 0),
+        "contribution_per_bid": jackpot.get("contribution_per_bid", 1),
+        "last_winner": jackpot.get("last_winner"),
+        "last_won_at": jackpot.get("last_won_at"),
+        "total_won": jackpot.get("total_won", 0),
+        "message": f"🏆 JACKPOT: {jackpot.get('current_amount', 0)} Gratis-Gebote!"
+    }
+
+@router.post("/global-jackpot/contribute")
+async def contribute_to_global_jackpot(user: dict = Depends(get_current_user)):
+    """Called when someone places a bid - increases the global jackpot"""
+    result = await db.global_jackpot.find_one_and_update(
+        {"type": "global"},
+        {"$inc": {"current_amount": 1}},
+        return_document=True
+    )
+    
+    if result:
+        new_amount = result.get("current_amount", 0)
+        logger.info(f"Global jackpot increased to {new_amount} by {user.get('name', 'Unknown')}")
+        return {"success": True, "new_amount": new_amount}
+    
+    return {"success": False}
+
+@router.post("/global-jackpot/award/{user_id}")
+async def award_global_jackpot(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Award the global jackpot to a user (Admin only - called when auction ends)"""
+    jackpot = await db.global_jackpot.find_one({"type": "global"})
+    if not jackpot:
+        raise HTTPException(status_code=404, detail="Jackpot nicht gefunden")
+    
+    amount = jackpot.get("current_amount", 0)
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Jackpot ist leer")
+    
+    # Get winner info
+    winner = await db.users.find_one({"id": user_id})
+    if not winner:
+        raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
+    
+    # Award bids to winner
+    await db.users.update_one(
+        {"id": user_id},
+        {"$inc": {"bids_balance": amount}}
+    )
+    
+    # Reset jackpot and record winner
+    await db.global_jackpot.update_one(
+        {"type": "global"},
+        {
+            "$set": {
+                "current_amount": 100,  # Reset to 100 starting
+                "last_winner": winner.get("name", "Unknown"),
+                "last_winner_id": user_id,
+                "last_won_at": datetime.now(timezone.utc).isoformat(),
+                "last_won_amount": amount
+            },
+            "$inc": {"total_won": amount}
+        }
+    )
+    
+    # Log in jackpot history
+    await db.jackpot_history.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "user_name": winner.get("name", "Unknown"),
+        "amount": amount,
+        "won_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    logger.info(f"🏆 JACKPOT WON! {winner.get('name')} won {amount} free bids!")
+    
+    return {
+        "success": True,
+        "winner": winner.get("name"),
+        "amount": amount,
+        "message": f"🏆 {winner.get('name')} hat den Jackpot von {amount} Geboten gewonnen!"
+    }
+
+@router.get("/global-jackpot/history")
+async def get_jackpot_history(limit: int = 10):
+    """Get jackpot winner history"""
+    history = await db.jackpot_history.find(
+        {},
+        {"_id": 0}
+    ).sort("won_at", -1).to_list(limit)
+    
+    return {"winners": history}
+
 # ==================== JACKPOT SYSTEM ====================
 
 @router.get("/jackpot/active")
