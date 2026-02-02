@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { 
   Plus, Bot, BarChart3, Users, DollarSign, Zap, 
   RefreshCw, Play, Pause, Gift, Megaphone, Settings,
-  Loader2, CheckCircle, X
+  Loader2, CheckCircle, X, Trophy
 } from 'lucide-react';
 import { toast } from 'sonner';
 
