@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getFeatureTranslation } from '../i18n/featureTranslations';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '../components/ui/button';
@@ -21,53 +22,33 @@ const DailyRewardsPage = () => {
   const [claiming, setClaiming] = useState(false);
   const [timeUntilReset, setTimeUntilReset] = useState(0);
 
-  const texts = {
-    de: {
-      title: 'Tägliche Belohnungen',
-      subtitle: 'Komm jeden Tag vorbei und hol dir deine Boni!',
-      dailyQuests: 'Tägliche Quests',
-      loginCalendar: 'Login-Kalender',
-      powerHour: 'Power Hour',
-      claim: 'Abholen',
-      claimed: 'Abgeholt',
-      completed: 'Erledigt',
-      inProgress: 'In Arbeit',
-      allCompleted: 'Alle Quests erledigt!',
-      bonusReward: 'Bonus-Belohnung',
-      day: 'Tag',
-      today: 'Heute',
-      resetsIn: 'Reset in',
-      claimToday: 'Heute abholen',
-      alreadyClaimed: 'Bereits abgeholt',
-      streak: 'Streak',
-      nextReward: 'Nächste Belohnung',
-      powerHourActive: 'Power Hour aktiv!',
-      powerHourNext: 'Nächste Power Hour',
-      doubleXp: 'Doppelte XP',
-      hours: 'Stunden'
-    },
-    en: {
-      title: 'Daily Rewards',
-      subtitle: 'Come back every day and claim your bonuses!',
-      dailyQuests: 'Daily Quests',
-      loginCalendar: 'Login Calendar',
-      powerHour: 'Power Hour',
-      claim: 'Claim',
-      claimed: 'Claimed',
-      completed: 'Completed',
-      inProgress: 'In Progress',
-      allCompleted: 'All quests completed!',
-      bonusReward: 'Bonus Reward',
-      day: 'Day',
-      today: 'Today',
-      resetsIn: 'Resets in',
-      claimToday: 'Claim Today',
-      alreadyClaimed: 'Already Claimed',
-      streak: 'Streak',
-      nextReward: 'Next Reward',
-      powerHourActive: 'Power Hour Active!',
-      powerHourNext: 'Next Power Hour',
-      doubleXp: 'Double XP',
+  // Use centralized translations with local fallback
+  const ft = getFeatureTranslation('dailyRewards', language);
+  const t = {
+    ...ft,
+    title: ft.title || 'Daily Rewards',
+    subtitle: language === 'de' ? 'Komm jeden Tag vorbei und hol dir deine Boni!' : 'Come back every day and claim your bonuses!',
+    dailyQuests: ft.dailyQuests || 'Daily Quests',
+    loginCalendar: ft.loginCalendar || 'Login Calendar',
+    powerHour: ft.powerHour || 'Power Hour',
+    claim: ft.claim || 'Claim',
+    claimed: ft.claimed || 'Claimed',
+    completed: ft.completed || 'Completed',
+    inProgress: language === 'de' ? 'In Arbeit' : 'In Progress',
+    allCompleted: language === 'de' ? 'Alle Quests erledigt!' : 'All quests completed!',
+    bonusReward: language === 'de' ? 'Bonus-Belohnung' : 'Bonus Reward',
+    day: ft.day || 'Day',
+    today: ft.today || 'Today',
+    resetsIn: language === 'de' ? 'Reset in' : 'Resets in',
+    claimToday: language === 'de' ? 'Heute abholen' : 'Claim Today',
+    alreadyClaimed: language === 'de' ? 'Bereits abgeholt' : 'Already Claimed',
+    streak: ft.streak || 'Streak',
+    nextReward: language === 'de' ? 'Nächste Belohnung' : 'Next Reward',
+    powerHourActive: language === 'de' ? 'Power Hour aktiv!' : 'Power Hour Active!',
+    powerHourNext: language === 'de' ? 'Nächste Power Hour' : 'Next Power Hour',
+    doubleXp: ft.doubleXp || 'Double XP',
+    hours: language === 'de' ? 'Stunden' : 'Hours'
+  };
       hours: 'hours'
     }
   };
