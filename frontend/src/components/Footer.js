@@ -180,6 +180,9 @@ export const Footer = () => {
               <Link to="/vip" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
                 {ft.vipMembership}
               </Link>
+              <Link to="/investor" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors flex items-center gap-1">
+                <span>💼</span> {ft.investors}
+              </Link>
               <Link to="/winners" className="text-[#94A3B8] hover:text-[#FFD700] transition-colors">
                 {ft.winners}
               </Link>
