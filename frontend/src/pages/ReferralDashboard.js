@@ -300,8 +300,13 @@ const ReferralDashboard = () => {
               <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-400 font-bold">3</div>
               <div>
                 <p className="text-white font-medium">{t.step3}</p>
+                {t.step3Detail && <p className="text-gray-400 text-sm">{t.step3Detail}</p>}
               </div>
             </div>
+          </div>
+          {/* VIP+ Bonus Info */}
+          <div className="p-3 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-lg border border-yellow-500/30 mt-4">
+            <p className="text-center text-yellow-400 font-medium">{t.vipBonus}</p>
           </div>
           <p className="text-center text-pink-400 mt-4 font-medium">
             🏆 {t.prizes}
