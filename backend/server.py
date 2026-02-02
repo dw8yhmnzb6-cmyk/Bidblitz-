@@ -82,7 +82,7 @@ from routers.flash_coupons import flash_coupons_router
 from routers.vip_lounge import vip_lounge_router
 from routers.birthday import birthday_router
 from routers.insurance import insurance_router
-from routers.wishlist import wishlist_router
+from routers.wishlist import wishlist_router as product_wishlist_router
 from routers.streak_protection import streak_protection_router
 
 # WebSocket manager
