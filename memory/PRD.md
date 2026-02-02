@@ -5,7 +5,31 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Completion Status (February 3, 2026)
 
-### ✅ NEW: Stripe Integration + Tag/Nacht Logik + Gratis-System (Feb 3, 2026)
+### ✅ NEW: Investor Portal + Gutschein-System Fixes (Feb 3, 2026 - Update 2)
+
+**Verbesserungen:**
+
+1. ✅ **Investor Portal - Klare Vorteile:**
+   - Neue "Vision" Sektion mit Zielen (€5M+ Umsatz, 100K+ Nutzer, 10+ Länder)
+   - "Was Sie als Investor erhalten" mit 4 Kategorien:
+     - 📈 Rendite-Potenzial (Ziel: 20-50% p.a.)
+     - 🏆 Unternehmensanteile (0.01% - 1% Equity)
+     - 🎁 Exklusive Vorteile (VIP, Gratis-Gebote, Events)
+     - 📊 Volle Transparenz (Reports, Dashboard, Meetings)
+
+2. ✅ **Gutschein-Auktionen (Gratis → Gutscheine):**
+   - Umbenannt von "Gratis" zu "Gutscheine" (🎫)
+   - Klarstellung: Gebote kosten Geld, Gutschein ist GRATIS bei Gewinn
+   - Backend: `/api/voucher-auctions/*` Router
+   - Max 20 Gebote/Woche auf Gutschein-Auktionen
+   - Max 1 Gutschein-Gewinn pro Nutzer (lifetime)
+
+3. ✅ **Übersetzungen aktualisiert:**
+   - DE: "Gutscheine" statt "Gratis"
+   - EN: "Vouchers" statt "Free"
+   - Info-Text: "Bieten Sie mit gekauften Geboten - Gutschein ist GRATIS bei Gewinn!"
+
+### ✅ Stripe Integration + Tag/Nacht Logik (Feb 3, 2026)
 
 **Neu implementiert:**
 
