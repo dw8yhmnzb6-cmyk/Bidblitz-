@@ -106,6 +106,13 @@ export default function AdminQuickActions({ onRefresh, stats }) {
       onClick: () => executeAction('set_aotd')
     },
     {
+      id: 'broadcast_winners',
+      label: 'Winners',
+      icon: Trophy,
+      color: 'from-amber-500 to-yellow-600',
+      onClick: () => executeAction('broadcast_winners')
+    },
+    {
       id: 'refresh_stats',
       label: 'Refresh',
       icon: RefreshCw,
