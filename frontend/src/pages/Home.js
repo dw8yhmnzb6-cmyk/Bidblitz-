@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getMappedLanguage } from '../i18n/translations';
 import { Clock, Trophy, TrendingUp, Users, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
