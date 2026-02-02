@@ -43,6 +43,10 @@ from routers.leaderboard import router as leaderboard_router
 from routers.gamification import router as gamification_router
 from routers.telegram import router as telegram_router
 from routers.referral import router as referral_router
+from routers.challenges import router as challenges_router
+from routers.events import router as events_router
+from routers.gallery import router as gallery_router
+from routers.subscriptions import router as subscriptions_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
