@@ -227,6 +227,29 @@ function AppContent() {
           <Route path="/subscriptions" element={<Subscriptions />} />
           <Route path="/abos" element={<Subscriptions />} />
           <Route path="/abo" element={<Subscriptions />} />
+          {/* Loyalty & Stats */}
+          <Route path="/loyalty" element={
+            <ProtectedRoute>
+              <LoyaltyPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/treuepunkte" element={
+            <ProtectedRoute>
+              <LoyaltyPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/flash-sales" element={<FlashSalesPage />} />
+          <Route path="/angebote" element={<FlashSalesPage />} />
+          <Route path="/my-stats" element={
+            <ProtectedRoute>
+              <MyStatsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/meine-statistiken" element={
+            <ProtectedRoute>
+              <MyStatsPage />
+            </ProtectedRoute>
+          } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
