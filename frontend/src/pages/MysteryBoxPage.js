@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { getFeatureTranslation } from '../i18n/featureTranslations';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -20,49 +21,8 @@ const MysteryBoxPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTier, setSelectedTier] = useState('all');
 
-  const texts = {
-    de: {
-      title: 'Mystery Boxen',
-      subtitle: 'Überraschungsauktionen mit versteckten Premiumprodukte!',
-      valueRange: 'Wert',
-      currentPrice: 'Aktuell',
-      bids: 'Gebote',
-      endsIn: 'Endet in',
-      bidNow: 'Jetzt bieten',
-      loginToBid: 'Anmelden zum Bieten',
-      noAuctions: 'Keine Mystery Boxen verfügbar',
-      hint: 'Hinweis',
-      howItWorks: 'So funktioniert es',
-      step1: 'Wähle eine Mystery Box Stufe',
-      step2: 'Biete wie bei einer normalen Auktion',
-      step3: 'Gewinne und entdecke dein Produkt!',
-      allTiers: 'Alle Stufen',
-      revealed: 'Enthüllt',
-      winner: 'Gewinner',
-      ended: 'Beendet'
-    },
-    en: {
-      title: 'Mystery Boxes',
-      subtitle: 'Surprise auctions with hidden premium products!',
-      valueRange: 'Value',
-      currentPrice: 'Current',
-      bids: 'Bids',
-      endsIn: 'Ends in',
-      bidNow: 'Bid Now',
-      loginToBid: 'Login to Bid',
-      noAuctions: 'No mystery boxes available',
-      hint: 'Hint',
-      howItWorks: 'How it Works',
-      step1: 'Choose a mystery box tier',
-      step2: 'Bid like a normal auction',
-      step3: 'Win and discover your product!',
-      allTiers: 'All Tiers',
-      revealed: 'Revealed',
-      winner: 'Winner',
-      ended: 'Ended'
-    }
-  };
-  const t = texts[language] || texts.de;
+  // Use centralized translations
+  const t = getFeatureTranslation('mysteryBox', language);
 
   useEffect(() => {
     fetchMysteryBoxes();
