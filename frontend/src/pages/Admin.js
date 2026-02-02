@@ -118,6 +118,17 @@ export default function Admin() {
     notes: ''
   });
 
+  // Manager states
+  const [managers, setManagers] = useState([]);
+  const [showManagerModal, setShowManagerModal] = useState(false);
+  const [managerForm, setManagerForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    cities: '',
+    commission_percent: 15
+  });
+
   // Edit states
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
