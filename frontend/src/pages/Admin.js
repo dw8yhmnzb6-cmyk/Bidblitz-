@@ -2488,6 +2488,44 @@ export default function Admin() {
                           </p>
                         </div>
                       </div>
+
+                      {/* Activity Log */}
+                      <div className="mt-6">
+                        <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-[#F59E0B]" />
+                          {language === 'en' ? 'Activity Log' : 'Aktivitäts-Protokoll'}
+                        </h3>
+                        {managerActivities.length === 0 ? (
+                          <div className="bg-[#0D0D14] rounded-lg p-4 text-center">
+                            <Clock className="w-8 h-8 text-[#94A3B8] mx-auto mb-2 opacity-50" />
+                            <p className="text-[#94A3B8] text-sm">{language === 'en' ? 'No activities yet' : 'Noch keine Aktivitäten'}</p>
+                          </div>
+                        ) : (
+                          <div className="bg-[#0D0D14] rounded-lg overflow-hidden max-h-64 overflow-y-auto">
+                            {managerActivities.map((activity, i) => (
+                              <div key={activity.id || i} className="flex items-start gap-3 p-3 border-b border-white/5 last:border-0">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                  activity.action === 'login' ? 'bg-[#10B981]/20' :
+                                  activity.action === 'influencer_approved' ? 'bg-[#7C3AED]/20' :
+                                  activity.action === 'influencer_blocked' ? 'bg-red-500/20' :
+                                  'bg-[#F59E0B]/20'
+                                }`}>
+                                  {activity.action === 'login' ? <Users className="w-4 h-4 text-[#10B981]" /> :
+                                   activity.action === 'influencer_approved' ? <Check className="w-4 h-4 text-[#7C3AED]" /> :
+                                   activity.action === 'influencer_blocked' ? <Ban className="w-4 h-4 text-red-500" /> :
+                                   <Clock className="w-4 h-4 text-[#F59E0B]" />}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-white text-sm">{activity.description}</p>
+                                  <p className="text-[#94A3B8] text-xs">
+                                    {new Date(activity.created_at).toLocaleString('de-DE')}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
