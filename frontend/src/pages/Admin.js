@@ -358,6 +358,29 @@ export default function Admin() {
     }
   };
 
+  // Load Manager Details (Influencers)
+  useEffect(() => {
+    const loadManagerDetails = async () => {
+      if (!selectedManager || !showManagerDetails) return;
+      
+      setLoadingManagerDetails(true);
+      try {
+        const res = await axios.get(
+          `${API}/manager/admin/${selectedManager.id}/influencers`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setManagerInfluencers(res.data.influencers || []);
+      } catch (error) {
+        console.error('Error loading manager influencers:', error);
+        setManagerInfluencers([]);
+      } finally {
+        setLoadingManagerDetails(false);
+      }
+    };
+    
+    loadManagerDetails();
+  }, [selectedManager, showManagerDetails, token]);
+
   // Product handlers
   const handleCreateProduct = async (e) => {
     e.preventDefault();
