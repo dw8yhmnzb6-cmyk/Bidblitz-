@@ -169,6 +169,12 @@ app.include_router(power_hour_router, prefix="/api")
 app.include_router(price_alerts_router, prefix="/api")
 app.include_router(social_share_router, prefix="/api")
 app.include_router(battle_pass_router, prefix="/api")
+app.include_router(bundles_router, prefix="/api")
+app.include_router(flash_sales_router, prefix="/api")
+app.include_router(vip_subscription_router, prefix="/api")
+app.include_router(last_chance_router, prefix="/api")
+app.include_router(reviews_v2_router, prefix="/api")
+app.include_router(friend_battle_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
