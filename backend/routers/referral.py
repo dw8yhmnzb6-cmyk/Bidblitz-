@@ -348,9 +348,7 @@ async def process_referral_reward(referred_user_id: str):
     
     # Get user names for notifications
     referred_user = await db.users.find_one({"id": referred_user_id}, {"_id": 0, "name": 1})
-    referrer_user = await db.users.find_one({"id": referrer_id}, {"_id": 0, "name": 1})
     referred_name = referred_user.get("name", "Dein Empfohlener") if referred_user else "Dein Empfohlener"
-    referrer_name = referrer_user.get("name", "Dein Werber") if referrer_user else "Dein Werber"
     
     # Notify referrer
     await db.notifications.insert_one({
