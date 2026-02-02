@@ -161,6 +161,54 @@ async def delete_manager(manager_id: str, admin: dict = Depends(get_admin_user))
     
     return {"success": True, "message": "Manager deaktiviert"}
 
+@router.get("/admin/{manager_id}/influencers")
+async def get_manager_influencers(manager_id: str, admin: dict = Depends(get_admin_user)):
+    """Get all influencers managed by a specific manager (Admin only)"""
+    manager = await db.managers.find_one({"id": manager_id}, {"_id": 0})
+    if not manager:
+        raise HTTPException(status_code=404, detail="Manager nicht gefunden")
+    
+    cities = manager.get("cities", []) or manager.get("managed_cities", [])
+    
+    # Find influencers in manager's cities or explicitly assigned
+    query = {
+        "$or": [
+            {"manager_id": manager_id},
+            {"city": {"$in": cities}}
+        ]
+    }
+    
+    influencers = await db.influencers.find(query, {"_id": 0}).to_list(100)
+    
+    # Enrich with earnings data
+    for inf in influencers:
+        code = inf.get("code")
+        if code:
+            # Calculate total earnings
+            purchases = await db.influencer_uses.find({
+                "influencer_code": code,
+                "purchase_amount": {"$gt": 0}
+            }).to_list(1000)
+            
+            total_revenue = sum(p.get("purchase_amount", 0) for p in purchases)
+            commission_rate = inf.get("commission_percent", 10)
+            total_earnings = total_revenue * (commission_rate / 100)
+            
+            # Count signups
+            signups = await db.influencer_uses.count_documents({"influencer_code": code})
+            
+            inf["total_revenue"] = round(total_revenue, 2)
+            inf["total_earnings"] = round(total_earnings, 2)
+            inf["total_signups"] = signups
+    
+    return {
+        "manager_id": manager_id,
+        "manager_name": manager.get("name"),
+        "cities": cities,
+        "influencers": influencers,
+        "total_count": len(influencers)
+    }
+
 @router.get("/admin/cities")
 async def get_all_cities(admin: dict = Depends(get_admin_user)):
     """Get list of all cities with managers and influencers (Admin only)"""
