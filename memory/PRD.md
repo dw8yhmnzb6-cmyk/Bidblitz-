@@ -5,13 +5,15 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Completion Status (February 2, 2026)
 
-### ✅ Session Summary: Influencer-Bearbeitung Implementiert
+### ✅ Session Summary: Manager-Dashboard & Influencer-Bearbeitung
 
 **Neu implementiert (February 2, 2026):**
+- ✅ **Automatische Manager-Weiterleitung**: Manager werden nach Login automatisch zum `/manager-dashboard` weitergeleitet
+- ✅ **Manager-Link in Navbar**: Neuer "Manager"-Link in der Hauptnavigation für eingeloggte Manager
 - ✅ **Admin: Influencer bearbeiten** - Vollständiges Modal mit allen Feldern (Name, Provision, E-Mail, Stadt, Manager, Social Media, Status)
 - ✅ **Manager: Influencer bearbeiten** - Eingeschränktes Modal (nur Stadt aus eigenem Bereich zuweisen)
 - ✅ **Activity-Logging** - Alle Manager-Bearbeitungen werden im Aktivitäts-Protokoll erfasst
-- ✅ Manager-Dashboard zeigt jetzt Bearbeiten-Button für jeden Influencer
+- ✅ **Backend erweitert**: `is_manager` und `role` werden jetzt in `/api/auth/login` und `/api/auth/me` zurückgegeben
 
 **Vorherige Session:**
 - ✅ Manager-Dashboard-Erweiterung
