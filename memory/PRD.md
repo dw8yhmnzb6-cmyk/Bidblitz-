@@ -11,6 +11,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - Customer numbers (8-digit) for gifting
 - VIP membership tiers
 - Influencer accounts with free VIP access
+- **NEW: Referral System** (customer referral with rankings)
 
 ### Auction System
 - Real-time penny auctions with WebSocket updates
@@ -20,6 +21,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - Auto-restart (3s delay)
 - Timer extension on bids (10-15s)
 - **NEW: Beginner-Protection Auctions** (for users with <10 wins)
+- **NEW: Autobidder** (automatic bidding when outbid)
 
 ### Payment Integration
 - Stripe (LIVE keys configured)
@@ -40,7 +42,13 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - **Enhanced Achievements**: 15 achievements with bid rewards
 - **Happy Hour**: 2x bids during 18:00-20:00 (Berlin time)
 - **Beginner Protection**: Exclusive auctions for new users (<10 wins)
-- **Telegram Bot**: Auction alerts via Telegram (link codes, preferences)
+- **Telegram Bot**: Auction alerts via Telegram (@BidBlitzBot active!)
+- **Referral System**: Customer referral with rankings and prizes
+
+### Notification System (NEW - Feb 2026)
+- **Outbid Email Notifications**: HTML email via Resend when outbid
+- **Telegram Alerts**: Outbid, won, deals notifications
+- Push notifications for ending auctions
 
 ### Influencer System
 - Influencer login with code + email
