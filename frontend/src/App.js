@@ -58,6 +58,7 @@ import LoyaltyPage from "./pages/LoyaltyPage";
 import FlashSalesPage from "./pages/FlashSalesPage";
 import MyStatsPage from "./pages/MyStatsPage";
 import LevelsPage from "./pages/LevelsPage";
+import DailyRewardsPage from "./pages/DailyRewardsPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
