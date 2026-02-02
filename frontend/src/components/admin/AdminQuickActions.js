@@ -59,6 +59,13 @@ export default function AdminQuickActions({ onRefresh, stats }) {
           toast.success('Auktion des Tages gesetzt!');
           break;
           
+        case 'broadcast_winners':
+          response = await axios.post(`${API}/weekly-winners/broadcast`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          toast.success(`🏆 Gewinner der Woche an ${response.data?.users_notified || 'alle'} Benutzer gesendet!`);
+          break;
+          
         default:
           break;
       }
