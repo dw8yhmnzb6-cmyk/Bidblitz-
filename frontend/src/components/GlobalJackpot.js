@@ -97,7 +97,7 @@ export default function GlobalJackpot({ className = '' }) {
             <div className="bg-yellow-600/20 rounded-lg px-2 py-1">
               <p className="text-yellow-900/60 text-[8px] sm:text-[9px]">Wert</p>
               <p className="text-yellow-900 font-black text-sm sm:text-base">
-                €{(jackpot.current_amount * 0.15).toFixed(0)}
+                €{(jackpot.current_amount * 0.50).toFixed(0)}
               </p>
             </div>
           </div>
