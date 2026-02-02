@@ -193,6 +193,24 @@ export const Navbar = () => {
             >
               {language === 'de' ? 'Galerie' : 'Gallery'}
             </Link>
+            {isAuthenticated && (
+              <>
+                <Link 
+                  to="/bid-buddy" 
+                  className="text-[#10B981] hover:text-[#34D399] transition-colors font-medium flex items-center gap-1"
+                  data-testid="nav-bid-buddy"
+                >
+                  {language === 'de' ? 'Auto-Bieter' : 'Bid Buddy'}
+                </Link>
+                <Link 
+                  to="/subscription" 
+                  className="text-[#F59E0B] hover:text-[#FBBF24] transition-colors font-medium flex items-center gap-1"
+                  data-testid="nav-subscription"
+                >
+                  {language === 'de' ? 'Abo' : 'Subscribe'}
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Right side */}
