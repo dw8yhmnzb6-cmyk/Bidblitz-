@@ -578,7 +578,7 @@ class InfluencerUpdateByManager(BaseModel):
 
 @router.put("/{manager_id}/influencer/{influencer_id}/update")
 async def update_influencer_by_manager(manager_id: str, influencer_id: str, data: InfluencerUpdateByManager):
-    """Update influencer details by manager (limited fields)"""
+    """Update influencer details by manager - Only if assigned to this manager"""
     manager = await get_current_manager(manager_id)
     cities = manager.get("cities", manager.get("managed_cities", []))
     
@@ -586,20 +586,19 @@ async def update_influencer_by_manager(manager_id: str, influencer_id: str, data
     if not influencer:
         raise HTTPException(status_code=404, detail="Influencer nicht gefunden")
     
-    # Check if influencer is in manager's cities or already assigned to this manager
-    current_city = influencer.get("city")
-    if current_city and current_city not in cities and influencer.get("manager_id") != manager_id:
-        raise HTTPException(status_code=403, detail="Influencer ist nicht in Ihren Städten")
+    # Check if influencer is assigned to THIS manager
+    if influencer.get("manager_id") != manager_id:
+        raise HTTPException(status_code=403, detail="Dieser Influencer ist Ihnen nicht zugewiesen")
     
     # Build update dict
     updates = {}
     changes = []
+    current_city = influencer.get("city")
     
     if data.city is not None:
         if data.city and data.city not in cities:
             raise HTTPException(status_code=403, detail=f"Sie können nur Städte aus Ihrem Bereich zuweisen: {', '.join(cities)}")
         updates["city"] = data.city
-        updates["manager_id"] = manager_id
         changes.append(f"Stadt: {current_city or '-'} → {data.city or '-'}")
     
     if data.commission_percent is not None:
