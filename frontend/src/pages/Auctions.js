@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { toast } from 'sonner';
+import GlobalJackpot from '../components/GlobalJackpot';
+import { HappyHourBanner, LuckyBidCounter, ExcitementStatusBar } from '../components/ExcitementFeatures';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
