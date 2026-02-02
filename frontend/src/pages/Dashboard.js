@@ -57,6 +57,13 @@ export default function Dashboard() {
     if (user) fetchData();
   }, [user]);
 
+  // Redirect managers to their dashboard
+  useEffect(() => {
+    if (isManager) {
+      navigate('/manager-dashboard');
+    }
+  }, [isManager, navigate]);
+
   // Fetch daily reward status
   const fetchDailyRewardStatus = async () => {
     try {
