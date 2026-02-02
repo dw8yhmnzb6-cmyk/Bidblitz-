@@ -71,6 +71,9 @@ from routers.bid_buddy import bid_buddy_router
 from routers.buy_it_now import buy_it_now_router
 from routers.subscription import subscription_router
 from routers.achievements import achievements_router
+from routers.testimonials import testimonials_router
+from routers.countdown_alarm import countdown_alarm_router
+from routers.win_notifications import win_notifications_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
