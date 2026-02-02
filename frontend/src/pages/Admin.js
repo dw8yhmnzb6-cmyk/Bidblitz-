@@ -2343,6 +2343,155 @@ export default function Admin() {
                   </div>
                 </div>
               )}
+
+              {/* Manager Details Modal */}
+              {showManagerDetails && selectedManager && (
+                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+                  <div className="bg-[#1A1A2E] rounded-xl border border-white/10 max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                    <div className="p-6 border-b border-white/10 flex justify-between items-center">
+                      <div>
+                        <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                          <Building2 className="w-5 h-5 text-[#7C3AED]" />
+                          {selectedManager.name}
+                        </h2>
+                        <p className="text-[#94A3B8] text-sm">{selectedManager.email}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setShowManagerDetails(false);
+                          setSelectedManager(null);
+                        }}
+                        className="text-[#94A3B8] hover:text-white"
+                      >
+                        <X className="w-5 h-5" />
+                      </Button>
+                    </div>
+                    
+                    <div className="p-6 overflow-y-auto max-h-[calc(90vh-100px)]">
+                      {/* Manager Stats */}
+                      <div className="grid grid-cols-4 gap-4 mb-6">
+                        <div className="bg-[#0D0D14] rounded-lg p-4 text-center">
+                          <Building2 className="w-6 h-6 text-[#7C3AED] mx-auto mb-1" />
+                          <p className="text-2xl font-bold text-white">{selectedManager.cities?.length || 0}</p>
+                          <p className="text-[#94A3B8] text-xs">{language === 'en' ? 'Cities' : 'Städte'}</p>
+                        </div>
+                        <div className="bg-[#0D0D14] rounded-lg p-4 text-center">
+                          <Users className="w-6 h-6 text-[#F59E0B] mx-auto mb-1" />
+                          <p className="text-2xl font-bold text-white">{selectedManager.influencer_count || managerInfluencers.length}</p>
+                          <p className="text-[#94A3B8] text-xs">Influencer</p>
+                        </div>
+                        <div className="bg-[#0D0D14] rounded-lg p-4 text-center">
+                          <DollarSign className="w-6 h-6 text-[#10B981] mx-auto mb-1" />
+                          <p className="text-2xl font-bold text-[#10B981]">€{(selectedManager.total_influencer_commission || 0).toFixed(2)}</p>
+                          <p className="text-[#94A3B8] text-xs">{language === 'en' ? 'Inf. Commission' : 'Inf. Provision'}</p>
+                        </div>
+                        <div className="bg-[#0D0D14] rounded-lg p-4 text-center">
+                          <Crown className="w-6 h-6 text-[#7C3AED] mx-auto mb-1" />
+                          <p className="text-2xl font-bold text-[#7C3AED]">€{(selectedManager.manager_commission || 0).toFixed(2)}</p>
+                          <p className="text-[#94A3B8] text-xs">{language === 'en' ? 'Manager 15%' : 'Manager 15%'}</p>
+                        </div>
+                      </div>
+
+                      {/* Cities */}
+                      <div className="mb-6">
+                        <h3 className="text-white font-medium mb-2">{language === 'en' ? 'Managed Cities' : 'Verwaltete Städte'}</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedManager.cities?.map((city) => (
+                            <span key={city} className="px-3 py-1 bg-[#7C3AED]/20 text-[#7C3AED] rounded-full text-sm">
+                              {city}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Influencer List */}
+                      <div>
+                        <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+                          <Users className="w-4 h-4 text-[#F59E0B]" />
+                          {language === 'en' ? 'Managed Influencers' : 'Verwaltete Influencer'}
+                        </h3>
+                        
+                        {loadingManagerDetails ? (
+                          <div className="text-center py-8 text-[#94A3B8]">Laden...</div>
+                        ) : managerInfluencers.length === 0 ? (
+                          <div className="text-center py-8 bg-[#0D0D14] rounded-lg">
+                            <Users className="w-12 h-12 text-[#94A3B8] mx-auto mb-2 opacity-50" />
+                            <p className="text-[#94A3B8]">{language === 'en' ? 'No influencers yet' : 'Noch keine Influencer'}</p>
+                          </div>
+                        ) : (
+                          <div className="bg-[#0D0D14] rounded-lg overflow-hidden">
+                            <table className="w-full">
+                              <thead className="bg-white/5">
+                                <tr>
+                                  <th className="text-left text-[#94A3B8] py-2 px-3 text-xs">Name</th>
+                                  <th className="text-left text-[#94A3B8] py-2 px-3 text-xs">Code</th>
+                                  <th className="text-left text-[#94A3B8] py-2 px-3 text-xs">{language === 'en' ? 'City' : 'Stadt'}</th>
+                                  <th className="text-right text-[#94A3B8] py-2 px-3 text-xs">{language === 'en' ? 'Signups' : 'Anmeldungen'}</th>
+                                  <th className="text-right text-[#94A3B8] py-2 px-3 text-xs">{language === 'en' ? 'Commission' : 'Provision'}</th>
+                                  <th className="text-center text-[#94A3B8] py-2 px-3 text-xs">Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {managerInfluencers.map((inf) => (
+                                  <tr key={inf.id} className="border-t border-white/5 hover:bg-white/5">
+                                    <td className="py-2 px-3 text-white text-sm">{inf.name || inf.username}</td>
+                                    <td className="py-2 px-3">
+                                      <span className="px-2 py-0.5 bg-[#F59E0B]/20 text-[#F59E0B] rounded text-xs font-mono">
+                                        {inf.code}
+                                      </span>
+                                    </td>
+                                    <td className="py-2 px-3 text-[#94A3B8] text-sm">{inf.city || '-'}</td>
+                                    <td className="py-2 px-3 text-white text-right text-sm">{inf.signups || inf.total_signups || 0}</td>
+                                    <td className="py-2 px-3 text-[#10B981] text-right text-sm font-medium">
+                                      €{(inf.total_earnings || inf.commission || 0).toFixed(2)}
+                                    </td>
+                                    <td className="py-2 px-3 text-center">
+                                      {inf.is_active !== false ? (
+                                        <span className="px-2 py-0.5 bg-[#10B981]/20 text-[#10B981] rounded text-xs">Aktiv</span>
+                                      ) : (
+                                        <span className="px-2 py-0.5 bg-red-500/20 text-red-500 rounded text-xs">Inaktiv</span>
+                                      )}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                              <tfoot className="bg-white/5">
+                                <tr>
+                                  <td colSpan="3" className="py-2 px-3 text-[#94A3B8] text-sm font-medium">Gesamt</td>
+                                  <td className="py-2 px-3 text-white text-right text-sm font-bold">
+                                    {managerInfluencers.reduce((sum, inf) => sum + (inf.signups || inf.total_signups || 0), 0)}
+                                  </td>
+                                  <td className="py-2 px-3 text-[#10B981] text-right text-sm font-bold">
+                                    €{managerInfluencers.reduce((sum, inf) => sum + (inf.total_earnings || inf.commission || 0), 0).toFixed(2)}
+                                  </td>
+                                  <td></td>
+                                </tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Credentials Info */}
+                      <div className="mt-6 p-4 bg-[#7C3AED]/10 rounded-lg border border-[#7C3AED]/20">
+                        <h4 className="text-white font-medium mb-2 flex items-center gap-2">
+                          <CreditCard className="w-4 h-4 text-[#7C3AED]" />
+                          {language === 'en' ? 'Login Credentials' : 'Zugangsdaten'}
+                        </h4>
+                        <div className="space-y-1 text-sm">
+                          <p className="text-[#94A3B8]">
+                            <span className="text-white">E-Mail:</span> {selectedManager.email}
+                          </p>
+                          <p className="text-[#94A3B8]">
+                            <span className="text-white">Dashboard:</span> /manager-dashboard
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
