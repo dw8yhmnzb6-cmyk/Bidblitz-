@@ -317,3 +317,92 @@ async def send_influencer_payout_confirmation(
         html_content=html_content
     )
 
+
+async def send_admin_payout_notification(
+    influencer_name: str,
+    influencer_code: str,
+    payout_amount: float,
+    payment_method: str,
+    payment_details: str,
+    request_type: str = "influencer"  # "influencer" or "manager"
+):
+    """Send payout request notification to admin."""
+    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@bidblitz.de')
+    
+    type_label = "Influencer" if request_type == "influencer" else "Manager"
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff;">
+            <tr>
+                <td style="background:linear-gradient(135deg,#7C3AED,#10B981); padding:30px; text-align:center;">
+                    <h1 style="color:#fff; margin:0; font-size:24px;">💰 Neue Auszahlungsanfrage</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:30px;">
+                    <div style="background:#F3F4F6; padding:20px; border-radius:10px; margin-bottom:20px;">
+                        <p style="margin:0 0 10px 0; font-size:18px; font-weight:bold; color:#111;">
+                            {type_label}: {influencer_name}
+                        </p>
+                        <p style="margin:0; font-size:14px; color:#666;">
+                            Code: <strong>{influencer_code}</strong>
+                        </p>
+                    </div>
+                    
+                    <table width="100%" style="margin:20px 0;">
+                        <tr>
+                            <td style="padding:10px 0; border-bottom:1px solid #eee;">
+                                <span style="color:#666;">Betrag:</span>
+                            </td>
+                            <td style="padding:10px 0; border-bottom:1px solid #eee; text-align:right;">
+                                <strong style="color:#10B981; font-size:24px;">€{payout_amount:.2f}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px 0; border-bottom:1px solid #eee;">
+                                <span style="color:#666;">Zahlungsmethode:</span>
+                            </td>
+                            <td style="padding:10px 0; border-bottom:1px solid #eee; text-align:right;">
+                                <strong>{payment_method.upper()}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding:10px 0;">
+                                <span style="color:#666;">Details:</span>
+                            </td>
+                            <td style="padding:10px 0; text-align:right;">
+                                <code style="background:#F3F4F6; padding:5px 10px; border-radius:5px;">{payment_details}</code>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <div style="background:#FEF3C7; border-left:4px solid #F59E0B; padding:15px; margin:20px 0; border-radius:0 10px 10px 0;">
+                        <p style="margin:0; font-size:14px; color:#92400E;">
+                            <strong>⚠️ Aktion erforderlich:</strong><br>
+                            Bitte bearbeiten Sie diese Auszahlungsanfrage im Admin-Panel.
+                        </p>
+                    </div>
+                    
+                    <div style="text-align:center; margin-top:30px;">
+                        <a href="https://bidblitz.de/admin-panel" style="display:inline-block; background:#7C3AED; color:#fff; padding:15px 30px; text-decoration:none; border-radius:10px; font-weight:bold;">
+                            Zum Admin-Panel →
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=ADMIN_EMAIL,
+        subject=f"🔔 Neue Auszahlung: {influencer_name} - €{payout_amount:.2f}",
+        html_content=html_content
+    )
+
+
