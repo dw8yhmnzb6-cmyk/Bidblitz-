@@ -290,6 +290,42 @@ function AppContent() {
               <BattlePassPage />
             </ProtectedRoute>
           } />
+          {/* Mystery Box */}
+          <Route path="/mystery" element={<MysteryBoxPage />} />
+          <Route path="/mystery-box" element={<MysteryBoxPage />} />
+          <Route path="/mysterybox" element={<MysteryBoxPage />} />
+          {/* Price Alerts */}
+          <Route path="/alerts" element={
+            <ProtectedRoute>
+              <PriceAlertsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/price-alerts" element={
+            <ProtectedRoute>
+              <PriceAlertsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/schnaeppchen-alarm" element={
+            <ProtectedRoute>
+              <PriceAlertsPage />
+            </ProtectedRoute>
+          } />
+          {/* Social Share */}
+          <Route path="/share" element={
+            <ProtectedRoute>
+              <SocialSharePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/social-share" element={
+            <ProtectedRoute>
+              <SocialSharePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/teilen" element={
+            <ProtectedRoute>
+              <SocialSharePage />
+            </ProtectedRoute>
+          } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
