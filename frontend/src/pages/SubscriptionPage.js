@@ -68,15 +68,6 @@ export default function SubscriptionPage() {
 
   const t = texts[language] || texts.de;
 
-  useEffect(() => {
-    fetchPlans();
-    if (token) {
-      fetchMySubscription();
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
-
   const fetchPlans = async () => {
     try {
       const res = await fetch(`${API_URL}/api/subscription/plans`);
@@ -101,6 +92,16 @@ export default function SubscriptionPage() {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchPlans();
+    if (token) {
+      fetchMySubscription();
+    } else {
+      setLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   const handleSubscribe = async (planId) => {
     if (!isAuthenticated) {
