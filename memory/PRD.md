@@ -384,6 +384,21 @@ February 1, 2026 (Session 4)
 | Gebote-Zurück-Garantie | ✅ Vorhanden | auctions.py | - |
 | WhatsApp/Telegram Bot | 🔄 Ausstehend | - | - |
 
+## Top 10 Recommendations Status (Feb 2, 2026)
+
+| Feature | Status | Backend | Frontend |
+|---------|--------|---------|----------|
+| Wochen-Challenges | ✅ Fertig | challenges.py | WeeklyChallenges.js |
+| Flash-Auktionen/Events | ✅ Fertig | events.py | FlashEvents.js |
+| Gewinner-Galerie | ✅ Fertig | gallery.py | WinnerGallery.js |
+| Subscriptions/VIP+ | ✅ Fertig | subscriptions.py | Subscriptions.js |
+| Buy-Now Timer | 📋 Ausstehend | - | - |
+| 2FA | 📋 Ausstehend | - | - |
+| Google/Facebook Pixel | 📋 Ausstehend | - | - |
+| SEO-Optimierung | 📋 Ausstehend | - | - |
+| WhatsApp Business | 📋 Ausstehend | - | - |
+| VIP+ Exklusive Auktionen | 📋 Ausstehend | - | - |
+
 ## Pending Issues
 
 ### P1 - Resolved ✅
@@ -393,12 +408,14 @@ February 1, 2026 (Session 4)
 4. ~~**KI-Assistent beantwortet keine Fragen**~~ - Neuer "chat" Modus für allgemeine Fragen und Empfehlungen
 
 ### P2 - Pending Features
-2. **Admin email notifications for payout requests** - Email an Admin bei neuen Influencer-Auszahlungsanfragen
-3. **Two-Factor Authentication (2FA)**
-4. **PayPal Integration**
+1. **Admin email notifications for payout requests** - Email an Admin bei neuen Influencer-Auszahlungsanfragen
+2. **Two-Factor Authentication (2FA)**
+3. **PayPal Integration**
+4. **Buy-Now Timer** - Countdown für Sofortkauf
+5. **Google/Facebook Pixel** - Tracking-Integration
 
 ### P3 - Minor Issues
-5. **"Not Found" Toast Notification** - Wiederkehrendes Problem (5x gemeldet)
+1. **"Not Found" Toast Notification** - Wiederkehrendes Problem (5x gemeldet)
 
 ## Completed February 1, 2026 (Session 2)
 
