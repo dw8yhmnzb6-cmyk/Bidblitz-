@@ -167,6 +167,16 @@ export const Navbar = () => {
                 Influencer
               </Link>
             )}
+            {isManager && (
+              <Link 
+                to="/manager-dashboard" 
+                className="text-[#7C3AED] hover:text-[#A78BFA] transition-colors font-medium flex items-center gap-1"
+                data-testid="nav-manager"
+              >
+                <Shield className="w-4 h-4" />
+                Manager
+              </Link>
+            )}
             {isAuthenticated && (
               <Link 
                 to="/referral" 
