@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { translations, getTranslation, languageList } from '../i18n/translations';
+import { translations, getTranslation, languageList, getMappedLanguage } from '../i18n/translations';
 
 const LanguageContext = createContext(null);
 
@@ -8,13 +8,16 @@ export const LanguageProvider = ({ children }) => {
     return localStorage.getItem('language') || 'de';
   });
 
+  // Get mapped language for translation purposes (e.g., xk -> sq)
+  const mappedLanguage = getMappedLanguage(language);
+
   useEffect(() => {
     localStorage.setItem('language', language);
     // Update HTML lang attribute for accessibility
-    document.documentElement.lang = language;
+    document.documentElement.lang = mappedLanguage;
     // Update text direction for RTL languages (Arabic)
-    document.documentElement.dir = (language === 'ar' || language === 'ae') ? 'rtl' : 'ltr';
-  }, [language]);
+    document.documentElement.dir = (mappedLanguage === 'ar' || language === 'ae') ? 'rtl' : 'ltr';
+  }, [language, mappedLanguage]);
 
   const t = (key) => {
     return getTranslation(language, key);
@@ -27,7 +30,13 @@ export const LanguageProvider = ({ children }) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, t, changeLanguage, languages: Object.keys(languageList) }}>
+    <LanguageContext.Provider value={{ 
+      language, 
+      mappedLanguage, // Add mapped language for direct access
+      t, 
+      changeLanguage, 
+      languages: Object.keys(languageList) 
+    }}>
       {children}
     </LanguageContext.Provider>
   );
