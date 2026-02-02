@@ -173,6 +173,8 @@ async def login(credentials: UserLogin, request: Request):
             "name": user["name"],
             "bids_balance": user["bids_balance"],
             "is_admin": user.get("is_admin", False),
+            "is_manager": user.get("is_manager", False),
+            "role": user.get("role", "user"),
             "two_factor_enabled": user.get("two_factor_enabled", False)
         }
     }
