@@ -49,10 +49,6 @@ const DailyRewardsPage = () => {
     doubleXp: ft.doubleXp || 'Double XP',
     hours: language === 'de' ? 'Stunden' : 'Hours'
   };
-      hours: 'hours'
-    }
-  };
-  const t = texts[language] || texts.de;
 
   useEffect(() => {
     if (isAuthenticated) {
