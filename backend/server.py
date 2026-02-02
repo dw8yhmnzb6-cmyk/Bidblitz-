@@ -47,6 +47,13 @@ from routers.challenges import router as challenges_router
 from routers.events import router as events_router
 from routers.gallery import router as gallery_router
 from routers.subscriptions import router as subscriptions_router
+from routers.loyalty import router as loyalty_router
+from routers.flash_sales import router as flash_sales_router
+from routers.wishlist import router as wishlist_router
+from routers.user_stats import router as user_stats_router
+from routers.abandoned_cart import router as cart_router
+from routers.reviews import router as reviews_router
+from routers.mystery_box import router as mystery_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
