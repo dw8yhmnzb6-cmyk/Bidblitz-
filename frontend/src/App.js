@@ -255,6 +255,21 @@ function AppContent() {
           <Route path="/levels" element={<LevelsPage />} />
           <Route path="/level" element={<LevelsPage />} />
           <Route path="/rang" element={<LevelsPage />} />
+          <Route path="/daily" element={
+            <ProtectedRoute>
+              <DailyRewardsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/daily-rewards" element={
+            <ProtectedRoute>
+              <DailyRewardsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/taeglich" element={
+            <ProtectedRoute>
+              <DailyRewardsPage />
+            </ProtectedRoute>
+          } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
