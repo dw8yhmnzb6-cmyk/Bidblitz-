@@ -302,7 +302,7 @@ async def get_my_rank(user: dict = Depends(get_current_user)):
 async def process_referral_reward(referred_user_id: str):
     """
     Called when a referred user makes their first purchase.
-    Awards bonus bids to the referrer.
+    Awards bonus bids to BOTH the referrer (10 bids) and referred user (5 bids).
     """
     # Find the referral record
     referral = await db.referrals.find_one({"referred_id": referred_user_id})
@@ -315,13 +315,22 @@ async def process_referral_reward(referred_user_id: str):
     
     referrer_id = referral["referrer_id"]
     
-    # Award 10 bids to referrer
-    reward_bids = 10
+    # Award 10 bids to referrer (if not already given)
+    referrer_reward_bids = 10
+    referred_reward_bids = 5
     
-    await db.users.update_one(
-        {"id": referrer_id},
-        {"$inc": {"bids_balance": reward_bids}}
-    )
+    if not referral.get("referrer_bonus_given", False):
+        await db.users.update_one(
+            {"id": referrer_id},
+            {"$inc": {"bids_balance": referrer_reward_bids}}
+        )
+    
+    # Award 5 bids to referred user (if not already given)
+    if not referral.get("referred_bonus_given", False):
+        await db.users.update_one(
+            {"id": referred_user_id},
+            {"$inc": {"bids_balance": referred_reward_bids}}
+        )
     
     # Update referral record
     await db.referrals.update_one(
@@ -329,27 +338,43 @@ async def process_referral_reward(referred_user_id: str):
         {
             "$set": {
                 "has_purchased": True,
-                "reward_bids": reward_bids,
+                "reward_bids": referrer_reward_bids,
+                "referrer_bonus_given": True,
+                "referred_bonus_given": True,
                 "rewarded_at": datetime.now(timezone.utc).isoformat()
             }
         }
     )
     
-    # Notify referrer
+    # Get user names for notifications
     referred_user = await db.users.find_one({"id": referred_user_id}, {"_id": 0, "name": 1})
+    referrer_user = await db.users.find_one({"id": referrer_id}, {"_id": 0, "name": 1})
     referred_name = referred_user.get("name", "Dein Empfohlener") if referred_user else "Dein Empfohlener"
+    referrer_name = referrer_user.get("name", "Dein Werber") if referrer_user else "Dein Werber"
     
+    # Notify referrer
     await db.notifications.insert_one({
         "id": str(uuid.uuid4()),
         "user_id": referrer_id,
         "type": "referral_reward",
         "title": "🎁 Empfehlungsbonus!",
-        "message": f"{referred_name} hat eingekauft! Du erhältst {reward_bids} Gratis-Gebote!",
+        "message": f"{referred_name} hat eingekauft! Du erhältst {referrer_reward_bids} Gratis-Gebote!",
         "read": False,
         "created_at": datetime.now(timezone.utc).isoformat()
     })
     
-    logger.info(f"Referral reward: {referrer_id} earned {reward_bids} bids from {referred_user_id}'s purchase")
+    # Notify referred user
+    await db.notifications.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": referred_user_id,
+        "type": "referral_reward",
+        "title": "🎉 Willkommensbonus!",
+        "message": f"Danke für deinen ersten Kauf! Du erhältst {referred_reward_bids} Gratis-Gebote als Willkommensbonus!",
+        "read": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    logger.info(f"Referral reward: {referrer_id} earned {referrer_reward_bids} bids, {referred_user_id} earned {referred_reward_bids} bids from first purchase")
 
 
 # ==================== ADMIN ENDPOINTS ====================
