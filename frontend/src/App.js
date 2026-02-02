@@ -411,6 +411,42 @@ function AppContent() {
           {/* Video Testimonials */}
           <Route path="/testimonials" element={<VideoTestimonialsPage />} />
           <Route path="/gewinner-videos" element={<VideoTestimonialsPage />} />
+          {/* Team Auctions */}
+          <Route path="/team-auktionen" element={
+            <ProtectedRoute>
+              <TeamAuctionsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/teams" element={
+            <ProtectedRoute>
+              <TeamAuctionsPage />
+            </ProtectedRoute>
+          } />
+          {/* Birthday Bonus */}
+          <Route path="/geburtstag" element={
+            <ProtectedRoute>
+              <BirthdayBonusPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/birthday" element={
+            <ProtectedRoute>
+              <BirthdayBonusPage />
+            </ProtectedRoute>
+          } />
+          {/* Product Wishlist */}
+          <Route path="/produkt-wuensche" element={<WishlistPage />} />
+          <Route path="/product-wishlist" element={<WishlistPage />} />
+          {/* Streak Protection */}
+          <Route path="/streak" element={
+            <ProtectedRoute>
+              <StreakProtectionPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/login-streak" element={
+            <ProtectedRoute>
+              <StreakProtectionPage />
+            </ProtectedRoute>
+          } />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
