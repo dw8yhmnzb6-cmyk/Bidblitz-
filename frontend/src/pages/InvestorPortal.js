@@ -375,28 +375,113 @@ export default function InvestorPortal() {
         
         {/* Invest Tab */}
         {activeTab === 'invest' && (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Wählen Sie Ihr Investment-Paket</h2>
-              <p className="text-[#94A3B8]">Transparente Konditionen • Sofortige Zahlung • Sichere Abwicklung</p>
+          <div className="space-y-8">
+            
+            {/* Vision Section */}
+            <div className="glass-card rounded-2xl p-8 bg-gradient-to-br from-[#7C3AED]/10 to-[#06B6D4]/10 border border-[#7C3AED]/20">
+              <h2 className="text-2xl font-bold text-white mb-4 text-center">🚀 Unsere Vision</h2>
+              <p className="text-[#94A3B8] text-center max-w-3xl mx-auto mb-6">
+                BidBlitz revolutioniert den E-Commerce durch spannende Penny-Auktionen. 
+                Mit Ihrer Investition helfen Sie uns, europaweit zu expandieren und die 
+                führende Plattform für Schnäppchenjäger zu werden.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4">
+                  <div className="text-3xl font-bold text-[#FFD700]">€5M+</div>
+                  <div className="text-[#94A3B8] text-sm">Zielumsatz 2027</div>
+                </div>
+                <div className="text-center p-4">
+                  <div className="text-3xl font-bold text-[#10B981]">100K+</div>
+                  <div className="text-[#94A3B8] text-sm">Nutzer-Ziel</div>
+                </div>
+                <div className="text-center p-4">
+                  <div className="text-3xl font-bold text-[#06B6D4]">10+</div>
+                  <div className="text-[#94A3B8] text-sm">Länder bis 2028</div>
+                </div>
+              </div>
             </div>
             
-            {/* Package Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {packages.map(pkg => (
-                <PackageCard
-                  key={pkg.id}
-                  pkg={pkg}
-                  selected={selectedPackage === pkg.id}
-                  onSelect={setSelectedPackage}
-                  onInvest={handleInvest}
-                  loading={checkoutLoading}
-                />
-              ))}
+            {/* What Investors Get */}
+            <div className="glass-card rounded-2xl p-8">
+              <h2 className="text-2xl font-bold text-white mb-6 text-center">💎 Was Sie als Investor erhalten</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* Rendite */}
+                <div className="p-5 bg-[#181824] rounded-xl border border-[#10B981]/30">
+                  <div className="w-12 h-12 bg-[#10B981]/20 rounded-xl flex items-center justify-center mb-4">
+                    <TrendingUp className="w-6 h-6 text-[#10B981]" />
+                  </div>
+                  <h3 className="text-white font-bold mb-2">📈 Rendite-Potenzial</h3>
+                  <p className="text-[#94A3B8] text-sm mb-3">
+                    Profitieren Sie vom Wachstum. Bei erfolgreicher Expansion steigt der Wert Ihrer Anteile.
+                  </p>
+                  <div className="text-[#10B981] font-bold">Ziel: 20-50% p.a.*</div>
+                </div>
+                
+                {/* Anteile */}
+                <div className="p-5 bg-[#181824] rounded-xl border border-[#7C3AED]/30">
+                  <div className="w-12 h-12 bg-[#7C3AED]/20 rounded-xl flex items-center justify-center mb-4">
+                    <Star className="w-6 h-6 text-[#7C3AED]" />
+                  </div>
+                  <h3 className="text-white font-bold mb-2">🏆 Unternehmensanteile</h3>
+                  <p className="text-[#94A3B8] text-sm mb-3">
+                    Sie werden Miteigentümer von BidBlitz mit Stimmrecht bei wichtigen Entscheidungen.
+                  </p>
+                  <div className="text-[#7C3AED] font-bold">0.01% - 1% Equity</div>
+                </div>
+                
+                {/* Exklusive Vorteile */}
+                <div className="p-5 bg-[#181824] rounded-xl border border-[#FFD700]/30">
+                  <div className="w-12 h-12 bg-[#FFD700]/20 rounded-xl flex items-center justify-center mb-4">
+                    <Gift className="w-6 h-6 text-[#FFD700]" />
+                  </div>
+                  <h3 className="text-white font-bold mb-2">🎁 Exklusive Vorteile</h3>
+                  <ul className="text-[#94A3B8] text-sm space-y-1">
+                    <li>✓ VIP-Zugang lebenslang</li>
+                    <li>✓ Monatliche Gratis-Gebote</li>
+                    <li>✓ Exklusive Auktionen</li>
+                    <li>✓ Persönlicher Support</li>
+                  </ul>
+                </div>
+                
+                {/* Transparenz */}
+                <div className="p-5 bg-[#181824] rounded-xl border border-[#06B6D4]/30">
+                  <div className="w-12 h-12 bg-[#06B6D4]/20 rounded-xl flex items-center justify-center mb-4">
+                    <BarChart3 className="w-6 h-6 text-[#06B6D4]" />
+                  </div>
+                  <h3 className="text-white font-bold mb-2">📊 Volle Transparenz</h3>
+                  <ul className="text-[#94A3B8] text-sm space-y-1">
+                    <li>✓ Monatliche Reports</li>
+                    <li>✓ Echtzeit-Dashboard</li>
+                    <li>✓ Quartals-Meetings</li>
+                    <li>✓ Direkter CEO-Kontakt</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            {/* Package Selection */}
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2 text-center">Wählen Sie Ihr Investment-Paket</h2>
+              <p className="text-[#94A3B8] text-center mb-6">Transparente Konditionen • Sofortige Zahlung • Sichere Abwicklung</p>
+              
+              {/* Package Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {packages.map(pkg => (
+                  <PackageCard
+                    key={pkg.id}
+                    pkg={pkg}
+                    selected={selectedPackage === pkg.id}
+                    onSelect={setSelectedPackage}
+                    onInvest={handleInvest}
+                    loading={checkoutLoading}
+                  />
+                ))}
+              </div>
             </div>
             
             {/* Trust Badges */}
-            <div className="flex flex-wrap justify-center gap-6 mt-8">
+            <div className="flex flex-wrap justify-center gap-6">
               <div className="flex items-center gap-2 text-[#94A3B8]">
                 <Shield className="w-5 h-5 text-[#10B981]" />
                 <span className="text-sm">SSL-verschlüsselt</span>
@@ -411,13 +496,12 @@ export default function InvestorPortal() {
               </div>
             </div>
             
-            {/* Info Box */}
-            <div className="glass-card rounded-xl p-6 border border-[#F59E0B]/30 bg-[#F59E0B]/5">
-              <h4 className="text-[#F59E0B] font-bold mb-2">Was Sie als Investor erhalten:</h4>
-              <ul className="text-[#94A3B8] text-sm space-y-1">
-                <li>• Anteil am Unternehmen gemäß gewähltem Paket</li>
-                <li>• Regelmäßige Updates zur Geschäftsentwicklung</li>
-                <li>• Exklusiver Zugang zu Investor-Events</li>
+            {/* Disclaimer */}
+            <div className="text-center text-[#64748B] text-xs">
+              *Renditeangaben sind Zielwerte und keine Garantie. Investitionen sind mit Risiken verbunden.
+            </div>
+          </div>
+        )}
                 <li>• Mitspracherecht bei wichtigen Entscheidungen (Partner-Paket)</li>
               </ul>
             </div>
