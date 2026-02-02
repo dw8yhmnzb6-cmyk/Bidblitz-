@@ -2141,14 +2141,24 @@ export const languageList = {
   el: { name: 'Ελληνικά', flag: '🇬🇷' }
 };
 
+// Language mapping for regional variants
+const langMapping = {
+  'xk': 'sq',  // Kosovo -> Albanian
+  'us': 'en',  // US English -> English  
+  'ae': 'ar', // UAE -> Arabic
+};
+
 export const getTranslation = (lang, key) => {
+  // Map regional languages to their base language
+  const mappedLang = langMapping[lang] || lang;
+  
   const keys = key.split('.');
-  let value = translations[lang] || translations.de;
+  let value = translations[mappedLang] || translations[lang] || translations.de;
   for (const k of keys) {
     value = value?.[k];
   }
   // Fallback to German if translation not found
-  if (!value && lang !== 'de') {
+  if (!value && mappedLang !== 'de') {
     value = translations.de;
     for (const k of keys) {
       value = value?.[k];
