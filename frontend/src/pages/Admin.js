@@ -2575,6 +2575,148 @@ export default function Admin() {
               isConnected={isConnected}
             />
           )}
+
+          {/* Jackpot Tab */}
+          {activeTab === 'jackpot' && (
+            <div className="space-y-6">
+              <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Trophy className="w-6 h-6 text-[#FFD700]" />
+                Jackpot Verwaltung
+              </h1>
+
+              {/* Current Jackpot */}
+              <div className="glass-card rounded-xl p-6 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-yellow-500/30">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[#94A3B8] text-sm">Aktueller Jackpot</p>
+                    <p className="text-4xl font-black text-[#FFD700]">
+                      {jackpotData?.current_amount?.toLocaleString('de-DE') || 0} Gebote
+                    </p>
+                    <p className="text-white text-lg mt-1">
+                      Wert: €{((jackpotData?.current_amount || 0) * 0.50).toFixed(2)}
+                    </p>
+                  </div>
+                  <Trophy className="w-16 h-16 text-[#FFD700] opacity-50" />
+                </div>
+              </div>
+
+              {/* Jackpot Controls */}
+              <div className="glass-card rounded-xl p-6">
+                <h3 className="text-white font-bold mb-4">Jackpot anpassen</h3>
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <Label className="text-[#94A3B8]">Neuer Jackpot-Betrag (Gebote)</Label>
+                    <Input
+                      type="number"
+                      value={jackpotAmount}
+                      onChange={(e) => setJackpotAmount(parseInt(e.target.value) || 0)}
+                      className="bg-[#181824] border-white/10 text-white"
+                    />
+                  </div>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        await axios.post(`${API}/excitement/global-jackpot/set`, 
+                          { amount: jackpotAmount },
+                          { headers: { Authorization: `Bearer ${token}` } }
+                        );
+                        toast.success(`Jackpot auf ${jackpotAmount} Gebote gesetzt!`);
+                        fetchData();
+                      } catch (err) {
+                        toast.error('Fehler beim Setzen');
+                      }
+                    }}
+                    className="bg-[#FFD700] text-black hover:bg-[#FFD700]/80"
+                  >
+                    <Save className="w-4 h-4 mr-1" />
+                    Setzen
+                  </Button>
+                </div>
+              </div>
+
+              {/* Award Jackpot */}
+              <div className="glass-card rounded-xl p-6">
+                <h3 className="text-white font-bold mb-4">Jackpot vergeben</h3>
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <Label className="text-[#94A3B8]">Benutzer auswählen</Label>
+                    <Select onValueChange={async (userId) => {
+                      if (!userId) return;
+                      try {
+                        const res = await axios.post(
+                          `${API}/excitement/global-jackpot/award/${userId}`,
+                          {},
+                          { headers: { Authorization: `Bearer ${token}` } }
+                        );
+                        toast.success(`🏆 ${res.data.winner} hat ${res.data.amount} Gebote gewonnen!`);
+                        fetchData();
+                      } catch (err) {
+                        toast.error(err.response?.data?.detail || 'Fehler');
+                      }
+                    }}>
+                      <SelectTrigger className="bg-[#181824] border-white/10 text-white">
+                        <SelectValue placeholder="Benutzer wählen..." />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#181824] border-white/10">
+                        {users.map((user) => (
+                          <SelectItem key={user.id} value={user.id} className="text-white">
+                            {user.name} ({user.email})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <p className="text-[#94A3B8] text-sm mt-2">
+                  Der ausgewählte Benutzer erhält den kompletten Jackpot von {jackpotData?.current_amount || 0} Geboten
+                </p>
+              </div>
+
+              {/* Jackpot History */}
+              <div className="glass-card rounded-xl p-6">
+                <h3 className="text-white font-bold mb-4">Jackpot-Gewinner Historie</h3>
+                {jackpotHistory.length === 0 ? (
+                  <p className="text-[#94A3B8] text-center py-4">Noch keine Jackpot-Gewinner</p>
+                ) : (
+                  <div className="space-y-2">
+                    {jackpotHistory.map((winner, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 bg-[#181824] rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <Trophy className="w-5 h-5 text-[#FFD700]" />
+                          <div>
+                            <p className="text-white font-medium">{winner.user_name}</p>
+                            <p className="text-[#94A3B8] text-xs">
+                              {new Date(winner.won_at).toLocaleString('de-DE')}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[#FFD700] font-bold">{winner.amount} Gebote</p>
+                          <p className="text-[#94A3B8] text-xs">€{(winner.amount * 0.50).toFixed(2)}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Last Winner Info */}
+              {jackpotData?.last_winner && (
+                <div className="glass-card rounded-xl p-6 border border-[#FFD700]/30">
+                  <h3 className="text-white font-bold mb-2">Letzter Gewinner</h3>
+                  <div className="flex items-center gap-4">
+                    <Trophy className="w-10 h-10 text-[#FFD700]" />
+                    <div>
+                      <p className="text-xl font-bold text-white">{jackpotData.last_winner}</p>
+                      <p className="text-[#94A3B8]">
+                        Gewonnen: {jackpotData.last_won_amount} Gebote (€{(jackpotData.last_won_amount * 0.50).toFixed(2)})
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </main>
       </div>
       
