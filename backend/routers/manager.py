@@ -431,6 +431,17 @@ async def request_manager_payout(manager_id: str, amount: float = Query(..., gt=
     await db.manager_payouts.insert_one(payout_request)
     
     logger.info(f"Manager {manager['name']} requested payout of €{amount}")
+    
+    # Send admin notification email
+    await send_admin_payout_notification(
+        influencer_name=manager["name"],
+        influencer_code=f"Manager-{manager_id[:8]}",
+        payout_amount=amount,
+        payment_method="bank",
+        payment_details=manager["email"],
+        request_type="manager"
+    )
+    
     return {"success": True, "message": f"Auszahlung von €{amount:.2f} angefordert", "payout_id": payout_request["id"]}
 
 @router.get("/admin/payouts")
