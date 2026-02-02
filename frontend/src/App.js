@@ -51,6 +51,9 @@ import GiftCardSuccess from "./pages/GiftCardSuccess";
 import Leaderboard from "./pages/Leaderboard";
 import BeginnerAuctions from "./pages/BeginnerAuctions";
 import ReferralDashboard from "./pages/ReferralDashboard";
+import FlashEvents from "./pages/FlashEvents";
+import WinnerGallery from "./pages/WinnerGallery";
+import Subscriptions from "./pages/Subscriptions";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
