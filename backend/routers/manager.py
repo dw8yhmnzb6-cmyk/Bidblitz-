@@ -398,32 +398,20 @@ async def log_manager_activity(manager_id: str, action: str, description: str, d
 
 @router.get("/dashboard/{manager_id}")
 async def get_manager_dashboard(manager_id: str):
-    """Get manager dashboard with all statistics"""
+    """Get manager dashboard with all statistics - ONLY shows directly assigned influencers"""
     manager = await get_current_manager(manager_id)
-    cities = manager.get("cities", [])
     
-    # Get all influencers managed by this manager
+    # IMPORTANT: Only get influencers that are DIRECTLY assigned to this manager
+    # Managers can ONLY see their own influencers, NOT influencers from other managers
     influencers = await db.influencers.find({
-        "manager_id": manager_id,
-        "city": {"$in": cities}
-    }, {"_id": 0}).to_list(100)
-    
-    # Also get influencers in manager's cities without explicit manager assignment
-    unassigned_in_cities = await db.influencers.find({
-        "city": {"$in": cities},
-        "$or": [
-            {"manager_id": {"$exists": False}},
-            {"manager_id": None}
-        ]
+        "manager_id": manager_id
     }, {"_id": 0}).to_list(100)
     
     total_influencer_revenue = 0
     total_influencer_commission = 0
     influencer_stats = []
     
-    all_influencers = influencers + unassigned_in_cities
-    
-    for inf in all_influencers:
+    for inf in influencers:
         code = inf.get("code")
         
         # Count customers
