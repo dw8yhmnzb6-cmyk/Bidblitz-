@@ -6,7 +6,7 @@ import uuid
 import random
 
 from config import db, logger
-from dependencies import get_current_user, get_current_admin
+from dependencies import get_current_user, get_admin_user as get_current_admin
 
 router = APIRouter(prefix="/mystery-box", tags=["Mystery Box"])
 

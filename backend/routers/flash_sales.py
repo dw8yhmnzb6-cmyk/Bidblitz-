@@ -7,7 +7,7 @@ import os
 import stripe
 
 from config import db, logger, FRONTEND_URL
-from dependencies import get_current_user, get_current_admin
+from dependencies import get_current_user, get_admin_user as get_current_admin
 
 router = APIRouter(prefix="/flash-sales", tags=["Flash Sales"])
 
