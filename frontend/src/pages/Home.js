@@ -487,8 +487,9 @@ export default function Home() {
   // ALL other auctions (no limit - show everything on one page)
   const otherAuctions = auctions.filter(a => a.id !== premiumAuction?.id);
   
-  // Get translations
-  const ht = homeTexts[language] || homeTexts.de;
+  // Get translations with language mapping (xk -> sq)
+  const mappedLang = getMappedLanguage(language);
+  const ht = homeTexts[mappedLang] || homeTexts[language] || homeTexts.de;
   
   if (loading) {
     return (
@@ -507,7 +508,7 @@ export default function Home() {
           totalBids={stats.totalBids}
           activeUsers={stats.activeUsers}
           activeAuctions={auctions.length}
-          language={language}
+          language={mappedLang}
         />
         
         {/* Premium Auction */}
