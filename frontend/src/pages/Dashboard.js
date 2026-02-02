@@ -410,9 +410,9 @@ export default function Dashboard() {
                   <Sparkles className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold text-lg">{language === 'de' ? 'Glücksrad' : language === 'en' ? 'Lucky Wheel' : language === 'tr' ? 'Şans Çarkı' : 'Glücksrad'}</h3>
+                  <h3 className="text-white font-bold text-lg">{mappedLang === 'de' ? 'Glücksrad' : mappedLang === 'en' ? 'Lucky Wheel' : mappedLang === 'tr' ? 'Şans Çarkı' : mappedLang === 'sq' ? 'Rrota e Fatit' : mappedLang === 'fr' ? 'Roue de la Fortune' : mappedLang === 'es' ? 'Ruleta de la Suerte' : 'Glücksrad'}</h3>
                   <p className="text-gray-400 text-sm">
-                    {language === 'de' ? 'Drehe täglich für Gratis-Preise!' : language === 'en' ? 'Spin daily for free prizes!' : language === 'tr' ? 'Günlük çevir, ücretsiz ödüller kazan!' : 'Drehe täglich für Gratis-Preise!'}
+                    {mappedLang === 'de' ? 'Drehe täglich für Gratis-Preise!' : mappedLang === 'en' ? 'Spin daily for free prizes!' : mappedLang === 'tr' ? 'Günlük çevir, ücretsiz ödüller kazan!' : mappedLang === 'sq' ? 'Rrotullo çdo ditë për çmime falas!' : mappedLang === 'fr' ? 'Tournez chaque jour pour des prix gratuits!' : mappedLang === 'es' ? '¡Gira diariamente para premios gratis!' : 'Drehe täglich für Gratis-Preise!'}
                   </p>
                 </div>
               </div>
@@ -422,7 +422,7 @@ export default function Dashboard() {
                 data-testid="open-wheel-btn"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
-                {language === 'de' ? 'Jetzt drehen!' : language === 'en' ? 'Spin Now!' : language === 'tr' ? 'Şimdi çevir!' : 'Jetzt drehen!'}
+                {mappedLang === 'de' ? 'Jetzt drehen!' : mappedLang === 'en' ? 'Spin Now!' : mappedLang === 'tr' ? 'Şimdi çevir!' : mappedLang === 'sq' ? 'Rrotullo Tani!' : mappedLang === 'fr' ? 'Tournez!' : mappedLang === 'es' ? '¡Gira Ahora!' : 'Jetzt drehen!'}
               </Button>
             </div>
           </div>
