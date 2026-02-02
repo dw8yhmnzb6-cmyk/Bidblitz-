@@ -1,14 +1,27 @@
-"""Investor Portal Router - Investment Dashboard, Crowdfunding & Statistics"""
-from fastapi import APIRouter, HTTPException, Depends
+"""Investor Portal Router - Investment Dashboard, Crowdfunding & Statistics with Stripe"""
+from fastapi import APIRouter, HTTPException, Depends, Request
 from datetime import datetime, timezone, timedelta
 from typing import Optional, List
 from pydantic import BaseModel, Field
 import uuid
+import os
 
 from config import db, logger
 from dependencies import get_current_user, get_admin_user
+from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 
 router = APIRouter(prefix="/investor", tags=["Investor Portal"])
+
+# Stripe API Key
+STRIPE_API_KEY = os.environ.get("STRIPE_API_KEY")
+
+# Investment packages (fixed amounts for security)
+INVESTMENT_PACKAGES = {
+    "starter": {"amount": 500.0, "label": "Starter", "equity": "0.01%", "perks": ["Monatliche Updates", "Investor Badge"]},
+    "standard": {"amount": 2500.0, "label": "Standard", "equity": "0.05%", "perks": ["Monatliche Updates", "Investor Badge", "VIP-Zugang"]},
+    "premium": {"amount": 10000.0, "label": "Premium", "equity": "0.2%", "perks": ["Wöchentliche Updates", "Investor Badge", "VIP-Zugang", "Exklusive Events"]},
+    "partner": {"amount": 50000.0, "label": "Partner", "equity": "1%", "perks": ["Direkter Kontakt", "Advisory Board", "Alle Premium-Vorteile"]}
+}
 
 # ==================== MODELS ====================
 
@@ -16,6 +29,10 @@ class InvestmentCreate(BaseModel):
     amount: float = Field(..., gt=0, description="Investment amount in EUR")
     investment_type: str = Field(default="standard", description="standard, premium, partner")
     notes: Optional[str] = None
+
+class InvestmentCheckoutRequest(BaseModel):
+    package_id: str
+    origin_url: str
 
 class CrowdfundingProject(BaseModel):
     title: str
