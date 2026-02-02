@@ -864,13 +864,13 @@ export default function Auctions() {
   // Get AOTD product
   const aotdProduct = auctionOfTheDay?.product || (auctionOfTheDay?.product_id ? products[auctionOfTheDay.product_id] : null);
   
-  // Filter buttons config with translations
+  // Filter buttons config with translations - Show night filter only at night
   const filterButtons = [
     { id: 'live', label: t('auctionPage.filters.live') || 'Live', count: auctionCounts.live, color: 'from-cyan-500 to-cyan-600' },
     { id: 'anfaenger', label: t('auctionPage.filters.beginner') || 'Anfänger', count: auctionCounts.anfaenger, color: 'from-purple-500 to-violet-500', icon: '🎓' },
-    { id: 'geschenke', label: t('auctionPage.filters.gifts') || 'Geschenke', count: auctionCounts.geschenke, color: 'from-pink-500 to-rose-500', icon: '🎀' },
     { id: 'gratis', label: t('auctionPage.filters.free') || 'Gratis', count: auctionCounts.gratis, color: 'from-green-500 to-emerald-500', icon: '🎁' },
-    { id: 'nacht', label: t('auctionPage.filters.night') || 'Nacht', count: auctionCounts.nacht, color: 'from-indigo-600 to-purple-600', icon: '🌙' },
+    // Night filter only visible at night
+    ...(isNightTime ? [{ id: 'nacht', label: t('auctionPage.filters.night') || 'Nacht', count: auctionCounts.nacht, color: 'from-indigo-600 to-purple-600', icon: '🌙' }] : []),
     { id: 'ende', label: t('auctionPage.filters.ending') || 'Ende', count: auctionCounts.ende, color: 'from-gray-500 to-gray-600' },
     { id: 'vip', label: t('auctionPage.filters.vip') || 'VIP', count: auctionCounts.vip, color: 'from-yellow-400 to-amber-500', icon: '⭐' }
   ];
