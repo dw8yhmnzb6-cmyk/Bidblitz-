@@ -67,16 +67,20 @@ class InfluencerCreate(BaseModel):
     instagram: Optional[str] = None
     youtube: Optional[str] = None
     tiktok: Optional[str] = None
+    city: Optional[str] = None  # City for regional management
     custom_tiers: Optional[List[dict]] = None  # Custom commission tiers
 
 class InfluencerUpdate(BaseModel):
     name: Optional[str] = None
     commission_percent: Optional[float] = None
     is_active: Optional[bool] = None
+    is_approved: Optional[bool] = None
     email: Optional[str] = None
     instagram: Optional[str] = None
     youtube: Optional[str] = None
     tiktok: Optional[str] = None
+    city: Optional[str] = None  # City for regional management
+    manager_id: Optional[str] = None  # Assigned manager
     custom_tiers: Optional[List[dict]] = None
 
 # ==================== ADMIN ENDPOINTS ====================
