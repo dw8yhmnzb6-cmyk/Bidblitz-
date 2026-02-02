@@ -5,6 +5,38 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Completion Status (February 2, 2026)
 
+### ✅ NEW: Auktionstypen + Investor Portal (February 2, 2026)
+
+**Neu implementiert:**
+
+1. ✅ **Neue Auktionstypen:**
+   - 🌙 **Nacht-Auktionen** (4 aktiv) - Spezielle Auktionen für Nacht-Spieler
+   - 🎓 **Anfänger-Auktionen** (4 aktiv) - Nur für neue Nutzer
+   - 🎀 **Geschenke-Auktionen** (5 aktiv) - Gutscheine & Geschenkkarten
+
+2. ✅ **Gutschein-Produkte erstellt:**
+   - Amazon €50 & €100
+   - MediaMarkt €75
+   - IKEA €100
+   - Steam €50
+   - PlayStation Store €50
+   - Netflix €25
+   - Spotify Premium
+
+3. ✅ **Investor Portal** (`/investor` oder `/investoren`):
+   - **Übersicht:** Plattform-Statistiken, Wachstumskurve
+   - **Crowdfunding:** 3 Demo-Projekte (Mobile App, EU-Expansion, Premium Katalog)
+   - **Investieren:** Direkt-Investition Formular
+   - **Meine Investitionen:** Übersicht für eingeloggte Nutzer
+
+4. ✅ **Backend APIs:**
+   - `GET /api/investor/public/stats` - Öffentliche Statistiken
+   - `GET /api/investor/crowdfunding/projects` - Crowdfunding-Projekte
+   - `POST /api/investor/investments` - Investitionsanfrage
+   - `POST /api/investor/crowdfunding/invest` - In Projekt investieren
+
+**Aktive Auktionen:** 48 (inkl. 4 Nacht, 4 Anfänger, 5 Geschenke)
+
 ### ✅ Admin Panel UI Bugs Fixed (February 2, 2026)
 **Bug Fixes Verified:**
 1. ✅ **Manager Details Modal** - Responsive auf Mobilgeräten (2x2 Grid)
