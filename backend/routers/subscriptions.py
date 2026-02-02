@@ -283,6 +283,15 @@ async def stripe_webhook(request_body: dict):
                         }}
                     )
             
+            # Process referral rewards for subscription purchase
+            # VIP+ referrers get 20 bids, regular referrers get 15 bids for subscription referrals
+            try:
+                from routers.referral import process_referral_reward
+                await process_referral_reward(user_id, is_subscription=True)
+                logger.info(f"Subscription referral reward processed for {user_id}")
+            except Exception as ref_err:
+                logger.error(f"Error processing subscription referral: {ref_err}")
+            
             logger.info(f"Subscription activated: {user_id} -> {plan_id}")
     
     elif event_type == "invoice.paid":
