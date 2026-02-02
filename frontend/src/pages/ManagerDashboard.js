@@ -169,6 +169,10 @@ export default function ManagerDashboard() {
     setManager(null);
     setDashboard(null);
     localStorage.removeItem('manager');
+    // Also logout from main auth if logged in via main auth
+    if (isManager && authLogout) {
+      authLogout();
+    }
   };
 
   const fetchDashboard = async (managerId) => {
