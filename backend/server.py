@@ -87,6 +87,7 @@ from routers.streak_protection import streak_protection_router
 from routers.weekly_winners import weekly_winners_router
 from routers.excitement import router as excitement_router
 from routers.investor import router as investor_router
+from routers.free_auctions import router as free_auctions_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
