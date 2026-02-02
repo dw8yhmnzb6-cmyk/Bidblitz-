@@ -157,6 +157,10 @@ app.include_router(cart_router, prefix="/api")
 app.include_router(reviews_router, prefix="/api")
 app.include_router(mystery_router, prefix="/api")
 app.include_router(levels_router, prefix="/api")
+app.include_router(daily_quests_router, prefix="/api")
+app.include_router(power_hour_router, prefix="/api")
+app.include_router(price_alerts_router, prefix="/api")
+app.include_router(social_share_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
