@@ -653,15 +653,20 @@ export default function Auctions() {
     const refreshInterval = setInterval(() => {
       const silentFetch = async () => {
         try {
-          const [auctionsRes, productsRes, aotdRes] = await Promise.all([
-            axios.get(`${API}/auctions`), // Load ALL auctions for ended tab
+          const [auctionsRes, productsRes, aotdRes, endedRes] = await Promise.all([
+            axios.get(`${API}/auctions`),
             axios.get(`${API}/products`),
-            axios.get(`${API}/auction-of-the-day`).catch(() => ({ data: null }))
+            axios.get(`${API}/auction-of-the-day`).catch(() => ({ data: null })),
+            axios.get(`${API}/auctions/ended`).catch(() => ({ data: [] }))
           ]);
           
           // Only update if we have valid data
           if (auctionsRes.data && Array.isArray(auctionsRes.data)) {
             setAuctions(auctionsRes.data);
+          }
+          
+          if (endedRes.data && Array.isArray(endedRes.data)) {
+            setEndedAuctions(endedRes.data);
           }
           
           if (productsRes.data && Array.isArray(productsRes.data)) {
