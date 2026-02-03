@@ -2983,6 +2983,21 @@ export default function Admin() {
                         </div>
                       </div>
                       
+                      {/* Einmal pro Kunde Option */}
+                      <div className="flex items-center gap-3 p-3 bg-[#181824] rounded-lg border border-white/10">
+                        <input
+                          type="checkbox"
+                          id="one_per_user"
+                          checked={promoForm.one_per_user}
+                          onChange={(e) => setPromoForm({...promoForm, one_per_user: e.target.checked})}
+                          className="w-5 h-5 rounded bg-[#252540] border-white/20 text-[#FFD700] focus:ring-[#FFD700]"
+                        />
+                        <label htmlFor="one_per_user" className="text-white cursor-pointer">
+                          <span className="font-medium">Nur einmal pro Kunde</span>
+                          <span className="text-[#94A3B8] text-sm block">Jeder Kunde kann diesen Code nur 1x einlösen</span>
+                        </label>
+                      </div>
+                      
                       <div className="flex gap-2 pt-4">
                         <Button
                           type="button"
