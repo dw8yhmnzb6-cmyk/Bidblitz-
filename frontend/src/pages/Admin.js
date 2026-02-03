@@ -138,6 +138,10 @@ export default function Admin() {
   const [jackpotData, setJackpotData] = useState(null);
   const [jackpotHistory, setJackpotHistory] = useState([]);
   const [jackpotAmount, setJackpotAmount] = useState(500);
+  
+  // Happy Hour & Lucky Bid states
+  const [happyHourConfig, setHappyHourConfig] = useState(null);
+  const [luckyConfig, setLuckyConfig] = useState(null);
 
   // Promo Codes states
   const [promoCodes, setPromoCodes] = useState([]);
