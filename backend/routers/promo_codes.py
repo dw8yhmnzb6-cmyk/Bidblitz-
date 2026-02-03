@@ -18,6 +18,7 @@ class PromoCodeCreate(BaseModel):
     reward_type: str = Field(default="bids", description="bids, vip_days, discount_percent")
     reward_amount: int = Field(..., gt=0, description="Amount of reward (bids, days, or percent)")
     max_uses: Optional[int] = Field(default=None, description="Max total uses (None = unlimited)")
+    one_per_user: bool = Field(default=True, description="Each user can only redeem once")
     valid_from: Optional[str] = None
     valid_until: Optional[str] = None
     is_active: bool = True
