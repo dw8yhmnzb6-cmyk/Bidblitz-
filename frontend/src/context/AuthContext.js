@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const response = await axios.post(`${API}/auth/login`, { email, password });
     const { token: newToken, user: userData } = response.data;
-    localStorage.setItem('token', newToken);
+    safeStorage.setItem('token', newToken);
     setToken(newToken);
     setUser(userData);
     return userData;
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       referral_code: referralCode
     });
     const { token: newToken, user: userData } = response.data;
-    localStorage.setItem('token', newToken);
+    safeStorage.setItem('token', newToken);
     setToken(newToken);
     setUser(userData);
     return userData;
@@ -85,14 +85,14 @@ export const AuthProvider = ({ children }) => {
 
   // Login for influencers - sets token and user from influencer login response
   const loginAsInfluencer = (tokenData, userData) => {
-    localStorage.setItem('token', tokenData);
+    safeStorage.setItem('token', tokenData);
     setToken(tokenData);
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('influencer_data');
+    safeStorage.removeItem('token');
+    safeStorage.removeItem('influencer_data');
     setToken(null);
     setUser(null);
   };
