@@ -1050,14 +1050,24 @@ export default function Auctions() {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
               {gridAuctions.map(auction => (
-                <AuctionCard 
-                  key={auction.id} 
-                  auction={auction} 
-                  product={products[auction.product_id] || auction.product} 
-                  onBid={handleBid}
-                  t={t}
-                  language={language}
-                />
+                activeFilter === 'ende' ? (
+                  <EndedAuctionCard 
+                    key={auction.id || auction.auction_id} 
+                    auction={auction} 
+                    product={products[auction.product_id] || auction.product}
+                    t={t}
+                    language={language}
+                  />
+                ) : (
+                  <AuctionCard 
+                    key={auction.id} 
+                    auction={auction} 
+                    product={products[auction.product_id] || auction.product} 
+                    onBid={handleBid}
+                    t={t}
+                    language={language}
+                  />
+                )
               ))}
             </div>
           )}
