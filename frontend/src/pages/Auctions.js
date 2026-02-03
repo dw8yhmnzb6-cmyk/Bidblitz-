@@ -383,6 +383,75 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
          prevProps.t === nextProps.t;
 });
 
+// Ended Auction Card - Shows completed auction info
+const EndedAuctionCard = memo(({ auction, product, t, language }) => {
+  if (!auction) return null;
+  
+  const prod = product || auction.product;
+  if (!prod) return null;
+  
+  const productName = prod.name_translations?.[language] || prod.name;
+  const finalPrice = auction.final_price || auction.current_price || 0;
+  const discount = prod.retail_price 
+    ? Math.round((1 - finalPrice / prod.retail_price) * 100)
+    : 99;
+  
+  // Format ended time
+  const endedAt = auction.ended_at ? new Date(auction.ended_at) : new Date();
+  const timeAgo = Math.floor((Date.now() - endedAt.getTime()) / 60000); // minutes ago
+  const timeAgoText = timeAgo < 60 
+    ? `${timeAgo} min` 
+    : timeAgo < 1440 
+      ? `${Math.floor(timeAgo / 60)} h` 
+      : `${Math.floor(timeAgo / 1440)} d`;
+  
+  return (
+    <div className="bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg overflow-hidden border border-gray-300 opacity-90">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-gray-500 to-gray-600 text-white text-[9px] font-bold py-1 px-2 flex items-center justify-between">
+        <span className="bg-gray-700 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">
+          -{discount}%
+        </span>
+        <span className="text-[8px] opacity-80">✓ {timeAgoText}</span>
+      </div>
+      
+      {/* Winner Banner */}
+      <div className="bg-green-500 text-white text-[8px] px-2 py-1 text-center">
+        🏆 {auction.winner_name || 'Gewinner'}
+      </div>
+      
+      {/* Content */}
+      <div className="p-2">
+        <h3 className="text-[10px] font-bold text-gray-600 uppercase leading-tight mb-1 line-clamp-2 min-h-[24px]">
+          {productName}
+        </h3>
+        <p className="text-[8px] text-gray-400 mb-1 line-through">
+          UVP: € {prod.retail_price?.toLocaleString('de-DE')},-
+        </p>
+        
+        <div className="flex gap-2">
+          <div className="flex-1">
+            <div>
+              <span className="text-sm font-black text-green-600">
+                € {finalPrice?.toFixed(2).replace('.', ',')}
+              </span>
+              <p className="text-[8px] text-gray-500">{t('auctionPage.endPrice') || 'Endpreis'}</p>
+            </div>
+          </div>
+          
+          <div className="w-14 h-14 bg-white rounded flex items-center justify-center shadow-sm flex-shrink-0 grayscale">
+            <img src={prod.image_url || 'https://via.placeholder.com/56'} alt="" className="max-w-full max-h-full object-contain" />
+          </div>
+        </div>
+        
+        <p className="text-[8px] text-gray-500 mt-1">
+          {auction.total_bids || 0} {t('auctionPage.bidsCount')}
+        </p>
+      </div>
+    </div>
+  );
+});
+
 // Premium Card
 const PremiumCard = memo(({ auction, product, onBid, t, language }) => {
   if (!auction || !product) return null;
