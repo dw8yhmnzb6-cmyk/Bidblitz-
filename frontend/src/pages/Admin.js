@@ -1226,11 +1226,11 @@ export default function Admin() {
       </div>
 
       <div className="flex">
-        {/* Desktop Sidebar */}
-        <aside className="hidden lg:block w-64 min-h-screen bg-[#0F0F16] border-r border-white/10 fixed left-0 top-16 pt-6">
-          <div className="px-4 mb-6">
-            <h2 className="text-lg font-bold text-white flex items-center gap-2">
-              <Settings className="w-5 h-5 text-[#7C3AED]" />
+        {/* Tablet/Desktop Sidebar - visible on md and up */}
+        <aside className="hidden md:block w-56 lg:w-64 min-h-screen bg-[#0F0F16] border-r border-white/10 fixed left-0 top-16 pt-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 64px)' }}>
+          <div className="px-3 lg:px-4 mb-6">
+            <h2 className="text-base lg:text-lg font-bold text-white flex items-center gap-2">
+              <Settings className="w-4 h-4 lg:w-5 lg:h-5 text-[#7C3AED]" />
               {t('admin.panel')}
             </h2>
           </div>
@@ -1239,19 +1239,19 @@ export default function Admin() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                className={`w-full flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg transition-colors text-sm lg:text-base ${
                   activeTab === tab.id
                     ? 'bg-[#7C3AED]/20 text-[#7C3AED]'
                     : 'text-[#94A3B8] hover:bg-white/5 hover:text-white'
                 }`}
                 data-testid={`tab-${tab.id}`}
               >
-                {tab.icon}
-                {tab.label}
+                <span className="flex-shrink-0">{tab.icon}</span>
+                <span className="truncate">{tab.label}</span>
               </button>
             ))}
           </nav>
-          <div className="px-4 mt-8 space-y-3">
+          <div className="px-3 lg:px-4 mt-8 space-y-3">
             <Button onClick={handleSeedData} variant="outline" className="w-full border-white/10 text-white hover:bg-white/10">
               <Plus className="w-4 h-4 mr-2" />{t('admin.seedData')}
             </Button>
