@@ -1181,9 +1181,9 @@ export default function Admin() {
   ];
 
   return (
-    <div className="min-h-screen pt-20" data-testid="admin-page">
-      {/* Mobile Tab Bar */}
-      <div className="lg:hidden fixed top-16 left-0 right-0 z-30 bg-[#0F0F16] border-b border-white/10">
+    <div className="min-h-screen pt-20 md:pt-0" data-testid="admin-page">
+      {/* Mobile Tab Bar - only on small screens */}
+      <div className="md:hidden fixed top-16 left-0 right-0 z-30 bg-[#0F0F16] border-b border-white/10">
         <div className="flex items-center justify-between px-4 py-3">
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
             <Settings className="w-5 h-5 text-[#7C3AED]" />
