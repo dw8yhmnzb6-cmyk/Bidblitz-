@@ -165,6 +165,21 @@ async def set_global_jackpot(data: dict, admin: dict = Depends(get_admin_user)):
     logger.info(f"Admin set global jackpot to {amount}")
     return {"success": True, "new_amount": amount}
 
+@router.post("/global-jackpot/toggle")
+async def toggle_global_jackpot(data: dict, admin: dict = Depends(get_admin_user)):
+    """Toggle the global jackpot on/off (Admin only)"""
+    is_active = data.get("is_active", True)
+    
+    await db.global_jackpot.update_one(
+        {"type": "global"},
+        {"$set": {"is_active": is_active}},
+        upsert=True
+    )
+    
+    status = "aktiviert" if is_active else "deaktiviert"
+    logger.info(f"Admin {status} global jackpot")
+    return {"success": True, "is_active": is_active, "message": f"Jackpot {status}"}
+
 # ==================== JACKPOT SYSTEM ====================
 
 @router.get("/jackpot/active")
