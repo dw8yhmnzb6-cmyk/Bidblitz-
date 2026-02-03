@@ -2808,6 +2808,7 @@ export default function Admin() {
                       <th className="text-left text-[#94A3B8] font-medium p-4">Name</th>
                       <th className="text-left text-[#94A3B8] font-medium p-4">Belohnung</th>
                       <th className="text-left text-[#94A3B8] font-medium p-4">Einlösungen</th>
+                      <th className="text-left text-[#94A3B8] font-medium p-4">Limit</th>
                       <th className="text-left text-[#94A3B8] font-medium p-4">Status</th>
                       <th className="text-left text-[#94A3B8] font-medium p-4">Aktionen</th>
                     </tr>
@@ -2829,6 +2830,17 @@ export default function Admin() {
                         <td className="p-4 text-white">
                           {promo.current_uses || 0}
                           {promo.max_uses && <span className="text-[#94A3B8]"> / {promo.max_uses}</span>}
+                        </td>
+                        <td className="p-4">
+                          {promo.one_per_user !== false ? (
+                            <span className="px-2 py-1 rounded text-xs bg-blue-500/20 text-blue-400" title="Jeder Kunde nur 1x">
+                              1x/Kunde
+                            </span>
+                          ) : (
+                            <span className="px-2 py-1 rounded text-xs bg-purple-500/20 text-purple-400" title="Mehrfach nutzbar">
+                              Mehrfach
+                            </span>
+                          )}
                         </td>
                         <td className="p-4">
                           <span className={`px-2 py-1 rounded text-xs ${promo.is_active ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-red-500/20 text-red-500'}`}>
@@ -2877,7 +2889,7 @@ export default function Admin() {
                     ))}
                     {promoCodes.length === 0 && (
                       <tr>
-                        <td colSpan="6" className="p-8 text-center text-[#94A3B8]">
+                        <td colSpan="7" className="p-8 text-center text-[#94A3B8]">
                           Keine Gutschein-Codes vorhanden
                         </td>
                       </tr>
