@@ -194,8 +194,8 @@ const SpinWheel = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <>
-            {/* Wheel Container */}
-            <div className="relative w-72 h-72 mx-auto mb-6">
+            {/* Wheel Container - responsive size */}
+            <div className="relative w-56 h-56 sm:w-72 sm:h-72 mx-auto mb-4 sm:mb-6">
               {/* Pointer */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 z-10">
                 <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[25px] border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg"></div>
