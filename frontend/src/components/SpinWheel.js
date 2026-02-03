@@ -318,7 +318,6 @@ const SpinWheel = ({ isOpen, onClose }) => {
           </>
         )}
         </div>
-      </div>
     </div>
   );
 };
