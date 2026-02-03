@@ -744,13 +744,14 @@ export const translations = {
       filters: {
         live: "En Direct",
         beginner: "Débutant",
-        free: "Gratuit",
+        free: "Bons",
         night: "Nuit",
         ending: "Fin",
         vip: "VIP"
       },
       beginnerAuctions: "Enchères Débutant",
-      freeAuctions: "Enchères Gratuites",
+      freeAuctions: "Enchères Bons",
+      freeAuctionInfo: "Enchérissez avec des offres achetées - Le bon est GRATUIT si vous gagnez!",
       nightAuctions: "Enchères de Nuit",
       vipAuctions: "Enchères VIP",
       endedAuctions: "Enchères Terminées",
