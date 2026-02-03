@@ -2904,7 +2904,7 @@ export default function Admin() {
                         });
                         toast.success('Gutschein-Code erstellt!');
                         setShowPromoModal(false);
-                        setPromoForm({ code: '', name: '', reward_type: 'bids', reward_amount: 10, max_uses: null, valid_until: '' });
+                        setPromoForm({ code: '', name: '', reward_type: 'bids', reward_amount: 10, max_uses: null, valid_until: '', one_per_user: true });
                         fetchData();
                       } catch (err) {
                         toast.error(err.response?.data?.detail || 'Fehler beim Erstellen');
