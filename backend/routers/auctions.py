@@ -352,6 +352,26 @@ async def get_auctions():
     
     return auctions
 
+@router.get("/auctions/ended")
+async def get_ended_auctions(limit: int = 50):
+    """Get recently ended auctions from history (for 'Ende' tab)"""
+    # Get from auction_history collection (auto-restart saves here before restarting)
+    history = await db.auction_history.find(
+        {},
+        {"_id": 0}
+    ).sort("ended_at", -1).to_list(limit)
+    
+    # Enrich with product info if not present
+    for entry in history:
+        if not entry.get("product") and entry.get("product_id"):
+            product = await db.products.find_one({"id": entry["product_id"]}, {"_id": 0})
+            if product:
+                entry["product"] = product
+        # Add status field for frontend compatibility
+        entry["status"] = "ended"
+    
+    return history
+
 @router.get("/auctions/vip-only")
 async def get_vip_only_auctions():
     """Get VIP-only auctions"""
