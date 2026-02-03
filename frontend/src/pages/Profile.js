@@ -9,7 +9,7 @@ import { Label } from '../components/ui/label';
 import TelegramConnect from '../components/TelegramConnect';
 import { 
   User, Mail, Lock, Save, ArrowLeft, Camera, Shield, 
-  Zap, Trophy, Calendar, Loader2, CheckCircle, Trash2, Upload
+  Zap, Trophy, Calendar, Loader2, CheckCircle, Trash2, Upload, Gift, Tag
 } from 'lucide-react';
 import { toast } from 'sonner';
 
