@@ -163,25 +163,25 @@ const SpinWheel = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" data-testid="spin-wheel-modal">
-      <div className="relative bg-gradient-to-br from-[#1A1A2E] to-[#16213E] rounded-2xl p-6 max-w-md w-full border border-yellow-500/30 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto" data-testid="spin-wheel-modal">
+      <div className="relative bg-gradient-to-br from-[#1A1A2E] to-[#16213E] rounded-2xl p-4 sm:p-6 max-w-sm sm:max-w-md w-full border border-yellow-500/30 shadow-2xl my-4">
         {/* Close Button */}
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          className="absolute top-3 right-3 sm:top-4 sm:right-4 text-gray-400 hover:text-white z-20"
           data-testid="close-wheel-btn"
         >
           <X className="w-6 h-6" />
         </button>
         
         {/* Header */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-4 sm:mb-6">
           <div className="flex items-center justify-center gap-2 mb-2">
-            <Sparkles className="w-8 h-8 text-yellow-400" />
-            <h2 className="text-2xl font-bold text-white">{text.title}</h2>
-            <Sparkles className="w-8 h-8 text-yellow-400" />
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400" />
+            <h2 className="text-xl sm:text-2xl font-bold text-white">{text.title}</h2>
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-400" />
           </div>
-          <p className="text-gray-400">{text.subtitle}</p>
+          <p className="text-gray-400 text-sm sm:text-base">{text.subtitle}</p>
         </div>
         
         {!token ? (
