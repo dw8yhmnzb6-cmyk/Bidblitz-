@@ -139,6 +139,18 @@ export default function Admin() {
   const [jackpotHistory, setJackpotHistory] = useState([]);
   const [jackpotAmount, setJackpotAmount] = useState(500);
 
+  // Promo Codes states
+  const [promoCodes, setPromoCodes] = useState([]);
+  const [showPromoModal, setShowPromoModal] = useState(false);
+  const [promoForm, setPromoForm] = useState({
+    code: '',
+    name: '',
+    reward_type: 'bids',
+    reward_amount: 10,
+    max_uses: null,
+    valid_until: ''
+  });
+
   // Edit states
   const [editingProduct, setEditingProduct] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
