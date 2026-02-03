@@ -121,9 +121,14 @@ export default function Login() {
 
   // Redirect if already logged in
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      window.location.href = '/dashboard';
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        window.location.href = '/dashboard';
+      }
+    } catch (e) {
+      // localStorage might be blocked in Safari private mode
+      console.warn('localStorage not available:', e);
     }
   }, []);
 
