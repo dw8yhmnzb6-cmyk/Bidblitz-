@@ -141,13 +141,14 @@ async def redeem_promo_code(data: PromoCodeRedeem, user: dict = Depends(get_curr
     if promo.get("max_uses") and promo.get("current_uses", 0) >= promo["max_uses"]:
         raise HTTPException(status_code=400, detail="Dieser Code wurde bereits zu oft eingelöst")
     
-    # Check if user already used this code
-    existing_redemption = await db.promo_code_redemptions.find_one({
-        "promo_code_id": promo["id"],
-        "user_id": user_id
-    })
-    if existing_redemption:
-        raise HTTPException(status_code=400, detail="Sie haben diesen Code bereits eingelöst")
+    # Check if user already used this code (only if one_per_user is enabled)
+    if promo.get("one_per_user", True):  # Default to True for backwards compatibility
+        existing_redemption = await db.promo_code_redemptions.find_one({
+            "promo_code_id": promo["id"],
+            "user_id": user_id
+        })
+        if existing_redemption:
+            raise HTTPException(status_code=400, detail="Sie haben diesen Code bereits eingelöst")
     
     # Apply the reward
     reward_type = promo.get("reward_type", "bids")
