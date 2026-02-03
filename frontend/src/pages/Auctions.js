@@ -760,8 +760,8 @@ export default function Auctions() {
         // Night auctions always visible - show with timer/label when not night time
         return publicAuctions.filter(a => a.is_night_auction);
       case 'ende':
-        // Show ALL ended auctions from the full auctions list
-        return auctions.filter(a => a.status === 'ended');
+        // Use the endedAuctions from auction_history API
+        return endedAuctions;
       case 'vip':
         return auctions.filter(a => a.is_vip_only && a.status === 'active');
       case 'live':
