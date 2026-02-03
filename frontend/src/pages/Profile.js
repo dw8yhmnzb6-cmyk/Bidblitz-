@@ -577,8 +577,232 @@ export default function Profile() {
             
             {/* Telegram Notifications */}
             <TelegramConnect />
+            
+            {/* Promo Code Redemption */}
+            <PromoCodeSection token={token} language={language} refreshUser={refreshUser} />
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// Promo Code Section Component
+function PromoCodeSection({ token, language, refreshUser }) {
+  const [promoCode, setPromoCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [codeInfo, setCodeInfo] = useState(null);
+  
+  const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+  
+  const texts = {
+    de: {
+      title: "Promo-Code einlösen",
+      subtitle: "Haben Sie einen Aktionscode? Geben Sie ihn hier ein!",
+      placeholder: "Code eingeben (z.B. WELCOME2026)",
+      checkCode: "Prüfen",
+      redeem: "Einlösen",
+      validCode: "Gültiger Code",
+      invalidCode: "Ungültiger Code",
+      success: "Code erfolgreich eingelöst!",
+      bids: "Gebote",
+      vipDays: "VIP-Tage",
+      discount: "Rabatt"
+    },
+    en: {
+      title: "Redeem Promo Code",
+      subtitle: "Have a promo code? Enter it here!",
+      placeholder: "Enter code (e.g., WELCOME2026)",
+      checkCode: "Check",
+      redeem: "Redeem",
+      validCode: "Valid code",
+      invalidCode: "Invalid code",
+      success: "Code successfully redeemed!",
+      bids: "Bids",
+      vipDays: "VIP Days",
+      discount: "Discount"
+    },
+    sq: {
+      title: "Përdor Kodin Promocional",
+      subtitle: "Keni një kod promocional? Vendoseni këtu!",
+      placeholder: "Vendos kodin (p.sh. WELCOME2026)",
+      checkCode: "Kontrollo",
+      redeem: "Përdor",
+      validCode: "Kod i vlefshëm",
+      invalidCode: "Kod i pavlefshëm",
+      success: "Kodi u përdor me sukses!",
+      bids: "Oferta",
+      vipDays: "Ditë VIP",
+      discount: "Zbritje"
+    },
+    tr: {
+      title: "Promosyon Kodunu Kullan",
+      subtitle: "Promosyon kodunuz var mı? Buraya girin!",
+      placeholder: "Kodu girin (örn. WELCOME2026)",
+      checkCode: "Kontrol Et",
+      redeem: "Kullan",
+      validCode: "Geçerli kod",
+      invalidCode: "Geçersiz kod",
+      success: "Kod başarıyla kullanıldı!",
+      bids: "Teklifler",
+      vipDays: "VIP Günler",
+      discount: "İndirim"
+    },
+    fr: {
+      title: "Utiliser le Code Promo",
+      subtitle: "Vous avez un code promo? Entrez-le ici!",
+      placeholder: "Entrez le code (ex. WELCOME2026)",
+      checkCode: "Vérifier",
+      redeem: "Utiliser",
+      validCode: "Code valide",
+      invalidCode: "Code invalide",
+      success: "Code utilisé avec succès!",
+      bids: "Enchères",
+      vipDays: "Jours VIP",
+      discount: "Réduction"
+    }
+  };
+  
+  const t = texts[language] || texts.de;
+  
+  // Check code validity
+  const handleCheckCode = async () => {
+    if (!promoCode.trim()) return;
+    
+    setChecking(true);
+    setCodeInfo(null);
+    
+    try {
+      const response = await axios.get(`${API}/promo-codes/check/${promoCode.trim()}`);
+      setCodeInfo(response.data);
+    } catch (error) {
+      setCodeInfo({ valid: false, message: error.response?.data?.detail || t.invalidCode });
+    } finally {
+      setChecking(false);
+    }
+  };
+  
+  // Redeem the code
+  const handleRedeem = async () => {
+    if (!promoCode.trim()) return;
+    
+    setLoading(true);
+    
+    try {
+      const response = await axios.post(`${API}/promo-codes/redeem`, 
+        { code: promoCode.trim() },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      toast.success(response.data.message || t.success);
+      setPromoCode('');
+      setCodeInfo(null);
+      
+      // Refresh user data to update bid balance
+      if (refreshUser) await refreshUser();
+      
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Error');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Get reward type label
+  const getRewardLabel = (type, amount) => {
+    switch(type) {
+      case 'bids': return `${amount} ${t.bids}`;
+      case 'vip_days': return `${amount} ${t.vipDays}`;
+      case 'discount_percent': return `${amount}% ${t.discount}`;
+      default: return `${amount}`;
+    }
+  };
+  
+  return (
+    <div className="glass-card rounded-2xl p-6" data-testid="promo-code-section">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FFD700]/20 to-[#FF4D4D]/20 flex items-center justify-center">
+          <Tag className="w-5 h-5 text-[#FFD700]" />
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-white">{t.title}</h3>
+          <p className="text-[#94A3B8] text-sm">{t.subtitle}</p>
+        </div>
+      </div>
+      
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Gift className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
+            <Input
+              value={promoCode}
+              onChange={(e) => {
+                setPromoCode(e.target.value.toUpperCase());
+                setCodeInfo(null);
+              }}
+              placeholder={t.placeholder}
+              className="bg-[#181824] border-white/10 text-white pl-10 h-12 uppercase font-mono tracking-wider"
+              data-testid="promo-code-input"
+            />
+          </div>
+          <Button
+            onClick={handleCheckCode}
+            disabled={checking || !promoCode.trim()}
+            className="bg-[#252540] hover:bg-[#303050] h-12 px-4"
+            data-testid="check-promo-btn"
+          >
+            {checking ? <Loader2 className="w-5 h-5 animate-spin" /> : t.checkCode}
+          </Button>
+        </div>
+        
+        {/* Code Info Display */}
+        {codeInfo && (
+          <div className={`p-4 rounded-lg border ${
+            codeInfo.valid 
+              ? 'bg-green-500/10 border-green-500/30' 
+              : 'bg-red-500/10 border-red-500/30'
+          }`}>
+            <div className="flex items-center gap-2">
+              {codeInfo.valid ? (
+                <CheckCircle className="w-5 h-5 text-green-500" />
+              ) : (
+                <div className="w-5 h-5 rounded-full bg-red-500/30 flex items-center justify-center text-red-500 text-xs">✕</div>
+              )}
+              <span className={codeInfo.valid ? 'text-green-400' : 'text-red-400'}>
+                {codeInfo.valid ? t.validCode : t.invalidCode}
+              </span>
+            </div>
+            {codeInfo.valid && (
+              <div className="mt-2 text-white">
+                <p className="font-semibold">{codeInfo.name}</p>
+                <p className="text-sm text-[#94A3B8]">
+                  🎁 {getRewardLabel(codeInfo.reward_type, codeInfo.reward_amount)}
+                </p>
+              </div>
+            )}
+            {codeInfo.message && !codeInfo.valid && (
+              <p className="mt-1 text-sm text-red-400">{codeInfo.message}</p>
+            )}
+          </div>
+        )}
+        
+        {/* Redeem Button */}
+        {codeInfo?.valid && (
+          <Button
+            onClick={handleRedeem}
+            disabled={loading}
+            className="w-full btn-primary h-12 font-bold"
+            data-testid="redeem-promo-btn"
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin mr-2" />
+            ) : (
+              <Gift className="w-5 h-5 mr-2" />
+            )}
+            {t.redeem} - {getRewardLabel(codeInfo.reward_type, codeInfo.reward_amount)}
+          </Button>
+        )}
       </div>
     </div>
   );
