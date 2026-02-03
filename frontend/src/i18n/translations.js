@@ -870,14 +870,30 @@ export const translations = {
     },
     auctions: { title: "Todas las subastas", filter: "Filtrar", all: "Todo", active: "Activo", ended: "Terminado", currentPrice: "Precio actual", bids: "Pujas", bid: "Pujar", live: "En vivo" },
     auctionPage: {
-      title: "Active Auctions",
+      title: "Subastas Activas",
       searchPlaceholder: "Buscar ofertas...",
       categories: { all: "Todo", electronics: "Electrónica", smartphones: "Smartphones", household: "Hogar", emobility: "E-Movilidad", gifts: "Regalos", fashion: "Moda" },
       active: "Activo", scheduled: "Programado", all: "Todo",
       offersFound: "ofertas encontradas",
       noOffers: "No se encontraron ofertas",
       tryAnother: "Prueba otra categoría o búsqueda",
-      priceNote: "Precio de referencia = PVP del fabricante"
+      priceNote: "Precio de referencia = PVP del fabricante",
+      liveAuctions: "Subastas en Vivo",
+      filters: {
+        live: "En Vivo",
+        beginner: "Principiante",
+        free: "Cupones",
+        night: "Noche",
+        ending: "Fin",
+        vip: "VIP"
+      },
+      beginnerAuctions: "Subastas para Principiantes",
+      freeAuctions: "Subastas de Cupones",
+      freeAuctionInfo: "Puja con ofertas compradas - ¡El cupón es GRATIS si ganas!",
+      nightAuctions: "Subastas Nocturnas",
+      vipAuctions: "Subastas VIP",
+      endedAuctions: "Subastas Finalizadas",
+      noAuctionsInCategory: "No hay subastas en esta categoría"
     },
     auctionCard: {
       liveNow: "EN VIVO", comingSoon: "PRÓXIMAMENTE", ended: "FINALIZADO",
