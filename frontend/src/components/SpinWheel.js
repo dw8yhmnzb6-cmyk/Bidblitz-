@@ -163,8 +163,8 @@ const SpinWheel = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto" data-testid="spin-wheel-modal">
-      <div className="relative bg-gradient-to-br from-[#1A1A2E] to-[#16213E] rounded-2xl p-4 sm:p-6 max-w-sm sm:max-w-md w-full border border-yellow-500/30 shadow-2xl my-4">
+    <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center pt-20 sm:pt-4 p-2 sm:p-4 bg-black/80 backdrop-blur-sm overflow-y-auto" data-testid="spin-wheel-modal">
+      <div className="relative bg-gradient-to-br from-[#1A1A2E] to-[#16213E] rounded-2xl p-4 sm:p-6 max-w-sm sm:max-w-md w-full border border-yellow-500/30 shadow-2xl mb-4">
         {/* Close Button */}
         <button 
           onClick={onClose}
