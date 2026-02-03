@@ -57,7 +57,8 @@ async def get_global_jackpot():
             "contribution_per_bid": 1,
             "last_winner": None,
             "last_won_at": None,
-            "total_won": 0
+            "total_won": 0,
+            "is_active": True
         }
         await db.global_jackpot.insert_one(jackpot)
     
@@ -67,6 +68,7 @@ async def get_global_jackpot():
         "last_winner": jackpot.get("last_winner"),
         "last_won_at": jackpot.get("last_won_at"),
         "total_won": jackpot.get("total_won", 0),
+        "is_active": jackpot.get("is_active", True),
         "message": f"🏆 JACKPOT: {jackpot.get('current_amount', 0)} Gratis-Gebote!"
     }
 
