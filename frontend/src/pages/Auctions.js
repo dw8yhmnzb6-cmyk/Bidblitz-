@@ -719,30 +719,23 @@ export default function Auctions() {
   // Filter state
   const [activeFilter, setActiveFilter] = useState('live');
   
-  // Check if it's night time (23:30 - 06:00)
+  // Check if it's night time (23:30 - 06:00) - user's local time
   const currentHour = new Date().getHours() + new Date().getMinutes() / 60;
   const isNightTime = currentHour >= 23.5 || currentHour < 6;
   
   // Filter out VIP auctions from homepage (VIP only visible on /vip page)
-  // Also filter based on time of day: night auctions only at night, day auctions only during day
+  // Night auctions are ALWAYS visible but marked, day auctions always visible
   const publicAuctions = auctions.filter(a => {
     if (a.is_vip_only) return false;
-    
-    // Night auctions only visible at night
-    if (a.is_night_auction && !isNightTime) return false;
-    
-    // Day auctions (non-night) not visible at night (except free/beginner)
-    if (!a.is_night_auction && isNightTime && !a.is_free_auction && !a.is_beginner_auction) return false;
-    
     return true;
   });
   
-  // Count auctions by type
+  // Count auctions by type - Night auctions always counted
   const auctionCounts = {
     live: publicAuctions.filter(a => a.status === 'active').length,
     anfaenger: publicAuctions.filter(a => (a.is_beginner_only || a.is_beginner_auction) && a.status === 'active').length,
     gratis: publicAuctions.filter(a => a.is_free_auction && a.status === 'active').length,
-    nacht: isNightTime ? publicAuctions.filter(a => a.is_night_auction && a.status === 'active').length : 0,
+    nacht: publicAuctions.filter(a => a.is_night_auction && a.status === 'active').length,
     ende: auctions.filter(a => a.status === 'ended').length,
     vip: auctions.filter(a => a.is_vip_only && a.status === 'active').length
   };
