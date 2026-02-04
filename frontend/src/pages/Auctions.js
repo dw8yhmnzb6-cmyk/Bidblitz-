@@ -861,95 +861,19 @@ export default function Auctions() {
       lastFilterRef.current = activeFilter;
     }
     
-    // For "Ende" filter, return ended auctions directly
-    if (activeFilter === 'ende') {
-      return filteredAuctions;
-    }
-    
-    // For "Nacht" filter, show ALL night auctions without any exclusions
-    if (activeFilter === 'nacht') {
-      return filteredAuctions;
-    }
-    
-    // For other filters, exclude premium and AOTD from grid (they're shown separately)
-    const validAuctions = filteredAuctions.filter(a => {
-      if (a.id === premiumAuction?.id || a.id === aotdId) return false;
-      if (a.status !== 'active') return false;
+    // For ALL filters, show all filtered auctions without exclusions
+    // The AOTD and Premium sections are bonus displays, not exclusions
+    return filteredAuctions.filter(a => {
+      // For ended filter, show all
+      if (activeFilter === 'ende') return true;
+      // For night filter, show all night auctions
+      if (activeFilter === 'nacht') return true;
+      // For live and other filters, check status and time
+      if (a.status !== 'active' && a.status !== 'night_paused') return false;
       const timeLeft = new Date(a.end_time).getTime() - Date.now();
       return timeLeft > -5000;
     });
-    
-    // Build a map for quick lookup
-    const auctionMap = new Map(validAuctions.map(a => [a.id, a]));
-    const currentIds = new Set(validAuctions.map(a => a.id));
-    
-    // If we have no stable order yet, create initial sorted order
-    if (stableOrderRef.current.length === 0) {
-      const sorted = [...validAuctions].sort((a, b) => {
-        // Night auctions at the bottom
-        if (a.is_night_auction && !b.is_night_auction) return 1;
-        if (!a.is_night_auction && b.is_night_auction) return -1;
-        // Sort by end_time (soonest first)
-        return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
-      });
-      stableOrderRef.current = sorted.map(a => a.id);
-    }
-    
-    // Build result using stable order
-    const result = [];
-    const usedIds = new Set();
-    
-    // First: Add auctions in their stable order (if they still exist)
-    for (const id of stableOrderRef.current) {
-      if (auctionMap.has(id)) {
-        const auction = auctionMap.get(id);
-        // For night filter, don't check time - show all
-        if (activeFilter === 'nacht') {
-          result.push(auction);
-          usedIds.add(id);
-        } else {
-          // Double check it's not ended (timer > -5s)
-          const timeLeft = new Date(auction.end_time).getTime() - Date.now();
-          if (timeLeft > -5000) {
-            result.push(auction);
-            usedIds.add(id);
-          }
-        }
-      }
-    }
-    
-    // Second: Add any NEW auctions that appeared (e.g., from auto-restart)
-    // Insert them in correct sorted position
-    const newAuctions = validAuctions.filter(a => !usedIds.has(a.id));
-    for (const newAuction of newAuctions) {
-      // Find correct position to insert
-      let insertIndex = result.length; // Default: end
-      for (let i = 0; i < result.length; i++) {
-        const existing = result[i];
-        // Night auctions go to the bottom (unless we're in nacht filter)
-        if (activeFilter !== 'nacht') {
-          if (newAuction.is_night_auction && !existing.is_night_auction) {
-            continue; // Keep looking
-          }
-          if (!newAuction.is_night_auction && existing.is_night_auction) {
-            insertIndex = i;
-            break;
-          }
-        }
-        // Same category: compare by end time
-        if (new Date(newAuction.end_time).getTime() < new Date(existing.end_time).getTime()) {
-          insertIndex = i;
-          break;
-        }
-      }
-      result.splice(insertIndex, 0, newAuction);
-    }
-    
-    // Update stable order ref with current valid IDs
-    stableOrderRef.current = result.map(a => a.id);
-    
-    return result;
-  }, [filteredAuctions, premiumAuction?.id, aotdId, activeFilter]);
+  }, [filteredAuctions, activeFilter]);
   
   // Get AOTD product
   const aotdProduct = auctionOfTheDay?.product || (auctionOfTheDay?.product_id ? products[auctionOfTheDay.product_id] : null);
