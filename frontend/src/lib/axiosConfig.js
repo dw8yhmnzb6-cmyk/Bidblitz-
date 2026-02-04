@@ -3,70 +3,86 @@
  * Prevents "Not Found" and similar technical errors from being shown to users
  */
 import axios from 'axios';
+import { toast } from 'sonner';
 
-// List of error messages that should be silently ignored
-const SILENT_ERRORS = [
+// List of error messages that should be silently ignored (case insensitive)
+const SILENT_ERROR_PATTERNS = [
   'not found',
-  'Not found', 
-  'NOT FOUND',
-  'User not found',
   'user not found',
-  'Auction not found',
-  'Product not found',
-  'Resource not found',
-  'Method Not Allowed'
+  'auction not found',
+  'product not found',
+  'resource not found',
+  'method not allowed',
+  'network error',
+  'timeout'
 ];
 
 // List of status codes to silently ignore
-const SILENT_STATUS_CODES = [404, 405];
+const SILENT_STATUS_CODES = [404, 405, 0]; // 0 = Network errors
 
 // Known endpoints that may return 404 normally (not errors)
 const EXPECTED_404_PATTERNS = [
-  '/api/auction-of-the-day',  // May not exist
-  '/api/auctions/',            // Auction may have ended
-  '/api/user/avatar',          // User may not have avatar
-  '/api/notifications',        // May have no notifications
+  '/api/auction-of-the-day',
+  '/api/auctions/',
+  '/api/user/avatar',
+  '/api/notifications',
+  '/api/autobidder/',
+  '/api/promo-codes/',
+  '/api/excitement/',
+  '/api/gamification/'
 ];
+
+/**
+ * Check if an error should be silently ignored
+ */
+function shouldSilenceError(error) {
+  const detail = error?.response?.data?.detail || '';
+  const statusCode = error?.response?.status;
+  const requestUrl = error?.config?.url || '';
+  
+  // Check if status code indicates silent error
+  if (SILENT_STATUS_CODES.includes(statusCode)) {
+    return true;
+  }
+  
+  // Check if error message matches silent patterns
+  const lowerDetail = detail.toLowerCase();
+  if (SILENT_ERROR_PATTERNS.some(pattern => lowerDetail.includes(pattern))) {
+    return true;
+  }
+  
+  // Check if endpoint is expected to sometimes return 404
+  if (EXPECTED_404_PATTERNS.some(pattern => requestUrl.includes(pattern))) {
+    return true;
+  }
+  
+  return false;
+}
 
 // Configure global response interceptor
 axios.interceptors.response.use(
   // Success response - pass through
   (response) => response,
   
-  // Error response - modify error detail if it's a silent error
+  // Error response - suppress toast for silent errors
   (error) => {
-    const detail = error?.response?.data?.detail;
-    const statusCode = error?.response?.status;
-    const requestUrl = error?.config?.url || 'unknown';
-    const method = error?.config?.method?.toUpperCase() || 'GET';
-    
-    // Check if error should be silent (by status code or message)
-    const isSilentByStatus = SILENT_STATUS_CODES.includes(statusCode);
-    const isSilentByMessage = detail && SILENT_ERRORS.some(e => 
-      detail.toLowerCase().includes(e.toLowerCase())
-    );
-    const isExpected404 = EXPECTED_404_PATTERNS.some(pattern => 
-      requestUrl.includes(pattern)
-    );
-    
-    if (isSilentByStatus || isSilentByMessage) {
+    if (shouldSilenceError(error)) {
       // Mark this error as silent
       error.isSilentError = true;
-      // Change the detail to null so toast.error won't show it
-      if (error.response?.data) {
-        error.response.data.originalDetail = detail;
-        error.response.data.detail = null;
-      }
-      // Prevent default toast behavior by setting a flag
       error.suppressToast = true;
       
-      // Log with more detail to help debug
-      if (!isExpected404) {
-        console.warn(`[404 DEBUG] ${method} ${requestUrl}`, {
-          status: statusCode,
-          detail: detail,
-          timestamp: new Date().toISOString()
-        });
+      // Clear the detail so components using `error.response?.data?.detail || 'fallback'`
+      // will use the fallback instead of showing "Not Found"
+      if (error.response?.data) {
+        error.response.data._originalDetail = error.response.data.detail;
+        error.response.data.detail = '';  // Empty string triggers fallback
+      }
+      
+      // Only log unexpected 404s for debugging
+      const requestUrl = error?.config?.url || '';
+      const isExpected = EXPECTED_404_PATTERNS.some(p => requestUrl.includes(p));
+      if (!isExpected && error?.response?.status === 404) {
+        console.debug('[Axios] Silent 404:', requestUrl);
       }
     }
     
