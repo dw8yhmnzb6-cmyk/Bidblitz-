@@ -1282,6 +1282,7 @@ async def create_auction(auction: AuctionCreate, admin: dict = Depends(get_admin
         "bid_increment": auction.bid_increment,
         "start_time": start_time.isoformat(),
         "end_time": end_time.isoformat(),
+        "duration_seconds": duration_seconds,  # Store actual duration
         "status": status,
         "total_bids": 0,
         "bid_count": 0,
