@@ -277,25 +277,66 @@ async def create_jackpot_auction(data: JackpotAuctionCreate, admin: dict = Depen
 
 # ==================== LUCKY BID SYSTEM ====================
 
+# Store config in memory (will be loaded from DB)
+lucky_bid_config = {
+    "interval": 50,
+    "reward": 10
+}
+
+async def get_lucky_bid_config():
+    """Get lucky bid config from DB"""
+    config = await db.settings.find_one({"key": "lucky_bid"}, {"_id": 0})
+    if config:
+        return config.get("value", lucky_bid_config)
+    return lucky_bid_config
+
 @router.get("/lucky-bid/status")
 async def get_lucky_bid_status():
     """Get current lucky bid counter"""
+    config = await get_lucky_bid_config()
+    interval = config.get("interval", 50)
+    reward = config.get("reward", 10)
+    
     stats = await db.lucky_bid_stats.find_one({"type": "global"})
     if not stats:
-        stats = {"total_bids": 0, "next_lucky": LUCKY_BID_INTERVAL}
+        stats = {"total_bids": 0}
     
-    bids_until_lucky = LUCKY_BID_INTERVAL - (stats.get("total_bids", 0) % LUCKY_BID_INTERVAL)
+    bids_until_lucky = interval - (stats.get("total_bids", 0) % interval)
     
     return {
         "total_bids_today": stats.get("total_bids", 0),
         "bids_until_lucky": bids_until_lucky,
-        "lucky_bid_reward": LUCKY_BID_REWARD,
-        "interval": LUCKY_BID_INTERVAL
+        "lucky_bid_reward": reward,
+        "interval": interval,
+        "reward": reward
     }
+
+@router.put("/lucky-bid/config")
+async def update_lucky_bid_config(data: dict, admin: dict = Depends(get_admin_user)):
+    """Update lucky bid configuration (Admin only)"""
+    config = await get_lucky_bid_config()
+    
+    if "interval" in data:
+        config["interval"] = max(10, min(500, int(data["interval"])))
+    if "reward" in data:
+        config["reward"] = max(1, min(100, int(data["reward"])))
+    
+    await db.settings.update_one(
+        {"key": "lucky_bid"},
+        {"$set": {"key": "lucky_bid", "value": config}},
+        upsert=True
+    )
+    
+    logger.info(f"Lucky Bid config updated: interval={config['interval']}, reward={config['reward']}")
+    return {"message": "Lucky Bid Einstellungen aktualisiert", "config": config}
 
 @router.post("/lucky-bid/check")
 async def check_lucky_bid(user: dict = Depends(get_current_user)):
     """Check if current bid is a lucky bid and award bonus"""
+    config = await get_lucky_bid_config()
+    interval = config.get("interval", 50)
+    reward = config.get("reward", 10)
+    
     stats = await db.lucky_bid_stats.find_one({"type": "global"})
     total_bids = stats.get("total_bids", 0) if stats else 0
     
@@ -307,13 +348,13 @@ async def check_lucky_bid(user: dict = Depends(get_current_user)):
     )
     
     new_total = total_bids + 1
-    is_lucky = new_total % LUCKY_BID_INTERVAL == 0
+    is_lucky = new_total % interval == 0
     
     if is_lucky:
         # Award bonus bids
         await db.users.update_one(
             {"id": user["id"]},
-            {"$inc": {"bids_balance": LUCKY_BID_REWARD}}
+            {"$inc": {"bids_balance": reward}}
         )
         
         # Log lucky bid
@@ -322,22 +363,22 @@ async def check_lucky_bid(user: dict = Depends(get_current_user)):
             "user_id": user["id"],
             "user_name": user.get("name", "Unknown"),
             "bid_number": new_total,
-            "reward": LUCKY_BID_REWARD,
+            "reward": reward,
             "created_at": datetime.now(timezone.utc).isoformat()
         })
         
-        logger.info(f"🎁 LUCKY BID! User {user['name']} won {LUCKY_BID_REWARD} free bids on bid #{new_total}")
+        logger.info(f"🎁 LUCKY BID! User {user['name']} won {reward} free bids on bid #{new_total}")
         
         return {
             "is_lucky": True,
-            "reward": LUCKY_BID_REWARD,
-            "message": f"🎉 LUCKY BID! Sie haben {LUCKY_BID_REWARD} Gratis-Gebote gewonnen!",
+            "reward": reward,
+            "message": f"🎉 LUCKY BID! Sie haben {reward} Gratis-Gebote gewonnen!",
             "bid_number": new_total
         }
     
     return {
         "is_lucky": False,
-        "bids_until_lucky": LUCKY_BID_INTERVAL - (new_total % LUCKY_BID_INTERVAL)
+        "bids_until_lucky": interval - (new_total % interval)
     }
 
 @router.get("/lucky-bid/history")
