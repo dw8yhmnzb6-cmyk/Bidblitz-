@@ -168,19 +168,24 @@ async def set_global_jackpot(data: dict, admin: dict = Depends(get_admin_user)):
     return {"success": True, "new_amount": amount}
 
 @router.post("/global-jackpot/toggle")
-async def toggle_global_jackpot(data: dict, admin: dict = Depends(get_admin_user)):
+async def toggle_global_jackpot(admin: dict = Depends(get_admin_user)):
     """Toggle the global jackpot on/off (Admin only)"""
-    is_active = data.get("is_active", True)
+    # Get current state
+    jackpot = await db.global_jackpot.find_one({"type": "global"})
+    current_active = jackpot.get("is_active", True) if jackpot else True
+    
+    # Toggle it
+    new_active = not current_active
     
     await db.global_jackpot.update_one(
         {"type": "global"},
-        {"$set": {"is_active": is_active}},
+        {"$set": {"is_active": new_active}},
         upsert=True
     )
     
-    status = "aktiviert" if is_active else "deaktiviert"
+    status = "aktiviert" if new_active else "deaktiviert"
     logger.info(f"Admin {status} global jackpot")
-    return {"success": True, "is_active": is_active, "message": f"Jackpot {status}"}
+    return {"success": True, "is_active": new_active, "message": f"Jackpot {status}"}
 
 # ==================== JACKPOT SYSTEM ====================
 
