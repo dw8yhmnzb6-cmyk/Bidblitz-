@@ -30,7 +30,8 @@ export default function GlobalJackpot({ className = '' }) {
     return () => clearInterval(interval);
   }, []);
 
-  if (!jackpot) return null;
+  // Don't render if no jackpot data or if jackpot is disabled
+  if (!jackpot || jackpot.is_active === false) return null;
 
   return (
     <motion.div
