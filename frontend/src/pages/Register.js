@@ -233,7 +233,7 @@ export default function Register() {
               type="button"
               onClick={() => toast.info(texts.appleLoginNotConfigured || 'Apple Login requires configuration.')}
               variant="outline"
-              className="w-full h-12 border-white/20 text-white hover:bg-white/5 mt-3"
+              className="w-full h-12 border-gray-300 bg-gray-800 text-white hover:bg-gray-700 mt-3"
               data-testid="apple-register-btn"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
@@ -244,9 +244,9 @@ export default function Register() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-[#94A3B8]">
+            <p className="text-gray-500">
               {texts.hasAccount}{' '}
-              <Link to="/login" className="text-[#7C3AED] hover:underline font-medium">
+              <Link to="/login" className="text-amber-600 hover:underline font-medium">
                 {texts.loginHere}
               </Link>
             </p>
