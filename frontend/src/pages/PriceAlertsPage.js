@@ -68,7 +68,7 @@ const PriceAlertsPage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#050509] py-8 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4 flex items-center justify-center">
         <div className="text-center">
           <Bell className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <h2 className="text-xl text-white mb-2">Bitte anmelden</h2>
@@ -80,7 +80,7 @@ const PriceAlertsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050509] py-8 px-4">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse space-y-4">
             <div className="h-12 bg-gray-800 rounded w-1/3"></div>
@@ -93,7 +93,7 @@ const PriceAlertsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050509] py-8 px-4" data-testid="price-alerts-page">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4" data-testid="price-alerts-page">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

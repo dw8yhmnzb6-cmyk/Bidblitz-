@@ -242,7 +242,7 @@ const FriendBattlePage = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-[#050509] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 flex items-center justify-center">
         <div className="text-center">
           <Swords className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <p className="text-gray-400">Bitte anmelden</p>
@@ -253,7 +253,7 @@ const FriendBattlePage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050509] py-8 px-4">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4">
         <div className="max-w-4xl mx-auto animate-pulse space-y-6">
           <div className="h-12 bg-gray-800 rounded w-1/3 mx-auto"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -267,7 +267,7 @@ const FriendBattlePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050509] py-8 px-4" data-testid="friend-battle-page">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4" data-testid="friend-battle-page">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

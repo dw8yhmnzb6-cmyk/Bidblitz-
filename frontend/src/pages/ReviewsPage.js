@@ -165,7 +165,7 @@ const ReviewsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050509] py-8 px-4">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4">
         <div className="max-w-4xl mx-auto animate-pulse space-y-6">
           <div className="h-12 bg-gray-800 rounded w-1/3 mx-auto"></div>
           <div className="space-y-4">
@@ -179,7 +179,7 @@ const ReviewsPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050509] py-8 px-4" data-testid="reviews-page">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4" data-testid="reviews-page">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

@@ -99,7 +99,7 @@ const LoyaltyPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050509] py-8 px-4">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="animate-pulse space-y-6">
             <div className="h-32 bg-gray-800 rounded-xl"></div>
@@ -119,7 +119,7 @@ const LoyaltyPage = () => {
   const transactions = loyaltyData?.transactions || [];
 
   return (
-    <div className="min-h-screen bg-[#050509] py-8 px-4" data-testid="loyalty-page">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4" data-testid="loyalty-page">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

@@ -59,7 +59,7 @@ export default function WholesaleDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050509] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFD700]"></div>
       </div>
     );
@@ -68,7 +68,7 @@ export default function WholesaleDashboard() {
   // Not a wholesale customer
   if (!status?.is_wholesale) {
     return (
-      <div className="min-h-screen bg-[#050509] py-20 px-4">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="w-20 h-20 bg-gradient-to-br from-[#FFD700]/20 to-[#FF4D4D]/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <Building2 className="w-10 h-10 text-[#FFD700]" />
@@ -123,7 +123,7 @@ export default function WholesaleDashboard() {
 
   // Wholesale customer dashboard
   return (
-    <div className="min-h-screen bg-[#050509] py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">

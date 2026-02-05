@@ -157,7 +157,7 @@ export default function WholesaleApply() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#050509] py-20 px-4">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-20 px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-10 h-10 text-white" />
@@ -177,7 +177,7 @@ export default function WholesaleApply() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050509] py-12 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-12 px-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">

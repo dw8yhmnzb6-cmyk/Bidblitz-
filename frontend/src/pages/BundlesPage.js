@@ -123,7 +123,7 @@ const BundlesPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050509] py-8 px-4">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="animate-pulse grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1,2,3,4].map(i => (
@@ -136,7 +136,7 @@ const BundlesPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050509] py-8 px-4" data-testid="bundles-page">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4" data-testid="bundles-page">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
