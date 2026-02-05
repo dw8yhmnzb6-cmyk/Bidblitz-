@@ -84,6 +84,8 @@ import PhoneVerification from "./pages/PhoneVerification";
 import DealRadarPage from "./pages/DealRadarPage";
 import UserStatsPage from "./pages/UserStatsPage";
 import LiveWinnerPopup from "./components/LiveWinnerPopup";
+import AIBidRecommendationsPage from "./pages/AIBidRecommendationsPage";
+import CryptoPaymentPage from "./pages/CryptoPaymentPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
