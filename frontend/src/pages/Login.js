@@ -213,14 +213,14 @@ export default function Login() {
               </>
             ) : (
               <div className="space-y-4">
-                <div className="text-center p-4 rounded-lg bg-cyber/10 border border-cyber/30">
-                  <Shield className="w-12 h-12 text-cyber mx-auto mb-3" />
-                  <p className="text-white font-heading font-bold">{texts.twoFactorAuth}</p>
-                  <p className="text-gray-400 text-sm font-body">{texts.enter2FACode}</p>
+                <div className="text-center p-4 rounded-xl bg-[#7C3AED]/10 border border-[#7C3AED]/30">
+                  <Shield className="w-12 h-12 text-[#7C3AED] mx-auto mb-3" />
+                  <p className="text-white font-medium">{texts.twoFactorAuth}</p>
+                  <p className="text-[#94A3B8] text-sm">{texts.enter2FACode}</p>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="twoFactorCode" className="text-white font-body">{texts.enter2FACode}</Label>
+                  <Label htmlFor="twoFactorCode" className="text-white">{texts.enter2FACode}</Label>
                   <Input
                     id="twoFactorCode"
                     type="text"
@@ -229,7 +229,7 @@ export default function Login() {
                     onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     required
                     autoFocus
-                    className="h-14 text-center text-2xl font-mono tracking-[0.5em] bg-obsidian border-white/10 text-acid focus:border-cyber focus:ring-cyber/20"
+                    className="h-14 text-center text-2xl font-mono tracking-[0.5em] bg-[#181824] border-white/10 text-white"
                     data-testid="2fa-input"
                     maxLength={6}
                   />
@@ -241,7 +241,7 @@ export default function Login() {
                     setRequires2FA(false);
                     setTwoFactorCode('');
                   }}
-                  className="text-gray-400 hover:text-acid text-sm underline w-full text-center font-body transition-colors"
+                  className="text-[#94A3B8] hover:text-white text-sm underline w-full text-center"
                 >
                   {texts.back}
                 </button>
@@ -251,7 +251,7 @@ export default function Login() {
             <Button
               type="submit"
               disabled={loading || (requires2FA && twoFactorCode.length !== 6)}
-              className="w-full bg-acid text-black font-heading font-black uppercase tracking-wider py-3 h-auto hover:bg-acid-hover hover:shadow-neon-acid transition-all"
+              className="w-full btn-primary py-3 h-auto"
               data-testid="login-submit"
             >
               {loading ? (
@@ -273,7 +273,7 @@ export default function Login() {
                   <div className="w-full border-t border-white/10"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-obsidian-paper text-gray-500 font-body">{language === 'de' ? 'oder' : 'or'}</span>
+                  <span className="px-2 bg-[#0D0D14] text-[#94A3B8]">{language === 'de' ? 'oder' : 'or'}</span>
                 </div>
               </div>
             )}
@@ -284,7 +284,7 @@ export default function Login() {
                 onClick={handleGoogleLogin}
                 disabled={googleLoading}
                 variant="outline"
-                className="w-full h-12 border-white/20 text-white hover:bg-white/5 hover:border-acid/30 font-body transition-all"
+                className="w-full h-12 border-white/20 text-white hover:bg-white/5"
                 data-testid="google-login-btn"
               >
                 {googleLoading ? (
