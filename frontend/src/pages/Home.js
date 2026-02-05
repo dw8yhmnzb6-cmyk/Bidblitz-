@@ -539,6 +539,12 @@ export default function Home() {
         updateBidsBalance(res.data.bids_remaining);
       }
     } catch (error) {
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        toast.error(ht.pleaseLogin);
+        navigate('/login');
+        return;
+      }
       toast.error(error.response?.data?.detail || ht.bidError);
     }
   };

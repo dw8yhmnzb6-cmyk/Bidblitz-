@@ -346,6 +346,11 @@ export default function AuctionDetail() {
       updateBidsBalance(response.data.bids_remaining);
       fetchAuction();
     } catch (error) {
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        toast.error(dtl.pleaseLogin);
+        return;
+      }
       toast.error(error.response?.data?.detail || t('auctions.bidError') || 'Fehler beim Bieten');
     } finally {
       setBidding(false);
