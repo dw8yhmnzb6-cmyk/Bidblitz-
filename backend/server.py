@@ -250,6 +250,7 @@ app.include_router(livestream_router, prefix="/api")
 app.include_router(crypto_router, prefix="/api")
 app.include_router(influencer_auctions_router, prefix="/api")
 app.include_router(ar_preview_router, prefix="/api")
+app.include_router(voice_debug_router)
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
