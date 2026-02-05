@@ -383,31 +383,29 @@ export default function InvestorPortal() {
             
             {/* Vision Section */}
             <div className="glass-card rounded-2xl p-8 bg-gradient-to-br from-[#7C3AED]/10 to-[#06B6D4]/10 border border-[#7C3AED]/20">
-              <h2 className="text-2xl font-bold text-white mb-4 text-center">🚀 Unsere Vision</h2>
+              <h2 className="text-2xl font-bold text-white mb-4 text-center">🚀 {t.ourVision || 'Unsere Vision'}</h2>
               <p className="text-[#94A3B8] text-center max-w-3xl mx-auto mb-6">
-                BidBlitz revolutioniert den E-Commerce durch spannende Penny-Auktionen. 
-                Mit Ihrer Investition helfen Sie uns, europaweit zu expandieren und die 
-                führende Plattform für Schnäppchenjäger zu werden.
+                {t.visionDesc || 'BidBlitz revolutioniert den E-Commerce durch spannende Penny-Auktionen. Mit Ihrer Investition helfen Sie uns, europaweit zu expandieren und die führende Plattform für Schnäppchenjäger zu werden.'}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="text-center p-4">
                   <div className="text-3xl font-bold text-[#FFD700]">€5M+</div>
-                  <div className="text-[#94A3B8] text-sm">Zielumsatz 2027</div>
+                  <div className="text-[#94A3B8] text-sm">{t.targetRevenue || 'Zielumsatz'} 2027</div>
                 </div>
                 <div className="text-center p-4">
                   <div className="text-3xl font-bold text-[#10B981]">100K+</div>
-                  <div className="text-[#94A3B8] text-sm">Nutzer-Ziel</div>
+                  <div className="text-[#94A3B8] text-sm">{t.userTarget || 'Nutzer-Ziel'}</div>
                 </div>
                 <div className="text-center p-4">
                   <div className="text-3xl font-bold text-[#06B6D4]">10+</div>
-                  <div className="text-[#94A3B8] text-sm">Länder bis 2028</div>
+                  <div className="text-[#94A3B8] text-sm">{t.countriesBy || 'Länder bis'} 2028</div>
                 </div>
               </div>
             </div>
             
             {/* What Investors Get */}
             <div className="glass-card rounded-2xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6 text-center">💎 Was Sie als Investor erhalten</h2>
+              <h2 className="text-2xl font-bold text-white mb-6 text-center">💎 {t.whatYouGet || 'Was Sie als Investor erhalten'}</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Rendite */}
@@ -415,11 +413,11 @@ export default function InvestorPortal() {
                   <div className="w-12 h-12 bg-[#10B981]/20 rounded-xl flex items-center justify-center mb-4">
                     <TrendingUp className="w-6 h-6 text-[#10B981]" />
                   </div>
-                  <h3 className="text-white font-bold mb-2">📈 Rendite-Potenzial</h3>
+                  <h3 className="text-white font-bold mb-2">📈 {t.returnPotential || 'Rendite-Potenzial'}</h3>
                   <p className="text-[#94A3B8] text-sm mb-3">
-                    Profitieren Sie vom Wachstum. Bei erfolgreicher Expansion steigt der Wert Ihrer Anteile.
+                    {t.returnDesc || 'Profitieren Sie vom Wachstum. Bei erfolgreicher Expansion steigt der Wert Ihrer Anteile.'}
                   </p>
-                  <div className="text-[#10B981] font-bold">Ziel: 20-50% p.a.*</div>
+                  <div className="text-[#10B981] font-bold">{t.targetReturn || 'Ziel'}: 20-50% p.a.*</div>
                 </div>
                 
                 {/* Anteile */}
@@ -427,11 +425,11 @@ export default function InvestorPortal() {
                   <div className="w-12 h-12 bg-[#7C3AED]/20 rounded-xl flex items-center justify-center mb-4">
                     <Star className="w-6 h-6 text-[#7C3AED]" />
                   </div>
-                  <h3 className="text-white font-bold mb-2">🏆 Unternehmensanteile</h3>
+                  <h3 className="text-white font-bold mb-2">🏆 {t.companyShares || 'Unternehmensanteile'}</h3>
                   <p className="text-[#94A3B8] text-sm mb-3">
-                    Sie werden Miteigentümer von BidBlitz mit Stimmrecht bei wichtigen Entscheidungen.
+                    {t.sharesDesc || 'Sie werden Miteigentümer von BidBlitz mit Stimmrecht bei wichtigen Entscheidungen.'}
                   </p>
-                  <div className="text-[#7C3AED] font-bold">0.01% - 1% Equity</div>
+                  <div className="text-[#7C3AED] font-bold">0.01% - 1% {t.equity || 'Equity'}</div>
                 </div>
                 
                 {/* Exklusive Vorteile */}
@@ -439,12 +437,12 @@ export default function InvestorPortal() {
                   <div className="w-12 h-12 bg-[#FFD700]/20 rounded-xl flex items-center justify-center mb-4">
                     <Gift className="w-6 h-6 text-[#FFD700]" />
                   </div>
-                  <h3 className="text-white font-bold mb-2">🎁 Exklusive Vorteile</h3>
+                  <h3 className="text-white font-bold mb-2">🎁 {t.exclusiveBenefits || 'Exklusive Vorteile'}</h3>
                   <ul className="text-[#94A3B8] text-sm space-y-1">
-                    <li>✓ VIP-Zugang lebenslang</li>
-                    <li>✓ Monatliche Gratis-Gebote</li>
-                    <li>✓ Exklusive Auktionen</li>
-                    <li>✓ Persönlicher Support</li>
+                    <li>✓ {t.vipAccessLifetime || 'VIP-Zugang lebenslang'}</li>
+                    <li>✓ {t.monthlyFreeBids || 'Monatliche Gratis-Gebote'}</li>
+                    <li>✓ {t.exclusiveAuctions || 'Exklusive Auktionen'}</li>
+                    <li>✓ {t.personalSupport || 'Persönlicher Support'}</li>
                   </ul>
                 </div>
                 
@@ -453,12 +451,12 @@ export default function InvestorPortal() {
                   <div className="w-12 h-12 bg-[#06B6D4]/20 rounded-xl flex items-center justify-center mb-4">
                     <BarChart3 className="w-6 h-6 text-[#06B6D4]" />
                   </div>
-                  <h3 className="text-white font-bold mb-2">📊 Volle Transparenz</h3>
+                  <h3 className="text-white font-bold mb-2">📊 {t.fullTransparency || 'Volle Transparenz'}</h3>
                   <ul className="text-[#94A3B8] text-sm space-y-1">
-                    <li>✓ Monatliche Reports</li>
-                    <li>✓ Echtzeit-Dashboard</li>
-                    <li>✓ Quartals-Meetings</li>
-                    <li>✓ Direkter CEO-Kontakt</li>
+                    <li>✓ {t.monthlyReports || 'Monatliche Reports'}</li>
+                    <li>✓ {t.realtimeDashboard || 'Echtzeit-Dashboard'}</li>
+                    <li>✓ {t.quarterlyMeetings || 'Quartals-Meetings'}</li>
+                    <li>✓ {t.directCeoContact || 'Direkter CEO-Kontakt'}</li>
                   </ul>
                 </div>
               </div>
@@ -466,8 +464,8 @@ export default function InvestorPortal() {
             
             {/* Package Selection */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2 text-center">Wählen Sie Ihr Investment-Paket</h2>
-              <p className="text-[#94A3B8] text-center mb-6">Transparente Konditionen • Sofortige Zahlung • Sichere Abwicklung</p>
+              <h2 className="text-2xl font-bold text-white mb-2 text-center">{t.choosePackage || 'Wählen Sie Ihr Investment-Paket'}</h2>
+              <p className="text-[#94A3B8] text-center mb-6">{t.transparentTerms || 'Transparente Konditionen • Sofortige Zahlung • Sichere Abwicklung'}</p>
               
               {/* Package Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -479,6 +477,7 @@ export default function InvestorPortal() {
                     onSelect={setSelectedPackage}
                     onInvest={handleInvest}
                     loading={checkoutLoading}
+                    t={t}
                   />
                 ))}
               </div>
@@ -488,21 +487,21 @@ export default function InvestorPortal() {
             <div className="flex flex-wrap justify-center gap-6">
               <div className="flex items-center gap-2 text-[#94A3B8]">
                 <Shield className="w-5 h-5 text-[#10B981]" />
-                <span className="text-sm">SSL-verschlüsselt</span>
+                <span className="text-sm">{t.sslEncrypted || 'SSL-verschlüsselt'}</span>
               </div>
               <div className="flex items-center gap-2 text-[#94A3B8]">
                 <Star className="w-5 h-5 text-[#F59E0B]" />
-                <span className="text-sm">Stripe-Zahlungen</span>
+                <span className="text-sm">{t.stripePayments || 'Stripe-Zahlungen'}</span>
               </div>
               <div className="flex items-center gap-2 text-[#94A3B8]">
                 <CheckCircle className="w-5 h-5 text-[#7C3AED]" />
-                <span className="text-sm">DSGVO-konform</span>
+                <span className="text-sm">{t.gdprCompliant || 'DSGVO-konform'}</span>
               </div>
             </div>
             
             {/* Disclaimer */}
             <div className="text-center text-[#64748B] text-xs">
-              *Renditeangaben sind Zielwerte und keine Garantie. Investitionen sind mit Risiken verbunden.
+              {t.disclaimer || '*Renditeangaben sind Zielwerte und keine Garantie. Investitionen sind mit Risiken verbunden.'}
             </div>
           </div>
         )}
