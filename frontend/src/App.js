@@ -345,6 +345,22 @@ function AppContent() {
           <Route path="/radar" element={<DealRadarPage />} />
           <Route path="/schnaeppchen" element={<DealRadarPage />} />
           <Route path="/deals" element={<DealRadarPage />} />
+          {/* User Stats Dashboard */}
+          <Route path="/stats" element={
+            <ProtectedRoute>
+              <UserStatsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/statistiken" element={
+            <ProtectedRoute>
+              <UserStatsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/my-stats" element={
+            <ProtectedRoute>
+              <UserStatsPage />
+            </ProtectedRoute>
+          } />
           {/* Social Share */}
           <Route path="/share" element={
             <ProtectedRoute>
