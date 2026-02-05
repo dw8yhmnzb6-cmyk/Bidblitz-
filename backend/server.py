@@ -224,6 +224,7 @@ app.include_router(investor_router, prefix="/api")
 app.include_router(voucher_auctions_router, prefix="/api")
 app.include_router(promo_codes_router, prefix="/api")
 app.include_router(phone_verification_router, prefix="/api")
+app.include_router(deal_radar_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
