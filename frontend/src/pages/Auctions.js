@@ -922,93 +922,86 @@ export default function Auctions() {
   
   if (loading) {
     return (
-      <div className="min-h-screen bg-obsidian flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-4 border-acid border-t-transparent" />
+      <div className="min-h-screen bg-cyan-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-cyan-600 border-t-transparent" />
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-obsidian p-2 pt-16 sm:pt-20" data-testid="auctions-page">
-      {/* Background Grid Pattern */}
-      <div className="fixed inset-0 bg-[linear-gradient(rgba(212,255,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(212,255,0,0.02)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />
+    <div className="min-h-screen bg-gradient-to-b from-cyan-200 to-cyan-300 p-2 pt-16 sm:pt-20" data-testid="auctions-page">
       
-      {/* Glow Orbs */}
-      <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-acid/5 rounded-full blur-[150px] pointer-events-none" />
-      <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-cyber/5 rounded-full blur-[150px] pointer-events-none" />
+      {/* Global Jackpot - Top of Page */}
+      <div className="max-w-4xl mx-auto mb-4">
+        <GlobalJackpot />
+      </div>
       
-      <div className="relative z-10">
-        {/* Global Jackpot - Top of Page */}
-        <div className="max-w-4xl mx-auto mb-4">
-          <GlobalJackpot />
+      {/* Excitement Status Bar */}
+      <div className="max-w-7xl mx-auto mb-3">
+        <ExcitementStatusBar />
+      </div>
+      
+      <div className="text-center text-[10px] text-gray-600 mb-2">
+        {new Date().toLocaleTimeString('de-DE')} | {publicAuctions.length} {t('auctionPage.liveAuctions') || 'Live-Auktionen'}
+      </div>
+      
+      {/* Filter Buttons */}
+      <div className="max-w-7xl mx-auto mb-3">
+        <div className="flex flex-wrap gap-1.5 justify-center">
+          {filterButtons.map(btn => (
+            <button
+              key={btn.id}
+              onClick={() => setActiveFilter(btn.id)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${
+                activeFilter === btn.id
+                  ? `bg-gradient-to-r ${btn.color} text-white shadow-lg scale-105`
+                  : 'bg-white/80 text-gray-700 hover:bg-white hover:shadow'
+              }`}
+            >
+              {btn.icon && <span>{btn.icon}</span>}
+              {btn.label}
+              <span className={`ml-1 px-1.5 py-0.5 rounded-full text-[10px] ${
+                activeFilter === btn.id ? 'bg-white/20' : 'bg-gray-200'
+              }`}>
+                {btn.count}
+              </span>
+            </button>
+          ))}
         </div>
-        
-        {/* Excitement Status Bar */}
-        <div className="max-w-7xl mx-auto mb-3">
-          <ExcitementStatusBar />
-        </div>
-        
-        <div className="text-center text-xs text-gray-500 mb-3 font-mono">
-          {new Date().toLocaleTimeString('de-DE')} | <span className="text-acid">{publicAuctions.length}</span> {t('auctionPage.liveAuctions') || 'Live-Auktionen'}
-        </div>
-        
-        {/* Filter Buttons - Cyber Style */}
-        <div className="max-w-7xl mx-auto mb-4">
-          <div className="flex flex-wrap gap-2 justify-center">
-            {filterButtons.map(btn => (
-              <button
-                key={btn.id}
-                onClick={() => setActiveFilter(btn.id)}
-                className={`px-4 py-2 rounded-md text-xs font-heading font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                  activeFilter === btn.id
-                    ? 'bg-acid text-black shadow-neon-acid'
-                    : 'bg-obsidian-subtle border border-white/10 text-gray-400 hover:border-acid/30 hover:text-acid'
-                }`}
-              >
-                {btn.icon && <span>{btn.icon}</span>}
-                {btn.label}
-                <span className={`ml-1 px-2 py-0.5 rounded text-[10px] font-mono ${
-                  activeFilter === btn.id ? 'bg-black/20 text-black' : 'bg-obsidian text-acid'
-                }`}>
-                  {btn.count}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-        
-        {/* Main layout with trust badges on right */}
-        <div className="flex gap-4 max-w-7xl mx-auto">
-          {/* Main Content */}
-          <div className="flex-1 min-w-0">
-            {/* Auction of the Day - Only show on 'live' filter */}
-            {activeFilter === 'live' && auctionOfTheDay && aotdProduct && (
-              <AuctionOfTheDay 
-                auction={auctionOfTheDay} 
-                product={aotdProduct} 
-                onBid={handleBid}
-                t={t}
-                language={language}
-              />
-            )}
-            
-            {/* Premium Card only shows if NO AOTD and on 'live' filter */}
-            {activeFilter === 'live' && !auctionOfTheDay && premiumAuction && products[premiumAuction.product_id] && (
-              <PremiumCard auction={premiumAuction} product={products[premiumAuction.product_id]} onBid={handleBid} t={t} language={language} />
-            )}
-            
-            {/* Ad Banner - Only on live filter */}
-            {activeFilter === 'live' && <AdBanner />}
-            
-            <h2 className="text-sm font-heading font-bold text-white mt-4 mb-3 uppercase tracking-wider">
-              {activeFilter === 'live' && <><span className="text-acid">//</span> {t('auctionPage.liveAuctions')}</>}
-              {activeFilter === 'anfaenger' && <><span className="text-cyber">🎓</span> {t('auctionPage.beginnerAuctions')}</>}
-              {activeFilter === 'gratis' && <><span className="text-acid">🎁</span> {t('auctionPage.freeAuctions')}</>}
-              {activeFilter === 'nacht' && <><span className="text-hot-pink">🌙</span> {t('auctionPage.nightAuctions')}</>}
-              {activeFilter === 'ende' && <><span className="text-gray-500">//</span> {t('auctionPage.endedAuctions')}</>}
-              {activeFilter === 'vip' && <><span className="text-hot-pink">⭐</span> {t('auctionPage.vipAuctions')}</>}
-              {' '}<span className="text-acid font-mono">({auctionCounts[activeFilter] || gridAuctions.length})</span>
-            </h2>
+      </div>
+      
+      {/* Main layout with trust badges on right */}
+      <div className="flex gap-3 max-w-7xl mx-auto">
+        {/* Main Content */}
+        <div className="flex-1 min-w-0">
+          {/* Auction of the Day - Only show on 'live' filter */}
+          {activeFilter === 'live' && auctionOfTheDay && aotdProduct && (
+            <AuctionOfTheDay 
+              auction={auctionOfTheDay} 
+              product={aotdProduct} 
+              onBid={handleBid}
+              t={t}
+              language={language}
+            />
+          )}
+          
+          {/* Premium Card only shows if NO AOTD and on 'live' filter */}
+          {activeFilter === 'live' && !auctionOfTheDay && premiumAuction && products[premiumAuction.product_id] && (
+            <PremiumCard auction={premiumAuction} product={products[premiumAuction.product_id]} onBid={handleBid} t={t} language={language} />
+          )}
+          
+          {/* Ad Banner - Only on live filter */}
+          {activeFilter === 'live' && <AdBanner />}
+          
+          <h2 className="text-sm font-bold text-gray-800 mt-3 mb-2">
+            {activeFilter === 'live' && t('auctionPage.liveAuctions')}
+            {activeFilter === 'anfaenger' && `🎓 ${t('auctionPage.beginnerAuctions')}`}
+            {activeFilter === 'gratis' && `🎁 ${t('auctionPage.freeAuctions')}`}
+            {activeFilter === 'nacht' && `🌙 ${t('auctionPage.nightAuctions')}`}
+            {activeFilter === 'ende' && t('auctionPage.endedAuctions')}
+            {activeFilter === 'vip' && `⭐ ${t('auctionPage.vipAuctions')}`}
+            {' '}({auctionCounts[activeFilter] || gridAuctions.length})
+          </h2>
           
           {gridAuctions.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
