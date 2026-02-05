@@ -144,18 +144,18 @@ export default function Login() {
   }, []);
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center" data-testid="login-page">
+    <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center bg-gradient-to-b from-cyan-50 to-cyan-100" data-testid="login-page">
       <div className="w-full max-w-md">
-        <div className="glass-card rounded-2xl p-8">
+        <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-200">
           {/* Logo */}
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                 <Zap className="w-7 h-7 text-white" />
               </div>
             </Link>
-            <h1 className="text-2xl font-bold text-white mt-4">{texts.welcomeBack}</h1>
-            <p className="text-[#94A3B8] mt-2">
+            <h1 className="text-2xl font-bold text-gray-800 mt-4">{texts.welcomeBack}</h1>
+            <p className="text-gray-500 mt-2">
               {requires2FA ? texts.twoFactorAuth : texts.loginToContinue}
             </p>
           </div>
@@ -164,9 +164,9 @@ export default function Login() {
             {!requires2FA ? (
               <>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-white">{texts.email}</Label>
+                  <Label htmlFor="email" className="text-gray-700">{texts.email}</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <Input
                       id="email"
                       type="email"
@@ -175,7 +175,7 @@ export default function Login() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoComplete="email"
-                      className="pl-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
+                      className="pl-10 h-12 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400"
                       data-testid="email-input"
                     />
                   </div>
@@ -183,13 +183,13 @@ export default function Login() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="text-white">{texts.password}</Label>
-                    <Link to="/forgot-password" className="text-sm text-[#7C3AED] hover:underline">
+                    <Label htmlFor="password" className="text-gray-700">{texts.password}</Label>
+                    <Link to="/forgot-password" className="text-sm text-amber-600 hover:underline">
                       {texts.forgotPassword}
                     </Link>
                   </div>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                     <Input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
@@ -198,13 +198,13 @@ export default function Login() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       autoComplete="current-password"
-                      className="pl-10 pr-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
+                      className="pl-10 pr-10 h-12 bg-gray-50 border-gray-200 text-gray-800 placeholder:text-gray-400"
                       data-testid="password-input"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-white"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
@@ -213,14 +213,14 @@ export default function Login() {
               </>
             ) : (
               <div className="space-y-4">
-                <div className="text-center p-4 rounded-xl bg-[#7C3AED]/10 border border-[#7C3AED]/30">
-                  <Shield className="w-12 h-12 text-[#7C3AED] mx-auto mb-3" />
-                  <p className="text-white font-medium">{texts.twoFactorAuth}</p>
-                  <p className="text-[#94A3B8] text-sm">{texts.enter2FACode}</p>
+                <div className="text-center p-4 rounded-xl bg-amber-50 border border-amber-200">
+                  <Shield className="w-12 h-12 text-amber-600 mx-auto mb-3" />
+                  <p className="text-gray-800 font-medium">{texts.twoFactorAuth}</p>
+                  <p className="text-gray-500 text-sm">{texts.enter2FACode}</p>
                 </div>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="twoFactorCode" className="text-white">{texts.enter2FACode}</Label>
+                  <Label htmlFor="twoFactorCode" className="text-gray-700">{texts.enter2FACode}</Label>
                   <Input
                     id="twoFactorCode"
                     type="text"
@@ -229,7 +229,7 @@ export default function Login() {
                     onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     required
                     autoFocus
-                    className="h-14 text-center text-2xl font-mono tracking-[0.5em] bg-[#181824] border-white/10 text-white"
+                    className="h-14 text-center text-2xl font-mono tracking-[0.5em] bg-gray-50 border-gray-200 text-gray-800"
                     data-testid="2fa-input"
                     maxLength={6}
                   />
@@ -241,7 +241,7 @@ export default function Login() {
                     setRequires2FA(false);
                     setTwoFactorCode('');
                   }}
-                  className="text-[#94A3B8] hover:text-white text-sm underline w-full text-center"
+                  className="text-gray-500 hover:text-gray-800 text-sm underline w-full text-center"
                 >
                   {texts.back}
                 </button>
