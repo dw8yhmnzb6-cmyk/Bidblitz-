@@ -135,11 +135,24 @@ AI Bid Recommendations, Deal Radar, Price Alerts, Wishlist
 
 ---
 
-## Debug Reports API (NEW)
-Debug reports are now saved to MongoDB:
+## Debug Reports API & Dashboard (NEW)
+Debug reports are now saved to MongoDB and viewable in Admin Panel:
+
+### API Endpoints:
 - `GET /api/admin/voice-debug/reports` - List all reports
 - `PATCH /api/admin/voice-debug/reports/{id}/status` - Update status
 - `DELETE /api/admin/voice-debug/reports/{id}` - Delete report
+
+### Admin Dashboard Features:
+- **Stats Cards:** Visual counters by severity (Low/Medium/High/Critical)
+- **Filtering:** Filter by severity and status
+- **Report Details:** Expandable cards showing transcription, causes, files, recommendations
+- **Status Management:** Change status (Pending → In Progress → Resolved → Won't Fix)
+- **Delete Function:** Remove old reports
+
+### Files:
+- `/frontend/src/components/admin/AdminDebugReports.js` - Dashboard component
+- `/backend/routers/voice_debug.py` - API with MongoDB persistence
 
 ---
 
