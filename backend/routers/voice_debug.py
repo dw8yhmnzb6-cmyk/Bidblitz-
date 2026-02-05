@@ -337,7 +337,7 @@ async def get_debug_reports(
             {"_id": 0}  # Exclude MongoDB _id
         ).sort("created_at", -1).limit(limit)
         
-        reports = list(cursor)
+        reports = await cursor.to_list(length=limit)
         
         # Convert datetime to ISO string for JSON serialization
         for report in reports:
