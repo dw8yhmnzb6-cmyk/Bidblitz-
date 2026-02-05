@@ -565,21 +565,21 @@ export default function Admin() {
       });
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
   const handleExtendAuction = async (auctionId) => {
-    const seconds = prompt('Zeit verlängern um (Sekunden):', '300');
+    const seconds = prompt(at('promptExtendTime'), '300');
     if (!seconds) return;
     try {
       await axios.put(`${API}/admin/auctions/${auctionId}`, {
         duration_seconds: parseInt(seconds)
       }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success('Auktion verlängert');
+      toast.success(at('auctionExtended'));
       fetchData();
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(at('error'));
     }
   };
 
@@ -588,18 +588,18 @@ export default function Admin() {
       await axios.post(`${API}/admin/auctions/${auctionId}/end`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Auktion beendet');
+      toast.success(at('auctionEnded'));
       fetchData();
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(at('error'));
     }
   };
 
   const handleRestartAuction = async (auctionId) => {
-    const duration = prompt('Dauer in Minuten:', '10');
+    const duration = prompt(at('promptDurationMinutes'), '10');
     if (!duration) return;
     
-    const botPrice = prompt('Bots bieten bis (€):\n\nBots werden kontinuierlich bieten bis dieser Preis erreicht ist.\nLeer lassen = Standard €2-3:', '');
+    const botPrice = prompt(at('promptBotTargetDesc'), '');
     
     try {
       const params = new URLSearchParams();
@@ -615,26 +615,26 @@ export default function Admin() {
       );
       
       if (response.data.bot_bidding) {
-        toast.success(`Auktion neu gestartet! Bots haben ${response.data.bot_bidding.bids_placed} Gebote platziert.`);
+        toast.success(`${at('auctionRestarted')} Bots: ${response.data.bot_bidding.bids_placed} Gebote`);
       } else {
-        toast.success('Auktion neu gestartet!');
+        toast.success(at('auctionRestarted'));
       }
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Neustarten');
+      toast.error(error.response?.data?.detail || at('errorRestarting'));
     }
   };
 
   const handleDeleteAuction = async (auctionId) => {
-    if (!confirm('Auktion wirklich löschen?')) return;
+    if (!confirm(at('confirmDeleteAuction'))) return;
     try {
       await axios.delete(`${API}/admin/auctions/${auctionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Auktion gelöscht');
+      toast.success(at('auctionDeleted'));
       fetchData();
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(at('error'));
     }
   };
 
