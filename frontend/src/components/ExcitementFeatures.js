@@ -357,69 +357,23 @@ export function MysteryAuctionOverlay({ className = '' }) {
   );
 }
 
-// ==================== EXCITEMENT STATUS BAR ====================
+// ==================== EXCITEMENT STATUS BAR - CYBER STYLE ====================
 export function ExcitementStatusBar({ className = '' }) {
-  const [status, setStatus] = useState(null);
-
-  useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const res = await fetch(`${API}/api/excitement/status`);
-        const data = await res.json();
-        setStatus(data);
-      } catch (err) {
-        console.error('Excitement status error:', err);
-      }
-    };
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (!status) return null;
-
+  const [excitement, setExcitement] = useState(75);
+  
   return (
-    <div className={`flex items-center gap-4 overflow-x-auto py-2 ${className}`}>
-      {status.happy_hour.is_active && (
-        <div className="flex items-center gap-1 bg-[#FFD700]/20 rounded-full px-3 py-1 whitespace-nowrap">
-          <Zap className="w-4 h-4 text-[#FFD700]" />
-          <span className="text-[#FFD700] text-sm font-bold">HAPPY HOUR</span>
-        </div>
-      )}
-      
-      <div className="flex items-center gap-1 bg-[#7C3AED]/20 rounded-full px-3 py-1 whitespace-nowrap">
-        <Gift className="w-4 h-4 text-[#7C3AED]" />
-        <span className="text-[#7C3AED] text-sm">
-          Lucky in {status.lucky_bid.bids_until_lucky}
-        </span>
+    <div className={`bg-obsidian-subtle rounded-md p-3 flex items-center gap-3 border border-white/10 ${className}`}>
+      <div className="text-cyber font-heading font-bold text-xs uppercase tracking-wider">LIVE</div>
+      <div className="flex-1 bg-obsidian rounded-full h-2 overflow-hidden border border-white/5">
+        <div 
+          className="h-full bg-gradient-to-r from-acid via-cyber to-hot-pink animate-pulse transition-all duration-500"
+          style={{ width: `${excitement}%` }}
+        />
       </div>
-      
-      {status.active_counts.jackpot_auctions > 0 && (
-        <div className="flex items-center gap-1 bg-[#F59E0B]/20 rounded-full px-3 py-1 whitespace-nowrap">
-          <Trophy className="w-4 h-4 text-[#F59E0B]" />
-          <span className="text-[#F59E0B] text-sm">
-            {status.active_counts.jackpot_auctions} Jackpots
-          </span>
-        </div>
-      )}
-      
-      {status.active_counts.turbo_auctions > 0 && (
-        <div className="flex items-center gap-1 bg-[#EC4899]/20 rounded-full px-3 py-1 whitespace-nowrap">
-          <Zap className="w-4 h-4 text-[#EC4899]" />
-          <span className="text-[#EC4899] text-sm">
-            {status.active_counts.turbo_auctions} Turbo
-          </span>
-        </div>
-      )}
-      
-      {status.active_counts.mystery_auctions > 0 && (
-        <div className="flex items-center gap-1 bg-[#6366F1]/20 rounded-full px-3 py-1 whitespace-nowrap">
-          <Sparkles className="w-4 h-4 text-[#6366F1]" />
-          <span className="text-[#6366F1] text-sm">
-            {status.active_counts.mystery_auctions} Mystery
-          </span>
-        </div>
-      )}
+      <div className="text-acid font-mono text-xs">{excitement}%</div>
+      <div className="bg-acid/20 text-acid px-2 py-0.5 rounded text-[10px] font-heading font-bold uppercase animate-pulse border border-acid/30">
+        🔥 HEISS
+      </div>
     </div>
   );
 }
