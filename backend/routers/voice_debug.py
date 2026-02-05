@@ -87,9 +87,27 @@ async def transcribe_audio(audio_file: UploadFile) -> str:
         
         stt = OpenAISpeechToText(api_key=api_key)
         
+        # Determine file extension from filename or content type
+        filename = audio_file.filename or "recording.webm"
+        extension = filename.split('.')[-1] if '.' in filename else 'webm'
+        
+        # Map common extensions
+        extension_map = {
+            'webm': '.webm',
+            'mp4': '.mp4',
+            'm4a': '.m4a',
+            'ogg': '.ogg',
+            'wav': '.wav',
+            'mp3': '.mp3',
+            'mpeg': '.mpeg',
+            'mpga': '.mpga',
+        }
+        suffix = extension_map.get(extension.lower(), '.webm')
+        
         # Save uploaded file temporarily
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".webm") as tmp:
-            content = await audio_file.read()
+        content = await audio_file.read()
+        
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp.write(content)
             tmp_path = tmp.name
         
@@ -106,7 +124,10 @@ async def transcribe_audio(audio_file: UploadFile) -> str:
             return response.text
         finally:
             # Cleanup temp file
-            os.unlink(tmp_path)
+            try:
+                os.unlink(tmp_path)
+            except:
+                pass
             
     except Exception as e:
         print(f"Transcription error: {e}")
