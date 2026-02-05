@@ -357,21 +357,21 @@ export function MysteryAuctionOverlay({ className = '' }) {
   );
 }
 
-// ==================== EXCITEMENT STATUS BAR - CYBER STYLE ====================
+// ==================== EXCITEMENT STATUS BAR ====================
 export function ExcitementStatusBar({ className = '' }) {
   const [excitement, setExcitement] = useState(75);
   
   return (
-    <div className={`bg-obsidian-subtle rounded-md p-3 flex items-center gap-3 border border-white/10 ${className}`}>
-      <div className="text-cyber font-heading font-bold text-xs uppercase tracking-wider">LIVE</div>
-      <div className="flex-1 bg-obsidian rounded-full h-2 overflow-hidden border border-white/5">
+    <div className={`bg-white rounded-lg p-2 flex items-center gap-2 shadow-sm border border-cyan-200 ${className}`}>
+      <div className="text-cyan-600 font-bold text-xs">LIVE</div>
+      <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-acid via-cyber to-hot-pink animate-pulse transition-all duration-500"
+          className="h-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-500 animate-pulse"
           style={{ width: `${excitement}%` }}
         />
       </div>
-      <div className="text-acid font-mono text-xs">{excitement}%</div>
-      <div className="bg-acid/20 text-acid px-2 py-0.5 rounded text-[10px] font-heading font-bold uppercase animate-pulse border border-acid/30">
+      <div className="text-cyan-800 font-bold text-xs">{excitement}%</div>
+      <div className="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px] font-bold animate-pulse">
         🔥 HEISS
       </div>
     </div>
