@@ -432,26 +432,26 @@ export default function DealRadarPage() {
   
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black py-8 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4 flex items-center justify-center">
         <div className="text-center">
           <Radar className="w-16 h-16 text-cyan-500 mx-auto mb-4 animate-spin" />
-          <p className="text-gray-400">{t.loading}</p>
+          <p className="text-gray-600">{t.loading}</p>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black py-8 px-4" data-testid="deal-radar-page">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4" data-testid="deal-radar-page">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/20 border border-cyan-500/30 mb-4">
-            <Radar className="w-5 h-5 text-cyan-400" />
-            <span className="text-cyan-400 font-bold">RADAR</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-100 border border-cyan-200 mb-4">
+            <Radar className="w-5 h-5 text-cyan-600" />
+            <span className="text-cyan-600 font-bold">RADAR</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">{t.title}</h1>
-          <p className="text-gray-400 text-lg">{t.subtitle}</p>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-3">{t.title}</h1>
+          <p className="text-gray-600 text-lg">{t.subtitle}</p>
         </div>
         
         {/* Tabs */}
