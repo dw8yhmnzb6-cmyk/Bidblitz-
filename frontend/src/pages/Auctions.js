@@ -421,7 +421,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
          prevProps.t === nextProps.t;
 });
 
-// Ended Auction Card - Cyber Style
+// Ended Auction Card
 const EndedAuctionCard = memo(({ auction, product, t, language }) => {
   if (!auction || !product) return null;
   
@@ -433,43 +433,42 @@ const EndedAuctionCard = memo(({ auction, product, t, language }) => {
     : 99;
   
   return (
-    <div className="bg-obsidian-paper rounded-md overflow-hidden border border-white/5 opacity-75 hover:opacity-100 transition-all duration-300"
-         onClick={() => window.location.href = `/auctions/${auction.id || auction.auction_id}`}
-         data-testid={`ended-auction-card-${auction.id || auction.auction_id}`}>
+    <div className="bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg overflow-hidden border border-gray-300 opacity-80"
+         onClick={() => window.location.href = `/auctions/${auction.id || auction.auction_id}`}>
       
-      <div className="bg-obsidian-subtle text-gray-500 text-[9px] font-bold py-1.5 px-2 flex items-center justify-between border-b border-white/5">
-        <span className="bg-gray-700 text-gray-400 px-1.5 py-0.5 rounded text-[8px] font-heading uppercase">
+      <div className="bg-gradient-to-r from-gray-400 to-gray-500 text-white text-[9px] font-bold py-1 px-2 flex items-center justify-between">
+        <span className="bg-gray-600 text-white px-1.5 py-0.5 rounded text-[8px]">
           {t('auctionPage.ended')}
         </span>
-        <span className="text-[8px] text-gray-600 font-mono">
+        <span className="text-[8px]">
           -{discount}%
         </span>
       </div>
       
-      <div className="p-2.5">
-        <h3 className="text-[10px] font-heading font-bold text-gray-400 uppercase leading-tight mb-1.5 line-clamp-2 min-h-[24px]">
+      <div className="p-2">
+        <h3 className="text-[10px] font-bold text-gray-600 uppercase leading-tight mb-1 line-clamp-2 min-h-[24px]">
           {productName}
         </h3>
         
         <div className="flex gap-2">
           <div className="flex-1">
-            <p className="text-[8px] text-gray-600 font-body">{t('auctionPage.soldFor')}</p>
-            <span className="text-base font-heading font-black text-gray-400">
+            <p className="text-[8px] text-gray-500">{t('auctionPage.soldFor')}</p>
+            <span className="text-base font-black text-gray-700">
               € {auction.final_price?.toFixed(2).replace('.', ',')}
             </span>
-            <p className="text-[9px] text-acid font-body mt-1">
+            <p className="text-[9px] text-green-600 mt-1">
               👤 {auction.winner_name || '---'}
             </p>
           </div>
           
-          <div className="w-12 h-12 bg-obsidian-subtle rounded flex items-center justify-center flex-shrink-0 border border-white/5">
-            <img src={product.image_url || 'https://via.placeholder.com/48'} alt="" className="max-w-full max-h-full object-contain opacity-60" />
+          <div className="w-12 h-12 bg-white rounded flex items-center justify-center shadow-sm flex-shrink-0">
+            <img src={product.image_url || 'https://via.placeholder.com/48'} alt="" className="max-w-full max-h-full object-contain grayscale" />
           </div>
         </div>
       </div>
       
-      <div className="bg-obsidian-subtle/30 px-2 py-1.5 text-center border-t border-white/5">
-        <p className="text-[8px] text-gray-600 font-body">
+      <div className="bg-gray-300/50 px-2 py-1 text-center">
+        <p className="text-[8px] text-gray-500">
           {t('auctionPage.endedAt')} {new Date(auction.end_time).toLocaleString('de-DE', { 
             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' 
           })}
