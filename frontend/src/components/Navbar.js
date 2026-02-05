@@ -200,7 +200,7 @@ export const Navbar = () => {
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button className="btn-primary" data-testid="register-btn">
+                  <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold" data-testid="register-btn">
                     {t('nav.register')}
                   </Button>
                 </Link>
@@ -210,7 +210,7 @@ export const Navbar = () => {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden text-white"
+            className="md:hidden text-gray-700"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-btn"
           >
@@ -221,26 +221,26 @@ export const Navbar = () => {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0F0F16] border-t border-white/10">
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
           <div className="px-4 py-4 space-y-3">
             
             {/* AUTH SECTION - Prominent at top */}
             {isAuthenticated ? (
-              <div className="bg-gradient-to-r from-[#1a2a42] to-[#0d1829] rounded-xl p-4 mb-4 border border-white/10">
+              <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-4 mb-4 border border-cyan-200">
                 {/* User Info & Balance */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
                       <User className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-white font-semibold text-sm">{user?.name || 'Benutzer'}</p>
-                      <p className="text-gray-400 text-xs">{user?.email}</p>
+                      <p className="text-gray-800 font-semibold text-sm">{user?.name || 'Benutzer'}</p>
+                      <p className="text-gray-500 text-xs">{user?.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 bg-[#06B6D4]/20 px-3 py-1.5 rounded-full">
-                    <Zap className="w-4 h-4 text-[#06B6D4]" />
-                    <span className="font-mono font-bold text-[#06B6D4]">{user?.bids_balance || 0}</span>
+                  <div className="flex items-center gap-1 bg-cyan-100 px-3 py-1.5 rounded-full">
+                    <Zap className="w-4 h-4 text-cyan-600" />
+                    <span className="font-mono font-bold text-cyan-600">{user?.bids_balance || 0}</span>
                   </div>
                 </div>
                 
@@ -249,7 +249,7 @@ export const Navbar = () => {
                   <Link 
                     to="/dashboard" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 bg-[#7C3AED] text-white py-2.5 px-3 rounded-lg font-semibold text-center text-sm"
+                    className="flex-1 bg-amber-500 text-white py-2.5 px-3 rounded-lg font-semibold text-center text-sm"
                   >
                     Dashboard
                   </Link>
@@ -257,7 +257,7 @@ export const Navbar = () => {
                     <Link 
                       to="/admin" 
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex-1 bg-[#F59E0B] text-black py-2.5 px-3 rounded-lg font-semibold text-center text-sm flex items-center justify-center gap-1"
+                      className="flex-1 bg-orange-500 text-white py-2.5 px-3 rounded-lg font-semibold text-center text-sm flex items-center justify-center gap-1"
                     >
                       <Shield className="w-4 h-4" />
                       Admin
@@ -267,7 +267,7 @@ export const Navbar = () => {
                     <Link 
                       to="/influencer-dashboard" 
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex-1 bg-[#FFD700] text-black py-2.5 px-3 rounded-lg font-semibold text-center text-sm flex items-center justify-center gap-1"
+                      className="flex-1 bg-amber-400 text-white py-2.5 px-3 rounded-lg font-semibold text-center text-sm flex items-center justify-center gap-1"
                     >
                       <Star className="w-4 h-4" />
                       Influencer
@@ -275,23 +275,23 @@ export const Navbar = () => {
                   )}
                   <button 
                     onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-                    className="bg-[#EF4444] text-white py-2.5 px-4 rounded-lg font-semibold text-sm"
+                    className="bg-red-500 text-white py-2.5 px-4 rounded-lg font-semibold text-sm"
                   >
                     <LogOut className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="bg-gradient-to-r from-[#1a2a42] to-[#0d1829] rounded-xl p-4 mb-4 border border-white/10">
-                <p className="text-gray-300 text-sm mb-3 text-center">{t('home.ctaBid') || 'Melde dich an, um zu bieten!'}</p>
+              <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-4 mb-4 border border-cyan-200">
+                <p className="text-gray-600 text-sm mb-3 text-center">{t('home.ctaBid') || 'Melde dich an, um zu bieten!'}</p>
                 <div className="flex gap-2">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                    <Button variant="outline" className="w-full border-[#7C3AED] text-[#7C3AED] py-3 text-base font-bold">
+                    <Button variant="outline" className="w-full border-amber-500 text-amber-600 py-3 text-base font-bold">
                       {t('nav.login')}
                     </Button>
                   </Link>
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                    <Button className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black py-3 text-base font-bold">
+                    <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 text-base font-bold">
                       {t('nav.register')}
                     </Button>
                   </Link>
@@ -300,8 +300,8 @@ export const Navbar = () => {
             )}
             
             {/* Mobile Language Selector - at the top */}
-            <div className="pb-3 border-b border-white/10">
-              <p className="text-white text-sm font-semibold mb-2 flex items-center gap-2">
+            <div className="pb-3 border-b border-gray-200">
+              <p className="text-gray-700 text-sm font-semibold mb-2 flex items-center gap-2">
                 <Globe className="w-4 h-4" />
                 {t('nav.language') || 'Sprache'}
               </p>
@@ -316,8 +316,8 @@ export const Navbar = () => {
                     }}
                     className={`flex flex-col items-center justify-center p-2 rounded-lg text-xs font-medium transition-all ${
                       language === code 
-                        ? 'bg-[#7C3AED] text-white border-2 border-[#FFD700]' 
-                        : 'bg-[#181824] text-gray-300 hover:bg-[#252532] border border-white/10'
+                        ? 'bg-amber-500 text-white border-2 border-amber-600' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
                     }`}
                   >
                     <span className="text-lg">{flag}</span>
@@ -330,21 +330,21 @@ export const Navbar = () => {
             {/* Navigation Links */}
             <Link 
               to="/auctions" 
-              className="block text-[#94A3B8] hover:text-white py-2"
+              className="block text-gray-600 hover:text-gray-900 py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('nav.auctions')}
             </Link>
             <Link 
               to="/how-it-works" 
-              className="block text-[#94A3B8] hover:text-white py-2"
+              className="block text-gray-600 hover:text-gray-900 py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('nav.howItWorks') || "So funktioniert's"}
             </Link>
             <Link 
               to="/buy-bids" 
-              className="block text-[#FFD700] hover:text-[#FCD34D] py-2 font-medium"
+              className="block text-amber-600 hover:text-amber-700 py-2 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('nav.buyBids')}
