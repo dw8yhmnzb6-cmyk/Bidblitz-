@@ -197,7 +197,7 @@ export const Navbar = () => {
                   <span className="font-mono font-bold text-cyan-500" data-testid="bids-balance">
                     {user?.bids_balance || 0}
                   </span>
-                  <span className="text-gray-500 text-sm">{t('nav.bids')}</span>
+                  <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{t('nav.bids')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-gray-600" data-testid="user-name">{user?.name}</span>
