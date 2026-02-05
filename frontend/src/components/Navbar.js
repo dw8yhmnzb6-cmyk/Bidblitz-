@@ -39,87 +39,94 @@ export const Navbar = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation - Cyber Style */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-6">
             <Link 
               to="/auctions" 
-              className="text-gray-400 hover:text-acid transition-colors font-body font-medium text-sm"
+              className="text-[#94A3B8] hover:text-white transition-colors font-medium"
               data-testid="nav-auctions"
             >
               {t('nav.auctions')}
             </Link>
             <Link 
-              to="/deal-radar" 
-              className="text-cyber hover:text-cyber-hover transition-colors font-body font-medium text-sm flex items-center gap-1"
-              data-testid="nav-deal-radar"
+              to="/how-it-works" 
+              className="text-[#94A3B8] hover:text-white transition-colors font-medium"
+              data-testid="nav-how-it-works"
             >
-              <Radar className="w-4 h-4" />
-              Deal Radar
+              {t('nav.howItWorks') || "So funktioniert's"}
             </Link>
             <Link 
               to="/buy-bids" 
-              className="text-acid hover:text-acid-hover transition-colors font-body font-medium text-sm"
+              className="text-[#FFD700] hover:text-[#FCD34D] transition-colors font-medium"
               data-testid="nav-buy-bids"
             >
               {t('nav.buyBids')}
             </Link>
             <Link 
-              to="/vip-auctions" 
-              className="text-hot-pink hover:text-hot-pink-hover transition-colors font-body font-medium text-sm flex items-center gap-1"
-              data-testid="nav-vip-auctions"
+              to="/giftcards" 
+              className="text-[#F59E0B] hover:text-[#FBBF24] transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-giftcards"
             >
-              <Crown className="w-4 h-4" />
-              VIP
+              <Gift className="w-4 h-4" />
+              {t('nav.giftCards') || 'Geschenkkarten'}
             </Link>
             <Link 
               to="/leaderboard" 
-              className="text-gray-400 hover:text-white transition-colors font-body font-medium text-sm flex items-center gap-1"
+              className="text-[#A855F7] hover:text-[#C084FC] transition-colors font-medium flex items-center gap-1"
               data-testid="nav-leaderboard"
             >
               <Trophy className="w-4 h-4" />
               {language === 'de' ? 'Rangliste' : 'Leaderboard'}
             </Link>
             {isAuthenticated && (
-              <>
-                <button 
-                  onClick={() => setWheelOpen(true)}
-                  className="text-acid hover:text-acid-hover transition-colors font-body font-medium text-sm flex items-center gap-1"
-                  data-testid="nav-wheel"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  {language === 'de' ? 'Glücksrad' : 'Wheel'}
-                </button>
-                <Link 
-                  to="/ai-bids" 
-                  className="text-cyber hover:text-cyber-hover transition-colors font-body font-medium text-sm flex items-center gap-1"
-                  data-testid="nav-ai-bids"
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  KI
-                </Link>
-                <Link 
-                  to="/dashboard" 
-                  className="text-gray-400 hover:text-white transition-colors font-body font-medium text-sm"
-                  data-testid="nav-dashboard"
-                >
-                  {t('nav.dashboard')}
-                </Link>
-              </>
+              <button 
+                onClick={() => setWheelOpen(true)}
+                className="text-[#F59E0B] hover:text-[#FFD700] transition-colors font-medium flex items-center gap-1"
+                data-testid="nav-wheel"
+              >
+                <Sparkles className="w-4 h-4" />
+                {language === 'de' ? 'Glücksrad' : 'Lucky Wheel'}
+              </button>
+            )}
+            <Link 
+              to="/vip-auctions" 
+              className="text-[#FFA500] hover:text-[#FFD700] transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-vip-auctions"
+            >
+              <Crown className="w-4 h-4" />
+              {t('nav.vipAuctions') || 'VIP Auktionen'}
+            </Link>
+            <Link 
+              to="/winners" 
+              className="text-[#94A3B8] hover:text-white transition-colors font-medium flex items-center gap-1"
+              data-testid="nav-winners"
+            >
+              <Trophy className="w-4 h-4" />
+              {t('nav.winners')}
+            </Link>
+            {isAuthenticated && (
+              <Link 
+                to="/dashboard" 
+                className="text-[#94A3B8] hover:text-white transition-colors font-medium"
+                data-testid="nav-dashboard"
+              >
+                {t('nav.dashboard')}
+              </Link>
             )}
             {isAdmin && (
               <Link 
                 to="/admin" 
-                className="text-hot-pink hover:text-hot-pink-hover transition-colors font-body font-medium text-sm flex items-center gap-1"
+                className="text-[#F59E0B] hover:text-[#FCD34D] transition-colors font-medium flex items-center gap-1"
                 data-testid="nav-admin"
               >
                 <Shield className="w-4 h-4" />
-                Admin
+                {t('nav.admin')}
               </Link>
             )}
             {isInfluencer && (
               <Link 
                 to="/influencer-dashboard" 
-                className="text-acid hover:text-acid-hover transition-colors font-body font-medium text-sm flex items-center gap-1"
+                className="text-[#FFD700] hover:text-[#FCD34D] transition-colors font-medium flex items-center gap-1"
                 data-testid="nav-influencer"
               >
                 <Star className="w-4 h-4" />
@@ -129,7 +136,7 @@ export const Navbar = () => {
             {isManager && (
               <Link 
                 to="/manager-dashboard" 
-                className="text-cyber hover:text-cyber-hover transition-colors font-body font-medium text-sm flex items-center gap-1"
+                className="text-[#7C3AED] hover:text-[#A78BFA] transition-colors font-medium flex items-center gap-1"
                 data-testid="nav-manager"
               >
                 <Shield className="w-4 h-4" />
@@ -138,24 +145,24 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* Right side - Cyber Style */}
-          <div className="hidden md:flex items-center gap-3">
+          {/* Right side */}
+          <div className="hidden md:flex items-center gap-4">
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-white/10" data-testid="language-selector">
-                  <Globe className="w-4 h-4 mr-1" />
-                  {languageList[language]?.flag}
+                <Button variant="ghost" size="sm" className="text-[#94A3B8] hover:text-white hover:bg-white/10" data-testid="language-selector">
+                  <Globe className="w-4 h-4 mr-2" />
+                  {languageList[language]?.flag} {languageList[language]?.name}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="bg-obsidian-paper border-white/10 max-h-80 overflow-y-auto">
+              <DropdownMenuContent className="bg-[#181824] border-white/10 max-h-80 overflow-y-auto">
                 {Object.keys(languageList).map((lang) => (
                   <DropdownMenuItem 
                     key={lang} 
                     onClick={() => {
                       changeLanguage(lang);
                     }}
-                    className={`text-white hover:bg-white/10 cursor-pointer ${language === lang ? 'bg-acid/10 text-acid' : ''}`}
+                    className={`text-white hover:bg-white/10 cursor-pointer ${language === lang ? 'bg-white/5' : ''}`}
                   >
                     {languageList[lang]?.flag} {languageList[lang]?.name}
                   </DropdownMenuItem>
@@ -165,21 +172,20 @@ export const Navbar = () => {
 
             {isAuthenticated ? (
               <>
-                {/* Bids Balance - Cyber Style */}
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-obsidian-subtle border border-acid/30 shadow-neon-acid">
-                  <Zap className="w-4 h-4 text-acid" />
-                  <span className="font-mono font-bold text-acid" data-testid="bids-balance">
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#181824] border border-white/10">
+                  <Zap className="w-4 h-4 text-[#06B6D4]" />
+                  <span className="font-mono font-bold text-[#06B6D4]" data-testid="bids-balance">
                     {user?.bids_balance || 0}
                   </span>
-                  <span className="text-gray-400 text-xs">{t('nav.bids')}</span>
+                  <span className="text-[#94A3B8] text-sm">{t('nav.bids')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-400 text-sm" data-testid="user-name">{user?.name}</span>
+                  <span className="text-[#94A3B8]" data-testid="user-name">{user?.name}</span>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={handleLogout}
-                    className="text-gray-400 hover:text-hot-pink hover:bg-white/5"
+                    className="text-[#94A3B8] hover:text-white hover:bg-white/10"
                     data-testid="logout-btn"
                   >
                     <LogOut className="w-5 h-5" />
@@ -189,12 +195,12 @@ export const Navbar = () => {
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="ghost" className="text-gray-400 hover:text-white font-body" data-testid="login-btn">
+                  <Button variant="ghost" className="text-[#94A3B8] hover:text-white" data-testid="login-btn">
                     {t('nav.login')}
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button className="bg-acid text-black font-heading font-bold uppercase tracking-wider hover:bg-acid-hover hover:shadow-neon-acid transition-all" data-testid="register-btn">
+                  <Button className="btn-primary" data-testid="register-btn">
                     {t('nav.register')}
                   </Button>
                 </Link>
@@ -204,7 +210,7 @@ export const Navbar = () => {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden text-white hover:text-acid transition-colors"
+            className="md:hidden text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-btn"
           >
@@ -213,28 +219,28 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu - Cyber Style */}
+      {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-obsidian-paper border-t border-white/10">
+        <div className="md:hidden bg-[#0F0F16] border-t border-white/10">
           <div className="px-4 py-4 space-y-3">
             
-            {/* AUTH SECTION - Cyber Style */}
+            {/* AUTH SECTION - Prominent at top */}
             {isAuthenticated ? (
-              <div className="bg-obsidian-subtle rounded-xl p-4 mb-4 border border-acid/20 shadow-neon-acid">
+              <div className="bg-gradient-to-r from-[#1a2a42] to-[#0d1829] rounded-xl p-4 mb-4 border border-white/10">
                 {/* User Info & Balance */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 rounded-md bg-gradient-to-br from-acid to-cyber flex items-center justify-center">
-                      <User className="w-5 h-5 text-black" />
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#7C3AED] to-[#EC4899] flex items-center justify-center">
+                      <User className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-white font-heading font-bold text-sm">{user?.name || 'Benutzer'}</p>
-                      <p className="text-gray-500 text-xs font-mono">{user?.email}</p>
+                      <p className="text-white font-semibold text-sm">{user?.name || 'Benutzer'}</p>
+                      <p className="text-gray-400 text-xs">{user?.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 bg-acid/20 px-3 py-1.5 rounded-md border border-acid/30">
-                    <Zap className="w-4 h-4 text-acid" />
-                    <span className="font-mono font-bold text-acid">{user?.bids_balance || 0}</span>
+                  <div className="flex items-center gap-1 bg-[#06B6D4]/20 px-3 py-1.5 rounded-full">
+                    <Zap className="w-4 h-4 text-[#06B6D4]" />
+                    <span className="font-mono font-bold text-[#06B6D4]">{user?.bids_balance || 0}</span>
                   </div>
                 </div>
                 
@@ -243,7 +249,7 @@ export const Navbar = () => {
                   <Link 
                     to="/dashboard" 
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex-1 bg-acid text-black py-2.5 px-3 rounded-md font-heading font-bold text-center text-sm uppercase tracking-wider"
+                    className="flex-1 bg-[#7C3AED] text-white py-2.5 px-3 rounded-lg font-semibold text-center text-sm"
                   >
                     Dashboard
                   </Link>
@@ -251,7 +257,7 @@ export const Navbar = () => {
                     <Link 
                       to="/admin" 
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex-1 bg-hot-pink text-white py-2.5 px-3 rounded-md font-heading font-bold text-center text-sm flex items-center justify-center gap-1 uppercase"
+                      className="flex-1 bg-[#F59E0B] text-black py-2.5 px-3 rounded-lg font-semibold text-center text-sm flex items-center justify-center gap-1"
                     >
                       <Shield className="w-4 h-4" />
                       Admin
@@ -261,7 +267,7 @@ export const Navbar = () => {
                     <Link 
                       to="/influencer-dashboard" 
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex-1 bg-cyber text-black py-2.5 px-3 rounded-md font-heading font-bold text-center text-sm flex items-center justify-center gap-1 uppercase"
+                      className="flex-1 bg-[#FFD700] text-black py-2.5 px-3 rounded-lg font-semibold text-center text-sm flex items-center justify-center gap-1"
                     >
                       <Star className="w-4 h-4" />
                       Influencer
@@ -269,23 +275,23 @@ export const Navbar = () => {
                   )}
                   <button 
                     onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-                    className="bg-red-500 text-white py-2.5 px-4 rounded-md font-bold text-sm hover:bg-red-400 transition-colors"
+                    className="bg-[#EF4444] text-white py-2.5 px-4 rounded-lg font-semibold text-sm"
                   >
                     <LogOut className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="bg-obsidian-subtle rounded-xl p-4 mb-4 border border-white/10">
-                <p className="text-gray-400 text-sm mb-3 text-center font-body">{t('home.ctaBid') || 'Melde dich an, um zu bieten!'}</p>
+              <div className="bg-gradient-to-r from-[#1a2a42] to-[#0d1829] rounded-xl p-4 mb-4 border border-white/10">
+                <p className="text-gray-300 text-sm mb-3 text-center">{t('home.ctaBid') || 'Melde dich an, um zu bieten!'}</p>
                 <div className="flex gap-2">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                    <Button variant="outline" className="w-full border-acid text-acid py-3 text-base font-heading font-bold uppercase hover:bg-acid hover:text-black transition-all">
+                    <Button variant="outline" className="w-full border-[#7C3AED] text-[#7C3AED] py-3 text-base font-bold">
                       {t('nav.login')}
                     </Button>
                   </Link>
                   <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="flex-1">
-                    <Button className="w-full bg-acid hover:bg-acid-hover text-black py-3 text-base font-heading font-bold uppercase">
+                    <Button className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black py-3 text-base font-bold">
                       {t('nav.register')}
                     </Button>
                   </Link>
@@ -293,10 +299,10 @@ export const Navbar = () => {
               </div>
             )}
             
-            {/* Mobile Language Selector - Cyber Style */}
+            {/* Mobile Language Selector - at the top */}
             <div className="pb-3 border-b border-white/10">
-              <p className="text-white text-sm font-heading font-bold mb-2 flex items-center gap-2 uppercase tracking-wider">
-                <Globe className="w-4 h-4 text-acid" />
+              <p className="text-white text-sm font-semibold mb-2 flex items-center gap-2">
+                <Globe className="w-4 h-4" />
                 {t('nav.language') || 'Sprache'}
               </p>
               <div className="grid grid-cols-4 gap-1.5 max-h-48 overflow-y-auto">
@@ -308,97 +314,82 @@ export const Navbar = () => {
                       setMobileMenuOpen(false);
                       setTimeout(() => window.location.href = window.location.pathname, 100);
                     }}
-                    className={`flex flex-col items-center justify-center p-2 rounded-md text-xs font-medium transition-all ${
+                    className={`flex flex-col items-center justify-center p-2 rounded-lg text-xs font-medium transition-all ${
                       language === code 
-                        ? 'bg-acid text-black border border-acid shadow-neon-acid' 
-                        : 'bg-obsidian text-gray-400 hover:bg-obsidian-subtle border border-white/10 hover:border-acid/30'
+                        ? 'bg-[#7C3AED] text-white border-2 border-[#FFD700]' 
+                        : 'bg-[#181824] text-gray-300 hover:bg-[#252532] border border-white/10'
                     }`}
                   >
                     <span className="text-lg">{flag}</span>
-                    <span className="truncate w-full text-center font-mono">{code.toUpperCase()}</span>
+                    <span className="truncate w-full text-center">{code.toUpperCase()}</span>
                   </button>
                 ))}
               </div>
             </div>
             
-            {/* Navigation Links - Cyber Style */}
+            {/* Navigation Links */}
             <Link 
               to="/auctions" 
-              className="block text-gray-400 hover:text-acid py-2 font-body transition-colors"
+              className="block text-[#94A3B8] hover:text-white py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('nav.auctions')}
             </Link>
             <Link 
-              to="/deal-radar" 
-              className="block text-cyber hover:text-cyber-hover py-2 font-body flex items-center gap-2 transition-colors"
+              to="/how-it-works" 
+              className="block text-[#94A3B8] hover:text-white py-2"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <Radar className="w-4 h-4" />
-              Deal Radar
+              {t('nav.howItWorks') || "So funktioniert's"}
             </Link>
             <Link 
               to="/buy-bids" 
-              className="block text-acid hover:text-acid-hover py-2 font-body font-medium transition-colors"
+              className="block text-[#FFD700] hover:text-[#FCD34D] py-2 font-medium"
               onClick={() => setMobileMenuOpen(false)}
             >
               {t('nav.buyBids')}
             </Link>
             <Link 
               to="/vip-auctions" 
-              className="block text-hot-pink hover:text-hot-pink-hover py-2 font-body font-medium flex items-center gap-2 transition-colors"
+              className="block text-[#FFA500] hover:text-[#FFD700] py-2 font-medium flex items-center gap-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Crown className="w-4 h-4" />
-              VIP Auktionen
+              {t('nav.vipAuctions') || 'VIP Auktionen'}
             </Link>
-            {isAuthenticated && (
-              <>
-                <Link 
-                  to="/ai-bids" 
-                  className="block text-cyber hover:text-cyber-hover py-2 font-body flex items-center gap-2 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <TrendingUp className="w-4 h-4" />
-                  KI-Empfehlungen
-                </Link>
-                <button 
-                  onClick={() => { setWheelOpen(true); setMobileMenuOpen(false); }}
-                  className="block text-acid hover:text-acid-hover py-2 font-body flex items-center gap-2 w-full text-left transition-colors"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  {language === 'de' ? 'Glücksrad' : 'Lucky Wheel'}
-                </button>
-              </>
-            )}
+            <Link 
+              to="/winners" 
+              className="block text-[#94A3B8] hover:text-white py-2 flex items-center gap-2"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Trophy className="w-4 h-4" />
+              {t('nav.winners')}
+            </Link>
             <Link 
               to="/leaderboard" 
-              className="block text-gray-400 hover:text-white py-2 font-body flex items-center gap-2 transition-colors"
+              className="block text-[#A855F7] hover:text-[#C084FC] py-2 flex items-center gap-2"
               onClick={() => setMobileMenuOpen(false)}
             >
               <Trophy className="w-4 h-4" />
               {language === 'de' ? 'Rangliste' : 'Leaderboard'}
             </Link>
-            <Link 
-              to="/faq" 
-              className="block text-gray-400 hover:text-white py-2 font-body transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              FAQ
-            </Link>
-            <Link 
-              to="/contact" 
-              className="block text-gray-400 hover:text-white py-2 font-body transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              {t('nav.contact') || "Kontakt"}
-            </Link>
+            {isAuthenticated && (
+              <button 
+                onClick={() => { setWheelOpen(true); setMobileMenuOpen(false); }}
+                className="block text-[#F59E0B] hover:text-[#FFD700] py-2 flex items-center gap-2 w-full text-left"
+              >
+                <Sparkles className="w-4 h-4" />
+                {language === 'de' ? 'Glücksrad' : 'Lucky Wheel'}
+              </button>
+            )}
           </div>
         </div>
       )}
-      
+
       {/* Spin Wheel Modal */}
-      <SpinWheel isOpen={wheelOpen} onClose={() => setWheelOpen(false)} />
+      {wheelOpen && (
+        <SpinWheel onClose={() => setWheelOpen(false)} />
+      )}
     </nav>
   );
 };
