@@ -3280,12 +3280,12 @@ export default function Admin() {
       {/* Voice Debug Floating Button */}
       <button
         onClick={() => setShowVoiceDebug(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center z-40 group"
+        className="fixed bottom-24 left-6 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center z-40 group"
         title="Sprach-Debug-Assistent"
         data-testid="voice-debug-btn"
       >
         <Bug className="w-6 h-6 group-hover:scale-110 transition-transform" />
-        <span className="absolute -top-10 right-0 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+        <span className="absolute -top-10 left-0 bg-gray-900 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
           Hey BidBlitz 🎤
         </span>
       </button>
