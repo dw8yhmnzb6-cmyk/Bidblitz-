@@ -5,7 +5,29 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Completion Status (February 5, 2026)
 
-### ✅ Update 8 - Mindestpreis €20 + Beendete Auktionen (Feb 5)
+### ✅ LATEST: Update 9 - Alle Features implementiert (Feb 5)
+
+**Status aller 9 empfohlenen Features:**
+
+| # | Feature | Status | Pfad |
+|---|---------|--------|------|
+| 1 | Push-Benachrichtigungen | ✅ Vorhanden | `/api/notifications/push/` |
+| 2 | Refer-a-Friend | ✅ Vorhanden | `/invite`, `/referral/` |
+| 3 | Countdown-Deals | ✅ Vorhanden | `/flash-sales/` |
+| 4 | Auktions-Favoriten | ✅ Vorhanden | `/favorites/`, `/watchlist` |
+| 5 | Winner Gallery | ✅ Vorhanden | `/winners`, `/gewinner` |
+| 6 | Täglicher Login-Bonus | ✅ Vorhanden | `/daily-quests/`, `/belohnungen` |
+| 7 | SMS-Verifizierung | ✅ NEU | `/phone-verify`, `/telefon` |
+| 8 | Gebote-Abo | ✅ Vorhanden | `/subscription`, `/abo` |
+| 9 | Affiliate-Programm | ✅ Vorhanden | `/influencer/`, `/affiliate/` |
+
+**NEU implementiert:**
+- SMS-Verifizierung (`/app/backend/routers/phone_verification.py`)
+- Frontend-Seite (`/app/frontend/src/pages/PhoneVerification.js`)
+- +5 Gratis-Gebote bei Verifizierung
+- Mock-Modus für Tests (ohne Twilio API)
+
+### ✅ Update 8 - Mindestpreis + Auktionen (Feb 5)
 
 **Implementiert:**
 
