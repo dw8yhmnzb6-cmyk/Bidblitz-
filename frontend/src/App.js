@@ -530,13 +530,12 @@ function AppContent() {
         position="top-right"
         toastOptions={{
           style: {
-            background: '#0A0A0F',
-            border: '1px solid rgba(212, 255, 0, 0.2)',
+            background: '#181824',
+            border: '1px solid rgba(255,255,255,0.1)',
             color: '#F8FAFC',
             fontSize: '12px',
-            padding: '12px 16px',
-            maxWidth: '320px',
-            fontFamily: 'Manrope, sans-serif',
+            padding: '8px 12px',
+            maxWidth: '280px',
           },
           duration: 3000,
         }}
