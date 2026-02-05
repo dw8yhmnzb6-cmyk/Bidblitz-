@@ -5,72 +5,91 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 5, 2026)
 
-### ✅ COMPLETE: Dark Mode Toggle Implemented
+### ✅ COMPLETE: Voice Debug Assistant + Dark Mode Toggle
 
 The BidBlitz auction platform now has:
 - **86 Backend API Routers** - Full coverage of all features
 - **74 Frontend Pages** - Complete user interface
 - **🌙 Dark Mode Toggle** - Users can switch between Light and Dark themes
-- **💾 Persistent Preference** - Theme choice saved in localStorage
+- **🎤 Voice Debug Assistant** - Hotword-activated debugging for admins
 
 ---
 
-## New Feature: Dark Mode Toggle
+## New Feature: Voice Debug Assistant 🎤🐛
+
+### Description:
+An AI-powered voice debugging assistant for the Admin Panel that allows admins to report bugs using voice commands.
 
 ### How it works:
-1. **Toggle Location:** In the Navbar (both Desktop and Mobile)
-2. **Icons:** Sun ☀️ (switch to Light) / Moon 🌙 (switch to Dark)
-3. **Persistence:** Theme saved to localStorage, survives page refresh
-4. **Transition:** Smooth 0.3s color transition between modes
+1. **Hotword:** Say "Hey BidBlitz" to activate
+2. **Voice Recording:** Describe the error in German or English
+3. **AI Analysis:** OpenAI Whisper transcribes, GPT-4o-mini analyzes
+4. **Report Generation:** Creates detailed bug report with:
+   - Description
+   - Severity (low/medium/high/critical)
+   - Possible causes
+   - Affected files
+   - Recommendations
 
 ### Technical Implementation:
-- **ThemeContext** (`/src/context/ThemeContext.js`) - React Context for global theme state
-- **CSS Variables** (`/src/index.css`) - CSS custom properties for theme colors
-- **CSS Overrides** - `.dark` class applied to `<html>` element, with !important overrides
+| Component | File | Description |
+|-----------|------|-------------|
+| Backend | `/routers/voice_debug.py` | API endpoints for transcription and analysis |
+| Frontend | `/components/VoiceDebugAssistant.js` | Voice recording UI and report display |
+| Admin Integration | `/pages/Admin.js` | Floating button and modal |
+
+### API Endpoints:
+- `POST /api/admin/voice-debug/transcribe` - Transcribe audio only
+- `POST /api/admin/voice-debug/analyze` - Transcribe + AI analysis
+- `GET /api/admin/voice-debug/reports` - Get all debug reports
+
+### Requirements:
+- Admin or Manager role required
+- Microphone access
+- EMERGENT_LLM_KEY for OpenAI Whisper
+
+---
+
+## Feature: Dark Mode Toggle 🌙☀️
+
+### Description:
+Toggle between Light (Cyan/Turquoise) and Dark (Obsidian Black) themes.
+
+### How it works:
+1. Click Sun/Moon icon in Navbar
+2. Theme instantly switches
+3. Preference saved to localStorage
 
 ### Color Palettes:
-
 | Element | Light Mode | Dark Mode |
 |---------|------------|-----------|
 | Background | #ECFEFF → #CFFAFE | #050509 |
 | Cards | #FFFFFF | #181824 |
 | Text Primary | #1F2937 | #F8FAFC |
-| Text Secondary | #6B7280 | #94A3B8 |
-| Borders | #E5E7EB | rgba(255,255,255,0.1) |
 | Accent | #F59E0B | #F59E0B |
 
 ---
 
-## Bug Fix: "Fehler beim Bieten" Error
+## All Features Summary
 
-The error "Fehler beim Bieten" (Error when bidding) appears when:
-- User is **not logged in** and tries to bid
-- This is **expected behavior** - user must be authenticated
+### Gamification ✅
+Achievements, Levels, Daily Quests, Battle Pass, Lucky Wheel, Streak Protection
 
-The error message has been improved to say "Bitte melde dich an, um zu bieten" (Please log in to bid).
+### Monetization ✅
+Stripe Payments, Bid Packages, VIP Subscription, Gift Cards, Crypto Payments
 
----
+### Social ✅
+Friend Battle, Team Auctions, Referrals, Leaderboard, Winner Gallery
 
-## Feature Summary
+### AI & Personalization ✅
+AI Bid Recommendations, Deal Radar, Price Alerts, Wishlist
 
-### 1. GAMIFICATION & ENGAGEMENT ✅
-- Achievements, Levels, Daily Quests, Battle Pass, Lucky Wheel, Streak Protection
-
-### 2. MONETIZATION ✅
-- Bid Packages, VIP Subscription, Gift Cards, Bundles, Crypto Payments, Loyalty Points
-
-### 3. SOCIAL & COMMUNITY ✅
-- Friend Battle, Team Auctions, Referrals, Winner Gallery, Leaderboard
-
-### 4. PERSONALIZATION & AI ✅
-- AI Bid Recommendations, Deal Radar, Price Alerts, Wishlist
-
-### 5. UX/UI ✅
-- **Dark Mode Toggle** (NEW!)
-- Light Theme (Cyan/Turquoise)
-- Dark Theme (Obsidian Black)
-- Responsive Design
-- Mobile-First Approach
+### Admin Tools ✅
+- Dashboard with stats
+- User management
+- Bot management
+- Voice Debug Assistant (NEW!)
+- AI Chat Assistant
 
 ---
 
@@ -79,25 +98,28 @@ The error message has been improved to say "Bitte melde dich an, um zu bieten" (
 - **Manager:** manager.prishtina@bidblitz.de / Manager123!
 
 ## Mocked Services
-| Service | Status | Required API Keys |
-|---------|--------|-------------------|
-| WhatsApp | MOCKED | WHATSAPP_ACCESS_TOKEN |
-| Twilio SMS | MOCKED | Twilio Credentials |
-| Resend Email | MOCKED | RESEND_API_KEY |
-| Apple Login | MOCKED | Apple Developer Credentials |
+| Service | Status | Required |
+|---------|--------|----------|
+| WhatsApp | MOCKED | API Token |
+| Twilio SMS | MOCKED | Credentials |
+| Apple Login | MOCKED | Dev Credentials |
 
 ---
 
-## Files Modified This Session
+## Files Created/Modified This Session
 
-| File | Changes |
-|------|---------|
-| `/src/context/ThemeContext.js` | NEW - Dark mode state management |
-| `/src/App.js` | Added ThemeProvider, dynamic styling |
-| `/src/components/Navbar.js` | Added Dark Mode Toggle button |
-| `/src/index.css` | CSS variables, .dark class overrides |
-| `/src/pages/*.js` | ~70 pages converted to Light Theme |
-| `/src/components/*.js` | Components updated for theme support |
+### New Files:
+- `/backend/routers/voice_debug.py` - Voice debug backend
+- `/frontend/src/components/VoiceDebugAssistant.js` - Voice debug UI
+- `/frontend/src/context/ThemeContext.js` - Dark mode context
+
+### Modified Files:
+- `/backend/server.py` - Added voice_debug_router
+- `/frontend/src/App.js` - Added ThemeProvider
+- `/frontend/src/components/Navbar.js` - Added Dark Mode toggle
+- `/frontend/src/pages/Admin.js` - Added Voice Debug button
+- `/frontend/src/index.css` - CSS variables + dark mode overrides
+- `~70 pages` - Light theme styling
 
 ---
 
@@ -107,4 +129,4 @@ February 5, 2026
 ## Next Steps
 1. Activate WhatsApp/SMS notifications (API keys required)
 2. Implement Apple Sign-In (credentials required)
-3. Enable Tawk.to Live Chat (script ID required)
+3. Save debug reports to MongoDB database
