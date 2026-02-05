@@ -156,27 +156,33 @@ const AdBanner = memo(() => {
   );
 });
 
-// Activity Index - Cyber Style (30-60%)
-const ActivityIndex = memo(({ auctionId = '', t }) => {
-  const hash = auctionId ? auctionId.split('').reduce((a, b) => a + b.charCodeAt(0), 0) : 50;
-  const filledCount = 3 + (hash % 4);
+// Activity Index - Cyber Style micro-component showing auction heat
+const ActivityIndex = memo(({ auctionId, t }) => {
+  const activity = Math.floor(Math.random() * 100);
+  let activityLevel, activityColor;
+  
+  if (activity > 80) {
+    activityLevel = t('auctionPage.activityHot');
+    activityColor = 'bg-hot-pink text-white shadow-neon-pink';
+  } else if (activity > 50) {
+    activityLevel = t('auctionPage.activityActive');
+    activityColor = 'bg-cyber text-black shadow-neon-cyber';
+  } else {
+    activityLevel = t('auctionPage.activityCalm');
+    activityColor = 'bg-acid/20 text-acid';
+  }
   
   return (
-    <div className="flex items-center gap-1 mt-1">
-      <span className="text-[8px] text-gray-500 font-mono">{t('auctionPage.activity')}:</span>
-      <div className="flex gap-px">
-        {[...Array(10)].map((_, i) => {
-          let color = '#374151'; // gray-700 for empty
-          if (i < filledCount) {
-            if (i < 2) color = '#d4ff00'; // acid
-            else if (i < 4) color = '#00ffff'; // cyber
-            else if (i < 6) color = '#ff1493'; // hot-pink
-            else if (i < 8) color = '#ff6b35'; // orange
-            else color = '#ff0040'; // red
-          }
-          return <div key={i} className="w-1.5 h-2.5 rounded-sm border border-white/10" style={{ backgroundColor: color }} />;
-        })}
+    <div className="mt-2 flex items-center gap-1.5">
+      <div className="flex-1 bg-obsidian rounded-full h-1.5 overflow-hidden border border-white/5">
+        <div 
+          className={`h-full ${activity > 80 ? 'bg-hot-pink' : activity > 50 ? 'bg-cyber' : 'bg-acid/40'} transition-all duration-500`}
+          style={{ width: `${activity}%` }}
+        />
       </div>
+      <span className={`text-[7px] px-1.5 py-0.5 rounded font-heading font-bold uppercase ${activityColor}`}>
+        {activityLevel}
+      </span>
     </div>
   );
 });
