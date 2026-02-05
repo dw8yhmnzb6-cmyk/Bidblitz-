@@ -216,17 +216,17 @@ export default function Winners() {
   const stats = statsLabels[language] || statsLabels.de;
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4" data-testid="winners-page">
+    <div className="min-h-screen pt-24 pb-12 px-4 bg-gradient-to-b from-cyan-50 to-cyan-100" data-testid="winners-page">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 mb-6">
-            <Sparkles className="w-4 h-4 text-[#FFD700]" />
-            <span className="text-[#FFD700] text-sm font-medium">{stats.realWinners}</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 mb-6">
+            <Sparkles className="w-4 h-4 text-amber-500" />
+            <span className="text-amber-600 text-sm font-medium">{stats.realWinners}</span>
           </div>
           
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-4">
-            {stats.ourWinners} <span className="text-gradient">{texts.title.replace('Gewinner-Galerie', 'Gewinner').replace('Winners Gallery', 'Winners').replace('Galeria e Fituesve', 'Fituesve').replace('Kazananlar Galerisi', 'Kazananlar').replace('Galerie des Gagnants', 'Gagnants')}</span>
+            {stats.ourWinners} <span className="text-amber-500">{texts.title.replace('Gewinner-Galerie', 'Gewinner').replace('Winners Gallery', 'Winners').replace('Galeria e Fituesve', 'Fituesve').replace('Kazananlar Galerisi', 'Kazananlar').replace('Galerie des Gagnants', 'Gagnants')}</span>
           </h1>
           
           <p className="text-gray-500 text-lg max-w-2xl mx-auto mb-8">
@@ -235,9 +235,9 @@ export default function Winners() {
           
           {/* Stats */}
           <div className="flex flex-wrap justify-center gap-6 mb-8">
-            <div className="glass-card px-6 py-4 rounded-xl">
+            <div className="bg-white shadow-md px-6 py-4 rounded-xl border border-gray-200">
               <div className="flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-[#FFD700]" />
+                <Trophy className="w-8 h-8 text-amber-500" />
                 <div className="text-left">
                   <p className="text-2xl font-bold text-gray-800">{winners.length}+</p>
                   <p className="text-gray-500 text-sm">{stats.happyWinners}</p>
@@ -245,9 +245,9 @@ export default function Winners() {
               </div>
             </div>
             
-            <div className="glass-card px-6 py-4 rounded-xl">
+            <div className="bg-white shadow-md px-6 py-4 rounded-xl border border-gray-200">
               <div className="flex items-center gap-3">
-                <TrendingDown className="w-8 h-8 text-[#10B981]" />
+                <TrendingDown className="w-8 h-8 text-green-500" />
                 <div className="text-left">
                   <p className="text-2xl font-bold text-gray-800">€{totalSavings.toFixed(0)}</p>
                   <p className="text-gray-500 text-sm">{stats.totalSaved}</p>
@@ -255,9 +255,9 @@ export default function Winners() {
               </div>
             </div>
             
-            <div className="glass-card px-6 py-4 rounded-xl">
+            <div className="bg-white shadow-md px-6 py-4 rounded-xl border border-gray-200">
               <div className="flex items-center gap-3">
-                <Star className="w-8 h-8 text-[#F59E0B]" />
+                <Star className="w-8 h-8 text-orange-500" />
                 <div className="text-left">
                   <p className="text-2xl font-bold text-gray-800">{avgSavings}%</p>
                   <p className="text-gray-500 text-sm">{stats.avgSavings}</p>
@@ -267,7 +267,7 @@ export default function Winners() {
           </div>
           
           <Link to="/auctions">
-            <Button className="btn-primary">
+            <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold">
               {stats.bidNow}
               <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
