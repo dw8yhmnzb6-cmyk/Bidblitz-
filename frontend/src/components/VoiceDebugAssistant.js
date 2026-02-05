@@ -283,10 +283,21 @@ export const VoiceDebugAssistant = ({ isOpen, onClose }) => {
     
     try {
       // Determine file extension based on MIME type
+      // iOS Safari may return different MIME types
       let extension = 'webm';
-      if (audioBlob.type.includes('mp4')) extension = 'mp4';
-      else if (audioBlob.type.includes('ogg')) extension = 'ogg';
-      else if (audioBlob.type.includes('wav')) extension = 'wav';
+      const mimeType = audioBlob.type.toLowerCase();
+      
+      if (mimeType.includes('mp4') || mimeType.includes('m4a') || mimeType.includes('aac')) {
+        extension = 'mp4';
+      } else if (mimeType.includes('ogg')) {
+        extension = 'ogg';
+      } else if (mimeType.includes('wav')) {
+        extension = 'wav';
+      } else if (mimeType.includes('mpeg') || mimeType.includes('mp3')) {
+        extension = 'mp3';
+      }
+      
+      console.log('Uploading audio:', audioBlob.size, 'bytes, type:', mimeType, 'extension:', extension);
       
       const formData = new FormData();
       formData.append('audio', audioBlob, `recording.${extension}`);
