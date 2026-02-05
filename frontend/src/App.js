@@ -114,7 +114,7 @@ function AppContent() {
   const { language, mappedLanguage } = useLanguage();
   
   return (
-    <div className="App bg-obsidian min-h-screen flex flex-col font-body">
+    <div className="App bg-[#050509] min-h-screen flex flex-col">
       {/* Scroll to top on route change */}
       <ScrollToTopOnNavigate />
       
