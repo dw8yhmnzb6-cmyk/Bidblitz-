@@ -93,8 +93,8 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#050509]">
-        <div className="w-12 h-12 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-obsidian">
+        <div className="w-12 h-12 border-4 border-acid border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -114,7 +114,7 @@ function AppContent() {
   const { language, mappedLanguage } = useLanguage();
   
   return (
-    <div className="App bg-[#050509] min-h-screen flex flex-col">
+    <div className="App bg-obsidian min-h-screen flex flex-col font-body">
       {/* Scroll to top on route change */}
       <ScrollToTopOnNavigate />
       
@@ -530,12 +530,13 @@ function AppContent() {
         position="top-right"
         toastOptions={{
           style: {
-            background: '#181824',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: '#0A0A0F',
+            border: '1px solid rgba(212, 255, 0, 0.2)',
             color: '#F8FAFC',
             fontSize: '12px',
-            padding: '8px 12px',
-            maxWidth: '280px',
+            padding: '12px 16px',
+            maxWidth: '320px',
+            fontFamily: 'Manrope, sans-serif',
           },
           duration: 3000,
         }}
