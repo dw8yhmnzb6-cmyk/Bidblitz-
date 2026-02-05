@@ -466,6 +466,10 @@ function AppContent() {
           <Route path="/investor" element={<InvestorPortal />} />
           <Route path="/investoren" element={<InvestorPortal />} />
           
+          {/* Phone Verification */}
+          <Route path="/phone-verify" element={<PhoneVerification />} />
+          <Route path="/telefon" element={<PhoneVerification />} />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
