@@ -308,7 +308,7 @@ export default function Notifications() {
                       <>
                         <button
                           onClick={handleTestPush}
-                          className="px-2 py-1.5 rounded text-xs font-medium bg-cyan-500/20 text-cyan-400 hover:bg-cyan-500/30"
+                          className="px-2 py-1.5 rounded text-xs font-medium bg-cyan-100 text-cyan-600 hover:bg-cyan-200"
                           title="Test-Benachrichtigung senden"
                         >
                           <Send className="w-3 h-3" />
@@ -316,7 +316,7 @@ export default function Notifications() {
                         <button
                           onClick={handlePushUnsubscribe}
                           disabled={pushLoading}
-                          className="px-3 py-1.5 rounded text-xs font-medium bg-green-500/20 text-green-400 hover:bg-red-500/20 hover:text-red-400"
+                          className="px-3 py-1.5 rounded text-xs font-medium bg-green-100 text-green-600 hover:bg-red-100 hover:text-red-600"
                         >
                           {pushLoading ? '...' : '✓ Aktiviert'}
                         </button>
@@ -327,8 +327,8 @@ export default function Notifications() {
                         disabled={pushLoading || pushPermission === 'denied'}
                         className={`px-3 py-1.5 rounded text-xs font-medium ${
                           pushPermission === 'denied'
-                            ? 'bg-gray-500/20 text-gray-500 cursor-not-allowed'
-                            : 'bg-blue-500 text-white hover:bg-blue-600'
+                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            : 'bg-cyan-500 text-white hover:bg-cyan-600'
                         }`}
                       >
                         {pushLoading ? 'Aktiviere...' : 'Aktivieren'}
@@ -336,11 +336,11 @@ export default function Notifications() {
                     )}
                   </div>
                 ) : (
-                  <span className="text-gray-500 text-xs">Nicht unterstützt</span>
+                  <span className="text-gray-400 text-xs">Nicht unterstützt</span>
                 )}
               </div>
               {pushSubscribed && (
-                <p className="text-green-400/70 text-[10px]">
+                <p className="text-green-600 text-[10px]">
                   ✓ Sie erhalten Push-Benachrichtigungen auf diesem Gerät
                 </p>
               )}
@@ -356,13 +356,13 @@ export default function Notifications() {
                 { key: 'new_auctions', label: 'Neue Auktionen' },
                 { key: 'marketing', label: 'Aktionen & Newsletter' },
               ].map(({ key, label }) => (
-                <label key={key} className="flex items-center justify-between p-2 hover:bg-[#0a1929]/50 rounded cursor-pointer">
-                  <span className="text-gray-300 text-sm">{label}</span>
+                <label key={key} className="flex items-center justify-between p-2 hover:bg-gray-100 rounded cursor-pointer">
+                  <span className="text-gray-600 text-sm">{label}</span>
                   <input
                     type="checkbox"
                     checked={preferences[key] || false}
                     onChange={(e) => updatePreferences({ [key]: e.target.checked })}
-                    className="w-4 h-4 accent-[#FFD700]"
+                    className="w-4 h-4 accent-amber-500"
                   />
                 </label>
               ))}
@@ -373,11 +373,11 @@ export default function Notifications() {
         {/* Notifications List */}
         {loading ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#FFD700]"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
           </div>
         ) : notifications.length === 0 ? (
-          <div className="text-center py-12 bg-[#1a3a52] rounded-xl">
-            <Bell className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+          <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200">
+            <Bell className="w-12 h-12 text-gray-400 mx-auto mb-3" />
             <p className="text-gray-400">Keine Benachrichtigungen</p>
           </div>
         ) : (
