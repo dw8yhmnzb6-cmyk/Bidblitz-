@@ -539,20 +539,20 @@ export default function DealRadarPage() {
         <div className="mt-8 bg-gradient-to-r from-cyan-500/10 to-green-500/10 rounded-xl p-6 border border-cyan-500/20">
           <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-yellow-400" />
-            Wie funktioniert der Schnäppchen-Radar?
+            {t.howItWorks}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-300">
             <div className="flex items-start gap-2">
               <span className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold flex-shrink-0">1</span>
-              <p>Wir scannen alle aktiven Auktionen nach Deals mit wenig Konkurrenz</p>
+              <p>{t.step1}</p>
             </div>
             <div className="flex items-start gap-2">
               <span className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold flex-shrink-0">2</span>
-              <p>Auktionen mit wenigen Geboten und kurzer Restzeit werden markiert</p>
+              <p>{t.step2}</p>
             </div>
             <div className="flex items-start gap-2">
               <span className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold flex-shrink-0">3</span>
-              <p>Greife schnell zu - diese Deals verschwinden in Sekunden!</p>
+              <p>{t.step3}</p>
             </div>
           </div>
         </div>
