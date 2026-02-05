@@ -11,6 +11,38 @@ router = APIRouter(prefix="/auction-replay", tags=["Auction Replay"])
 
 # ==================== ENDPOINTS ====================
 
+@router.get("/recent")
+async def get_recent_replays(limit: int = 10):
+    """Get recent ended auctions for replay"""
+    # Get recently ended auctions
+    ended_auctions = await db.auctions.find(
+        {"status": "ended", "winner_id": {"$ne": None}},
+        {"_id": 0}
+    ).sort("ended_at", -1).limit(limit).to_list(limit)
+    
+    # Enrich with product info
+    result = []
+    for auction in ended_auctions:
+        product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0, "name": 1, "image_url": 1, "retail_price": 1})
+        
+        # Anonymize winner name
+        winner_name = auction.get("winner_name", "")
+        if winner_name and len(winner_name) > 2:
+            winner_name = f"{winner_name[0]}***{winner_name[-1]}"
+        
+        result.append({
+            "auction_id": auction.get("id"),
+            "product_name": product.get("name") if product else "Produkt",
+            "product_image": product.get("image_url") if product else None,
+            "retail_price": product.get("retail_price", 0) if product else 0,
+            "final_price": auction.get("final_price", auction.get("current_price", 0)),
+            "winner_name": winner_name,
+            "total_bids": auction.get("total_bids", 0),
+            "ended_at": auction.get("ended_at")
+        })
+    
+    return {"replays": result}
+
 @router.get("/history/{auction_id}")
 async def get_auction_history(auction_id: str):
     """Get complete bid history for an ended auction"""
