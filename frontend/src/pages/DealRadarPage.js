@@ -510,10 +510,10 @@ export default function DealRadarPage() {
         {activeTab === 'lowActivity' && (
           <>
             {lowActivity.length === 0 ? (
-              <div className="bg-gray-800/50 rounded-xl p-12 text-center">
-                <Activity className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                <h3 className="text-xl text-white mb-2">{t.noBargains}</h3>
-                <p className="text-gray-400">{t.noBargainsDesc}</p>
+              <div className="bg-white rounded-xl p-12 text-center shadow-lg border border-gray-200">
+                <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl text-gray-800 mb-2">{t.noBargains}</h3>
+                <p className="text-gray-600">{t.noBargainsDesc}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -540,22 +540,22 @@ export default function DealRadarPage() {
         )}
         
         {/* Info Box */}
-        <div className="mt-8 bg-gradient-to-r from-cyan-500/10 to-green-500/10 rounded-xl p-6 border border-cyan-500/20">
-          <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-400" />
+        <div className="mt-8 bg-white rounded-xl p-6 border border-cyan-200 shadow-lg">
+          <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-amber-500" />
             {t.howItWorks}
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-300">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
             <div className="flex items-start gap-2">
-              <span className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold flex-shrink-0">1</span>
+              <span className="w-6 h-6 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold flex-shrink-0">1</span>
               <p>{t.step1}</p>
             </div>
             <div className="flex items-start gap-2">
-              <span className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold flex-shrink-0">2</span>
+              <span className="w-6 h-6 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold flex-shrink-0">2</span>
               <p>{t.step2}</p>
             </div>
             <div className="flex items-start gap-2">
-              <span className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold flex-shrink-0">3</span>
+              <span className="w-6 h-6 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold flex-shrink-0">3</span>
               <p>{t.step3}</p>
             </div>
           </div>
