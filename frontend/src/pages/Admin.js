@@ -662,7 +662,7 @@ export default function Admin() {
       toast.success(res.data.message);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Aktualisieren');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
@@ -674,10 +674,10 @@ export default function Admin() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success(currentFeatured ? 'VIP-Status entfernt' : 'Als VIP-Auktion markiert');
+      toast.success(currentFeatured ? at('vipStatusRemoved') : at('markedAsVip'));
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
@@ -689,10 +689,10 @@ export default function Admin() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success(isVipOnly ? 'VIP-Only Status entfernt' : 'Als VIP-Only markiert');
+      toast.success(isVipOnly ? at('vipOnlyRemoved') : at('markedAsVipOnly'));
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
@@ -704,10 +704,10 @@ export default function Admin() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success('🏆 Als Auktion des Tages gesetzt!');
+      toast.success(at('setAsAotd'));
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
