@@ -251,9 +251,16 @@ export default function AIBidRecommendationsPage() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      toast.success('Gebot platziert!');
       fetchOpportunities(); // Refresh
     } catch (error) {
-      console.error('Bid error:', error);
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        toast.error('Bitte anmelden um zu bieten');
+        navigate('/login');
+        return;
+      }
+      toast.error(error.response?.data?.detail || 'Fehler beim Bieten');
     }
   };
   

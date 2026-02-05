@@ -426,6 +426,12 @@ export default function DealRadarPage() {
       toast.success('Gebot erfolgreich platziert!');
       fetchData(); // Refresh data
     } catch (error) {
+      // Check if it's an authentication error
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        toast.error('Bitte anmelden um zu bieten');
+        navigate('/login');
+        return;
+      }
       const errorMessage = error.response?.data?.detail || 'Fehler beim Bieten';
       if (errorMessage.includes('Nicht genug Gebote') || errorMessage.includes('Not enough bids')) {
         toast.error('Du hast nicht genug Gebote. Kaufe mehr Gebote um weiterzubieten.');
