@@ -14,6 +14,7 @@ import {
   AreaChart, Area, XAxis, YAxis, 
   CartesianGrid, Tooltip, ResponsiveContainer, Line
 } from 'recharts';
+import { getFeatureTranslation } from '../i18n/featureTranslations';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
