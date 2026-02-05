@@ -49,14 +49,14 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center gap-6">
             <Link 
               to="/auctions" 
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+              className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium`}
               data-testid="nav-auctions"
             >
               {t('nav.auctions')}
             </Link>
             <Link 
               to="/how-it-works" 
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+              className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium`}
               data-testid="nav-how-it-works"
             >
               {t('nav.howItWorks') || "So funktioniert's"}
