@@ -89,27 +89,54 @@ async def transcribe_audio(audio_file: UploadFile) -> str:
         
         # Determine file extension from filename or content type
         filename = audio_file.filename or "recording.webm"
-        extension = filename.split('.')[-1] if '.' in filename else 'webm'
+        content_type = audio_file.content_type or ""
         
-        # Map common extensions
+        # Get extension from filename
+        extension = filename.split('.')[-1].lower() if '.' in filename else ''
+        
+        # If no extension, try to determine from content type
+        if not extension or extension == filename.lower():
+            content_type_map = {
+                'audio/mp4': 'mp4',
+                'audio/x-m4a': 'm4a',
+                'audio/m4a': 'm4a',
+                'audio/aac': 'aac',
+                'audio/webm': 'webm',
+                'audio/ogg': 'ogg',
+                'audio/wav': 'wav',
+                'audio/mpeg': 'mp3',
+                'audio/mp3': 'mp3',
+            }
+            extension = content_type_map.get(content_type.lower().split(';')[0], 'webm')
+        
+        # Map extensions to file suffixes that Whisper accepts
+        # Whisper supports: mp3, mp4, mpeg, mpga, m4a, wav, webm
         extension_map = {
             'webm': '.webm',
             'mp4': '.mp4',
             'm4a': '.m4a',
+            'aac': '.m4a',  # Convert aac to m4a
             'ogg': '.ogg',
             'wav': '.wav',
             'mp3': '.mp3',
             'mpeg': '.mpeg',
             'mpga': '.mpga',
         }
-        suffix = extension_map.get(extension.lower(), '.webm')
+        suffix = extension_map.get(extension, '.webm')
+        
+        print(f"Processing audio: filename={filename}, content_type={content_type}, extension={extension}, suffix={suffix}")
         
         # Save uploaded file temporarily
         content = await audio_file.read()
         
+        if len(content) < 1000:
+            raise ValueError("Audio file too small - may be empty or corrupt")
+        
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp.write(content)
             tmp_path = tmp.name
+        
+        print(f"Saved temp file: {tmp_path}, size: {len(content)} bytes")
         
         try:
             # Transcribe
@@ -121,6 +148,7 @@ async def transcribe_audio(audio_file: UploadFile) -> str:
                     language="de",  # German
                     prompt="Dies ist eine Fehlerbeschreibung für eine Webseite. Der Benutzer beschreibt ein technisches Problem."
                 )
+            print(f"Transcription result: {response.text[:100] if response.text else 'empty'}...")
             return response.text
         finally:
             # Cleanup temp file
