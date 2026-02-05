@@ -215,7 +215,7 @@ export const Navbar = () => {
             ) : (
               <>
                 <Link to="/login">
-                  <Button variant="ghost" className="text-gray-600 hover:text-gray-900" data-testid="login-btn">
+                  <Button variant="ghost" className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`} data-testid="login-btn">
                     {t('nav.login')}
                   </Button>
                 </Link>
@@ -230,7 +230,7 @@ export const Navbar = () => {
 
           {/* Mobile menu button */}
           <button
-            className="md:hidden text-gray-700"
+            className={`md:hidden ${isDarkMode ? 'text-white' : 'text-gray-700'}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-btn"
           >
@@ -241,12 +241,29 @@ export const Navbar = () => {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div className={`md:hidden border-t shadow-lg ${isDarkMode ? 'bg-[#0D0D14] border-white/10' : 'bg-white border-gray-200'}`}>
           <div className="px-4 py-4 space-y-3">
+            
+            {/* Dark Mode Toggle - Mobile */}
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10">
+              <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
+                {isDarkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+              </span>
+              <button
+                onClick={toggleDarkMode}
+                className={`p-2 rounded-lg transition-all ${
+                  isDarkMode 
+                    ? 'bg-yellow-500/20 text-yellow-400' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+            </div>
             
             {/* AUTH SECTION - Prominent at top */}
             {isAuthenticated ? (
-              <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl p-4 mb-4 border border-cyan-200">
+              <div className={`rounded-xl p-4 mb-4 border ${isDarkMode ? 'bg-gradient-to-r from-cyan-900/30 to-blue-900/30 border-cyan-500/30' : 'bg-gradient-to-r from-cyan-50 to-blue-50 border-cyan-200'}`}>
                 {/* User Info & Balance */}
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -254,13 +271,13 @@ export const Navbar = () => {
                       <User className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-gray-800 font-semibold text-sm">{user?.name || 'Benutzer'}</p>
-                      <p className="text-gray-500 text-xs">{user?.email}</p>
+                      <p className={`font-semibold text-sm ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{user?.name || 'Benutzer'}</p>
+                      <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{user?.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 bg-cyan-100 px-3 py-1.5 rounded-full">
-                    <Zap className="w-4 h-4 text-cyan-600" />
-                    <span className="font-mono font-bold text-cyan-600">{user?.bids_balance || 0}</span>
+                  <div className={`flex items-center gap-1 px-3 py-1.5 rounded-full ${isDarkMode ? 'bg-cyan-500/20' : 'bg-cyan-100'}`}>
+                    <Zap className="w-4 h-4 text-cyan-500" />
+                    <span className="font-mono font-bold text-cyan-500">{user?.bids_balance || 0}</span>
                   </div>
                 </div>
                 
