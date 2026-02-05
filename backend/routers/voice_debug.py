@@ -11,7 +11,7 @@ import os
 import tempfile
 import traceback
 from dotenv import load_dotenv
-from config import get_db
+from config import db
 
 load_dotenv()
 
@@ -19,9 +19,6 @@ router = APIRouter(prefix="/api/admin/voice-debug", tags=["voice-debug"])
 
 # Import authentication
 from routers.auth import get_current_user
-
-# Get database reference
-db = get_db()
 
 # Translations
 TRANSLATIONS = {
