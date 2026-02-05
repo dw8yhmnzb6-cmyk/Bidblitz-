@@ -193,8 +193,8 @@ export const Navbar = () => {
             {isAuthenticated ? (
               <>
                 <div className={`flex items-center gap-2 px-4 py-2 rounded-full ${isDarkMode ? 'bg-cyan-500/20 border border-cyan-500/30' : 'bg-cyan-50 border border-cyan-200'}`}>
-                  <Zap className="w-4 h-4 text-cyan-600" />
-                  <span className="font-mono font-bold text-cyan-600" data-testid="bids-balance">
+                  <Zap className="w-4 h-4 text-cyan-500" />
+                  <span className="font-mono font-bold text-cyan-500" data-testid="bids-balance">
                     {user?.bids_balance || 0}
                   </span>
                   <span className="text-gray-500 text-sm">{t('nav.bids')}</span>
