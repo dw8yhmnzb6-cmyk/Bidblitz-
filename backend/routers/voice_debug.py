@@ -296,6 +296,28 @@ async def analyze_voice_error(
         # Step 2: Analyze
         report = await analyze_error(transcription, language)
         
+        # Step 3: Save to database
+        try:
+            report_dict = {
+                "id": report.id,
+                "transcription": report.transcription,
+                "description": report.description,
+                "severity": report.severity,
+                "possible_causes": report.possible_causes,
+                "affected_files": report.affected_files,
+                "recommendations": report.recommendations,
+                "status": report.status,
+                "language": report.language,
+                "created_at": datetime.now(timezone.utc),
+                "created_by": current_user.get("user_id"),
+                "created_by_name": current_user.get("name", "Admin")
+            }
+            db.debug_reports.insert_one(report_dict)
+            print(f"Debug report saved: {report.id}")
+        except Exception as db_error:
+            print(f"Failed to save debug report to database: {db_error}")
+            # Continue even if DB save fails
+        
         return AnalysisResponse(success=True, report=report)
         
     except Exception as e:
