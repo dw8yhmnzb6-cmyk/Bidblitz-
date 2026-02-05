@@ -5,24 +5,25 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 5, 2026)
 
-### ✅ COMPLETE: Voice Debug Assistant + Dark Mode Toggle
+### ✅ COMPLETE: Voice Debug Assistant (iOS/Safari Kompatibel) + Dark Mode + Verbesserte Fehlermeldungen
 
 The BidBlitz auction platform now has:
 - **86 Backend API Routers** - Full coverage of all features
 - **74 Frontend Pages** - Complete user interface
 - **🌙 Dark Mode Toggle** - Users can switch between Light and Dark themes
-- **🎤 Voice Debug Assistant** - Hotword-activated debugging for admins
+- **🎤 Voice Debug Assistant** - Cross-platform debugging for admins (iOS/Safari kompatibel)
+- **✨ Verbesserte Fehlermeldungen** - "Bitte anmelden um zu bieten" statt generischem Fehler
 
 ---
 
 ## New Feature: Voice Debug Assistant 🎤🐛
 
 ### Description:
-An AI-powered voice debugging assistant for the Admin Panel that allows admins to report bugs using voice commands.
+An AI-powered voice debugging assistant for the Admin Panel that allows admins to report bugs using voice recording.
 
 ### How it works:
-1. **Hotword:** Say "Hey BidBlitz" to activate
-2. **Voice Recording:** Describe the error in German or English
+1. **Click Record Button:** Press "Aufnahme starten" on Admin panel
+2. **Voice Recording:** Describe the error in German or English (max 60 seconds)
 3. **AI Analysis:** OpenAI Whisper transcribes, GPT-4o-mini analyzes
 4. **Report Generation:** Creates detailed bug report with:
    - Description
@@ -31,11 +32,17 @@ An AI-powered voice debugging assistant for the Admin Panel that allows admins t
    - Affected files
    - Recommendations
 
+### iOS/Safari Compatibility (NEW):
+- Uses MediaRecorder API instead of Web Speech Recognition
+- Supports multiple audio formats: audio/mp4, audio/webm, audio/ogg
+- Dynamic MIME type detection for cross-browser support
+- Longer timeslices (1000ms) for iOS stability
+
 ### Technical Implementation:
 | Component | File | Description |
 |-----------|------|-------------|
 | Backend | `/routers/voice_debug.py` | API endpoints for transcription and analysis |
-| Frontend | `/components/VoiceDebugAssistant.js` | Voice recording UI and report display |
+| Frontend | `/components/VoiceDebugAssistant.js` | Voice recording UI with iOS compatibility |
 | Admin Integration | `/pages/Admin.js` | Floating button and modal |
 
 ### API Endpoints:
