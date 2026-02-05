@@ -129,45 +129,85 @@ export const VoiceDebugAssistant = ({ isOpen, onClose }) => {
     };
   }, []);
   
+  // Get supported MIME type for MediaRecorder (iOS Safari compatibility)
+  const getSupportedMimeType = () => {
+    // Safari on iOS prefers mp4, Chrome/Firefox prefer webm
+    const types = [
+      'audio/mp4',
+      'audio/webm;codecs=opus',
+      'audio/webm',
+      'audio/ogg;codecs=opus',
+      'audio/ogg',
+      'audio/wav',
+      ''  // Empty string uses browser default
+    ];
+    
+    for (const type of types) {
+      try {
+        if (type === '' || MediaRecorder.isTypeSupported(type)) {
+          console.log('Using MIME type:', type || 'browser default');
+          return type;
+        }
+      } catch (e) {
+        // isTypeSupported may throw on some browsers
+        continue;
+      }
+    }
+    return '';
+  };
+
   // Start recording
   const startRecording = async () => {
     try {
-      // Request microphone permission
-      const stream = await navigator.mediaDevices.getUserMedia({ 
+      // Request microphone permission with simpler constraints for iOS
+      const constraints = {
         audio: {
           echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 44100
-        } 
-      });
+          noiseSuppression: true
+        }
+      };
+      
+      // iOS Safari has issues with sampleRate constraint
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      
+      if (!isIOS) {
+        constraints.audio.sampleRate = 44100;
+      }
+      
+      console.log('Requesting microphone access...');
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      console.log('Microphone access granted');
       
       streamRef.current = stream;
       
-      // Check for supported MIME types
-      let mimeType = 'audio/webm';
-      if (!MediaRecorder.isTypeSupported(mimeType)) {
-        mimeType = 'audio/mp4';
-        if (!MediaRecorder.isTypeSupported(mimeType)) {
-          mimeType = 'audio/ogg';
-          if (!MediaRecorder.isTypeSupported(mimeType)) {
-            mimeType = ''; // Use default
-          }
-        }
-      }
-      
+      // Get supported MIME type
+      const mimeType = getSupportedMimeType();
       const options = mimeType ? { mimeType } : {};
+      
+      console.log('Creating MediaRecorder with options:', options);
       mediaRecorderRef.current = new MediaRecorder(stream, options);
       audioChunksRef.current = [];
       
       mediaRecorderRef.current.ondataavailable = (event) => {
+        console.log('Data available:', event.data.size, 'bytes');
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data);
         }
       };
       
+      mediaRecorderRef.current.onerror = (event) => {
+        console.error('MediaRecorder error:', event.error);
+        toast.error(t.microphoneError);
+        stopRecording();
+      };
+      
       mediaRecorderRef.current.onstop = async () => {
-        const mimeTypeUsed = mediaRecorderRef.current.mimeType || 'audio/webm';
-        const audioBlob = new Blob(audioChunksRef.current, { type: mimeTypeUsed });
+        console.log('Recording stopped, processing audio...');
+        const actualMimeType = mediaRecorderRef.current.mimeType || mimeType || 'audio/webm';
+        const audioBlob = new Blob(audioChunksRef.current, { type: actualMimeType });
+        
+        console.log('Audio blob created:', audioBlob.size, 'bytes, type:', actualMimeType);
         
         // Check if recording is long enough (at least 1 second)
         if (recordingTime < 1) {
@@ -175,10 +215,21 @@ export const VoiceDebugAssistant = ({ isOpen, onClose }) => {
           return;
         }
         
+        // Check if we have actual audio data
+        if (audioBlob.size < 1000) {
+          toast.error(t.recordingTooShort);
+          return;
+        }
+        
         await analyzeAudio(audioBlob);
       };
       
-      mediaRecorderRef.current.start(100); // Collect data every 100ms
+      // Use timeslice for iOS - collect data every 1000ms
+      // iOS Safari works better with longer timeslices
+      const timeslice = isIOS ? 1000 : 100;
+      mediaRecorderRef.current.start(timeslice);
+      console.log('Recording started with timeslice:', timeslice);
+      
       setIsRecording(true);
       setRecordingTime(0);
       
@@ -200,8 +251,10 @@ export const VoiceDebugAssistant = ({ isOpen, onClose }) => {
       console.error('Recording error:', err);
       if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
         toast.error(t.permissionDenied);
-      } else {
+      } else if (err.name === 'NotFoundError') {
         toast.error(t.noMicrophone);
+      } else {
+        toast.error(`${t.microphoneError}: ${err.message}`);
       }
     }
   };
