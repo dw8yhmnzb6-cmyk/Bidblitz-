@@ -15,9 +15,16 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
    - Alle Bestätigungsdialoge übersetzt
    - Deutsche UND englische Versionen
 
-2. ✅ **Geänderte Dateien:**
+2. ✅ **Investor Portal internationalisiert:**
+   - 80+ neue Übersetzungsschlüssel in `featureTranslations.js`
+   - Alle UI-Texte, Tabs, Buttons, Statistiken übersetzt
+   - Deutsche UND englische Versionen
+
+3. ✅ **Geänderte Dateien:**
    - `/app/frontend/src/i18n/adminTranslations.js` - Erweitert
+   - `/app/frontend/src/i18n/featureTranslations.js` - Investor Portal hinzugefügt
    - `/app/frontend/src/pages/Admin.js` - Alle hardcodierten Texte ersetzt
+   - `/app/frontend/src/pages/InvestorPortal.js` - Vollständig internationalisiert
 
 ### ✅ Update 6 - Bug Fixes (Feb 5)
 
