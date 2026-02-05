@@ -79,45 +79,51 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center" data-testid="register-page">
-      <div className="w-full max-w-md">
-        <div className="glass-card rounded-2xl p-8">
-          {/* Logo */}
+    <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center bg-obsidian" data-testid="register-page">
+      {/* Background Effects */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-cyber/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-acid/5 rounded-full blur-[120px]" />
+      </div>
+      
+      <div className="w-full max-w-md relative z-10">
+        <div className="backdrop-blur-xl bg-obsidian-paper/90 border border-white/10 rounded-xl p-8 shadow-2xl">
+          {/* Logo - Cyber Style */}
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#7C3AED] to-[#06B6D4] flex items-center justify-center">
-                <Zap className="w-7 h-7 text-white" />
+              <div className="w-12 h-12 rounded-md bg-acid flex items-center justify-center shadow-neon-acid">
+                <Zap className="w-7 h-7 text-black" />
               </div>
             </Link>
-            <h1 className="text-2xl font-bold text-white mt-4">{texts.createAccount}</h1>
-            <p className="text-[#94A3B8] mt-2">{texts.startBiddingToday}</p>
+            <h1 className="text-2xl font-heading font-black text-white mt-4 uppercase tracking-wider">{texts.createAccount}</h1>
+            <p className="text-gray-400 mt-2 font-body">{texts.startBiddingToday}</p>
           </div>
 
-          {/* Free bids banner */}
-          <div className="flex items-center gap-3 p-4 rounded-lg bg-[#10B981]/10 border border-[#10B981]/30 mb-6">
-            <Gift className="w-6 h-6 text-[#10B981] flex-shrink-0" />
+          {/* Free bids banner - Cyber Style */}
+          <div className="flex items-center gap-3 p-4 rounded-md bg-acid/10 border border-acid/30 mb-6 shadow-neon-acid">
+            <Gift className="w-6 h-6 text-acid flex-shrink-0" />
             <div>
-              <p className="text-[#10B981] font-bold">{texts.freeBids}</p>
-              <p className="text-[#94A3B8] text-sm">{texts.onRegistration}</p>
+              <p className="text-acid font-heading font-bold">{texts.freeBids}</p>
+              <p className="text-gray-400 text-sm font-body">{texts.onRegistration}</p>
             </div>
           </div>
 
-          {/* Referral Banner */}
+          {/* Referral Banner - Cyber Style */}
           {referralValid && (
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-[#FFD700]/10 border border-[#FFD700]/30 mb-6">
-              <Users className="w-6 h-6 text-[#FFD700] flex-shrink-0" />
+            <div className="flex items-center gap-3 p-4 rounded-md bg-cyber/10 border border-cyber/30 mb-6 shadow-neon-cyber">
+              <Users className="w-6 h-6 text-cyber flex-shrink-0" />
               <div>
-                <p className="text-[#FFD700] font-bold">{texts.referredBy} {affiliateName}</p>
-                <p className="text-[#94A3B8] text-sm">{texts.bonusBids}</p>
+                <p className="text-cyber font-heading font-bold">{texts.referredBy} {affiliateName}</p>
+                <p className="text-gray-400 text-sm font-body">{texts.bonusBids}</p>
               </div>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-white">{texts.name}</Label>
+              <Label htmlFor="name" className="text-white font-body">{texts.name}</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <Input
                   id="name"
                   type="text"
@@ -125,16 +131,16 @@ export default function Register() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="pl-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
+                  className="pl-10 h-12 bg-obsidian border-white/10 text-white placeholder:text-gray-600 focus:border-acid focus:ring-acid/20 font-body"
                   data-testid="name-input"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-white">{texts.email}</Label>
+              <Label htmlFor="email" className="text-white font-body">{texts.email}</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <Input
                   id="email"
                   type="email"
@@ -142,16 +148,16 @@ export default function Register() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="pl-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
+                  className="pl-10 h-12 bg-obsidian border-white/10 text-white placeholder:text-gray-600 focus:border-acid focus:ring-acid/20 font-body"
                   data-testid="email-input"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white">{texts.password}</Label>
+              <Label htmlFor="password" className="text-white font-body">{texts.password}</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -159,13 +165,13 @@ export default function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="pl-10 pr-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
+                  className="pl-10 pr-10 h-12 bg-obsidian border-white/10 text-white placeholder:text-gray-600 focus:border-acid focus:ring-acid/20 font-body"
                   data-testid="password-input"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-white"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-acid transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -173,9 +179,9 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-white">{texts.confirmPassword}</Label>
+              <Label htmlFor="confirmPassword" className="text-white font-body">{texts.confirmPassword}</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <Input
                   id="confirmPassword"
                   type={showPassword ? 'text' : 'password'}
@@ -183,7 +189,7 @@ export default function Register() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="pl-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
+                  className="pl-10 h-12 bg-obsidian border-white/10 text-white placeholder:text-gray-600 focus:border-acid focus:ring-acid/20 font-body"
                   data-testid="confirm-password-input"
                 />
               </div>
@@ -192,7 +198,7 @@ export default function Register() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full btn-primary py-3 h-auto"
+              className="w-full bg-acid text-black font-heading font-black uppercase tracking-wider py-3 h-auto hover:bg-acid-hover hover:shadow-neon-acid transition-all"
               data-testid="register-submit"
             >
               {loading ? texts.registering : texts.registerButton}
