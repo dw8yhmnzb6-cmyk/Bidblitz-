@@ -412,7 +412,7 @@ export default function DealRadarPage() {
   
   const handleBid = async (auctionId) => {
     if (!isAuthenticated) {
-      toast.error('Bitte anmelden um zu bieten');
+      toast.error('Bitte melde dich an, um zu bieten');
       navigate('/login');
       return;
     }
@@ -423,10 +423,15 @@ export default function DealRadarPage() {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success('Gebot platziert!');
+      toast.success('Gebot erfolgreich platziert!');
       fetchData(); // Refresh data
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Bieten');
+      const errorMessage = error.response?.data?.detail || 'Fehler beim Bieten';
+      if (errorMessage.includes('Nicht genug Gebote') || errorMessage.includes('Not enough bids')) {
+        toast.error('Du hast nicht genug Gebote. Kaufe mehr Gebote um weiterzubieten.');
+      } else {
+        toast.error(errorMessage);
+      }
     }
   };
   
