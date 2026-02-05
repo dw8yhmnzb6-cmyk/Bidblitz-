@@ -41,7 +41,7 @@ const StatCard = ({ icon: Icon, label, value, subValue, color, trend }) => (
 );
 
 // Package Card Component
-const PackageCard = ({ pkg, selected, onSelect, onInvest, loading }) => {
+const PackageCard = ({ pkg, selected, onSelect, onInvest, loading, t = {} }) => {
   const isPopular = pkg.id === 'standard';
   
   return (
@@ -53,7 +53,7 @@ const PackageCard = ({ pkg, selected, onSelect, onInvest, loading }) => {
     >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-[#7C3AED] rounded-full text-xs font-bold text-white">
-          BELIEBT
+          {t.popular || 'BELIEBT'}
         </div>
       )}
       
@@ -62,7 +62,7 @@ const PackageCard = ({ pkg, selected, onSelect, onInvest, loading }) => {
         <p className="text-3xl font-bold text-[#FFD700] mt-2">
           €{pkg.amount.toLocaleString('de-DE')}
         </p>
-        <p className="text-[#10B981] font-medium mt-1">{pkg.equity} Anteil</p>
+        <p className="text-[#10B981] font-medium mt-1">{pkg.equity} {t.share || 'Anteil'}</p>
       </div>
       
       <div className="space-y-2 mb-6">
@@ -82,7 +82,7 @@ const PackageCard = ({ pkg, selected, onSelect, onInvest, loading }) => {
         disabled={loading}
         className={`w-full ${selected ? 'btn-primary' : 'bg-white/10 hover:bg-white/20'}`}
       >
-        {loading ? 'Wird geladen...' : 'Jetzt investieren'}
+        {loading ? (t.loading || 'Wird geladen...') : (t.investNowBtn || 'Jetzt investieren')}
       </Button>
     </div>
   );
