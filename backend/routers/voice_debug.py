@@ -372,7 +372,7 @@ async def update_report_status(
         raise HTTPException(status_code=400, detail="Invalid status")
     
     try:
-        result = db.debug_reports.update_one(
+        result = await db.debug_reports.update_one(
             {"id": report_id},
             {"$set": {
                 "status": status,
@@ -401,7 +401,7 @@ async def delete_debug_report(
         raise HTTPException(status_code=403, detail="Admin access required")
     
     try:
-        result = db.debug_reports.delete_one({"id": report_id})
+        result = await db.debug_reports.delete_one({"id": report_id})
         
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Report not found")
