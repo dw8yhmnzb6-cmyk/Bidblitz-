@@ -896,11 +896,11 @@ export default function Admin() {
         max_uses: parseInt(newVoucher.max_uses) || 1,
         expires_days: 30
       }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success('Gutschein erstellt');
+      toast.success(at('voucherCreated'));
       setNewVoucher({ code: '', type: 'bids', value: '10', max_uses: '1' });
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
@@ -909,23 +909,23 @@ export default function Admin() {
       await axios.put(`${API}/admin/vouchers/${voucherId}/toggle`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Gutschein-Status geändert');
+      toast.success(at('voucherStatusChanged'));
       fetchData();
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(at('error'));
     }
   };
 
   const handleDeleteVoucher = async (voucherId) => {
-    if (!confirm('Gutschein wirklich löschen?')) return;
+    if (!confirm(at('confirmDeleteVoucher'))) return;
     try {
       await axios.delete(`${API}/admin/vouchers/${voucherId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Gutschein gelöscht');
+      toast.success(at('voucherDeleted'));
       fetchData();
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(at('error'));
     }
   };
 
