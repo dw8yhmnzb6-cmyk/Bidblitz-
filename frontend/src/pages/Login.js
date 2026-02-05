@@ -49,7 +49,7 @@ export default function Login() {
       await refreshUser();
       
       if (is_new_user) {
-        toast.success('Willkommen bei BidBlitz! 10 Gratis-Gebote wurden gutgeschrieben.');
+        toast.success(texts.registerSuccess || 'Welcome! 10 free bids credited.');
       } else {
         toast.success(texts.loginSuccess);
       }
@@ -58,7 +58,7 @@ export default function Login() {
       window.history.replaceState(null, '', '/login');
       window.location.href = '/dashboard';
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Google-Login fehlgeschlagen');
+      toast.error(error.response?.data?.detail || texts.loginFailed || 'Login failed');
       window.history.replaceState(null, '', '/login');
     } finally {
       setGoogleLoading(false);
