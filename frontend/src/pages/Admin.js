@@ -1007,10 +1007,10 @@ export default function Admin() {
       await axios.post(`${API}/admin/seed`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Testdaten erstellt');
+      toast.success(at('testDataCreated'));
       fetchData();
     } catch (error) {
-      toast.error('Fehler');
+      toast.error(at('error'));
     }
   };
 
@@ -1028,27 +1028,27 @@ export default function Admin() {
         title: pageTitle,
         content: pageContent
       }, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success('Seite gespeichert');
+      toast.success(at('pageSaved'));
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Speichern');
+      toast.error(error.response?.data?.detail || at('errorSavingPage'));
     }
   };
 
   const handleResetPage = async () => {
     if (!selectedPage) return;
-    if (!confirm(`Seite "${selectedPage.title}" auf Standardinhalt zurücksetzen?`)) return;
+    if (!confirm(`${at('confirmResetPage')} "${selectedPage.title}"?`)) return;
     try {
       await axios.post(`${API}/admin/pages/${selectedPage.page_id}/reset`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Seite zurückgesetzt');
+      toast.success(at('pageReset'));
       setSelectedPage(null);
       setPageContent('');
       setPageTitle('');
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Zurücksetzen');
+      toast.error(error.response?.data?.detail || at('errorResettingPage'));
     }
   };
 
