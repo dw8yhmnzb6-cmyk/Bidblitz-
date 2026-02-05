@@ -326,15 +326,91 @@ async def analyze_voice_error(
 
 @router.get("/reports")
 async def get_debug_reports(
+    limit: int = 50,
     current_user: dict = Depends(get_current_user)
 ):
-    """Get all debug reports (placeholder - would need database)"""
+    """Get all debug reports from database"""
     if current_user.get("role") not in ["admin", "manager"]:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    # Placeholder - in production, this would query MongoDB
-    return {
-        "reports": [],
-        "total": 0,
-        "message": "Debug reports would be stored in database"
-    }
+    try:
+        # Query database for reports, sorted by newest first
+        cursor = db.debug_reports.find(
+            {},
+            {"_id": 0}  # Exclude MongoDB _id
+        ).sort("created_at", -1).limit(limit)
+        
+        reports = list(cursor)
+        
+        # Convert datetime to ISO string for JSON serialization
+        for report in reports:
+            if isinstance(report.get("created_at"), datetime):
+                report["created_at"] = report["created_at"].isoformat()
+        
+        return {
+            "reports": reports,
+            "total": len(reports),
+            "message": f"Found {len(reports)} debug reports"
+        }
+    except Exception as e:
+        print(f"Error fetching debug reports: {e}")
+        return {
+            "reports": [],
+            "total": 0,
+            "message": f"Error: {str(e)}"
+        }
+
+
+@router.patch("/reports/{report_id}/status")
+async def update_report_status(
+    report_id: str,
+    status: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update the status of a debug report"""
+    if current_user.get("role") not in ["admin", "manager"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    if status not in ["pending", "analyzed", "in_progress", "resolved", "wont_fix"]:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    try:
+        result = db.debug_reports.update_one(
+            {"id": report_id},
+            {"$set": {
+                "status": status,
+                "updated_at": datetime.now(timezone.utc),
+                "updated_by": current_user.get("user_id")
+            }}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Report not found")
+        
+        return {"success": True, "message": f"Report status updated to {status}"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/reports/{report_id}")
+async def delete_debug_report(
+    report_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete a debug report"""
+    if current_user.get("role") not in ["admin", "manager"]:
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    try:
+        result = db.debug_reports.delete_one({"id": report_id})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Report not found")
+        
+        return {"success": True, "message": "Report deleted"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
