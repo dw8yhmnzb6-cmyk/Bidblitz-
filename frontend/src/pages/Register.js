@@ -149,9 +149,9 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-white font-body">{texts.password}</Label>
+              <Label htmlFor="password" className="text-white">{texts.password}</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -159,13 +159,13 @@ export default function Register() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="pl-10 pr-10 h-12 bg-obsidian border-white/10 text-white placeholder:text-gray-600 focus:border-acid focus:ring-acid/20 font-body"
+                  className="pl-10 pr-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
                   data-testid="password-input"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-acid transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-white"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -173,9 +173,9 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-white font-body">{texts.confirmPassword}</Label>
+              <Label htmlFor="confirmPassword" className="text-white">{texts.confirmPassword}</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[#94A3B8]" />
                 <Input
                   id="confirmPassword"
                   type={showPassword ? 'text' : 'password'}
@@ -183,7 +183,7 @@ export default function Register() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="pl-10 h-12 bg-obsidian border-white/10 text-white placeholder:text-gray-600 focus:border-acid focus:ring-acid/20 font-body"
+                  className="pl-10 h-12 bg-[#181824] border-white/10 text-white placeholder:text-[#475569]"
                   data-testid="confirm-password-input"
                 />
               </div>
@@ -192,7 +192,7 @@ export default function Register() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-acid text-black font-heading font-black uppercase tracking-wider py-3 h-auto hover:bg-acid-hover hover:shadow-neon-acid transition-all"
+              className="w-full btn-primary py-3 h-auto"
               data-testid="register-submit"
             >
               {loading ? texts.registering : texts.registerButton}
@@ -204,7 +204,7 @@ export default function Register() {
                 <div className="w-full border-t border-white/10"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-obsidian-paper text-gray-500 font-body">{language === 'de' ? 'oder' : 'or'}</span>
+                <span className="px-2 bg-[#0D0D14] text-[#94A3B8]">{language === 'de' ? 'oder' : 'or'}</span>
               </div>
             </div>
 
@@ -216,7 +216,7 @@ export default function Register() {
                 window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
               }}
               variant="outline"
-              className="w-full h-12 border-white/20 text-white hover:bg-white/5 hover:border-acid/30 font-body transition-all"
+              className="w-full h-12 border-white/20 text-white hover:bg-white/5"
               data-testid="google-register-btn"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
