@@ -279,24 +279,26 @@ async def websocket_all_auctions_legacy(websocket: WebSocket):
 # ==================== BOT BACKGROUND TASK ====================
 
 async def bot_last_second_bidder():
-    """Background task - bots bid continuously until auction price reaches €2-3.
+    """Background task - bots bid continuously until auction price reaches €20 minimum.
     
     LOGIK:
-    1. STANDARD (kein Zielpreis): Bots bieten KONTINUIERLICH bis €2-3
-       - Auktionen bleiben nicht bei €0,01 stecken
-       - Echte Kunden können ab €2-3 weitermachen
-    2. MIT ZIELPREIS: Bots bieten NUR in den letzten 2-3 Sekunden bis zum Zielpreis
-       - Das "sperrt" den Endpreis, echte Kunden haben keine Chance mehr
+    1. STANDARD (kein Zielpreis): Bots bieten KONTINUIERLICH bis €20
+       - Auktionen bleiben nicht unter €20 
+       - Echte Kunden können ab €20 weitermachen
+    2. MIT ZIELPREIS: Bots bieten bis zum höheren Wert (Zielpreis oder €20)
     """
     global bot_task_running
     
-    logger.info("Bot bidder started - Kontinuierliches Bieten bis €2-3")
+    logger.info("Bot bidder started - Kontinuierliches Bieten bis mindestens €20")
     last_bot_per_auction = {}
     last_bid_time_per_auction = {}
     
-    # Default price range for auctions WITHOUT explicit target (2.00 - 3.00 Euro)
-    DEFAULT_MIN_PRICE = 2.00
-    DEFAULT_MAX_PRICE = 3.00
+    # MINIMUM price for ALL auctions - €20
+    MINIMUM_AUCTION_PRICE = 20.00
+    
+    # Default price range for auctions WITHOUT explicit target (20.00 - 25.00 Euro)
+    DEFAULT_MIN_PRICE = 20.00
+    DEFAULT_MAX_PRICE = 25.00
     
     # Minimum time between bot bids on same auction (slower so customers see each 1 cent increment)
     MIN_BID_INTERVAL = 4.0  # 4 seconds between bids - customers can see each 1 cent step
@@ -338,15 +340,18 @@ async def bot_last_second_bidder():
                     should_bid = False
                     target_price = 0
                     
+                    # ALWAYS ensure minimum price of €20
+                    # Use the HIGHER value between explicit_target and MINIMUM_AUCTION_PRICE
+                    effective_target = max(explicit_target or 0, MINIMUM_AUCTION_PRICE)
+                    
                     # Check if explicit target is set for this auction
-                    # If set, this is the MAXIMUM price bots will bid to
                     if explicit_target and explicit_target > 0:
-                        # Bot-Zielpreis ist gesetzt - Bots bieten kontinuierlich BIS zu diesem Preis
-                        if current_price < explicit_target and time_since_last_bid >= MIN_BID_INTERVAL:
-                            target_price = explicit_target
+                        # Bot-Zielpreis ist gesetzt - verwende das Maximum aus Zielpreis und Minimum
+                        if current_price < effective_target and time_since_last_bid >= MIN_BID_INTERVAL:
+                            target_price = effective_target
                             should_bid = True
                     else:
-                        # Kein Zielpreis gesetzt - verwende Standard €2-3 Range
+                        # Kein Zielpreis gesetzt - verwende Standard €20-25 Range
                         hash_val = hash(auction_id) % 100
                         default_target = DEFAULT_MIN_PRICE + (hash_val / 100) * (DEFAULT_MAX_PRICE - DEFAULT_MIN_PRICE)
                         default_target = round(default_target, 2)
