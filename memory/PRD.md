@@ -110,14 +110,16 @@ AI Bid Recommendations, Deal Radar, Price Alerts, Wishlist
 | WhatsApp | MOCKED | API Token |
 | Twilio SMS | MOCKED | Credentials |
 | Apple Login | MOCKED | Dev Credentials |
+| Tawk.to Live Chat | MOCKED | Property ID |
+| Resend Email | MOCKED | Working API Key |
 
 ---
 
 ## Files Created/Modified This Session
 
 ### New Files:
-- `/backend/routers/voice_debug.py` - Voice debug backend
-- `/frontend/src/components/VoiceDebugAssistant.js` - Voice debug UI
+- `/backend/routers/voice_debug.py` - Voice debug backend with MongoDB persistence
+- `/frontend/src/components/VoiceDebugAssistant.js` - Voice debug UI (iOS/Safari kompatibel)
 - `/frontend/src/context/ThemeContext.js` - Dark mode context
 
 ### Modified Files:
@@ -126,14 +128,31 @@ AI Bid Recommendations, Deal Radar, Price Alerts, Wishlist
 - `/frontend/src/components/Navbar.js` - Added Dark Mode toggle
 - `/frontend/src/pages/Admin.js` - Added Voice Debug button
 - `/frontend/src/index.css` - CSS variables + dark mode overrides
+- `/frontend/src/pages/Notifications.js` - Fixed to light theme
+- `/frontend/src/pages/Invoices.js` - Fixed to light theme
+- `/frontend/src/pages/*.js` - Improved bidding error messages (401/403 handling)
 - `~70 pages` - Light theme styling
+
+---
+
+## Debug Reports API (NEW)
+Debug reports are now saved to MongoDB:
+- `GET /api/admin/voice-debug/reports` - List all reports
+- `PATCH /api/admin/voice-debug/reports/{id}/status` - Update status
+- `DELETE /api/admin/voice-debug/reports/{id}` - Delete report
 
 ---
 
 ## Last Updated
 February 5, 2026
 
-## Next Steps
-1. Activate WhatsApp/SMS notifications (API keys required)
-2. Implement Apple Sign-In (credentials required)
-3. Save debug reports to MongoDB database
+## Next Steps (Priority Order)
+1. ✅ Voice Debug Assistant iOS/Safari kompatibel
+2. ✅ Debug Reports in MongoDB speichern
+3. ✅ Verbesserte Bidding-Fehlermeldungen
+4. ✅ Theme-Konsistenz (Notifications, Invoices Seiten)
+5. 🔶 Remaining theme fixes (Contact, FAQ, HowItWorks, VIP pages)
+6. 🔶 Activate WhatsApp/SMS notifications (API keys required)
+7. 🔶 Implement Apple Sign-In (credentials required)
+8. 🔶 Investigate 404 error root cause (currently suppressed)
+9. 🔶 Admin.js refactoring (>1200 lines)
