@@ -258,27 +258,27 @@ const BargainCard = ({ bargain, t, onBid }) => {
   
   return (
     <div 
-      className={`bg-gradient-to-b from-gray-800/80 to-gray-900/80 rounded-xl border ${
-        isUrgent ? 'border-red-500/50 animate-pulse' : 
-        isEnding ? 'border-orange-500/30' : 
-        'border-cyan-500/20'
-      } overflow-hidden hover:shadow-lg transition-all cursor-pointer`}
+      className={`bg-white rounded-xl border-2 shadow-lg ${
+        isUrgent ? 'border-red-500 animate-pulse' : 
+        isEnding ? 'border-orange-500' : 
+        'border-cyan-400'
+      } overflow-hidden hover:shadow-xl transition-all cursor-pointer`}
       onClick={() => navigate(`/auctions/${bargain.auction_id}`)}
       data-testid={`bargain-${bargain.auction_id}`}
     >
       {/* Badges */}
-      <div className="flex items-center justify-between p-2 bg-gradient-to-r from-cyan-500/10 to-green-500/10">
+      <div className="flex items-center justify-between p-2 bg-gradient-to-r from-cyan-50 to-green-50">
         <div className="flex gap-1">
-          <span className="px-2 py-0.5 rounded-full bg-green-500/20 text-green-400 text-[10px] font-bold">
+          <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold">
             -{bargain.discount_percent}%
           </span>
           {bargain.is_low_activity && (
-            <span className="px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold">
               {t.lowActivityLabel}
             </span>
           )}
           {bargain.is_ending_soon && (
-            <span className="px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 text-[10px] font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold">
               {t.endingSoonLabel}
             </span>
           )}
@@ -294,7 +294,7 @@ const BargainCard = ({ bargain, t, onBid }) => {
       <div className="p-3">
         <div className="flex gap-3">
           {/* Image */}
-          <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
+          <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center flex-shrink-0 border border-gray-100">
             {bargain.product_image ? (
               <img 
                 src={bargain.product_image} 
@@ -308,16 +308,16 @@ const BargainCard = ({ bargain, t, onBid }) => {
           
           {/* Info */}
           <div className="flex-1 min-w-0">
-            <h3 className="text-white font-bold text-sm line-clamp-2 mb-1">
+            <h3 className="text-gray-800 font-bold text-sm line-clamp-2 mb-1">
               {bargain.product_name}
             </h3>
-            <p className="text-gray-500 text-xs line-through">
+            <p className="text-gray-400 text-xs line-through">
               {t.retailPrice}: €{bargain.retail_price?.toLocaleString('de-DE')}
             </p>
-            <p className="text-cyan-400 font-bold text-lg">
+            <p className="text-amber-600 font-bold text-lg">
               €{bargain.current_price?.toFixed(2).replace('.', ',')}
             </p>
-            <p className="text-gray-400 text-[10px]">
+            <p className="text-gray-500 text-[10px]">
               {bargain.total_bids} {t.bids} • {bargain.last_bidder || t.noOne}
             </p>
           </div>
@@ -326,7 +326,7 @@ const BargainCard = ({ bargain, t, onBid }) => {
         {/* Action */}
         <Button 
           onClick={(e) => { e.stopPropagation(); onBid(bargain.auction_id); }}
-          className="w-full mt-3 bg-gradient-to-r from-cyan-500 to-green-500 hover:from-cyan-400 hover:to-green-400"
+          className="w-full mt-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white"
           size="sm"
         >
           <Zap className="w-4 h-4 mr-1" />
