@@ -759,26 +759,26 @@ export default function Admin() {
       await axios.post(`${API}/admin/wholesale/approve/${applicationId}`, wholesaleForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Großkunde freigeschaltet!');
+      toast.success(at('wholesaleApproved'));
       setShowWholesaleModal(false);
       setSelectedWholesale(null);
       setWholesaleForm({ discount_percent: 10, credit_limit: 0, payment_terms: 'prepaid', notes: '' });
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Freischalten');
+      toast.error(error.response?.data?.detail || at('errorApproving'));
     }
   };
 
   const handleRejectWholesale = async (applicationId) => {
-    if (!window.confirm('Bewerbung wirklich ablehnen?')) return;
+    if (!window.confirm(at('confirmRejectApplication'))) return;
     try {
       await axios.post(`${API}/admin/wholesale/reject/${applicationId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Bewerbung abgelehnt');
+      toast.success(at('wholesaleRejected'));
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
@@ -787,25 +787,25 @@ export default function Admin() {
       await axios.put(`${API}/admin/wholesale/${wholesaleId}`, wholesaleForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Großkunde aktualisiert');
+      toast.success(at('wholesaleUpdated'));
       setShowWholesaleModal(false);
       setSelectedWholesale(null);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
   const handleDeleteWholesale = async (wholesaleId) => {
-    if (!window.confirm('Großkundenstatus wirklich entfernen?')) return;
+    if (!window.confirm(at('confirmRemoveWholesale'))) return;
     try {
       await axios.delete(`${API}/admin/wholesale/${wholesaleId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Großkundenstatus entfernt');
+      toast.success(at('wholesaleRemoved'));
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler');
+      toast.error(error.response?.data?.detail || at('error'));
     }
   };
 
