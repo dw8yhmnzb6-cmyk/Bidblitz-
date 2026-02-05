@@ -106,11 +106,17 @@ const homeTexts = {
   }
 };
 
-// Live Timer - Only updates the timer, not the whole card
+// Live Timer - Shows DD:HH:MM:SS for long auctions
 const LiveTimer = memo(({ endTime, onExpired, language = 'de' }) => {
-  const [time, setTime] = useState({ h: 0, m: 0, s: 0, expired: false });
+  const [time, setTime] = useState({ d: 0, h: 0, m: 0, s: 0, expired: false });
   const expiredCalled = useRef(false);
   const ht = homeTexts[language] || homeTexts.de;
+  
+  // Day labels per language
+  const dayLabels = {
+    de: 'T', en: 'D', sq: 'D', tr: 'G', fr: 'J', es: 'D'
+  };
+  const dayLabel = dayLabels[language] || 'T';
   
   useEffect(() => {
     if (!endTime) return;
@@ -122,7 +128,7 @@ const LiveTimer = memo(({ endTime, onExpired, language = 'de' }) => {
       const diff = Math.max(0, end - now);
       
       if (diff <= 0) {
-        setTime({ h: 0, m: 0, s: 0, expired: true });
+        setTime({ d: 0, h: 0, m: 0, s: 0, expired: true });
         if (!expiredCalled.current && onExpired) {
           expiredCalled.current = true;
           setTimeout(onExpired, 3000);
@@ -131,7 +137,8 @@ const LiveTimer = memo(({ endTime, onExpired, language = 'de' }) => {
       }
       
       setTime({
-        h: Math.floor(diff / 3600000),
+        d: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
         m: Math.floor((diff % 3600000) / 60000),
         s: Math.floor((diff % 60000) / 1000),
         expired: false
@@ -153,11 +160,22 @@ const LiveTimer = memo(({ endTime, onExpired, language = 'de' }) => {
     );
   }
   
-  const urgent = time.h === 0 && time.m === 0 && time.s < 15;
+  const urgent = time.d === 0 && time.h === 0 && time.m === 0 && time.s < 30;
+  const isLong = time.d > 0 || time.h > 0;
   
   return (
-    <div className={`rounded-full px-4 py-2 ${urgent ? 'bg-gradient-to-r from-red-600 to-red-700' : 'bg-gradient-to-r from-gray-800 to-gray-900'}`}>
+    <div className={`rounded-full px-4 py-2 ${
+      urgent ? 'bg-gradient-to-r from-red-600 to-red-700' : 
+      isLong ? 'bg-gradient-to-r from-green-600 to-green-700' :
+      'bg-gradient-to-r from-gray-800 to-gray-900'
+    }`}>
       <div className="flex items-center gap-1 text-white">
+        {time.d > 0 && (
+          <>
+            <span className="font-mono text-lg font-bold">{time.d}</span>
+            <span className="text-xs text-gray-300">{dayLabel}</span>
+          </>
+        )}
         <span className="font-mono text-lg font-bold">{pad(time.h)}</span>
         <span className="text-xs text-gray-400">{ht.hrs}</span>
         <span className="font-mono text-lg font-bold">{pad(time.m)}</span>
