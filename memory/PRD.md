@@ -5,7 +5,25 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Completion Status (February 5, 2026)
 
-### ✅ LATEST: Update 7 - Vollständige Übersetzungen ALLE SEITEN (Feb 5)
+### ✅ Update 8 - Mindestpreis €20 + Beendete Auktionen (Feb 5)
+
+**Implementiert:**
+
+1. ✅ **Mindestpreis €20 für alle Auktionen:**
+   - Bots bieten jetzt automatisch bis mindestens €20-25
+   - Keine Auktion endet mehr unter €20
+   - In `/app/backend/server.py` `MINIMUM_AUCTION_PRICE = 20.00` gesetzt
+
+2. ✅ **Beendete Auktionen gelöscht:**
+   - `auction_history` Collection geleert
+   - Alte 6-Cent Auktionen entfernt
+
+3. ✅ **Fehlende Übersetzung "endPrice" hinzugefügt:**
+   - Deutsch: "Endpreis"
+   - Englisch: "Final Price"
+   - Alle anderen Sprachen ergänzt
+
+### ✅ Update 7 - Vollständige Übersetzungen ALLE SEITEN (Feb 5)
 
 **Implementiert für die KOMPLETTE Webseite:**
 
