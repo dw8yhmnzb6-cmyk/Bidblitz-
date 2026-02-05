@@ -513,7 +513,7 @@ export default function Admin() {
       }
 
       const response = await axios.post(`${API}/admin/auctions`, auctionData, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success('Auktion erstellt');
+      toast.success(at('auctionCreated'));
       
       // Set day/night mode based on auction type
       if (newAuction.auction_type === 'night') {
