@@ -170,7 +170,7 @@ export const Navbar = () => {
             {/* Language Selector */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900 hover:bg-gray-100" data-testid="language-selector">
+                <Button variant="ghost" size="sm" className={`${isDarkMode ? 'text-gray-300 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`} data-testid="language-selector">
                   <Globe className="w-4 h-4 mr-2" />
                   {languageList[language]?.flag} {languageList[language]?.name}
                 </Button>
