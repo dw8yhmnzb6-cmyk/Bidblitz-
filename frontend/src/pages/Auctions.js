@@ -176,10 +176,11 @@ const ActivityIndex = memo(({ auctionId = '', t }) => {
   );
 });
 
-// ISOLATED Timer Component - Updates smoothly every second without visible flicker
+// ISOLATED Timer Component - Shows DD:HH:MM:SS for long auctions, HH:MM:SS for short
 const LiveTimer = memo(({ endTime }) => {
   const [display, setDisplay] = useState('--:--:--');
   const [isLow, setIsLow] = useState(false);
+  const [isLong, setIsLong] = useState(false); // For auctions > 1 hour
   
   useEffect(() => {
     if (!endTime) {
@@ -196,16 +197,33 @@ const LiveTimer = memo(({ endTime }) => {
       if (diff === 0) {
         setDisplay('00:00:00');
         setIsLow(true);
+        setIsLong(false);
         return;
       }
       
-      const h = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
       
       const pad = (n) => String(n).padStart(2, '0');
-      setDisplay(`${pad(h)}:${pad(m)}:${pad(s)}`);
-      setIsLow(h === 0 && m === 0 && s <= 10);
+      
+      // Show days if more than 0 days remaining
+      if (days > 0) {
+        setDisplay(`${days}T ${pad(h)}:${pad(m)}:${pad(s)}`);
+        setIsLong(true);
+        setIsLow(false);
+      } else if (h > 0) {
+        // Show hours if more than 0 hours remaining
+        setDisplay(`${pad(h)}:${pad(m)}:${pad(s)}`);
+        setIsLong(true);
+        setIsLow(false);
+      } else {
+        // Short timer - minutes and seconds only
+        setDisplay(`${pad(m)}:${pad(s)}`);
+        setIsLong(false);
+        setIsLow(m === 0 && s <= 30);
+      }
     };
     
     updateTimer(); // Initial update
@@ -214,7 +232,11 @@ const LiveTimer = memo(({ endTime }) => {
   }, [endTime]);
   
   return (
-    <span className={`font-mono text-[9px] font-bold px-1 py-0.5 rounded transition-colors duration-300 ${isLow ? 'bg-red-500 text-white animate-pulse' : 'bg-blue-600 text-white'}`}>
+    <span className={`font-mono text-[9px] font-bold px-1 py-0.5 rounded transition-colors duration-300 ${
+      isLow ? 'bg-red-500 text-white animate-pulse' : 
+      isLong ? 'bg-green-600 text-white' : 
+      'bg-blue-600 text-white'
+    }`}>
       {display}
     </span>
   );
