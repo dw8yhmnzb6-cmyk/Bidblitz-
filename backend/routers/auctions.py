@@ -521,7 +521,13 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
         timer_extension = 3
         logger.info(f"🏆 Guaranteed winner bid: {user['name']} on auction {auction_id[:8]}...")
     
-    if time_remaining < 15:
+    # CHECK: Is this a FIXED END auction? (Timer should NOT reset)
+    is_fixed_end = auction.get("is_fixed_end", False)
+    
+    if is_fixed_end:
+        # FIXED END: Timer bleibt unverändert - zeigt echte Restzeit
+        new_end_time = current_end_time
+    elif time_remaining < 15:
         # Last-second bid: reset timer to 10-15 seconds (or 3 for guaranteed winner)
         new_end_time = now + timedelta(seconds=timer_extension)
     elif time_remaining < 60:
