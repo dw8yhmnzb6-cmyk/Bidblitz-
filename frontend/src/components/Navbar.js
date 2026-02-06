@@ -82,7 +82,7 @@ export const Navbar = () => {
               data-testid="nav-leaderboard"
             >
               <Trophy className="w-4 h-4" />
-              {language === 'de' ? 'Rangliste' : 'Leaderboard'}
+              {t('nav.leaderboard') || (language === 'sq' || language === 'xk' ? 'Renditja' : language === 'tr' ? 'Sıralama' : language === 'fr' ? 'Classement' : language === 'de' ? 'Rangliste' : 'Leaderboard')}
             </Link>
             {isAuthenticated && (
               <button 
@@ -91,7 +91,7 @@ export const Navbar = () => {
                 data-testid="nav-wheel"
               >
                 <Sparkles className="w-4 h-4" />
-                {language === 'de' ? 'Glücksrad' : 'Lucky Wheel'}
+                {t('nav.luckyWheel') || (language === 'sq' || language === 'xk' ? 'Rrota e Fatit' : language === 'tr' ? 'Şans Çarkı' : language === 'fr' ? 'Roue de la Chance' : language === 'de' ? 'Glücksrad' : 'Lucky Wheel')}
               </button>
             )}
             <Link 
