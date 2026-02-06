@@ -167,13 +167,13 @@ async def transcribe_audio(audio_file: UploadFile) -> str:
 async def analyze_error(transcription: str, language: str = 'de') -> DebugReport:
     """Analyze the error description using GPT"""
     try:
-        from emergentintegrations.llm.openai import OpenAILLM, OpenAIModel
+        from emergentintegrations.llm.openai import LlmChat
         
         api_key = os.getenv("EMERGENT_LLM_KEY")
         if not api_key:
             raise ValueError("EMERGENT_LLM_KEY not configured")
         
-        llm = OpenAILLM(api_key=api_key)
+        llm = LlmChat(api_key=api_key)
         
         # System prompt for error analysis
         system_prompt = """Du bist ein erfahrener Entwickler und Debug-Assistent für eine Penny-Auction-Webseite (BidBlitz).
@@ -207,7 +207,7 @@ Analysiere diesen Fehler und erstelle einen strukturierten Debug-Report."""
         response = await llm.generate(
             prompt=user_prompt,
             system_prompt=system_prompt,
-            model=OpenAIModel.GPT_4O_MINI,
+            model="gpt-4o-mini",
             temperature=0.3,
             max_tokens=1500
         )
