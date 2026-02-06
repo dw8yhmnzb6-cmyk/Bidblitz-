@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import { usePageTranslations } from '../i18n/pageTranslations';
 import { 
   Mail, 
@@ -15,6 +16,7 @@ import { toast } from 'sonner';
 
 export default function Contact() {
   const { t, language } = useLanguage();
+  const { isDarkMode } = useTheme();
   const texts = usePageTranslations(language);
   const [formData, setFormData] = useState({
     name: '',
