@@ -151,12 +151,19 @@ async def lifespan(app: FastAPI):
 
 # ==================== APP CREATION ====================
 
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
+
 app = FastAPI(
     title="BidBlitz Auction API",
     description="Penny Auction Platform",
     version="2.0.0",
     lifespan=lifespan
 )
+
+# Add rate limiter to app state
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS
 app.add_middleware(
