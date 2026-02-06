@@ -1,4 +1,5 @@
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import { Link } from 'react-router-dom';
 import { 
   UserPlus, 
@@ -264,6 +265,7 @@ const howItWorksTranslations = {
 
 export default function HowItWorks() {
   const { language } = useLanguage();
+  const { isDarkMode } = useTheme();
   
   // Get translations for current language, fallback to German
   const t = howItWorksTranslations[language] || howItWorksTranslations.de;
