@@ -57,7 +57,7 @@ import WinnerGallery from "./pages/WinnerGallery";
 import Subscriptions from "./pages/Subscriptions";
 import LoyaltyPage from "./pages/LoyaltyPage";
 import FlashSalesPage from "./pages/FlashSalesPage";
-import MyStatsPage from "./pages/MyStatsPage";
+import MyStatsPage from "./pages/MyStats";
 import LevelsPage from "./pages/LevelsPage";
 import DailyRewardsPage from "./pages/DailyRewardsPage";
 import BattlePassPage from "./pages/BattlePassPage";
