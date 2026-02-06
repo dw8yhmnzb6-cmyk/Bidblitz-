@@ -191,6 +191,32 @@ Complete gamification and statistics page:
 - Updated theme colors for light mode
 - New shortcuts including My Stats
 
+### 7. Weekly Tournaments (NEW)
+- Competitive weekly events with prizes
+- Tournament types: Most Wins, Most Bids, Biggest Saver, Streak Master
+- Prizes: 1st: 100 bids, 2nd: 50 bids, 3rd: 25 bids, Top 10: 5-10 bids
+- Frontend: `/turniere`
+- API: `GET /api/tournaments/current`, `/leaderboard`, `/my-position`
+
+### 8. Winner Gallery (NEW)
+- Display winners with their products
+- Photo upload for winners (+50 XP bonus)
+- Like system for community engagement
+- API: `GET/POST /api/winner-gallery/*`
+
+### 9. Referral System (NEW)
+- Friend-invite-friend with rewards
+- Referrer gets 20 bids, Referee gets 10 bids (after first purchase)
+- Unique referral codes and links
+- Leaderboard for top referrers
+- API: `GET/POST /api/referrals/*`
+
+### 10. AI Optimal Bidding Times (NEW)
+- Analysis of best times to bid
+- Personal best hours based on win history
+- Low competition time suggestions
+- API: `GET /api/ai-recommendations/optimal-times`
+
 ---
 
 ## Last Updated
@@ -207,6 +233,10 @@ February 6, 2026
 8. ✅ Leaderboard System
 9. ✅ Celebration Animations
 10. ✅ Rate Limiting
+11. ✅ Weekly Tournaments
+12. ✅ Winner Gallery API
+13. ✅ Referral System API
+14. ✅ AI Optimal Bidding Times
 
 ## Next Steps
 1. 🔶 Remaining theme fixes (Contact, FAQ, HowItWorks, VIP pages)
