@@ -1938,7 +1938,7 @@ export const translations = {
     common: { loading: "Ladataan...", error: "Virhe", success: "Onnistui", save: "Tallenna", cancel: "Peruuta" }
   },
   xk: {
-    nav: { language: "Gjuha", auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave", howItWorks: "Si funksionon", vip: "Anëtarësimi VIP", faq: "FAQ", contact: "Kontakt" },
+    nav: { language: "Gjuha", auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave", howItWorks: "Si funksionon", vip: "Anëtarësimi VIP", faq: "FAQ", contact: "Kontakt", leaderboard: "Renditja", luckyWheel: "Rrota e Fatit", vipAuctions: "Ankandet VIP", giftCards: "Kartat Dhuratë" },
     home: {
       badge: "10 oferta falas me regjistrim",
       heroTitle1: "Fito",
