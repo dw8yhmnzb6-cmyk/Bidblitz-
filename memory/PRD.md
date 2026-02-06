@@ -183,4 +183,16 @@ February 6, 2026
 3. ✅ Admin Auktionsdauer verifiziert
 4. ✅ Lint-Fehler behoben
 5. ✅ **Leaderboard Widget "Wöchentliche Champions"**
-6. ✅ **Albanian/Kosovo Sprachunterstützung verifiziert**
+6. ✅ **Albanian/Kosovo Sprachunterstützung vollständig** 🇦🇱🇽🇰
+   - Alle UI-Komponenten auf Albanisch übersetzt
+   - `xk` (Kosovo) zu allen lokalen Übersetzungsobjekten hinzugefügt:
+     - Footer, CookieConsent, LeaderboardWidget, LiveWinnerPopup
+     - BuyBids, InviteFriends, Profile, Purchases, VIP Seiten
+   - Navigation vollständig: Renditja, Rrota e Fatit, Kartat Dhuratë, etc.
+
+7. ✅ **Turnier-Push-Benachrichtigungen implementiert** 🔔
+   - API-Endpunkte: `/api/tournaments/subscribe`, `/api/tournaments/notification-status`
+   - Benachrichtigungen bei Position-Änderungen (Top-3 Abstieg/Aufstieg)
+   - Benachrichtigungen bei Turnier-Start
+   - Benachrichtigungen wenn Turnier endet (24h vorher)
+   - Admin-Endpunkt für manuelle Turnier-Benachrichtigungen
