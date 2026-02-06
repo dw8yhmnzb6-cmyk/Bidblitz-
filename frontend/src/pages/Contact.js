@@ -159,18 +159,18 @@ export default function Contact() {
   const pageText = pageTexts[language] || pageTexts.de;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0a1929] to-[#0d2538] pt-20 pb-16">
+    <div className={`min-h-screen pt-20 pb-16 ${isDarkMode ? 'bg-[#050509]' : 'bg-gradient-to-b from-cyan-50 to-cyan-100'}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="w-16 h-16 rounded-full bg-[#FFD700]/20 flex items-center justify-center mx-auto mb-4">
-            <MessageSquare className="w-8 h-8 text-[#FFD700]" />
+          <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
+            <MessageSquare className="w-8 h-8 text-amber-500" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+          <h1 className={`text-3xl sm:text-4xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
             {pageText.title}
           </h1>
-          <p className="text-gray-400 max-w-lg mx-auto">
+          <p className={`max-w-lg mx-auto ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {pageText.subtitle}
           </p>
         </div>
@@ -182,42 +182,42 @@ export default function Contact() {
             {contactInfo.map((info, index) => (
               <div 
                 key={index}
-                className="bg-[#1a3a52]/50 rounded-xl p-5 border border-gray-700/50"
+                className={`rounded-xl p-5 border ${isDarkMode ? 'bg-[#181824] border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-[#FFD700]/20 flex items-center justify-center flex-shrink-0">
-                    <info.icon className="w-6 h-6 text-[#FFD700]" />
+                  <div className="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                    <info.icon className="w-6 h-6 text-amber-500" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold mb-1">{info.title}</h3>
-                    <p className="text-[#FFD700] font-medium">{info.value}</p>
-                    <p className="text-gray-400 text-sm">{info.description}</p>
+                    <h3 className={`font-semibold mb-1 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{info.title}</h3>
+                    <p className="text-amber-500 font-medium">{info.value}</p>
+                    <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>{info.description}</p>
                   </div>
                 </div>
               </div>
             ))}
 
             {/* Support Hours */}
-            <div className="bg-[#1a3a52]/50 rounded-xl p-5 border border-gray-700/50">
+            <div className={`rounded-xl p-5 border ${isDarkMode ? 'bg-[#181824] border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}>
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-lg bg-cyan-500/20 flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-6 h-6 text-cyan-400" />
+                  <Clock className="w-6 h-6 text-cyan-500" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold mb-2">
+                  <h3 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
                     {language === 'en' ? 'Opening Hours' : language === 'sq' ? 'Orari' : language === 'tr' ? 'Çalışma Saatleri' : language === 'fr' ? 'Horaires' : 'Öffnungszeiten'}
                   </h3>
                   <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-gray-400">{language === 'en' ? 'Monday - Friday' : language === 'sq' ? 'E Hënë - E Premte' : language === 'tr' ? 'Pazartesi - Cuma' : language === 'fr' ? 'Lundi - Vendredi' : 'Montag - Freitag'}</span>
-                      <span className="text-white">9:00 - 18:00</span>
+                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>{language === 'en' ? 'Monday - Friday' : language === 'sq' ? 'E Hënë - E Premte' : language === 'tr' ? 'Pazartesi - Cuma' : language === 'fr' ? 'Lundi - Vendredi' : 'Montag - Freitag'}</span>
+                      <span className={isDarkMode ? 'text-white' : 'text-gray-800'}>9:00 - 18:00</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">{language === 'en' ? 'Saturday' : language === 'sq' ? 'E Shtunë' : language === 'tr' ? 'Cumartesi' : language === 'fr' ? 'Samedi' : 'Samstag'}</span>
-                      <span className="text-white">10:00 - 14:00</span>
+                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>{language === 'en' ? 'Saturday' : language === 'sq' ? 'E Shtunë' : language === 'tr' ? 'Cumartesi' : language === 'fr' ? 'Samedi' : 'Samstag'}</span>
+                      <span className={isDarkMode ? 'text-white' : 'text-gray-800'}>10:00 - 14:00</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-400">{language === 'en' ? 'Sunday' : language === 'sq' ? 'E Diel' : language === 'tr' ? 'Pazar' : language === 'fr' ? 'Dimanche' : 'Sonntag'}</span>
+                      <span className={isDarkMode ? 'text-gray-400' : 'text-gray-500'}>{language === 'en' ? 'Sunday' : language === 'sq' ? 'E Diel' : language === 'tr' ? 'Pazar' : language === 'fr' ? 'Dimanche' : 'Sonntag'}</span>
                       <span className="text-gray-500">{language === 'en' ? 'Closed' : language === 'sq' ? 'Mbyllur' : language === 'tr' ? 'Kapalı' : language === 'fr' ? 'Fermé' : 'Geschlossen'}</span>
                     </div>
                   </div>
@@ -228,14 +228,14 @@ export default function Contact() {
 
           {/* Contact Form */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="bg-[#1a3a52]/50 rounded-2xl p-6 sm:p-8 border border-gray-700/50">
-              <h2 className="text-xl font-bold text-white mb-6">
+            <form onSubmit={handleSubmit} className={`rounded-2xl p-6 sm:p-8 border ${isDarkMode ? 'bg-[#181824] border-white/10' : 'bg-white border-gray-200 shadow-lg'}`}>
+              <h2 className={`text-xl font-bold mb-6 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
                 {texts.sendMessage}
               </h2>
               
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-gray-400 text-sm mb-2">
+                  <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                     {texts.name} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -243,13 +243,17 @@ export default function Contact() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
+                    className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-amber-500 ${
+                      isDarkMode 
+                        ? 'bg-[#0F0F16] border-white/10 text-white placeholder-gray-500' 
+                        : 'bg-gray-50 border-gray-300 text-gray-800 placeholder-gray-400'
+                    }`}
                     placeholder={texts.enterName}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-400 text-sm mb-2">
+                  <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                     {texts.email} <span className="text-red-500">*</span>
                   </label>
                   <input
@@ -257,7 +261,11 @@ export default function Contact() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
+                    className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-amber-500 ${
+                      isDarkMode 
+                        ? 'bg-[#0F0F16] border-white/10 text-white placeholder-gray-500' 
+                        : 'bg-gray-50 border-gray-300 text-gray-800 placeholder-gray-400'
+                    }`}
                     placeholder={texts.enterEmail}
                     required
                   />
@@ -265,14 +273,18 @@ export default function Contact() {
               </div>
               
               <div className="mb-4">
-                <label className="block text-gray-400 text-sm mb-2">
+                <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   {texts.subject}
                 </label>
                 <select
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white focus:outline-none focus:border-[#FFD700]"
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-amber-500 ${
+                    isDarkMode 
+                      ? 'bg-[#0F0F16] border-white/10 text-white' 
+                      : 'bg-gray-50 border-gray-300 text-gray-800'
+                  }`}
                 >
                   <option value="">{texts.selectSubject}</option>
                   <option value="general">{texts.generalInquiry}</option>
@@ -285,7 +297,7 @@ export default function Contact() {
               </div>
               
               <div className="mb-6">
-                <label className="block text-gray-400 text-sm mb-2">
+                <label className={`block text-sm mb-2 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   {texts.message} <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -293,7 +305,11 @@ export default function Contact() {
                   value={formData.message}
                   onChange={handleChange}
                   rows={5}
-                  className="w-full px-4 py-3 rounded-lg bg-[#0d2538] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700] resize-none"
+                  className={`w-full px-4 py-3 rounded-lg border focus:outline-none focus:border-amber-500 resize-none ${
+                    isDarkMode 
+                      ? 'bg-[#0F0F16] border-white/10 text-white placeholder-gray-500' 
+                      : 'bg-gray-50 border-gray-300 text-gray-800 placeholder-gray-400'
+                  }`}
                   placeholder={texts.yourMessagePlaceholder}
                   required
                 />
@@ -302,11 +318,11 @@ export default function Contact() {
               <Button 
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-[#FFD700] hover:bg-[#FCD34D] text-black font-bold py-3 text-lg"
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 text-lg"
               >
                 {submitting ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black mr-2" />
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2" />
                     {texts.sending}
                   </>
                 ) : (
