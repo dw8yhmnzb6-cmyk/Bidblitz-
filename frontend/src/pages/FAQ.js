@@ -1,24 +1,27 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import { useTheme } from '../context/ThemeContext';
 import { ChevronDown, ChevronUp, HelpCircle, Search } from 'lucide-react';
 
-const FAQItem = ({ question, answer, isOpen, onClick }) => {
+const FAQItem = ({ question, answer, isOpen, onClick, isDarkMode }) => {
   return (
-    <div className="border-b border-gray-700/50 last:border-b-0">
+    <div className={`border-b last:border-b-0 ${isDarkMode ? 'border-white/10' : 'border-gray-200'}`}>
       <button
         onClick={onClick}
-        className="w-full py-5 flex items-center justify-between text-left hover:bg-white/5 transition-colors px-4 -mx-4 rounded-lg"
+        className={`w-full py-5 flex items-center justify-between text-left transition-colors px-4 -mx-4 rounded-lg ${
+          isDarkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'
+        }`}
       >
-        <span className="text-white font-medium pr-8">{question}</span>
+        <span className={`font-medium pr-8 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>{question}</span>
         {isOpen ? (
-          <ChevronUp className="w-5 h-5 text-[#FFD700] flex-shrink-0" />
+          <ChevronUp className="w-5 h-5 text-amber-500 flex-shrink-0" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-gray-400 flex-shrink-0" />
+          <ChevronDown className={`w-5 h-5 flex-shrink-0 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
         )}
       </button>
       {isOpen && (
-        <div className="pb-5 text-gray-400 leading-relaxed pl-4">
+        <div className={`pb-5 leading-relaxed pl-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
           {answer}
         </div>
       )}
