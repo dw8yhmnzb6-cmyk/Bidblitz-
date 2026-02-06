@@ -109,6 +109,8 @@ from routers.crypto_payments import router as crypto_router
 from routers.influencer_auctions import router as influencer_auctions_router
 from routers.ar_preview import router as ar_preview_router
 from routers.voice_debug import router as voice_debug_router
+from routers.tournaments import router as tournaments_router
+from routers.winner_gallery import router as winner_gallery_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
