@@ -598,6 +598,12 @@ export default function Home() {
           />
         )}
         
+        {/* Leaderboard Widget - NEW */}
+        <LeaderboardWidget 
+          className="mb-6" 
+          language={mappedLang}
+        />
+        
         {/* Live Auctions Section - ALL auctions on one page */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
