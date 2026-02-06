@@ -51,6 +51,13 @@ const translations = {
     saved: 'kursyer',
     viewWinners: 'Të Gjithë Fituesit',
     congrats: 'Urime!'
+  },
+  xk: {
+    justWon: 'sapo fitoi!',
+    for: 'për vetëm',
+    saved: 'kursyer',
+    viewWinners: 'Të Gjithë Fituesit',
+    congrats: 'Urime!'
   }
 };
 
