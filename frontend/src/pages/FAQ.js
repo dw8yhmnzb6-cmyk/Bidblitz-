@@ -215,6 +215,7 @@ const faqContent = {
 
 export default function FAQ() {
   const { language } = useLanguage();
+  const { isDarkMode } = useTheme();
   const [openIndex, setOpenIndex] = useState('0-0');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -240,41 +241,45 @@ export default function FAQ() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0a1929] to-[#0d2538] pt-20 pb-16">
+    <div className={`min-h-screen pt-20 pb-16 ${isDarkMode ? 'bg-[#050509]' : 'bg-gradient-to-b from-cyan-50 to-cyan-100'}`}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="w-16 h-16 rounded-full bg-[#FFD700]/20 flex items-center justify-center mx-auto mb-4">
-            <HelpCircle className="w-8 h-8 text-[#FFD700]" />
+          <div className="w-16 h-16 rounded-full bg-amber-500/20 flex items-center justify-center mx-auto mb-4">
+            <HelpCircle className="w-8 h-8 text-amber-500" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+          <h1 className={`text-3xl sm:text-4xl font-bold mb-4 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
             {content.title}
           </h1>
-          <p className="text-gray-400 max-w-lg mx-auto">
+          <p className={`max-w-lg mx-auto ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {content.subtitle}
           </p>
         </div>
 
         {/* Search */}
         <div className="relative mb-10">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Search className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} />
           <input
             type="text"
             placeholder={content.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 rounded-xl bg-[#1a3a52] border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-[#FFD700]"
+            className={`w-full pl-12 pr-4 py-4 rounded-xl border focus:outline-none focus:border-amber-500 ${
+              isDarkMode 
+                ? 'bg-[#181824] border-white/10 text-white placeholder-gray-500' 
+                : 'bg-white border-gray-300 text-gray-800 placeholder-gray-400 shadow-sm'
+            }`}
           />
         </div>
 
         {/* Search Results */}
         {filteredFaqs && (
           <div className="mb-10">
-            <p className="text-gray-400 mb-4">
+            <p className={`mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
               {filteredFaqs.length} {content.resultsFor} "{searchQuery}"
             </p>
-            <div className="bg-[#1a3a52]/50 rounded-2xl p-6 border border-gray-700/50">
+            <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-[#181824]/50 border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}>
               {filteredFaqs.length > 0 ? (
                 filteredFaqs.map((faq, index) => (
                   <FAQItem
@@ -283,10 +288,11 @@ export default function FAQ() {
                     answer={faq.answer}
                     isOpen={index === 0}
                     onClick={() => {}}
+                    isDarkMode={isDarkMode}
                   />
                 ))
               ) : (
-                <p className="text-gray-400 text-center py-4">
+                <p className={`text-center py-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                   {content.noResults}
                 </p>
               )}
@@ -297,11 +303,11 @@ export default function FAQ() {
         {/* FAQ Categories */}
         {!filteredFaqs && faqCategories.map((category, catIndex) => (
           <div key={catIndex} className="mb-8">
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#FFD700]"></span>
+            <h2 className={`text-xl font-bold mb-4 flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+              <span className="w-2 h-2 rounded-full bg-amber-500"></span>
               {category.title}
             </h2>
-            <div className="bg-[#1a3a52]/50 rounded-2xl p-6 border border-gray-700/50">
+            <div className={`rounded-2xl p-6 border ${isDarkMode ? 'bg-[#181824]/50 border-white/10' : 'bg-white border-gray-200 shadow-sm'}`}>
               {category.faqs.map((faq, faqIndex) => {
                 const globalIndex = `${catIndex}-${faqIndex}`;
                 return (
@@ -311,6 +317,7 @@ export default function FAQ() {
                     answer={faq.answer}
                     isOpen={openIndex === globalIndex}
                     onClick={() => setOpenIndex(openIndex === globalIndex ? null : globalIndex)}
+                    isDarkMode={isDarkMode}
                   />
                 );
               })}
@@ -319,16 +326,20 @@ export default function FAQ() {
         ))}
 
         {/* Contact CTA */}
-        <div className="bg-gradient-to-r from-[#FFD700]/10 to-[#FF4D4D]/10 rounded-2xl p-8 text-center border border-[#FFD700]/30">
-          <h3 className="text-xl font-bold text-white mb-2">
+        <div className={`rounded-2xl p-8 text-center border ${
+          isDarkMode 
+            ? 'bg-gradient-to-r from-amber-500/10 to-red-500/10 border-amber-500/30' 
+            : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'
+        }`}>
+          <h3 className={`text-xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
             {content.stillQuestions}
           </h3>
-          <p className="text-gray-400 mb-4">
+          <p className={`mb-4 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             {content.contactText}
           </p>
           <Link 
             to="/contact" 
-            className="inline-flex items-center gap-2 bg-[#FFD700] hover:bg-[#FCD34D] text-black font-bold px-6 py-3 rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-lg transition-colors"
           >
             {content.contactButton}
           </Link>
