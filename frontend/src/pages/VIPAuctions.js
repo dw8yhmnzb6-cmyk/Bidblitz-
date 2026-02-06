@@ -133,7 +133,9 @@ export default function VIPAuctions() {
               : a
           ));
         }
-      } catch (e) {}
+      } catch (e) {
+        // WebSocket parse error - safely ignore
+      }
     };
     
     return () => ws.close();

@@ -489,7 +489,7 @@ export const VoiceDebugAssistant = ({ isOpen, onClose }) => {
               {/* Transcription */}
               <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
                 <p className="text-sm text-gray-500 mb-1">{t.transcription}</p>
-                <p className="text-gray-800 dark:text-gray-200 italic">"{report.transcription}"</p>
+                <p className="text-gray-800 dark:text-gray-200 italic">&ldquo;{report.transcription}&rdquo;</p>
               </div>
               
               {/* Description */}
