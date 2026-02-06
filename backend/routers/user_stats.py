@@ -352,3 +352,240 @@ async def get_leaderboard_position(user: dict = Depends(get_current_user)):
         "wins_rank": wins_position,
         "total_users": len(users)
     }
+
+
+# ==================== DAILY REWARDS ====================
+
+@router.get("/daily-reward-status")
+async def get_daily_reward_status(user: dict = Depends(get_current_user)):
+    """Check if daily reward is available"""
+    user_id = user["id"]
+    
+    gamification = user.get("gamification", {})
+    last_claim = gamification.get("last_daily_claim")
+    login_streak = gamification.get("login_streak", 0)
+    
+    now = datetime.now(timezone.utc)
+    today = now.date()
+    
+    can_claim = True
+    if last_claim:
+        if isinstance(last_claim, str):
+            last_claim = datetime.fromisoformat(last_claim.replace('Z', '+00:00'))
+        last_claim_date = last_claim.date()
+        can_claim = last_claim_date != today
+    
+    # Calculate potential reward
+    streak_for_calc = login_streak + 1 if can_claim else login_streak
+    base_reward = 2
+    streak_bonus = min(streak_for_calc, 7)
+    
+    # Next milestone
+    milestones = [7, 14, 30, 60, 90]
+    next_milestone = None
+    for m in milestones:
+        if login_streak < m:
+            next_milestone = {"days": m, "remaining": m - login_streak}
+            break
+    
+    return {
+        "can_claim": can_claim,
+        "current_streak": login_streak,
+        "potential_reward": base_reward + streak_bonus,
+        "next_milestone": next_milestone
+    }
+
+
+@router.post("/claim-daily-reward")
+async def claim_daily_reward(user: dict = Depends(get_current_user)):
+    """Claim daily login reward"""
+    user_id = user["id"]
+    
+    gamification = user.get("gamification", {})
+    last_claim = gamification.get("last_daily_claim")
+    login_streak = gamification.get("login_streak", 0)
+    
+    now = datetime.now(timezone.utc)
+    today = now.date()
+    
+    # Check if already claimed today
+    if last_claim:
+        if isinstance(last_claim, str):
+            last_claim = datetime.fromisoformat(last_claim.replace('Z', '+00:00'))
+        last_claim_date = last_claim.date()
+        if last_claim_date == today:
+            return {
+                "success": False,
+                "message": "Du hast deine tägliche Belohnung bereits abgeholt!",
+                "next_claim": (datetime.combine(today + timedelta(days=1), datetime.min.time())).isoformat()
+            }
+        
+        # Check if streak continues
+        yesterday = today - timedelta(days=1)
+        if last_claim_date == yesterday:
+            login_streak += 1
+        else:
+            login_streak = 1
+    else:
+        login_streak = 1
+    
+    # Calculate reward based on streak
+    base_reward = 2
+    streak_bonus = min(login_streak, 7)
+    xp_reward = 10 + (login_streak * 5)
+    
+    total_bids = base_reward + streak_bonus
+    
+    # Special rewards for milestones
+    milestone_bonus = 0
+    milestone_message = None
+    if login_streak == 7:
+        milestone_bonus = 10
+        milestone_message = "🎉 7-Tage-Streak! +10 Bonus-Gebote!"
+    elif login_streak == 14:
+        milestone_bonus = 20
+        milestone_message = "🔥 14-Tage-Streak! +20 Bonus-Gebote!"
+    elif login_streak == 30:
+        milestone_bonus = 50
+        milestone_message = "💪 30-Tage-Streak! +50 Bonus-Gebote!"
+    elif login_streak == 60:
+        milestone_bonus = 100
+        milestone_message = "🌟 60-Tage-Streak! +100 Bonus-Gebote!"
+    elif login_streak == 90:
+        milestone_bonus = 200
+        milestone_message = "👑 90-Tage-Streak! +200 Bonus-Gebote!"
+    
+    total_bids += milestone_bonus
+    
+    # Update user
+    current_xp = gamification.get("xp", 0)
+    current_bids = user.get("bids_balance", user.get("bid_balance", 0))
+    max_streak = max(user.get("max_login_streak", 0), login_streak)
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "gamification.last_daily_claim": now,
+            "gamification.login_streak": login_streak,
+            "gamification.xp": current_xp + xp_reward,
+            "login_streak": login_streak,
+            "max_login_streak": max_streak,
+            "bids_balance": current_bids + total_bids,
+            "bid_balance": current_bids + total_bids
+        }}
+    )
+    
+    # Log the reward
+    await db.daily_rewards_log.insert_one({
+        "user_id": user_id,
+        "claimed_at": now,
+        "streak": login_streak,
+        "bids_awarded": total_bids,
+        "xp_awarded": xp_reward
+    })
+    
+    return {
+        "success": True,
+        "message": f"Tägliche Belohnung abgeholt!",
+        "reward": {
+            "bids": total_bids,
+            "xp": xp_reward,
+            "streak": login_streak,
+            "milestone_message": milestone_message
+        },
+        "new_balance": current_bids + total_bids,
+        "next_claim": (datetime.combine(today + timedelta(days=1), datetime.min.time())).isoformat()
+    }
+
+
+# ==================== LEADERBOARDS ====================
+
+@router.get("/leaderboard")
+async def get_leaderboard(type: str = "weekly", limit: int = 10):
+    """Get leaderboard by wins"""
+    now = datetime.now(timezone.utc)
+    
+    if type == "weekly":
+        start_date = now - timedelta(days=7)
+    elif type == "monthly":
+        start_date = now - timedelta(days=30)
+    else:
+        start_date = datetime(2020, 1, 1, tzinfo=timezone.utc)
+    
+    # Get wins in period
+    pipeline = [
+        {"$match": {
+            "won_at": {"$gte": start_date.isoformat()}
+        }},
+        {"$group": {
+            "_id": "$user_id",
+            "wins": {"$sum": 1},
+            "total_savings": {"$sum": {"$subtract": ["$retail_price", "$final_price"]}}
+        }},
+        {"$sort": {"wins": -1}},
+        {"$limit": limit}
+    ]
+    
+    results = await db.won_auctions.aggregate(pipeline).to_list(length=limit)
+    
+    # Get user details
+    leaderboard = []
+    for i, result in enumerate(results):
+        user = await db.users.find_one(
+            {"id": result["_id"]},
+            {"_id": 0, "name": 1, "gamification": 1, "avatar_url": 1}
+        )
+        if user:
+            gamification = user.get("gamification", {})
+            xp = gamification.get("xp", 0)
+            leaderboard.append({
+                "rank": i + 1,
+                "user_id": result["_id"],
+                "username": user.get("name", "Anonym"),
+                "avatar_url": user.get("avatar_url"),
+                "wins": result["wins"],
+                "total_savings": round(result.get("total_savings", 0), 2),
+                "xp": xp
+            })
+    
+    return {
+        "type": type,
+        "period": {
+            "start": start_date.isoformat(),
+            "end": now.isoformat()
+        },
+        "leaderboard": leaderboard
+    }
+
+
+@router.get("/leaderboard/xp")
+async def get_xp_leaderboard(limit: int = 10):
+    """Get leaderboard by XP"""
+    pipeline = [
+        {"$match": {"gamification.xp": {"$gt": 0}}},
+        {"$sort": {"gamification.xp": -1}},
+        {"$limit": limit},
+        {"$project": {
+            "_id": 0,
+            "id": 1,
+            "name": 1,
+            "avatar_url": 1,
+            "gamification": 1
+        }}
+    ]
+    
+    users = await db.users.aggregate(pipeline).to_list(length=limit)
+    
+    leaderboard = []
+    for i, user in enumerate(users):
+        gamification = user.get("gamification", {})
+        leaderboard.append({
+            "rank": i + 1,
+            "user_id": user.get("id"),
+            "username": user.get("name", "Anonym"),
+            "avatar_url": user.get("avatar_url"),
+            "xp": gamification.get("xp", 0),
+            "login_streak": gamification.get("login_streak", 0)
+        })
+    
+    return {"leaderboard": leaderboard}
