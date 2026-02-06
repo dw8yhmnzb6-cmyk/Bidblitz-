@@ -298,3 +298,275 @@ async def get_my_tournament_wins(user: dict = Depends(get_current_user)):
         "wins": wins,
         "total_prizes_won": sum(w.get("prize_bids", 0) for w in wins)
     }
+
+
+# ==================== TOURNAMENT NOTIFICATIONS ====================
+
+@router.post("/subscribe")
+async def subscribe_to_tournament_notifications(
+    user: dict = Depends(get_current_user)
+):
+    """Subscribe to tournament push notifications"""
+    user_id = user["id"]
+    
+    # Update user preferences
+    await db.notification_preferences.update_one(
+        {"user_id": user_id},
+        {
+            "$set": {
+                "tournament_notifications": True,
+                "tournament_new": True,
+                "tournament_position_change": True,
+                "tournament_ending": True,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        },
+        upsert=True
+    )
+    
+    return {
+        "message": "Turnier-Benachrichtigungen aktiviert",
+        "preferences": {
+            "tournament_new": True,
+            "tournament_position_change": True,
+            "tournament_ending": True
+        }
+    }
+
+
+@router.delete("/subscribe")
+async def unsubscribe_from_tournament_notifications(
+    user: dict = Depends(get_current_user)
+):
+    """Unsubscribe from tournament push notifications"""
+    user_id = user["id"]
+    
+    await db.notification_preferences.update_one(
+        {"user_id": user_id},
+        {
+            "$set": {
+                "tournament_notifications": False,
+                "tournament_new": False,
+                "tournament_position_change": False,
+                "tournament_ending": False
+            }
+        }
+    )
+    
+    return {"message": "Turnier-Benachrichtigungen deaktiviert"}
+
+
+@router.get("/notification-status")
+async def get_tournament_notification_status(user: dict = Depends(get_current_user)):
+    """Get user's tournament notification preferences"""
+    prefs = await db.notification_preferences.find_one(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    )
+    
+    return {
+        "subscribed": prefs.get("tournament_notifications", False) if prefs else False,
+        "preferences": {
+            "tournament_new": prefs.get("tournament_new", False) if prefs else False,
+            "tournament_position_change": prefs.get("tournament_position_change", False) if prefs else False,
+            "tournament_ending": prefs.get("tournament_ending", False) if prefs else False
+        }
+    }
+
+
+# ==================== NOTIFICATION HELPER FUNCTIONS ====================
+
+async def notify_position_change(user_id: str, old_rank: int, new_rank: int, tournament_name: str):
+    """Send notification when user's position changes in tournament"""
+    from routers.notifications import send_push_to_user
+    
+    if new_rank > 3 and old_rank <= 3:
+        # User dropped out of top 3
+        title = "⚠️ Turnier-Update"
+        body = f"Du bist von Platz {old_rank} auf Platz {new_rank} gefallen! Kämpfe zurück in die Top 3!"
+    elif new_rank <= 3 and old_rank > 3:
+        # User entered top 3
+        title = "🎉 Top 3 erreicht!"
+        body = f"Glückwunsch! Du bist jetzt auf Platz {new_rank} im {tournament_name}!"
+    elif new_rank < old_rank:
+        # User moved up
+        title = "📈 Aufstieg im Turnier!"
+        body = f"Super! Du bist von Platz {old_rank} auf Platz {new_rank} gestiegen!"
+    else:
+        # User moved down (but not out of top 3)
+        title = "📉 Turnier-Update"
+        body = f"Achtung! Du bist von Platz {old_rank} auf Platz {new_rank} gefallen."
+    
+    # Create in-app notification
+    notification = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "title": title,
+        "message": body,
+        "type": "tournament",
+        "link": "/tournaments",
+        "read": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.notifications.insert_one(notification)
+    
+    # Send push notification
+    try:
+        await send_push_to_user(user_id, title, body, {"url": "/tournaments"})
+    except Exception as e:
+        logger.warning(f"Failed to send push notification: {e}")
+
+
+async def notify_tournament_start(tournament: dict):
+    """Notify all subscribed users when a new tournament starts"""
+    from routers.notifications import send_push_to_users
+    
+    # Find users subscribed to tournament notifications
+    subscribed_prefs = await db.notification_preferences.find(
+        {"tournament_new": True},
+        {"_id": 0, "user_id": 1}
+    ).to_list(length=10000)
+    
+    if not subscribed_prefs:
+        return 0
+    
+    user_ids = [p["user_id"] for p in subscribed_prefs]
+    
+    title = f"🏆 Neues Turnier: {tournament['name']}"
+    body = f"{tournament['description']} Kämpfe um Preise bis zu {PRIZES[1]['bids']} Gebote!"
+    
+    # Create in-app notifications
+    now = datetime.now(timezone.utc).isoformat()
+    notifications = []
+    for user_id in user_ids:
+        notifications.append({
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "title": title,
+            "message": body,
+            "type": "tournament",
+            "link": "/tournaments",
+            "read": False,
+            "created_at": now
+        })
+    
+    if notifications:
+        await db.notifications.insert_many(notifications)
+    
+    # Send push notifications
+    try:
+        sent = await send_push_to_users(user_ids, title, body, "/tournaments")
+        logger.info(f"Tournament start notification sent to {sent} users")
+        return sent
+    except Exception as e:
+        logger.warning(f"Failed to send tournament start push: {e}")
+        return 0
+
+
+async def notify_tournament_ending(hours_remaining: int = 24):
+    """Notify users in top 10 that tournament is ending soon"""
+    from routers.notifications import send_push_to_user
+    
+    # Get current tournament
+    tournament = await db.tournaments.find_one({
+        "status": "active"
+    }, {"_id": 0})
+    
+    if not tournament:
+        return 0
+    
+    # Get top 10 leaderboard
+    leaderboard_data = await get_tournament_leaderboard(limit=10)
+    leaderboard = leaderboard_data.get("leaderboard", [])
+    
+    title = f"⏰ Turnier endet in {hours_remaining} Stunden!"
+    
+    sent = 0
+    for entry in leaderboard:
+        user_id = entry.get("user_id")
+        if not user_id:
+            continue
+        
+        rank = entry.get("rank", 0)
+        prize = entry.get("prize", {})
+        
+        body = f"Du bist aktuell auf Platz {rank} und könntest {prize.get('bids', 0)} Gebote gewinnen!"
+        
+        # Create in-app notification
+        notification = {
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "title": title,
+            "message": body,
+            "type": "tournament",
+            "link": "/tournaments",
+            "read": False,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.notifications.insert_one(notification)
+        
+        # Send push
+        try:
+            if await send_push_to_user(user_id, title, body, {"url": "/tournaments"}):
+                sent += 1
+        except Exception as e:
+            pass
+    
+    logger.info(f"Tournament ending notification sent to {sent} users")
+    return sent
+
+
+# ==================== ADMIN: MANUAL NOTIFICATIONS ====================
+
+@router.post("/admin/notify-all")
+async def admin_send_tournament_notification(
+    title: str,
+    message: str,
+    user: dict = Depends(get_current_user)
+):
+    """Admin endpoint to send tournament notification to all subscribed users"""
+    # Check if admin
+    if not user.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    from routers.notifications import send_push_to_users
+    
+    # Find subscribed users
+    subscribed = await db.notification_preferences.find(
+        {"tournament_notifications": True},
+        {"_id": 0, "user_id": 1}
+    ).to_list(length=10000)
+    
+    user_ids = [s["user_id"] for s in subscribed]
+    
+    if not user_ids:
+        return {"sent": 0, "message": "Keine abonnierten Benutzer"}
+    
+    # Create in-app notifications
+    now = datetime.now(timezone.utc).isoformat()
+    notifications = []
+    for uid in user_ids:
+        notifications.append({
+            "id": str(uuid.uuid4()),
+            "user_id": uid,
+            "title": title,
+            "message": message,
+            "type": "tournament",
+            "link": "/tournaments",
+            "read": False,
+            "created_at": now
+        })
+    
+    await db.notifications.insert_many(notifications)
+    
+    # Send push
+    try:
+        push_sent = await send_push_to_users(user_ids, title, message, "/tournaments")
+    except:
+        push_sent = 0
+    
+    return {
+        "sent": len(notifications),
+        "push_sent": push_sent,
+        "message": f"Benachrichtigung an {len(notifications)} Benutzer gesendet"
+    }
