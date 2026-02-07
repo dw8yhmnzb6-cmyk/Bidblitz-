@@ -239,7 +239,7 @@ const LiveTimer = memo(({ endTime }) => {
   }, [endTime]);
   
   return (
-    <span className={`font-mono text-[9px] font-bold px-1 py-0.5 rounded transition-colors duration-300 ${
+    <span className={`font-mono text-xs font-bold px-1.5 py-0.5 rounded transition-colors duration-300 ${
       isLow ? 'bg-red-500 text-white animate-pulse' : 
       isLong ? 'bg-green-600 text-white' : 
       'bg-blue-600 text-white'
