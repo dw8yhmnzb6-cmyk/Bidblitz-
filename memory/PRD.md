@@ -267,3 +267,10 @@ February 7, 2026
    - Bewertungsverteilung (Balkendiagramm)
    - Neuestes Feedback Liste
    - File: `/app/frontend/src/components/admin/AdminSurveys.js`
+
+10. ✅ **Personalisierte Produktempfehlungen** 🎯 (NEU - 7. Feb 2026)
+   - "Für dich empfohlen" Widget auf der Hauptseite
+   - 5 Sektionen basierend auf Benutzeraktivität
+   - Personalisierte Begrüßung (Guten Morgen/Tag/Abend)
+   - File: `/app/frontend/src/components/PersonalizedRecommendations.js`
+   - Backend: `/app/backend/routers/personalized_homepage.py`
