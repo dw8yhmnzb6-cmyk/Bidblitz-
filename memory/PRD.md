@@ -221,3 +221,19 @@ February 6, 2026
    - Benachrichtigungen bei Turnier-Start
    - Benachrichtigungen wenn Turnier endet (24h vorher)
    - Admin-Endpunkt für manuelle Turnier-Benachrichtigungen
+
+8. ✅ **Admin Analytics Dashboard** 📊
+   - KPI-Karten: Umsatz, Bestellungen, Neue Nutzer, Aktive Nutzer
+   - Umsatzentwicklung Chart (AreaChart)
+   - Conversion Funnel (BarChart): Besuche → Registrierungen → Gebote → Käufe
+   - Auktionsstatistik, Engagement-Metriken, Top Seiten
+   - Zeitraum-Filter (7, 14, 30, 90 Tage)
+   - File: `/app/frontend/src/components/admin/AdminAnalytics.js`
+
+9. ✅ **Admin Surveys Dashboard** 📋
+   - Net Promoter Score (NPS) mit Trend-Chart
+   - Promoter/Passiv/Kritiker Verteilung (PieChart)
+   - Durchschnittliche Bewertung mit Sterne-Rating
+   - Bewertungsverteilung (Balkendiagramm)
+   - Neuestes Feedback Liste
+   - File: `/app/frontend/src/components/admin/AdminSurveys.js`
