@@ -8,6 +8,7 @@ import { Input } from '../components/ui/input';
 import { TwoFactorSettings } from '../components/TwoFactorSettings';
 import SpinWheel from '../components/SpinWheel';
 import WeeklyChallenges from '../components/WeeklyChallenges';
+import WinSurveyPopup from '../components/WinSurveyPopup';
 import { 
   Zap, Trophy, Target, TrendingUp, ArrowRight, User, Mail, 
   Ticket, Bot, Trash2, Power, Clock, Package, CreditCard,
@@ -37,6 +38,10 @@ export default function Dashboard() {
   const [claimingReward, setClaimingReward] = useState(false);
   const [achievements, setAchievements] = useState(null);
   const [wheelOpen, setWheelOpen] = useState(false);
+  
+  // Win Survey State
+  const [showWinSurvey, setShowWinSurvey] = useState(false);
+  const [surveyAuction, setSurveyAuction] = useState(null);
 
   // Dashboard translations
   const dashTexts = {
