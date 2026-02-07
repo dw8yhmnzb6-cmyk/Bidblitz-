@@ -126,13 +126,15 @@ function AppContent() {
       {/* Scroll to top on route change */}
       <ScrollToTopOnNavigate />
       
-      {/* Happy Hour Banner */}
-      <HappyHourBanner />
-      
       {/* Live Winner Popup - Shows real-time win notifications */}
       <LiveWinnerPopup language={mappedLanguage || language} />
       
       <Navbar />
+      
+      {/* Happy Hour Banner - After Navbar */}
+      <div className="pt-16">
+        <HappyHourBanner />
+      </div>
       
       <main className="flex-grow">
         <Routes>
