@@ -152,7 +152,8 @@ export const Navbar = () => {
           </div>
 
           {/* Right side */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Desktop Right Side - Only on large screens */}
+          <div className="hidden lg:flex items-center gap-4">
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
