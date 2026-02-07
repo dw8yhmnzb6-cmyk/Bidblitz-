@@ -176,7 +176,7 @@ const ActivityIndex = memo(({ auctionId, t }) => {
           style={{ width: `${activity}%` }}
         />
       </div>
-      <span className={`text-[7px] px-1 py-0.5 rounded font-bold ${activityColor}`}>
+      <span className={`text-xs px-1.5 py-0.5 rounded font-bold ${activityColor}`}>
         {activityLevel}
       </span>
     </div>
