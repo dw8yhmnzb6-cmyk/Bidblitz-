@@ -240,9 +240,9 @@ export const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile/Tablet menu - Shows on screens smaller than lg (1024px) */}
       {mobileMenuOpen && (
-        <div className={`md:hidden border-t shadow-lg ${isDarkMode ? 'bg-[#0D0D14] border-white/10' : 'bg-white border-gray-200'}`}>
+        <div className={`lg:hidden border-t shadow-lg ${isDarkMode ? 'bg-[#0D0D14] border-white/10' : 'bg-white border-gray-200'}`}>
           <div className="px-4 py-4 space-y-3">
             
             {/* Dark Mode Toggle - Mobile */}
