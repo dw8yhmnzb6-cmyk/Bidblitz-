@@ -1221,10 +1221,10 @@ export default function Admin() {
           </Button>
         </div>
         
-        {/* Mobile Menu Dropdown */}
+        {/* Mobile/Tablet Menu Dropdown */}
         {mobileMenuOpen && (
-          <div className="px-2 pb-3 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200">
-            <div className="grid grid-cols-4 gap-2">
+          <div className="px-2 pb-3 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 max-h-[60vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
