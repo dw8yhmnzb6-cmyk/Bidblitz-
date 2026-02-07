@@ -411,7 +411,7 @@ export default function InfluencerBecome() {
       <section className="py-12 px-4">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="glass-card rounded-xl p-5 text-center">
-            <p className="text-3xl font-black text-yellow-400">15%</p>
+            <p className="text-3xl font-black text-yellow-400">30%</p>
             <p className="text-gray-500 text-sm">{t.maxCommission}</p>
           </div>
           <div className="glass-card rounded-xl p-5 text-center">
