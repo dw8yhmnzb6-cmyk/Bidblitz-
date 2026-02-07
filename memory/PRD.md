@@ -29,6 +29,15 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
    - Problem: `end_time` vs `ended_at` Feldname
    - Lösung: Fallback zu beiden Feldern
    - Neue Übersetzungsschlüssel: `ended`, `endedAt`
+9. ✅ **Nacht-Auktionen Timer 00:00:00 Bug** (7. Feb 2026)
+   - Problem: Timer zeigte 00:00:00 für pausierte Nacht-Auktionen
+   - Lösung: LiveTimer Component unterstützt jetzt `isPaused` prop
+   - `isNightPaused` Prüfung erkennt jetzt auch `status='night_paused'`
+   - Datei: `/app/frontend/src/pages/Auctions.js` (Lines 194-269)
+10. ✅ **OpenAI Bildanalyse-Fehler** (7. Feb 2026)
+   - Problem: "Invalid base64 image_url" mit gpt-4o Modell
+   - Lösung: Modell von gpt-4o auf gpt-4.1 aktualisiert
+   - Datei: `/app/backend/routers/voice_command.py` (Lines 1199-1263)
 
 ### ✅ Phase 2 Feature Additions Completed
 
