@@ -52,6 +52,74 @@ const WeeklyChallenges = () => {
         medium: 'Medium',
         hard: 'Hard'
       }
+    },
+    sq: {
+      title: 'Sfidat Javore',
+      subtitle: 'Përfundo sfidat dhe fito oferta falas!',
+      daysLeft: 'ditë të mbetura',
+      progress: 'Progresi',
+      reward: 'Shpërblimi',
+      claim: 'Merr',
+      claimed: 'Marrë',
+      completed: 'Përfunduar',
+      inProgress: 'Në Progres',
+      loginRequired: 'Ju lutem kyçuni',
+      difficulty: {
+        easy: 'E Lehtë',
+        medium: 'Mesatare',
+        hard: 'E Vështirë'
+      }
+    },
+    xk: {
+      title: 'Sfidat Javore',
+      subtitle: 'Përfundo sfidat dhe fito oferta falas!',
+      daysLeft: 'ditë të mbetura',
+      progress: 'Progresi',
+      reward: 'Shpërblimi',
+      claim: 'Merr',
+      claimed: 'Marrë',
+      completed: 'Përfunduar',
+      inProgress: 'Në Progres',
+      loginRequired: 'Ju lutem kyçuni',
+      difficulty: {
+        easy: 'E Lehtë',
+        medium: 'Mesatare',
+        hard: 'E Vështirë'
+      }
+    },
+    tr: {
+      title: 'Haftalık Görevler',
+      subtitle: 'Görevleri tamamla ve ücretsiz teklifler kazan!',
+      daysLeft: 'gün kaldı',
+      progress: 'İlerleme',
+      reward: 'Ödül',
+      claim: 'Al',
+      claimed: 'Alındı',
+      completed: 'Tamamlandı',
+      inProgress: 'Devam Ediyor',
+      loginRequired: 'Lütfen giriş yapın',
+      difficulty: {
+        easy: 'Kolay',
+        medium: 'Orta',
+        hard: 'Zor'
+      }
+    },
+    fr: {
+      title: 'Défis Hebdomadaires',
+      subtitle: 'Complétez des défis et gagnez des offres gratuites!',
+      daysLeft: 'jours restants',
+      progress: 'Progrès',
+      reward: 'Récompense',
+      claim: 'Réclamer',
+      claimed: 'Réclamé',
+      completed: 'Terminé',
+      inProgress: 'En Cours',
+      loginRequired: 'Veuillez vous connecter',
+      difficulty: {
+        easy: 'Facile',
+        medium: 'Moyen',
+        hard: 'Difficile'
+      }
     }
   };
   const t = texts[language] || texts.de;
