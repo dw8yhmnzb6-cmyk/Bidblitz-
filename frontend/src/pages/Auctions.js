@@ -564,60 +564,60 @@ const TrustBadges = memo(({ t }) => (
 
 // Info Sidebar with Badge Legend - Compact for mobile
 const InfoSidebar = memo(({ t }) => (
-  <div className="space-y-2">
+  <div className="space-y-3">
     {/* Trust Badges First */}
     <TrustBadges t={t} />
     
-    <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
-      <h3 className="text-[9px] font-bold text-gray-800 mb-2">{t('auctionPage.auctionTypes')}</h3>
-      <div className="space-y-1.5">
+    <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+      <h3 className="text-xs font-bold text-gray-800 mb-2">{t('auctionPage.auctionTypes')}</h3>
+      <div className="space-y-2">
         {/* Rabatt Badge */}
-        <div className="flex items-center gap-2 p-1.5 bg-red-50 rounded border border-red-200">
-          <span className="bg-red-500 text-white px-1.5 py-0.5 rounded text-[7px] font-bold whitespace-nowrap">-95%</span>
-          <span className="text-[8px] text-gray-700">{t('auctionPage.discount')}</span>
+        <div className="flex items-center gap-2 p-2 bg-red-50 rounded-lg border border-red-200">
+          <span className="bg-red-500 text-white px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap">-95%</span>
+          <span className="text-xs text-gray-700">{t('auctionPage.discount')}</span>
         </div>
         
         {/* Anfänger */}
-        <div className="flex items-center gap-2 p-1.5 bg-purple-50 rounded border border-purple-200">
-          <span className="bg-purple-500 text-white px-1.5 py-0.5 rounded text-[7px] font-bold">🎓</span>
-          <span className="text-[8px] text-gray-700">{t('auctionPage.beginner')}</span>
+        <div className="flex items-center gap-2 p-2 bg-purple-50 rounded-lg border border-purple-200">
+          <span className="bg-purple-500 text-white px-2 py-0.5 rounded text-xs font-bold">🎓</span>
+          <span className="text-xs text-gray-700">{t('auctionPage.beginner')}</span>
         </div>
         
         {/* Gratis */}
-        <div className="flex items-center gap-2 p-1.5 bg-green-50 rounded border border-green-200">
-          <span className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[7px] font-bold">🎁</span>
-          <span className="text-[8px] text-gray-700">{t('auctionPage.free')}</span>
+        <div className="flex items-center gap-2 p-2 bg-green-50 rounded-lg border border-green-200">
+          <span className="bg-green-500 text-white px-2 py-0.5 rounded text-xs font-bold">🎁</span>
+          <span className="text-xs text-gray-700">{t('auctionPage.free')}</span>
         </div>
         
         {/* VIP */}
-        <div className="flex items-center gap-2 p-1.5 bg-yellow-50 rounded border border-yellow-200">
-          <span className="bg-yellow-500 text-black px-1.5 py-0.5 rounded text-[7px] font-bold">⭐</span>
-          <span className="text-[8px] text-gray-700">{t('auctionPage.vipLabel')}</span>
+        <div className="flex items-center gap-2 p-2 bg-yellow-50 rounded-lg border border-yellow-200">
+          <span className="bg-yellow-500 text-black px-2 py-0.5 rounded text-xs font-bold">⭐</span>
+          <span className="text-xs text-gray-700">{t('auctionPage.vipLabel')}</span>
         </div>
         
         {/* Nacht */}
-        <div className="flex items-center gap-2 p-1.5 bg-indigo-50 rounded border border-indigo-200">
-          <span className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[7px] font-bold">🌙</span>
-          <span className="text-[8px] text-gray-700">{t('auctionPage.night')} <b>½</b></span>
+        <div className="flex items-center gap-2 p-2 bg-indigo-50 rounded-lg border border-indigo-200">
+          <span className="bg-indigo-600 text-white px-2 py-0.5 rounded text-xs font-bold">🌙</span>
+          <span className="text-xs text-gray-700">{t('auctionPage.night')} <b>½</b></span>
         </div>
         
         {/* Erinnerung */}
-        <div className="flex items-center gap-2 p-1.5 bg-cyan-50 rounded border border-cyan-200">
-          <span className="bg-cyan-500 text-white px-1.5 py-0.5 rounded text-[7px] font-bold">🔔</span>
-          <span className="text-[8px] text-gray-700">{t('auctionPage.alarm')}</span>
+        <div className="flex items-center gap-2 p-2 bg-cyan-50 rounded-lg border border-cyan-200">
+          <span className="bg-cyan-500 text-white px-2 py-0.5 rounded text-xs font-bold">🔔</span>
+          <span className="text-xs text-gray-700">{t('auctionPage.alarm')}</span>
         </div>
       </div>
     </div>
     
-    <div className="bg-white rounded-lg p-2 border border-gray-200 shadow-sm">
-      <h3 className="text-[9px] font-bold text-gray-800 mb-2">{t('auctionPage.activity').toUpperCase()}</h3>
-      <div className="space-y-1">
+    <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+      <h3 className="text-xs font-bold text-gray-800 mb-2">{t('auctionPage.activity').toUpperCase()}</h3>
+      <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded bg-green-500"></span>
-          <span className="text-[8px] text-gray-700">{t('auctionPage.activityLow')}</span>
+          <span className="w-4 h-4 rounded bg-green-500"></span>
+          <span className="text-xs text-gray-700">{t('auctionPage.activityLow')}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded bg-yellow-500"></span>
+          <span className="w-4 h-4 rounded bg-yellow-500"></span>
           <span className="text-[8px] text-gray-700">{t('auctionPage.activityMedium')}</span>
         </div>
         <div className="flex items-center gap-2">
