@@ -376,7 +376,7 @@ export const translations = {
       filters: {
         live: "Live",
         beginner: "Beginner",
-        free: "Vouchers",
+        free: "Voucher",
         night: "Night",
         ending: "Ending",
         vip: "VIP"
