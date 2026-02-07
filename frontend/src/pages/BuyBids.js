@@ -250,8 +250,28 @@ export default function BuyBids() {
     }
     
     features.push(`€${pricePerBid} ${texts.perBid}`);
-    features.push(language === 'en' ? 'Instantly available' : language === 'sq' ? 'Menjëherë i disponueshëm' : language === 'tr' ? 'Anında kullanılabilir' : language === 'fr' ? 'Disponible immédiatement' : 'Sofort verfügbar');
-    features.push(language === 'en' ? 'No expiry date' : language === 'sq' ? 'Pa datë skadence' : language === 'tr' ? 'Son kullanma tarihi yok' : language === 'fr' ? 'Pas de date d\'expiration' : 'Kein Ablaufdatum');
+    
+    // "Sofort verfügbar" / "Instantly available"
+    const instantlyAvailable = {
+      de: 'Sofort verfügbar',
+      en: 'Instantly available',
+      sq: 'Menjëherë i disponueshëm',
+      xk: 'Menjëherë i disponueshëm',
+      tr: 'Anında kullanılabilir',
+      fr: 'Disponible immédiatement'
+    };
+    features.push(instantlyAvailable[language] || instantlyAvailable.de);
+    
+    // "Kein Ablaufdatum" / "No expiry date"
+    const noExpiry = {
+      de: 'Kein Ablaufdatum',
+      en: 'No expiry date',
+      sq: 'Pa datë skadence',
+      xk: 'Pa datë skadence',
+      tr: 'Son kullanma tarihi yok',
+      fr: "Pas de date d'expiration"
+    };
+    features.push(noExpiry[language] || noExpiry.de);
     
     return features;
   };
