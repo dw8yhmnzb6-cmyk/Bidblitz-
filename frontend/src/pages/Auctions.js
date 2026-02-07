@@ -283,8 +283,9 @@ const ProductInfo = memo(({ name, retailPrice, imageUrl, discount }) => (
 const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
   if (!auction || !product) return null;
   
-  // Get translated product name (fallback to default name)
+  // Get translated product name and description (fallback to default)
   const productName = product.name_translations?.[language] || product.name;
+  const productDescription = product.description_translations?.[language] || product.description || product.short_description;
   
   const discount = product.retail_price 
     ? Math.round((1 - auction.current_price / product.retail_price) * 100)
