@@ -25,4 +25,8 @@ export { default as AdminLiveWidgets } from './AdminLiveWidgets';
 export { default as AdminGlobalSearch } from './AdminGlobalSearch';
 export { default as AdminAIChat } from './AdminAIChat';
 
+// Analytics & Surveys Dashboards
+export { default as AdminAnalytics } from './AdminAnalytics';
+export { default as AdminSurveys } from './AdminSurveys';
+
 // All components have been extracted!
