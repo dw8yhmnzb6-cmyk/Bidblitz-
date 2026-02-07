@@ -242,13 +242,16 @@ const SpinWheel = ({ isOpen, onClose }) => {
                 <div className="w-0 h-0 border-l-[15px] border-r-[15px] border-t-[25px] border-l-transparent border-r-transparent border-t-amber-500 drop-shadow-lg"></div>
               </div>
               
-              {/* Wheel */}
+              {/* Wheel - Fixed for iPad/Safari */}
               <div 
                 ref={wheelRef}
                 className="w-full h-full rounded-full border-4 border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.3)] overflow-hidden"
                 style={{
                   transform: `rotate(${rotation}deg)`,
                   transition: spinning ? 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
+                  WebkitTransform: `rotate(${rotation}deg)`,
+                  WebkitTransition: spinning ? '-webkit-transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)' : 'none',
+                  willChange: 'transform',
                 }}
               >
                 <svg viewBox="0 0 200 200" className="w-full h-full">
