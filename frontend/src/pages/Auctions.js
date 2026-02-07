@@ -443,12 +443,13 @@ const EndedAuctionCard = memo(({ auction, product, t, language }) => {
       </div>
       
       <div className="p-3">
-        <h3 className="text-sm font-bold text-gray-600 leading-tight mb-1 line-clamp-2 min-h-[40px]">
+        {/* Product Name - Full width, wrap text */}
+        <h3 className="text-sm font-bold text-gray-600 leading-snug mb-2" style={{ wordBreak: 'break-word' }}>
           {productName}
         </h3>
         
-        <div className="flex gap-3">
-          <div className="flex-1">
+        <div className="flex gap-3 items-start">
+          <div className="flex-1 min-w-0">
             <p className="text-xs text-gray-500">{t('auctionPage.soldFor')}</p>
             <span className="text-xl font-black text-gray-700">
               € {auction.final_price?.toFixed(2).replace('.', ',')}
@@ -458,14 +459,14 @@ const EndedAuctionCard = memo(({ auction, product, t, language }) => {
             </p>
           </div>
           
-          <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
-            <img src={product.image_url || 'https://via.placeholder.com/64'} alt="" className="max-w-full max-h-full object-contain grayscale" />
+          <div className="w-14 h-14 bg-white rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+            <img src={product.image_url || 'https://via.placeholder.com/64'} alt="" className="max-w-full max-h-full object-contain grayscale p-1" />
           </div>
         </div>
       </div>
       
-      <div className="bg-gray-300/50 px-3 py-2 text-center">
-        <p className="text-xs text-gray-500">
+      <div className="bg-gray-300/50 px-3 py-1.5 text-center">
+        <p className="text-[10px] text-gray-500">
           {t('auctionPage.endedAt')} {endTime ? new Date(endTime).toLocaleString('de-DE', { 
             day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' 
           }) : '---'}
