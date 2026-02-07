@@ -153,11 +153,11 @@ export const Navbar = () => {
 
           {/* Right side */}
           {/* Desktop Right Side - Only on large screens */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-2 xl:gap-4">
             {/* Dark Mode Toggle */}
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-lg transition-all ${
+              className={`p-1.5 xl:p-2 rounded-lg transition-all ${
                 isDarkMode 
                   ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' 
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -165,15 +165,15 @@ export const Navbar = () => {
               data-testid="dark-mode-toggle"
               title={isDarkMode ? 'Light Mode' : 'Dark Mode'}
             >
-              {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              {isDarkMode ? <Sun className="w-4 h-4 xl:w-5 xl:h-5" /> : <Moon className="w-4 h-4 xl:w-5 xl:h-5" />}
             </button>
 
-            {/* Language Selector */}
+            {/* Language Selector - Compact version */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className={`${isDarkMode ? 'text-gray-300 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`} data-testid="language-selector">
-                  <Globe className="w-4 h-4 mr-2" />
-                  {languageList[language]?.flag} {languageList[language]?.name}
+                <Button variant="ghost" size="sm" className={`px-2 ${isDarkMode ? 'text-gray-300 hover:text-white hover:bg-white/10' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'}`} data-testid="language-selector">
+                  <span className="text-lg">{languageList[language]?.flag}</span>
+                  <ChevronDown className="w-3 h-3 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className={`${isDarkMode ? 'bg-[#181824] border-white/10' : 'bg-white border-gray-200'} max-h-80 overflow-y-auto shadow-lg`}>
