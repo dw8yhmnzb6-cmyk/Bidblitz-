@@ -264,7 +264,7 @@ const DailyQuestsWidget = memo(() => {
       <div className="space-y-2">
         {quests.length > 0 ? (
           quests.slice(0, 3).map((quest) => (
-            <QuestItem key={quest.id} quest={quest} t={t} onClaim={handleClaim} />
+            <QuestItem key={quest.id} quest={quest} t={t} onClaim={handleClaim} language={language} />
           ))
         ) : (
           <p className="text-center text-gray-500 py-4">{t.noQuests}</p>
