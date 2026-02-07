@@ -206,7 +206,7 @@ const DailyQuestsWidget = memo(() => {
     if (!isAuthenticated || !token) return;
     
     try {
-      await axios.post(`${API}/daily-quests/${questId}/claim`, {}, {
+      await axios.post(`${API}/daily/quests/${questId}/claim`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
