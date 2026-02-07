@@ -284,7 +284,9 @@ export default function BuyBids() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 mb-6">
             <Sparkles className="w-4 h-4 text-[#F59E0B]" />
-            <span className="text-sm text-gray-500">{language === 'en' ? 'Best prices guaranteed' : language === 'sq' ? 'Çmimet më të mira të garantuara' : language === 'tr' ? 'En iyi fiyatlar garantili' : language === 'fr' ? 'Meilleurs prix garantis' : 'Beste Preise garantiert'}</span>
+            <span className="text-sm text-gray-500">
+              {{ de: 'Beste Preise garantiert', en: 'Best prices guaranteed', sq: 'Çmimet më të mira të garantuara', xk: 'Çmimet më të mira të garantuara', tr: 'En iyi fiyatlar garantili', fr: 'Meilleurs prix garantis' }[language] || 'Beste Preise garantiert'}
+            </span>
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
             {texts.title}
@@ -297,7 +299,9 @@ export default function BuyBids() {
           <div className="mt-6 flex items-center justify-center gap-4 flex-wrap">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-gray-200">
               <CreditCard className="w-4 h-4 text-[#7C3AED]" />
-              <span className="text-xs text-gray-500">{language === 'en' ? 'Credit Card' : language === 'sq' ? 'Kartë Krediti' : language === 'tr' ? 'Kredi Kartı' : language === 'fr' ? 'Carte de Crédit' : 'Kreditkarte'}</span>
+              <span className="text-xs text-gray-500">
+                {{ de: 'Kreditkarte', en: 'Credit Card', sq: 'Kartë Krediti', xk: 'Kartë Krediti', tr: 'Kredi Kartı', fr: 'Carte de Crédit' }[language] || 'Kreditkarte'}
+              </span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-gray-200">
               <Bitcoin className="w-4 h-4 text-[#F7931A]" />
