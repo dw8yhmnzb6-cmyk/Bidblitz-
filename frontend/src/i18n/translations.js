@@ -971,7 +971,7 @@ export const translations = {
     }
   },
   it: {
-    nav: { language: "Lingua", auctions: "Aste", buyBids: "Compra offerte", dashboard: "Pannello", admin: "Admin", login: "Accedi", register: "Registrati", logout: "Esci", bids: "Offerte", winners: "Vincitori", inviteFriends: "Invita amici", wishlist: "Lista desideri", howItWorks: "Come funziona", vip: "Abbonamento VIP", faq: "FAQ", contact: "Contatto", giftCards: "Carte Regalo", vipAuctions: "Aste VIP" },
+    nav: { language: "Lingua", auctions: "Aste", buyBids: "Compra offerte", dashboard: "Pannello", admin: "Admin", login: "Accedi", register: "Registrati", logout: "Esci", bids: "Offerte", winners: "Vincitori", inviteFriends: "Invita amici", wishlist: "Lista desideri", howItWorks: "Come funziona", vip: "Abbonamento VIP", faq: "FAQ", contact: "Contatto", giftCards: "Carte Regalo", vipAuctions: "Aste VIP", leaderboard: "Classifica", luckyWheel: "Ruota della Fortuna" },
     home: {
       badge: "10 offerte gratis alla registrazione",
       heroTitle1: "Vinci",
