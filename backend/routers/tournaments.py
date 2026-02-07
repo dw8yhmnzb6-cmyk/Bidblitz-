@@ -198,7 +198,7 @@ async def get_tournament_leaderboard(limit: int = 10):
         )
         
         rank = i + 1
-        prize = PRIZES.get(rank, {"bids": 0, "badge": "", "title": ""})
+        prize = PRIZES.get(str(rank), {"bids": 0, "badge": "", "title": ""})
         
         leaderboard.append({
             "rank": rank,
