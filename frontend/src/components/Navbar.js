@@ -94,43 +94,11 @@ export const Navbar = () => {
             >
               <Heart className="w-4 h-4 text-red-500" />
               <span className="hidden xl:inline">{t('nav.winners')}</span>
-            </Link> 
-              className="text-purple-600 hover:text-purple-700 transition-colors font-medium flex items-center gap-1"
-              data-testid="nav-leaderboard"
-            >
-              <Trophy className="w-4 h-4" />
-              {t('nav.leaderboard') || (language === 'sq' || language === 'xk' ? 'Renditja' : language === 'tr' ? 'Sıralama' : language === 'fr' ? 'Classement' : language === 'de' ? 'Rangliste' : 'Leaderboard')}
-            </Link>
-            {isAuthenticated && (
-              <button 
-                onClick={() => setWheelOpen(true)}
-                className="text-amber-500 hover:text-amber-600 transition-colors font-medium flex items-center gap-1"
-                data-testid="nav-wheel"
-              >
-                <Sparkles className="w-4 h-4" />
-                {t('nav.luckyWheel') || (language === 'sq' || language === 'xk' ? 'Rrota e Fatit' : language === 'tr' ? 'Şans Çarkı' : language === 'fr' ? 'Roue de la Chance' : language === 'de' ? 'Glücksrad' : 'Lucky Wheel')}
-              </button>
-            )}
-            <Link 
-              to="/vip-auctions" 
-              className="text-orange-500 hover:text-orange-600 transition-colors font-medium flex items-center gap-1"
-              data-testid="nav-vip-auctions"
-            >
-              <Crown className="w-4 h-4" />
-              {t('nav.vipAuctions') || 'VIP Auktionen'}
-            </Link>
-            <Link 
-              to="/winners" 
-              className="text-gray-600 hover:text-gray-900 transition-colors font-medium flex items-center gap-1"
-              data-testid="nav-winners"
-            >
-              <Trophy className="w-4 h-4" />
-              {t('nav.winners')}
             </Link>
             {isAuthenticated && (
               <Link 
                 to="/dashboard" 
-                className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+                className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium text-sm xl:text-base`}
                 data-testid="nav-dashboard"
               >
                 {t('nav.dashboard')}
@@ -139,21 +107,20 @@ export const Navbar = () => {
             {isAdmin && (
               <Link 
                 to="/admin" 
-                className="text-orange-600 hover:text-orange-700 transition-colors font-medium flex items-center gap-1"
+                className="text-orange-600 hover:text-orange-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
                 data-testid="nav-admin"
               >
                 <Shield className="w-4 h-4" />
-                {t('nav.admin')}
+                <span className="hidden xl:inline">{t('nav.admin')}</span>
               </Link>
             )}
             {isInfluencer && (
               <Link 
                 to="/influencer-dashboard" 
-                className="text-amber-600 hover:text-amber-700 transition-colors font-medium flex items-center gap-1"
+                className="text-amber-600 hover:text-amber-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
                 data-testid="nav-influencer"
               >
                 <Star className="w-4 h-4" />
-                Influencer
               </Link>
             )}
             {isManager && (
