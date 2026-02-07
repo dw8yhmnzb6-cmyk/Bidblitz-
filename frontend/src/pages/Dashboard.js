@@ -147,7 +147,30 @@ export default function Dashboard() {
       setActiveAuctions(allAuctions.filter(a => a.status === 'active').slice(0, 4));
       
       // Won auctions
-      setWonAuctions(allAuctions.filter(a => a.winner_id === user?.id));
+      const userWonAuctions = allAuctions.filter(a => a.winner_id === user?.id);
+      setWonAuctions(userWonAuctions);
+      
+      // Check for unrated wins to show survey
+      const surveyShownKey = `survey_shown_${user?.id}`;
+      const shownSurveys = JSON.parse(localStorage.getItem(surveyShownKey) || '[]');
+      const unratedWin = userWonAuctions.find(a => 
+        !shownSurveys.includes(a.id) && 
+        new Date(a.ended_at || a.end_time) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // Within last 7 days
+      );
+      
+      if (unratedWin) {
+        // Find product info for the won auction
+        const winProduct = productsRes.data?.find(p => p.id === unratedWin.product_id);
+        setSurveyAuction({
+          id: unratedWin.id,
+          productName: winProduct?.name || 'Produkt',
+          productImage: winProduct?.image_url
+        });
+        // Show survey after a short delay
+        setTimeout(() => setShowWinSurvey(true), 2000);
+        // Mark as shown
+        localStorage.setItem(surveyShownKey, JSON.stringify([...shownSurveys, unratedWin.id]));
+      }
       
       // Autobidders
       setAutobidders(autobiddersRes.data || []);
