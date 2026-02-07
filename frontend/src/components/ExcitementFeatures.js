@@ -358,21 +358,63 @@ export function MysteryAuctionOverlay({ className = '' }) {
 }
 
 // ==================== EXCITEMENT STATUS BAR ====================
+import { useLanguage } from '../context/LanguageContext';
+
+const statusTranslations = {
+  de: { live: "LIVE", hot: "HEISS", warm: "WARM", cold: "RUHIG" },
+  en: { live: "LIVE", hot: "HOT", warm: "WARM", cold: "QUIET" },
+  sq: { live: "LIVE", hot: "NXEHTË", warm: "NGROHTË", cold: "QETË" },
+  xk: { live: "LIVE", hot: "NXEHTË", warm: "NGROHTË", cold: "QETË" },
+  tr: { live: "CANLI", hot: "SICAK", warm: "ILIK", cold: "SAKİN" },
+  fr: { live: "EN DIRECT", hot: "CHAUD", warm: "TIÈDE", cold: "CALME" }
+};
+
 export function ExcitementStatusBar({ className = '' }) {
-  const [excitement, setExcitement] = useState(75);
+  const { language } = useLanguage();
+  const t = statusTranslations[language] || statusTranslations.de;
+  
+  // Dynamic excitement level (35-90%)
+  const [excitement, setExcitement] = useState(() => {
+    // Random value between 35-90 on mount
+    return Math.floor(Math.random() * (90 - 35 + 1)) + 35;
+  });
+  
+  // Update excitement periodically to simulate live activity
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setExcitement(prev => {
+        // Random change between -5 and +5
+        const change = Math.floor(Math.random() * 11) - 5;
+        const newValue = prev + change;
+        // Keep within 35-90 range
+        return Math.max(35, Math.min(90, newValue));
+      });
+    }, 5000); // Update every 5 seconds
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Determine status label based on excitement
+  const getStatusLabel = () => {
+    if (excitement >= 75) return { text: t.hot, color: 'bg-red-100 text-red-600' };
+    if (excitement >= 55) return { text: t.warm, color: 'bg-orange-100 text-orange-600' };
+    return { text: t.cold, color: 'bg-blue-100 text-blue-600' };
+  };
+  
+  const status = getStatusLabel();
   
   return (
     <div className={`bg-white rounded-lg p-2 flex items-center gap-2 shadow-sm border border-cyan-200 ${className}`}>
-      <div className="text-cyan-600 font-bold text-xs">LIVE</div>
-      <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+      <div className="text-cyan-600 font-bold text-xs whitespace-nowrap">{t.live}</div>
+      <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden min-w-[60px]">
         <div 
-          className="h-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-500 animate-pulse"
+          className="h-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-500 transition-all duration-500"
           style={{ width: `${excitement}%` }}
         />
       </div>
-      <div className="text-cyan-800 font-bold text-xs">{excitement}%</div>
-      <div className="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px] font-bold animate-pulse">
-        🔥 HEISS
+      <div className="text-cyan-800 font-bold text-xs whitespace-nowrap">{excitement}%</div>
+      <div className={`${status.color} px-2 py-0.5 rounded-full text-[10px] font-bold whitespace-nowrap`}>
+        🔥 {status.text}
       </div>
     </div>
   );
