@@ -35,11 +35,29 @@ const StreakIndicator = ({ auctionId, currentStreak = 0, onStreakUpdate }) => {
       bonus: 'Bonus',
       freeBids: 'Free Bids'
     },
+    sq: {
+      streak: 'Seria',
+      bidsUntil: 'oferta deri',
+      bonus: 'Bonus',
+      freeBids: 'Oferta Falas'
+    },
+    xk: {
+      streak: 'Seria',
+      bidsUntil: 'oferta deri',
+      bonus: 'Bonus',
+      freeBids: 'Oferta Falas'
+    },
     tr: {
       streak: 'Seri',
       bidsUntil: 'teklife kadar',
       bonus: 'Bonus',
       freeBids: 'Ücretsiz Teklifler'
+    },
+    fr: {
+      streak: 'Série',
+      bidsUntil: 'offres jusqu\'à',
+      bonus: 'Bonus',
+      freeBids: 'Offres Gratuites'
     }
   };
   const t = texts[language] || texts.de;
