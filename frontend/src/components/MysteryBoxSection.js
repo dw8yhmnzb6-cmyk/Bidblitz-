@@ -239,10 +239,8 @@ const MysteryBoxSection = memo(() => {
   }, []);
   
   const handleBid = (box) => {
-    // If it's a preview box (no real auction), show info message
+    // If it's a preview box (no real auction), do nothing - button is disabled
     if (box.id?.startsWith('preview_')) {
-      // Import toast at top of file for this to work
-      alert('Demnächst verfügbar! / Coming soon!');
       return;
     }
     window.location.href = `/auctions/${box.auction_id || box.id}`;
