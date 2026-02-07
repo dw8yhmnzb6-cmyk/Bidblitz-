@@ -976,6 +976,16 @@ export default function Auctions() {
         <PersonalizedRecommendations onBid={handleBid} />
       </div>
       
+      {/* Flash Sales Banner */}
+      <div className="max-w-7xl mx-auto mb-4 px-2">
+        <FlashSaleBanner />
+      </div>
+      
+      {/* Mystery Box Section */}
+      <div className="max-w-7xl mx-auto mb-4 px-2">
+        <MysteryBoxSection />
+      </div>
+      
       <div className="text-center text-[10px] text-gray-600 mb-2">
         {new Date().toLocaleTimeString('de-DE')} | {publicAuctions.length} {t('auctionPage.liveAuctions') || 'Live-Auktionen'}
       </div>
