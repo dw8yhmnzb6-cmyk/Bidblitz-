@@ -1,0 +1,69 @@
+{
+  "summary": "Bug Fix Verification Complete - Both reported bugs are FIXED. 1) Horizontal scrolling for 'Kürzlich Beendet' carousel works correctly (scrollWidth: 2028px > clientWidth: 1264px, scrollLeft moves to 204px on scroll). 2) Gutschein filter now correctly uses product category instead of is_free_auction flag, showing 0 auctions as expected since no active auctions have voucher products. Translations 'Beendet' and 'Beendet am' display correctly on ended auction cards.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "bug_1_horizontal_scroll": {
+      "status": "FIXED",
+      "details": "Horizontal scroll carousel for 'Kürzlich Beendet' works correctly. ScrollWidth (2028px) > ClientWidth (1264px). After scroll action, scrollLeft = 204px confirming scroll works.",
+      "location": "Bottom of homepage when 'Live' filter is active",
+      "data_testid": "ended-auctions-carousel"
+    },
+    "bug_2_voucher_filter": {
+      "status": "FIXED",
+      "details": "Gutschein filter now uses isVoucherProduct() helper that checks product.category for 'gutschein', 'voucher', or 'gift'. Shows 0 auctions correctly since no active auctions have voucher products.",
+      "filter_count": 0,
+      "message_shown": "Keine Auktionen in dieser Kategorie"
+    },
+    "translation_ended": {
+      "status": "PASS",
+      "details": "'Beendet' badge displays correctly on ended auction cards header"
+    },
+    "translation_ended_at": {
+      "status": "PASS",
+      "details": "'Beendet am' with date/time displays correctly at bottom of ended auction cards"
+    },
+    "alle_anzeigen_link": {
+      "status": "PASS",
+      "details": "Clicking 'Alle anzeigen' correctly switches to 'Ende' filter (scale-105 class applied)"
+    }
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_39.json"
+  ],
+  "screenshots": [
+    ".screenshots/auctions_page_initial.png",
+    ".screenshots/auctions_page_scrolled_bottom.png",
+    ".screenshots/auctions_page_ende_filter.png",
+    ".screenshots/auctions_page_voucher_filter.png",
+    ".screenshots/auctions_page_ended_cards.png"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A - Frontend only testing",
+    "frontend": "100% - All 4 features verified working"
+  },
+  "test_credentials": {
+    "admin": {
+      "email": "admin@bidblitz.de",
+      "password": "Admin123!"
+    }
+  },
+  "seed_data_creation": "No seed data created",
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  },
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Both bugs reported are now fixed: 1) Horizontal scroll carousel for ended auctions works at bottom of homepage (only visible on 'Live' filter). 2) Gutschein filter uses product category (gutschein/voucher/gift) instead of is_free_auction flag. Currently shows 0 because no active auctions have voucher products - this is expected behavior. Translations 'Beendet' and 'Beendet am' work correctly on EndedAuctionCard component."
+}
