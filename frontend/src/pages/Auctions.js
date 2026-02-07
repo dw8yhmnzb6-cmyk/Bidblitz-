@@ -932,6 +932,9 @@ export default function Auctions() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-200 to-cyan-300 p-2 pt-16 sm:pt-20 overflow-x-hidden" data-testid="auctions-page">
       
+      {/* Exit Intent Popup for new visitors */}
+      <ExitIntentPopup />
+      
       {/* Global Jackpot - Top of Page */}
       <div className="max-w-4xl mx-auto mb-4 px-2">
         <GlobalJackpot />
@@ -942,10 +945,29 @@ export default function Auctions() {
         <ExcitementStatusBar />
       </div>
       
+      {/* Winner Gallery - Social Proof */}
+      <div className="max-w-7xl mx-auto mb-4 px-2">
+        <WinnerGallery />
+      </div>
+      
       {/* Leaderboard Widget - Weekly Champions */}
       <div className="max-w-4xl mx-auto mb-4 px-2">
         <LeaderboardWidget language={language} />
       </div>
+      
+      {/* VIP Promo Banner - Only for non-VIP users */}
+      {isAuthenticated && !user?.is_vip && (
+        <div className="max-w-4xl mx-auto mb-4 px-2">
+          <VIPPromoBanner onJoin={() => navigate('/vip')} />
+        </div>
+      )}
+      
+      {/* Daily Quests Widget - For logged-in users */}
+      {isAuthenticated && (
+        <div className="max-w-4xl mx-auto mb-4 px-2">
+          <DailyQuestsWidget />
+        </div>
+      )}
       
       {/* Personalized Recommendations - Only shown to logged-in users */}
       <div className="max-w-7xl mx-auto mb-4 px-2">
