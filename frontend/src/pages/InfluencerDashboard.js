@@ -200,9 +200,9 @@ export default function InfluencerDashboard() {
           </form>
 
           <p className="text-center text-gray-500 text-sm mt-6">
-            {t('auth.noAccount') || 'Noch kein Influencer?'}{' '}
+            {t('influencer.noAccount') || 'Noch kein Influencer?'}{' '}
             <button 
-              onClick={() => navigate('/influencer/apply')}
+              onClick={() => navigate('/influencer-werden')}
               className="text-[#FFD700] hover:underline"
             >
               {t('influencer.apply') || 'Jetzt bewerben'}
