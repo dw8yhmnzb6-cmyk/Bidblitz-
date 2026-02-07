@@ -246,7 +246,8 @@ export default function BuyBids() {
     ];
     
     if (pkg.bonus > 0) {
-      features.push(`+${pkg.bonus} ${language === 'en' ? 'FREE' : language === 'sq' ? 'FALAS' : language === 'tr' ? 'ÜCRETSİZ' : language === 'fr' ? 'GRATUIT' : 'GRATIS'} ${texts.bids}`);
+      const freeText = { de: 'GRATIS', en: 'FREE', sq: 'FALAS', xk: 'FALAS', tr: 'ÜCRETSİZ', fr: 'GRATUIT' };
+      features.push(`+${pkg.bonus} ${freeText[language] || freeText.de} ${texts.bids}`);
     }
     
     features.push(`€${pricePerBid} ${texts.perBid}`);
