@@ -269,7 +269,7 @@ async def get_my_tournament_position(user: dict = Depends(get_current_user)):
         "tournament": tournament,
         "score": round(score, 2),
         "position": position,
-        "potential_prize": PRIZES.get(1) if score > 0 else None
+        "potential_prize": PRIZES.get("1") if score > 0 else None
     }
 
 
