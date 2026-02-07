@@ -943,6 +943,11 @@ export default function Auctions() {
         <LeaderboardWidget language={language} />
       </div>
       
+      {/* Personalized Recommendations - Only shown to logged-in users */}
+      <div className="max-w-7xl mx-auto mb-4 px-2">
+        <PersonalizedRecommendations onBid={handleBid} />
+      </div>
+      
       <div className="text-center text-[10px] text-gray-600 mb-2">
         {new Date().toLocaleTimeString('de-DE')} | {publicAuctions.length} {t('auctionPage.liveAuctions') || 'Live-Auktionen'}
       </div>
