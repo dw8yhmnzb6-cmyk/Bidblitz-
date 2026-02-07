@@ -145,7 +145,7 @@ export default function GlobalJackpot({ className = '' }) {
           {/* Center: Amount */}
           <div className="flex-grow text-center">
             <p className="text-amber-900 text-[10px] sm:text-xs font-bold uppercase tracking-wider">
-              🏆 JACKPOT
+              🏆 {t.jackpot}
             </p>
             <div className="flex items-baseline justify-center gap-1">
               <motion.span
@@ -157,7 +157,7 @@ export default function GlobalJackpot({ className = '' }) {
                 {jackpot.current_amount.toLocaleString('de-DE')}
               </motion.span>
               <span className="text-sm sm:text-base font-bold text-white">
-                Gebote
+                {t.bids}
               </span>
               
               {/* +1 Animation */}
