@@ -389,6 +389,8 @@ export const translations = {
       nightAuctions: "Night Auctions",
       vipAuctions: "VIP Auctions",
       endedAuctions: "Ended Auctions",
+      recentWinners: "Recently Ended",
+      showAll: "Show all",
       showAllLive: "Show all live auctions",
       noAuctionsInCategory: "No auctions in this category",
       topOffer: "Our top offer today!",
