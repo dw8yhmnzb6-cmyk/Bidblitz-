@@ -851,7 +851,8 @@ export default function Auctions() {
     const product = products[productId];
     if (!product) return false;
     const category = (product.category || '').toLowerCase();
-    return category.includes('gutschein') || category.includes('voucher') || category.includes('gift');
+    // Only BidBlitz's own vouchers (Gratis-Gebote, VIP Monat, etc.)
+    return category === 'bidblitz gutscheine';
   };
 
   // Count auctions by type - Night auctions always counted
@@ -870,7 +871,7 @@ export default function Auctions() {
       case 'anfaenger':
         return publicAuctions.filter(a => (a.is_beginner_only || a.is_beginner_auction) && a.status === 'active');
       case 'gratis':
-        // Filter by product category - show only voucher/gift card products
+        // Filter by product category - show only BidBlitz's own vouchers
         return publicAuctions.filter(a => isVoucherProduct(a.product_id) && a.status === 'active');
       case 'nacht':
         // Night auctions always visible - show with timer/label when not night time
