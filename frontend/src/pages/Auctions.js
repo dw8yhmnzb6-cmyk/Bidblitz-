@@ -410,7 +410,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
       </div>
       
       <div className="bg-cyan-200/50 px-3 py-2 text-center">
-        <p className="text-xs text-gray-600">
+        <p className="text-xs text-gray-600 truncate">
           {t('auctionPage.lastSoldFor')} <span className="text-green-600 font-bold">€ {(product.retail_price * 0.03).toFixed(2).replace('.', ',')}</span>
         </p>
       </div>
