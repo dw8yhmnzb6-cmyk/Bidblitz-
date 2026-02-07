@@ -186,7 +186,7 @@ const DailyQuestsWidget = memo(() => {
       }
       
       try {
-        const res = await axios.get(`${API}/daily-quests`, {
+        const res = await axios.get(`${API}/daily/quests`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setQuests(res.data.quests || DEFAULT_QUESTS);
