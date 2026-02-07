@@ -1,12 +1,98 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Sparkles, Gift } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
+// Translations for the Jackpot component
+const translations = {
+  de: {
+    jackpot: "JACKPOT",
+    bids: "Gebote",
+    value: "Wert",
+    everyBid: "Jedes Gebot = +1 zum Jackpot",
+    lastWinner: "Letzter Gewinner"
+  },
+  en: {
+    jackpot: "JACKPOT",
+    bids: "Bids",
+    value: "Value",
+    everyBid: "Every bid = +1 to Jackpot",
+    lastWinner: "Last Winner"
+  },
+  sq: {
+    jackpot: "JACKPOT",
+    bids: "Oferta",
+    value: "Vlera",
+    everyBid: "Çdo ofertë = +1 në Jackpot",
+    lastWinner: "Fituesi i Fundit"
+  },
+  xk: {
+    jackpot: "JACKPOT",
+    bids: "Oferta",
+    value: "Vlera",
+    everyBid: "Çdo ofertë = +1 në Jackpot",
+    lastWinner: "Fituesi i Fundit"
+  },
+  tr: {
+    jackpot: "JACKPOT",
+    bids: "Teklifler",
+    value: "Değer",
+    everyBid: "Her teklif = +1 Jackpot'a",
+    lastWinner: "Son Kazanan"
+  },
+  fr: {
+    jackpot: "JACKPOT",
+    bids: "Enchères",
+    value: "Valeur",
+    everyBid: "Chaque enchère = +1 au Jackpot",
+    lastWinner: "Dernier Gagnant"
+  },
+  es: {
+    jackpot: "JACKPOT",
+    bids: "Pujas",
+    value: "Valor",
+    everyBid: "Cada puja = +1 al Jackpot",
+    lastWinner: "Último Ganador"
+  },
+  it: {
+    jackpot: "JACKPOT",
+    bids: "Offerte",
+    value: "Valore",
+    everyBid: "Ogni offerta = +1 al Jackpot",
+    lastWinner: "Ultimo Vincitore"
+  },
+  ru: {
+    jackpot: "ДЖЕКПОТ",
+    bids: "Ставки",
+    value: "Стоимость",
+    everyBid: "Каждая ставка = +1 к Джекпоту",
+    lastWinner: "Последний Победитель"
+  },
+  zh: {
+    jackpot: "大奖",
+    bids: "竞价",
+    value: "价值",
+    everyBid: "每次竞价 = +1 大奖",
+    lastWinner: "上次获奖者"
+  },
+  ja: {
+    jackpot: "ジャックポット",
+    bids: "入札",
+    value: "価値",
+    everyBid: "入札ごとに +1 ジャックポット",
+    lastWinner: "前回の当選者"
+  }
+};
+
 export default function GlobalJackpot({ className = '' }) {
+  const { language } = useLanguage();
   const [jackpot, setJackpot] = useState(null);
   const [showIncrease, setShowIncrease] = useState(false);
+  
+  // Get translations
+  const t = translations[language] || translations.de;
 
   useEffect(() => {
     const fetchJackpot = async () => {
