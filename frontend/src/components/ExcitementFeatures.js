@@ -359,7 +359,6 @@ export function MysteryAuctionOverlay({ className = '' }) {
 }
 
 // ==================== EXCITEMENT STATUS BAR ====================
-import { useLanguage } from '../context/LanguageContext';
 
 const statusTranslations = {
   de: { live: "LIVE", hot: "HEISS", warm: "WARM", cold: "RUHIG" },
