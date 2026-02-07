@@ -105,9 +105,9 @@ const AuctionOfTheDay = memo(({ auction, product, onBid, t, language }) => {
           </div>
         </div>
         
-        <div className="mt-2 sm:mt-3 pt-2 border-t border-amber-200 flex items-center justify-between text-[10px] sm:text-xs text-gray-500">
-          <span>⚡ {auction.total_bids || 0} {t('auctionPage.bidsCount')}</span>
-          <span>{t('auctionPage.lastSoldFor')} <span className="text-green-600 font-bold">€ {(product.retail_price * 0.01).toFixed(2).replace('.', ',')}</span></span>
+        <div className="mt-2 sm:mt-3 pt-2 border-t border-amber-200 flex flex-wrap items-center justify-between gap-1 text-[10px] sm:text-xs text-gray-500">
+          <span className="whitespace-nowrap">⚡ {auction.total_bids || 0} {t('auctionPage.bidsCount')}</span>
+          <span className="whitespace-nowrap truncate max-w-[120px] sm:max-w-none">{t('auctionPage.lastSoldFor')} <span className="text-green-600 font-bold">€ {(product.retail_price * 0.01).toFixed(2).replace('.', ',')}</span></span>
         </div>
       </div>
     </div>
