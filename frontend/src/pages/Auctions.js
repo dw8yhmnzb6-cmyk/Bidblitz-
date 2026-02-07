@@ -252,28 +252,28 @@ const LiveTimer = memo(({ endTime }) => {
 // ISOLATED Price Component - Only updates when price changes via WebSocket
 const LivePrice = memo(({ price, bidderName, t }) => (
   <div>
-    <span className="text-lg font-black text-gray-800">
+    <span className="text-xl font-black text-gray-800">
       € {price?.toFixed(2).replace('.', ',')}
     </span>
-    <p className="text-[9px] text-cyan-700 truncate">{bidderName || t('auctionPage.startPrice')}</p>
+    <p className="text-xs text-cyan-700 truncate">{bidderName || t('auctionPage.startPrice')}</p>
   </div>
 ));
 
 // Static Product Info - Never re-renders
 const ProductInfo = memo(({ name, retailPrice, imageUrl, discount }) => (
   <>
-    <h3 className="text-[10px] font-bold text-gray-800 uppercase leading-tight mb-1 line-clamp-2 min-h-[24px]">
+    <h3 className="text-sm font-bold text-gray-800 leading-tight mb-1 line-clamp-2 min-h-[40px]">
       {name}
     </h3>
-    <p className="text-[8px] text-gray-500 mb-1">
+    <p className="text-xs text-gray-500 mb-2">
       Vergleichspreis*: € {retailPrice?.toLocaleString('de-DE')},-
     </p>
-    <div className="flex gap-2">
+    <div className="flex gap-3">
       <div className="flex-1">
         {/* Price slot - filled by parent */}
       </div>
-      <div className="w-14 h-14 bg-white rounded flex items-center justify-center shadow-sm flex-shrink-0">
-        <img src={imageUrl || 'https://via.placeholder.com/56'} alt="" className="max-w-full max-h-full object-contain" />
+      <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+        <img src={imageUrl || 'https://via.placeholder.com/64'} alt="" className="max-w-full max-h-full object-contain" />
       </div>
     </div>
   </>
