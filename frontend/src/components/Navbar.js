@@ -425,7 +425,7 @@ export const Navbar = () => {
 
       {/* Spin Wheel Modal */}
       {wheelOpen && (
-        <SpinWheel onClose={() => setWheelOpen(false)} />
+        <SpinWheel isOpen={wheelOpen} onClose={() => setWheelOpen(false)} />
       )}
     </nav>
   );
