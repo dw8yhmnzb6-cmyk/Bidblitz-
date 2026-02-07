@@ -230,7 +230,7 @@ const AdminSurveys = ({ token }) => {
             NPS Entwicklung
           </h3>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={data.nps.trend}>
+            <LineChart data={nps.trend}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
               <XAxis dataKey="month" stroke="#9CA3AF" />
               <YAxis stroke="#9CA3AF" domain={[-100, 100]} />
@@ -257,17 +257,17 @@ const AdminSurveys = ({ token }) => {
             Durchschnittliche Bewertung
           </h3>
           <div className="flex items-center gap-4">
-            <div className="text-5xl font-bold text-amber-500">{data.satisfaction.avg_rating.toFixed(1)}</div>
+            <div className="text-5xl font-bold text-amber-500">{(satisfaction.avg_rating || 0).toFixed(1)}</div>
             <div className="flex flex-col">
               <div className="flex">
                 {[1,2,3,4,5].map(i => (
                   <Star 
                     key={i} 
-                    className={`w-5 h-5 ${i <= Math.round(data.satisfaction.avg_rating) ? 'text-amber-500 fill-amber-500' : 'text-gray-600'}`} 
+                    className={`w-5 h-5 ${i <= Math.round(satisfaction.avg_rating || 0) ? 'text-amber-500 fill-amber-500' : 'text-gray-600'}`} 
                   />
                 ))}
               </div>
-              <span className="text-gray-500 text-sm">{data.satisfaction.total_ratings} Bewertungen</span>
+              <span className="text-gray-500 text-sm">{satisfaction.total_ratings || 0} Bewertungen</span>
             </div>
           </div>
         </div>
@@ -276,7 +276,7 @@ const AdminSurveys = ({ token }) => {
         <div className="lg:col-span-2 bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
           <h3 className="text-lg font-semibold text-white mb-4">Bewertungsverteilung</h3>
           <div className="space-y-3">
-            {data.satisfaction.distribution.map((item) => (
+            {(satisfaction.distribution || []).map((item) => (
               <div key={item.rating} className="flex items-center gap-3">
                 <span className="text-gray-400 w-6">{item.rating}★</span>
                 <div className="flex-1 bg-gray-700 rounded-full h-3 overflow-hidden">
@@ -285,7 +285,7 @@ const AdminSurveys = ({ token }) => {
                       item.rating >= 4 ? 'bg-green-500' : 
                       item.rating === 3 ? 'bg-amber-500' : 'bg-red-500'
                     }`}
-                    style={{ width: `${(item.count / data.satisfaction.total_ratings) * 100}%` }}
+                    style={{ width: `${satisfaction.total_ratings > 0 ? (item.count / satisfaction.total_ratings) * 100 : 0}%` }}
                   />
                 </div>
                 <span className="text-gray-400 w-12 text-right">{item.count}</span>
@@ -302,7 +302,10 @@ const AdminSurveys = ({ token }) => {
           Neuestes Feedback
         </h3>
         <div className="space-y-4">
-          {(data.recent_feedback || []).map((feedback) => (
+          {recentFeedback.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">Noch kein Feedback vorhanden</p>
+          ) : (
+            recentFeedback.map((feedback) => (
             <div 
               key={feedback.id}
               className="flex items-start gap-4 p-4 bg-gray-900/50 rounded-lg border border-gray-700/50"
