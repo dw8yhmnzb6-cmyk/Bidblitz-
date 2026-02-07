@@ -109,14 +109,17 @@ const QuestIcon = ({ type }) => {
   }
 };
 
-const QuestItem = memo(({ quest, t, onClaim }) => {
+const QuestItem = memo(({ quest, t, onClaim, language }) => {
   const progress = Math.min(quest.progress || 0, quest.target || 1);
   const target = quest.target || 1;
   const progressPercent = (progress / target) * 100;
   const isComplete = progress >= target;
   const isClaimed = quest.claimed;
   
-  const questName = t.quests[quest.type] || quest.type;
+  // Get localized quest name - try backend data first, then fallback to translations
+  const questName = language === 'de' 
+    ? (quest.name_de || t.quests[quest.type] || quest.type)
+    : (quest.name_en || t.quests[quest.type] || quest.type);
   
   return (
     <div className={`p-3 rounded-lg border ${isComplete ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`}>
