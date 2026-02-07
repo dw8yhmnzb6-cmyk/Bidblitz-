@@ -1556,7 +1556,7 @@ export const translations = {
     common: { loading: "加载中...", error: "错误", success: "成功", save: "保存", cancel: "取消" }
   },
   ja: {
-    nav: { auctions: "オークション", buyBids: "入札を購入", dashboard: "ダッシュボード", admin: "管理者", login: "ログイン", register: "登録", logout: "ログアウト", bids: "入札", howItWorks: "仕組み", vip: "VIP会員", faq: "FAQ", contact: "連絡" },
+    nav: { auctions: "オークション", buyBids: "入札を購入", dashboard: "ダッシュボード", admin: "管理者", login: "ログイン", register: "登録", logout: "ログアウト", bids: "入札", howItWorks: "仕組み", vip: "VIP会員", faq: "FAQ", contact: "連絡", leaderboard: "ランキング", luckyWheel: "ラッキーホイール", giftCards: "ギフトカード", vipAuctions: "VIPオークション", winners: "当選者", inviteFriends: "友達を招待", wishlist: "ウィッシュリスト", language: "言語" },
     home: {
       badge: "登録で10回の無料入札",
       heroTitle1: "勝ち取る",
