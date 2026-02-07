@@ -199,7 +199,23 @@ const MysteryBoxSection = memo(() => {
     const fetchBoxes = async () => {
       try {
         const res = await axios.get(`${API}/mystery-box/active`);
-        setBoxes(res.data || []);
+        // API returns {auctions: [], tiers: {...}}
+        const auctions = res.data?.auctions || [];
+        const tiers = res.data?.tiers || {};
+        
+        // If no active auctions, create preview from tiers
+        if (auctions.length === 0 && Object.keys(tiers).length > 0) {
+          const previewBoxes = Object.entries(tiers).map(([tier, data]) => ({
+            id: `preview_${tier}`,
+            tier,
+            min_value: data.min_value,
+            max_value: data.max_value,
+            name: data.name
+          }));
+          setBoxes(previewBoxes);
+        } else {
+          setBoxes(auctions);
+        }
       } catch (err) {
         console.error('Error fetching mystery boxes:', err);
       } finally {
