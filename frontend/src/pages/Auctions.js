@@ -350,7 +350,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
       
       {/* Header with Badges + Timer */}
       <div className={`${headerBg} text-white text-xs font-bold py-1.5 px-3 flex items-center justify-between`}>
-        <div className="flex items-center gap-1 flex-wrap">
+        <div className="flex items-center gap-1 flex-wrap max-w-[60%]">
           {badges}
         </div>
         {isNightPaused ? (
@@ -362,20 +362,24 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
       
       {/* Content */}
       <div className="p-3">
-        <h3 className="text-sm font-bold text-gray-800 leading-tight mb-1 line-clamp-2 min-h-[40px]">
+        {/* Product Name - Full width, wrap text */}
+        <h3 className="text-sm font-bold text-gray-800 leading-snug mb-2 min-h-[36px]" style={{ wordBreak: 'break-word' }}>
           {productName}
         </h3>
+        
         {productDescription && (
-          <p className="text-xs text-gray-600 line-clamp-1 sm:line-clamp-2 mb-2 italic" title={productDescription}>
+          <p className="text-xs text-gray-600 line-clamp-2 mb-2 italic" title={productDescription}>
             {productDescription}
           </p>
         )}
+        
         <p className="text-xs text-gray-500 mb-2">
           {t('auctionPage.uvp')}: € {product.retail_price?.toLocaleString('de-DE')},-
         </p>
         
-        <div className="flex gap-3">
-          <div className="flex-1">
+        {/* Price and Image Row */}
+        <div className="flex gap-3 items-start">
+          <div className="flex-1 min-w-0">
             <LivePrice price={auction.current_price} bidderName={auction.last_bidder_name} t={t} />
             
             <button 
@@ -387,8 +391,8 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
             </button>
           </div>
           
-          <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
-            <img src={product.image_url || 'https://via.placeholder.com/64'} alt="" className="max-w-full max-h-full object-contain" />
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-lg flex items-center justify-center shadow-sm flex-shrink-0">
+            <img src={product.image_url || 'https://via.placeholder.com/64'} alt="" className="max-w-full max-h-full object-contain p-1" />
           </div>
         </div>
         
@@ -396,7 +400,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
       </div>
       
       <div className="bg-cyan-200/50 px-3 py-2 text-center">
-        <p className="text-xs text-gray-600 truncate">
+        <p className="text-xs text-gray-600">
           {t('auctionPage.lastSoldFor')} <span className="text-green-600 font-bold">€ {(product.retail_price * 0.03).toFixed(2).replace('.', ',')}</span>
         </p>
       </div>
