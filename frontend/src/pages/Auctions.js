@@ -843,11 +843,19 @@ export default function Auctions() {
     return true;
   });
   
+  // Helper function to check if a product is a voucher/gift card
+  const isVoucherProduct = (productId) => {
+    const product = products[productId];
+    if (!product) return false;
+    const category = (product.category || '').toLowerCase();
+    return category.includes('gutschein') || category.includes('voucher') || category.includes('gift');
+  };
+
   // Count auctions by type - Night auctions always counted
   const auctionCounts = {
     live: publicAuctions.filter(a => a.status === 'active').length,
     anfaenger: publicAuctions.filter(a => (a.is_beginner_only || a.is_beginner_auction) && a.status === 'active').length,
-    gratis: publicAuctions.filter(a => a.is_free_auction && a.status === 'active').length,
+    gratis: publicAuctions.filter(a => isVoucherProduct(a.product_id) && a.status === 'active').length,
     nacht: publicAuctions.filter(a => a.is_night_auction).length,
     ende: endedAuctions.length, // Use endedAuctions from auction_history
     vip: auctions.filter(a => a.is_vip_only && a.status === 'active').length
@@ -859,7 +867,8 @@ export default function Auctions() {
       case 'anfaenger':
         return publicAuctions.filter(a => (a.is_beginner_only || a.is_beginner_auction) && a.status === 'active');
       case 'gratis':
-        return publicAuctions.filter(a => a.is_free_auction && a.status === 'active');
+        // Filter by product category - show only voucher/gift card products
+        return publicAuctions.filter(a => isVoucherProduct(a.product_id) && a.status === 'active');
       case 'nacht':
         // Night auctions always visible - show with timer/label when not night time
         return publicAuctions.filter(a => a.is_night_auction);
