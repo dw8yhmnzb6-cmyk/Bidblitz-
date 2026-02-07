@@ -1193,6 +1193,8 @@ export default function Admin() {
     { id: 'email', label: at('email'), icon: <Mail className="w-5 h-5" /> },
     { id: 'pages', label: at('pages'), icon: <FileText className="w-5 h-5" /> },
     { id: 'payments', label: language === 'en' ? 'Payments' : 'Zahlungen', icon: <DollarSign className="w-5 h-5" /> },
+    { id: 'analytics', label: language === 'en' ? 'Analytics' : 'Analytics', icon: <BarChart3 className="w-5 h-5" />, highlight: true },
+    { id: 'surveys', label: language === 'en' ? 'Surveys' : 'Umfragen', icon: <Star className="w-5 h-5" />, highlight: true },
     { id: 'logs', label: language === 'en' ? 'System Logs' : 'Systemlogs', icon: <BarChart3 className="w-5 h-5" /> },
     { id: 'jackpot', label: '🏆 Jackpot', icon: <Trophy className="w-5 h-5" />, highlight: true },
     { id: 'promo-codes', label: '🎫 Gutschein-Codes', icon: <Gift className="w-5 h-5" />, highlight: true },
