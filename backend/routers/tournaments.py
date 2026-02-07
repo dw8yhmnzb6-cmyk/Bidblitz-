@@ -41,18 +41,18 @@ TOURNAMENT_TYPES = {
     }
 }
 
-# Prize configuration
+# Prize configuration (string keys for MongoDB compatibility)
 PRIZES = {
-    1: {"bids": 100, "badge": "🥇", "title": "1. Platz"},
-    2: {"bids": 50, "badge": "🥈", "title": "2. Platz"},
-    3: {"bids": 25, "badge": "🥉", "title": "3. Platz"},
-    4: {"bids": 10, "badge": "⭐", "title": "Top 10"},
-    5: {"bids": 10, "badge": "⭐", "title": "Top 10"},
-    6: {"bids": 5, "badge": "✨", "title": "Top 10"},
-    7: {"bids": 5, "badge": "✨", "title": "Top 10"},
-    8: {"bids": 5, "badge": "✨", "title": "Top 10"},
-    9: {"bids": 5, "badge": "✨", "title": "Top 10"},
-    10: {"bids": 5, "badge": "✨", "title": "Top 10"}
+    "1": {"bids": 100, "badge": "🥇", "title": "1. Platz"},
+    "2": {"bids": 50, "badge": "🥈", "title": "2. Platz"},
+    "3": {"bids": 25, "badge": "🥉", "title": "3. Platz"},
+    "4": {"bids": 10, "badge": "⭐", "title": "Top 10"},
+    "5": {"bids": 10, "badge": "⭐", "title": "Top 10"},
+    "6": {"bids": 5, "badge": "✨", "title": "Top 10"},
+    "7": {"bids": 5, "badge": "✨", "title": "Top 10"},
+    "8": {"bids": 5, "badge": "✨", "title": "Top 10"},
+    "9": {"bids": 5, "badge": "✨", "title": "Top 10"},
+    "10": {"bids": 5, "badge": "✨", "title": "Top 10"}
 }
 
 
