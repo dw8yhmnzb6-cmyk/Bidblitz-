@@ -1747,7 +1747,7 @@ export const translations = {
       filters: {
         live: "Live",
         beginner: "Fillestar",
-        free: "Kuponë",
+        free: "Kupon",
         night: "Natë",
         ending: "Fund",
         vip: "VIP"
@@ -2022,7 +2022,7 @@ export const translations = {
       filters: {
         live: "Live",
         beginner: "Fillestar",
-        free: "Kuponë",
+        free: "Kupon",
         night: "Natë",
         ending: "Fund",
         vip: "VIP"
