@@ -325,13 +325,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
     );
   }
   
-  if (auction.is_free_auction) {
-    badges.push(
-      <span key="free" className="bg-green-500 text-white px-2 py-0.5 rounded text-xs font-bold" title={t('auctionPage.freeBidPayEnd')}>
-        🎁 {t('auctionPage.filters.free').toUpperCase()}
-      </span>
-    );
-  }
+  // Note: is_free_auction no longer gets special badge - shown as normal auction
   
   if (auction.is_night_auction) {
     badges.push(
