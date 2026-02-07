@@ -46,38 +46,55 @@ export const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation - Only on large screens */}
-          <div className="hidden lg:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-5">
             <Link 
               to="/auctions" 
-              className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium`}
+              className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium text-sm xl:text-base`}
               data-testid="nav-auctions"
             >
               {t('nav.auctions')}
             </Link>
             <Link 
-              to="/how-it-works" 
-              className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium`}
-              data-testid="nav-how-it-works"
-            >
-              {t('nav.howItWorks') || "So funktioniert's"}
-            </Link>
-            <Link 
               to="/buy-bids" 
-              className="text-amber-600 hover:text-amber-700 transition-colors font-medium"
+              className="text-amber-600 hover:text-amber-700 transition-colors font-medium text-sm xl:text-base"
               data-testid="nav-buy-bids"
             >
               {t('nav.buyBids')}
             </Link>
             <Link 
-              to="/giftcards" 
-              className="text-orange-600 hover:text-orange-700 transition-colors font-medium flex items-center gap-1"
-              data-testid="nav-giftcards"
+              to="/leaderboard" 
+              className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium flex items-center gap-1 text-sm xl:text-base`}
+              data-testid="nav-leaderboard"
             >
-              <Gift className="w-4 h-4" />
-              {t('nav.giftCards') || 'Geschenkkarten'}
+              <Trophy className="w-4 h-4 text-amber-500" />
+              <span className="hidden xl:inline">{t('nav.leaderboard')}</span>
+            </Link>
+            {isAuthenticated && (
+              <button
+                onClick={() => setWheelOpen(true)}
+                className="text-green-600 hover:text-green-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
+                data-testid="nav-wheel"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span className="hidden xl:inline">{t('nav.luckyWheel') || 'Glücksrad'}</span>
+              </button>
+            )}
+            <Link 
+              to="/vip-auctions" 
+              className="text-purple-600 hover:text-purple-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
+              data-testid="nav-vip-auctions"
+            >
+              <Crown className="w-4 h-4" />
+              <span className="hidden xl:inline">{t('nav.vipAuctions')}</span>
             </Link>
             <Link 
-              to="/leaderboard" 
+              to="/winners" 
+              className={`${isDarkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'} transition-colors font-medium flex items-center gap-1 text-sm xl:text-base`}
+              data-testid="nav-winners"
+            >
+              <Heart className="w-4 h-4 text-red-500" />
+              <span className="hidden xl:inline">{t('nav.winners')}</span>
+            </Link> 
               className="text-purple-600 hover:text-purple-700 transition-colors font-medium flex items-center gap-1"
               data-testid="nav-leaderboard"
             >
