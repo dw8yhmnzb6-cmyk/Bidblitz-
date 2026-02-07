@@ -153,16 +153,16 @@ const AdminSurveys = ({ token }) => {
         <div className="lg:col-span-1 bg-gradient-to-br from-cyan-500/20 to-cyan-600/10 rounded-xl p-6 border border-cyan-500/30">
           <div className="text-gray-400 text-sm mb-2">Net Promoter Score</div>
           <div className={`text-5xl font-bold ${
-            data.nps.score >= 50 ? 'text-green-500' : 
-            data.nps.score >= 0 ? 'text-amber-500' : 'text-red-500'
+            nps.score >= 50 ? 'text-green-500' : 
+            nps.score >= 0 ? 'text-amber-500' : 'text-red-500'
           }`}>
-            {data.nps.score}
+            {nps.score}
           </div>
           <div className="text-gray-500 text-xs mt-2">
-            {data.nps.score >= 50 ? 'Exzellent' : data.nps.score >= 30 ? 'Gut' : data.nps.score >= 0 ? 'Verbesserungsbedarf' : 'Kritisch'}
+            {nps.score >= 50 ? 'Exzellent' : nps.score >= 30 ? 'Gut' : nps.score >= 0 ? 'Verbesserungsbedarf' : 'Kritisch'}
           </div>
           <div className="mt-4 text-sm text-gray-400">
-            {data.nps.total_responses} Antworten
+            {nps.total_responses} Antworten
           </div>
         </div>
 
@@ -171,7 +171,7 @@ const AdminSurveys = ({ token }) => {
             <ThumbsUp className="w-5 h-5 text-green-500" />
             <span className="text-gray-400 text-sm">Promoter</span>
           </div>
-          <div className="text-3xl font-bold text-green-500">{data.nps.promoters}</div>
+          <div className="text-3xl font-bold text-green-500">{nps.promoters}</div>
           <div className="text-gray-500 text-xs">Würden empfehlen (9-10)</div>
         </div>
 
@@ -180,7 +180,7 @@ const AdminSurveys = ({ token }) => {
             <Meh className="w-5 h-5 text-amber-500" />
             <span className="text-gray-400 text-sm">Passiv</span>
           </div>
-          <div className="text-3xl font-bold text-amber-500">{data.nps.passives}</div>
+          <div className="text-3xl font-bold text-amber-500">{nps.passives}</div>
           <div className="text-gray-500 text-xs">Zufrieden (7-8)</div>
         </div>
 
@@ -189,7 +189,7 @@ const AdminSurveys = ({ token }) => {
             <ThumbsDown className="w-5 h-5 text-red-500" />
             <span className="text-gray-400 text-sm">Kritiker</span>
           </div>
-          <div className="text-3xl font-bold text-red-500">{data.nps.detractors}</div>
+          <div className="text-3xl font-bold text-red-500">{nps.detractors}</div>
           <div className="text-gray-500 text-xs">Unzufrieden (0-6)</div>
         </div>
       </div>
