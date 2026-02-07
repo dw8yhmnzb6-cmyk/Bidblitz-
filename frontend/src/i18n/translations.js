@@ -1480,7 +1480,7 @@ export const translations = {
     }
   },
   zh: {
-    nav: { auctions: "拍卖", buyBids: "购买竞价", dashboard: "仪表板", admin: "管理员", login: "登录", register: "注册", logout: "登出", bids: "竞价", howItWorks: "如何运作", vip: "VIP会员", faq: "常见问题", contact: "联系" },
+    nav: { auctions: "拍卖", buyBids: "购买竞价", dashboard: "仪表板", admin: "管理员", login: "登录", register: "注册", logout: "登出", bids: "竞价", howItWorks: "如何运作", vip: "VIP会员", faq: "常见问题", contact: "联系", leaderboard: "排行榜", luckyWheel: "幸运轮", giftCards: "礼品卡", vipAuctions: "VIP拍卖", winners: "获奖者", inviteFriends: "邀请朋友", wishlist: "心愿单", language: "语言" },
     home: {
       badge: "注册即送10次免费竞价",
       heroTitle1: "赢取",
