@@ -229,9 +229,9 @@ export const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile/Tablet menu button - Shows on screens smaller than lg (1024px) */}
           <button
-            className={`md:hidden ${isDarkMode ? 'text-white' : 'text-gray-700'}`}
+            className={`lg:hidden ${isDarkMode ? 'text-white' : 'text-gray-700'}`}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             data-testid="mobile-menu-btn"
           >
