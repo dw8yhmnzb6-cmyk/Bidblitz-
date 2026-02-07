@@ -364,7 +364,7 @@ export default function BuyBids() {
                   <div className="text-center mb-4">
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm font-semibold">
                       <Sparkles className="w-4 h-4" />
-                      +{pkg.bonus} {language === 'en' ? 'FREE Bids!' : language === 'sq' ? 'Oferta FALAS!' : language === 'tr' ? 'ÜCRETSİZ Teklif!' : language === 'fr' ? 'Enchères GRATUITES!' : 'GRATIS Gebote!'}
+                      +{pkg.bonus} {{ de: 'GRATIS Gebote!', en: 'FREE Bids!', sq: 'Oferta FALAS!', xk: 'Oferta FALAS!', tr: 'ÜCRETSİZ Teklif!', fr: 'Enchères GRATUITES!' }[language] || 'GRATIS Gebote!'}
                     </span>
                   </div>
                 )}
@@ -372,7 +372,7 @@ export default function BuyBids() {
                 {/* Price per bid */}
                 {pkg.per_bid && (
                   <div className="text-center text-gray-500 text-sm mb-4">
-                    {language === 'en' ? 'Only' : language === 'sq' ? 'Vetëm' : language === 'tr' ? 'Sadece' : language === 'fr' ? 'Seulement' : 'Nur'} €{pkg.per_bid.toFixed(2)} {texts.perBid}
+                    {{ de: 'Nur', en: 'Only', sq: 'Vetëm', xk: 'Vetëm', tr: 'Sadece', fr: 'Seulement' }[language] || 'Nur'} €{pkg.per_bid.toFixed(2)} {texts.perBid}
                   </div>
                 )}
 
