@@ -296,7 +296,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
   
   // Discount badge (always show)
   badges.push(
-    <span key="discount" className="bg-red-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">
+    <span key="discount" className="bg-red-500 text-white px-2 py-0.5 rounded text-xs font-bold">
       -{discount}%
     </span>
   );
@@ -304,7 +304,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
   // Special auction type badges
   if (auction.is_vip_only) {
     badges.push(
-      <span key="vip" className="bg-yellow-500 text-black px-1.5 py-0.5 rounded text-[8px] font-bold">
+      <span key="vip" className="bg-yellow-500 text-black px-2 py-0.5 rounded text-xs font-bold">
         VIP
       </span>
     );
@@ -312,7 +312,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
   
   if (auction.is_beginner_only) {
     badges.push(
-      <span key="beginner" className="bg-purple-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold">
+      <span key="beginner" className="bg-purple-500 text-white px-2 py-0.5 rounded text-xs font-bold">
         🎓
       </span>
     );
@@ -320,7 +320,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
   
   if (auction.is_free_auction) {
     badges.push(
-      <span key="free" className="bg-green-500 text-white px-1.5 py-0.5 rounded text-[8px] font-bold" title={t('auctionPage.freeBidPayEnd')}>
+      <span key="free" className="bg-green-500 text-white px-2 py-0.5 rounded text-xs font-bold" title={t('auctionPage.freeBidPayEnd')}>
         🎁 {t('auctionPage.filters.free').toUpperCase()}
       </span>
     );
@@ -328,7 +328,7 @@ const AuctionCard = memo(({ auction, product, onBid, t, language }) => {
   
   if (auction.is_night_auction) {
     badges.push(
-      <span key="night" className="bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[8px] font-bold" title={t('auctionPage.nightTime')}>
+      <span key="night" className="bg-indigo-600 text-white px-2 py-0.5 rounded text-xs font-bold" title={t('auctionPage.nightTime')}>
         🌙 {t('auctionPage.filters.night').toUpperCase()}
       </span>
     );
