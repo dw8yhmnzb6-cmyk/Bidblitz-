@@ -1287,8 +1287,8 @@ export default function Admin() {
           </div>
         </aside>
 
-        {/* Main Content - adjusted for tablet sidebar */}
-        <main className="flex-1 md:ml-56 lg:ml-64 p-4 lg:p-8 pt-20 md:pt-8">
+        {/* Main Content - adjusted for desktop sidebar */}
+        <main className="flex-1 lg:ml-56 xl:ml-64 p-4 lg:p-8 pt-20 lg:pt-8" style={{ WebkitOverflowScrolling: 'touch' }}>
           {/* Dashboard Tab */}
           {activeTab === 'dashboard' && (
             <div className="space-y-4 lg:space-y-6">
