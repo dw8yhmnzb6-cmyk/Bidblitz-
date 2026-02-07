@@ -22,7 +22,13 @@ const translations = {
       place_bids: "Platziere 5 Gebote",
       win_auction: "Gewinne eine Auktion",
       invite_friend: "Lade einen Freund ein",
-      buy_bids: "Kaufe ein Gebotspaket"
+      buy_bids: "Kaufe ein Gebotspaket",
+      bid_auctions: "Biete auf Auktionen",
+      total_bids: "Platziere Gebote",
+      visit_page: "Seite besuchen",
+      watch_auction: "Auktion beobachten",
+      spin_wheel: "Drehe das Glücksrad",
+      share_social: "Teile auf Social Media"
     },
     noQuests: "Keine aktiven Quests"
   },
@@ -41,7 +47,13 @@ const translations = {
       place_bids: "Place 5 bids",
       win_auction: "Win an auction",
       invite_friend: "Invite a friend",
-      buy_bids: "Buy a bid package"
+      buy_bids: "Buy a bid package",
+      bid_auctions: "Bid on auctions",
+      total_bids: "Place bids",
+      visit_page: "Visit page",
+      watch_auction: "Watch an auction",
+      spin_wheel: "Spin the wheel",
+      share_social: "Share on social media"
     },
     noQuests: "No active quests"
   },
@@ -60,7 +72,13 @@ const translations = {
       place_bids: "Vendos 5 oferta",
       win_auction: "Fito një ankand",
       invite_friend: "Fto një mik",
-      buy_bids: "Bli një paketë ofertash"
+      buy_bids: "Bli një paketë ofertash",
+      bid_auctions: "Ofro në ankande",
+      total_bids: "Vendos oferta",
+      visit_page: "Vizito faqen",
+      watch_auction: "Shiko ankandin",
+      spin_wheel: "Rrotullo rrotën",
+      share_social: "Shpërndaj në rrjete sociale"
     },
     noQuests: "Asnjë detyrë aktive"
   },
@@ -79,7 +97,13 @@ const translations = {
       place_bids: "Vendos 5 oferta",
       win_auction: "Fito një ankand",
       invite_friend: "Fto një mik",
-      buy_bids: "Bli një paketë ofertash"
+      buy_bids: "Bli një paketë ofertash",
+      bid_auctions: "Ofro në ankande",
+      total_bids: "Vendos oferta",
+      visit_page: "Vizito faqen",
+      watch_auction: "Shiko ankandin",
+      spin_wheel: "Rrotullo rrotën",
+      share_social: "Shpërndaj në rrjete sociale"
     },
     noQuests: "Asnjë detyrë aktive"
   }
