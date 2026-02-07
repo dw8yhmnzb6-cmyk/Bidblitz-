@@ -66,7 +66,7 @@ export const translations = {
       filters: {
         live: "Live",
         beginner: "Anfänger",
-        free: "Gutscheine",
+        free: "Gutschein",
         night: "Nacht",
         ending: "Ende",
         vip: "VIP"
