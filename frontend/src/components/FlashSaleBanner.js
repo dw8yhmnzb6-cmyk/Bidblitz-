@@ -211,7 +211,8 @@ const FlashSaleBanner = memo(() => {
     const fetchFlashSales = async () => {
       try {
         const res = await axios.get(`${API}/flash-sales/active`);
-        setFlashSales(res.data || []);
+        // API returns {sales: [], count: X}
+        setFlashSales(res.data?.sales || res.data || []);
       } catch (err) {
         console.error('Error fetching flash sales:', err);
       } finally {
