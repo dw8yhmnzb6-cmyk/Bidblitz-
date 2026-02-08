@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Star, Plus, CheckCircle, Trash2, Edit, X, Save, MapPin, Building2 } from 'lucide-react';
+import { Star, Plus, CheckCircle, Trash2, Edit, X, Save, MapPin, Building2, Users, DollarSign, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
@@ -113,14 +113,17 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <Star className="w-6 h-6 text-[#FFD700]" />
+        <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+            <Star className="w-5 h-5 text-white" fill="white" />
+          </div>
           Influencer verwalten
         </h1>
         <Button
           onClick={() => setShowInfluencerModal(true)}
-          className="bg-[#10B981] hover:bg-[#10B981]/80"
+          className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-white shadow-lg"
           data-testid="new-influencer-btn"
         >
           <Plus className="w-4 h-4 mr-1" />
@@ -130,243 +133,282 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
 
       {/* Stats Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-[#94A3B8] text-sm">Gesamt Influencer</p>
-          <p className="text-2xl font-bold text-white">{influencers.length}</p>
+        <div className="bg-white rounded-2xl p-5 shadow-lg border border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center">
+              <Users className="w-6 h-6 text-violet-600" />
+            </div>
+            <div>
+              <p className="text-slate-500 text-sm">Gesamt Influencer</p>
+              <p className="text-2xl font-bold text-slate-800">{influencers.length}</p>
+            </div>
+          </div>
         </div>
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-[#94A3B8] text-sm">Gesamt Kunden</p>
-          <p className="text-2xl font-bold text-[#06B6D4]">
-            {influencers.reduce((sum, i) => sum + (i.total_customers || 0), 0)}
-          </p>
+        <div className="bg-white rounded-2xl p-5 shadow-lg border border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-blue-100 flex items-center justify-center">
+              <Users className="w-6 h-6 text-cyan-600" />
+            </div>
+            <div>
+              <p className="text-slate-500 text-sm">Gesamt Kunden</p>
+              <p className="text-2xl font-bold text-cyan-600">
+                {influencers.reduce((sum, i) => sum + (i.total_customers || 0), 0)}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-[#94A3B8] text-sm">Gesamt Umsatz</p>
-          <p className="text-2xl font-bold text-[#10B981]">
-            €{influencers.reduce((sum, i) => sum + (i.total_revenue || 0), 0).toFixed(2)}
-          </p>
+        <div className="bg-white rounded-2xl p-5 shadow-lg border border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-100 to-green-100 flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div>
+              <p className="text-slate-500 text-sm">Gesamt Umsatz</p>
+              <p className="text-2xl font-bold text-emerald-600">
+                €{influencers.reduce((sum, i) => sum + (i.total_revenue || 0), 0).toFixed(2)}
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="glass-card rounded-xl p-4">
-          <p className="text-[#94A3B8] text-sm">Ausstehende Provision</p>
-          <p className="text-2xl font-bold text-[#F59E0B]">
-            €{influencers.reduce((sum, i) => sum + (i.total_commission || 0), 0).toFixed(2)}
-          </p>
+        <div className="bg-white rounded-2xl p-5 shadow-lg border border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center">
+              <DollarSign className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <p className="text-slate-500 text-sm">Ausstehende Provision</p>
+              <p className="text-2xl font-bold text-amber-600">
+                €{influencers.reduce((sum, i) => sum + (i.total_commission || 0), 0).toFixed(2)}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Commission Tiers Info */}
-      <div className="glass-card rounded-xl p-4 border-l-4 border-[#FFD700]">
-        <h3 className="text-white font-bold mb-2 flex items-center gap-2">
-          <Star className="w-5 h-5 text-[#FFD700]" />
+      <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-5 border border-amber-200">
+        <h3 className="text-slate-800 font-bold mb-3 flex items-center gap-2">
+          <Star className="w-5 h-5 text-amber-500" fill="currentColor" />
           Staffelprovisionen - Je mehr Kunden, desto mehr Provision!
         </h3>
-        <div className="flex flex-wrap gap-4 text-sm">
-          <span className="px-3 py-1 rounded-full bg-[#CD7F32]/20 text-[#CD7F32]">🥉 Bronze: 0-10 Kunden (Basis)</span>
-          <span className="px-3 py-1 rounded-full bg-[#C0C0C0]/20 text-[#C0C0C0]">🥈 Silber: 11-50 (+2%)</span>
-          <span className="px-3 py-1 rounded-full bg-[#FFD700]/20 text-[#FFD700]">🥇 Gold: 51-100 (+3%)</span>
-          <span className="px-3 py-1 rounded-full bg-[#E5E4E2]/20 text-[#E5E4E2]">💎 Platin: 100+ (+5%)</span>
+        <div className="flex flex-wrap gap-3 text-sm">
+          <span className="px-4 py-2 rounded-full bg-amber-700/10 text-amber-700 font-medium">🥉 Bronze: 0-10 Kunden (Basis)</span>
+          <span className="px-4 py-2 rounded-full bg-slate-400/20 text-slate-600 font-medium">🥈 Silber: 11-50 (+2%)</span>
+          <span className="px-4 py-2 rounded-full bg-amber-400/20 text-amber-600 font-medium">🥇 Gold: 51-100 (+3%)</span>
+          <span className="px-4 py-2 rounded-full bg-violet-400/20 text-violet-600 font-medium">💎 Platin: 100+ (+5%)</span>
         </div>
       </div>
 
       {/* Influencer List */}
-      <div className="glass-card rounded-xl overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="bg-[#181824] border-b border-white/10">
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Name</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Code</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Stadt</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Tier</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Provision</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Kunden</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Umsatz</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Status</th>
-              <th className="text-left px-4 py-3 text-[#94A3B8] font-medium">Aktionen</th>
-            </tr>
-          </thead>
-          <tbody>
-            {influencers.map((influencer) => (
-              <tr key={influencer.id} className="border-b border-white/5 hover:bg-white/5">
-                <td className="px-4 py-3">
-                  <div>
-                    <p className="text-white font-medium">{influencer.name}</p>
-                    {influencer.instagram && (
-                      <p className="text-[#94A3B8] text-xs">@{influencer.instagram}</p>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <code className="bg-[#FFD700]/20 text-[#FFD700] px-2 py-1 rounded text-sm font-bold">
-                    {influencer.code}
-                  </code>
-                </td>
-                <td className="px-4 py-3">
-                  {influencer.city ? (
-                    <span className="flex items-center gap-1 text-[#7C3AED] text-sm">
-                      <MapPin className="w-3 h-3" />
-                      {influencer.city}
-                    </span>
-                  ) : (
-                    <span className="text-[#94A3B8] text-xs">-</span>
-                  )}
-                </td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${
-                    influencer.commission_tier === 'Platin' ? 'bg-[#E5E4E2]/20 text-[#E5E4E2]' :
-                    influencer.commission_tier === 'Gold' ? 'bg-[#FFD700]/20 text-[#FFD700]' :
-                    influencer.commission_tier === 'Silber' ? 'bg-[#C0C0C0]/20 text-[#C0C0C0]' :
-                    'bg-[#CD7F32]/20 text-[#CD7F32]'
-                  }`}>
-                    {influencer.commission_tier === 'Platin' ? '💎' : 
-                     influencer.commission_tier === 'Gold' ? '🥇' :
-                     influencer.commission_tier === 'Silber' ? '🥈' : '🥉'} {influencer.commission_tier || 'Bronze'}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <div>
-                    <span className="text-white font-bold">{influencer.effective_commission || influencer.commission_percent}%</span>
-                    {influencer.tier_bonus > 0 && (
-                      <span className="text-[#10B981] text-xs ml-1">(+{influencer.tier_bonus}%)</span>
-                    )}
-                  </div>
-                </td>
-                <td className="px-4 py-3 text-[#06B6D4] font-medium">{influencer.total_customers || 0}</td>
-                <td className="px-4 py-3 text-[#10B981] font-medium">€{(influencer.total_revenue || 0).toFixed(2)}</td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded text-xs ${influencer.is_active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                    {influencer.is_active ? 'Aktiv' : 'Inaktiv'}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-1">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleEditInfluencer(influencer)}
-                      className="text-[#7C3AED] hover:bg-[#7C3AED]/10"
-                      title="Bearbeiten"
-                      data-testid={`edit-influencer-${influencer.id}`}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleToggleInfluencer(influencer.id, influencer.is_active)}
-                      className={influencer.is_active ? 'text-green-400' : 'text-gray-400'}
-                      title={influencer.is_active ? 'Deaktivieren' : 'Aktivieren'}
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleDeleteInfluencer(influencer.id)}
-                      className="text-red-400 hover:bg-red-400/10"
-                      title="Löschen"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </td>
+      <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-200">
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Name</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Code</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Stadt</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Tier</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Provision</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Kunden</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Umsatz</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Status</th>
+                <th className="text-left px-4 py-4 text-slate-600 font-semibold text-sm">Aktionen</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {influencers.map((influencer) => (
+                <tr key={influencer.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-4">
+                    <div>
+                      <p className="text-slate-800 font-medium">{influencer.name}</p>
+                      {influencer.instagram && (
+                        <p className="text-slate-400 text-xs">@{influencer.instagram}</p>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4">
+                    <code className="bg-gradient-to-r from-amber-100 to-orange-100 text-amber-700 px-3 py-1.5 rounded-lg text-sm font-bold border border-amber-200">
+                      {influencer.code}
+                    </code>
+                  </td>
+                  <td className="px-4 py-4">
+                    {influencer.city ? (
+                      <span className="flex items-center gap-1 text-violet-600 text-sm font-medium">
+                        <MapPin className="w-3 h-3" />
+                        {influencer.city}
+                      </span>
+                    ) : (
+                      <span className="text-slate-300 text-sm">-</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-4">
+                    <span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${
+                      influencer.commission_tier === 'Platin' ? 'bg-violet-100 text-violet-700 border border-violet-200' :
+                      influencer.commission_tier === 'Gold' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                      influencer.commission_tier === 'Silber' ? 'bg-slate-200 text-slate-600 border border-slate-300' :
+                      'bg-amber-700/10 text-amber-700 border border-amber-700/20'
+                    }`}>
+                      {influencer.commission_tier === 'Platin' ? '💎' : 
+                       influencer.commission_tier === 'Gold' ? '🥇' :
+                       influencer.commission_tier === 'Silber' ? '🥈' : '🥉'} {influencer.commission_tier || 'Bronze'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <div>
+                      <span className="text-slate-800 font-bold">{influencer.effective_commission || influencer.commission_percent}%</span>
+                      {influencer.tier_bonus > 0 && (
+                        <span className="text-emerald-500 text-xs ml-1 font-medium">(+{influencer.tier_bonus}%)</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 text-cyan-600 font-semibold">{influencer.total_customers || 0}</td>
+                  <td className="px-4 py-4 text-emerald-600 font-semibold">€{(influencer.total_revenue || 0).toFixed(2)}</td>
+                  <td className="px-4 py-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      influencer.is_active 
+                        ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+                        : 'bg-red-100 text-red-600 border border-red-200'
+                    }`}>
+                      {influencer.is_active ? '✓ Aktiv' : '✗ Inaktiv'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <div className="flex items-center gap-1">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleEditInfluencer(influencer)}
+                        className="text-violet-600 hover:bg-violet-100 hover:text-violet-700"
+                        title="Bearbeiten"
+                        data-testid={`edit-influencer-${influencer.id}`}
+                      >
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleToggleInfluencer(influencer.id, influencer.is_active)}
+                        className={influencer.is_active ? 'text-emerald-500 hover:bg-emerald-100' : 'text-slate-400 hover:bg-slate-100'}
+                        title={influencer.is_active ? 'Deaktivieren' : 'Aktivieren'}
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleDeleteInfluencer(influencer.id)}
+                        className="text-red-400 hover:bg-red-100 hover:text-red-600"
+                        title="Löschen"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         
         {influencers.length === 0 && (
-          <div className="p-8 text-center">
-            <Star className="w-12 h-12 text-[#94A3B8] mx-auto mb-4" />
-            <p className="text-[#94A3B8]">Noch keine Influencer vorhanden</p>
+          <div className="p-12 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center mx-auto mb-4">
+              <Star className="w-8 h-8 text-amber-500" />
+            </div>
+            <p className="text-slate-500 font-medium">Noch keine Influencer vorhanden</p>
+            <p className="text-slate-400 text-sm mt-1">Klicke auf "Neuer Influencer" um zu starten</p>
           </div>
         )}
       </div>
 
       {/* New Influencer Modal */}
       {showInfluencerModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0F0F16] rounded-xl p-6 max-w-md w-full border border-white/10 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <Star className="w-5 h-5 text-[#FFD700]" />
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h3 className="text-xl font-bold text-slate-800 mb-5 flex items-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                <Star className="w-5 h-5 text-white" fill="white" />
+              </div>
               Neuer Influencer
             </h3>
             <div className="space-y-4">
               <div>
-                <Label className="text-white">Name *</Label>
+                <Label className="text-slate-700 font-medium">Name *</Label>
                 <Input
                   value={influencerForm.name}
                   onChange={(e) => setInfluencerForm({...influencerForm, name: e.target.value})}
                   placeholder="z.B. Max Mustermann"
-                  className="bg-[#181824] border-white/10 text-white"
+                  className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400 focus:ring-amber-400"
                 />
               </div>
               <div>
-                <Label className="text-white">Code * (erscheint als Gutscheincode)</Label>
+                <Label className="text-slate-700 font-medium">Code * (erscheint als Gutscheincode)</Label>
                 <Input
                   value={influencerForm.code}
                   onChange={(e) => setInfluencerForm({...influencerForm, code: e.target.value.toLowerCase()})}
                   placeholder="z.B. maxpower"
-                  className="bg-[#181824] border-white/10 text-white"
+                  className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400 focus:ring-amber-400"
                 />
-                <p className="text-[#94A3B8] text-xs mt-1">Kunden geben diesen Code ein um Rabatt zu bekommen</p>
+                <p className="text-slate-400 text-xs mt-1">Kunden geben diesen Code ein um Rabatt zu bekommen</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-white">Provision (%)</Label>
+                  <Label className="text-slate-700 font-medium">Provision (%)</Label>
                   <Input
                     type="number"
                     value={influencerForm.commission_percent}
                     onChange={(e) => setInfluencerForm({...influencerForm, commission_percent: parseFloat(e.target.value) || 0})}
                     placeholder="10"
-                    className="bg-[#181824] border-white/10 text-white"
+                    className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400"
                   />
                 </div>
                 <div>
-                  <Label className="text-white">Stadt</Label>
+                  <Label className="text-slate-700 font-medium">Stadt</Label>
                   <Input
                     value={influencerForm.city}
                     onChange={(e) => setInfluencerForm({...influencerForm, city: e.target.value})}
                     placeholder="z.B. Berlin"
-                    className="bg-[#181824] border-white/10 text-white"
+                    className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400"
                   />
                 </div>
               </div>
               <div>
-                <Label className="text-white">E-Mail</Label>
+                <Label className="text-slate-700 font-medium">E-Mail</Label>
                 <Input
                   type="email"
                   value={influencerForm.email}
                   onChange={(e) => setInfluencerForm({...influencerForm, email: e.target.value})}
                   placeholder="influencer@email.com"
-                  className="bg-[#181824] border-white/10 text-white"
+                  className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400"
                 />
               </div>
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <Label className="text-white text-xs">Instagram</Label>
+                  <Label className="text-slate-700 text-xs font-medium">Instagram</Label>
                   <Input
                     value={influencerForm.instagram}
                     onChange={(e) => setInfluencerForm({...influencerForm, instagram: e.target.value})}
                     placeholder="@username"
-                    className="bg-[#181824] border-white/10 text-white text-xs"
+                    className="bg-slate-50 border-slate-200 text-slate-800 text-sm"
                   />
                 </div>
                 <div>
-                  <Label className="text-white text-xs">YouTube</Label>
+                  <Label className="text-slate-700 text-xs font-medium">YouTube</Label>
                   <Input
                     value={influencerForm.youtube}
                     onChange={(e) => setInfluencerForm({...influencerForm, youtube: e.target.value})}
                     placeholder="Channel"
-                    className="bg-[#181824] border-white/10 text-white text-xs"
+                    className="bg-slate-50 border-slate-200 text-slate-800 text-sm"
                   />
                 </div>
                 <div>
-                  <Label className="text-white text-xs">TikTok</Label>
+                  <Label className="text-slate-700 text-xs font-medium">TikTok</Label>
                   <Input
                     value={influencerForm.tiktok}
                     onChange={(e) => setInfluencerForm({...influencerForm, tiktok: e.target.value})}
                     placeholder="@username"
-                    className="bg-[#181824] border-white/10 text-white text-xs"
+                    className="bg-slate-50 border-slate-200 text-slate-800 text-sm"
                   />
                 </div>
               </div>
@@ -378,14 +420,14 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
                   setShowInfluencerModal(false);
                   setInfluencerForm({ name: '', code: '', commission_percent: 10, email: '', instagram: '', youtube: '', tiktok: '', city: '' });
                 }}
-                className="border-white/20 text-white"
+                className="border-slate-200 text-slate-600 hover:bg-slate-50"
               >
                 Abbrechen
               </Button>
               <Button
                 onClick={handleCreateInfluencer}
                 disabled={!influencerForm.name || !influencerForm.code}
-                className="bg-[#10B981] hover:bg-[#10B981]/80"
+                className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-400 hover:to-green-400 text-white"
               >
                 <Plus className="w-4 h-4 mr-1" />
                 Erstellen
@@ -397,11 +439,13 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
 
       {/* Edit Influencer Modal */}
       {showEditModal && selectedInfluencer && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0F0F16] rounded-xl p-6 max-w-lg w-full border border-white/10 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Edit className="w-5 h-5 text-[#7C3AED]" />
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center">
+                  <Edit className="w-5 h-5 text-white" />
+                </div>
                 Influencer bearbeiten
               </h3>
               <button
@@ -409,16 +453,16 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
                   setShowEditModal(false);
                   setSelectedInfluencer(null);
                 }}
-                className="text-[#94A3B8] hover:text-white"
+                className="text-slate-400 hover:text-slate-600 transition-colors"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
             </div>
             
             {/* Influencer Code (read-only) */}
-            <div className="mb-4 p-3 bg-[#181824] rounded-lg">
-              <p className="text-[#94A3B8] text-xs mb-1">Influencer-Code (nicht änderbar)</p>
-              <code className="bg-[#FFD700]/20 text-[#FFD700] px-3 py-1 rounded text-lg font-bold">
+            <div className="mb-5 p-4 bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200">
+              <p className="text-slate-500 text-xs mb-2">Influencer-Code (nicht änderbar)</p>
+              <code className="bg-white text-amber-700 px-4 py-2 rounded-lg text-lg font-bold border border-amber-200 inline-block">
                 {selectedInfluencer.code}
               </code>
             </div>
@@ -426,61 +470,61 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-white">Name</Label>
+                  <Label className="text-slate-700 font-medium">Name</Label>
                   <Input
                     value={editForm.name}
                     onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                    className="bg-[#181824] border-white/10 text-white"
+                    className="bg-slate-50 border-slate-200 text-slate-800 focus:border-violet-400"
                   />
                 </div>
                 <div>
-                  <Label className="text-white">Provision (%)</Label>
+                  <Label className="text-slate-700 font-medium">Provision (%)</Label>
                   <Input
                     type="number"
                     value={editForm.commission_percent}
                     onChange={(e) => setEditForm({...editForm, commission_percent: parseFloat(e.target.value) || 0})}
-                    className="bg-[#181824] border-white/10 text-white"
+                    className="bg-slate-50 border-slate-200 text-slate-800 focus:border-violet-400"
                   />
                 </div>
               </div>
               
               <div>
-                <Label className="text-white">E-Mail</Label>
+                <Label className="text-slate-700 font-medium">E-Mail</Label>
                 <Input
                   type="email"
                   value={editForm.email}
                   onChange={(e) => setEditForm({...editForm, email: e.target.value})}
-                  className="bg-[#181824] border-white/10 text-white"
+                  className="bg-slate-50 border-slate-200 text-slate-800 focus:border-violet-400"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label className="text-white flex items-center gap-1">
+                  <Label className="text-slate-700 font-medium flex items-center gap-1">
                     <MapPin className="w-3 h-3" /> Stadt
                   </Label>
                   <Input
                     value={editForm.city}
                     onChange={(e) => setEditForm({...editForm, city: e.target.value})}
                     placeholder="z.B. Berlin"
-                    className="bg-[#181824] border-white/10 text-white"
+                    className="bg-slate-50 border-slate-200 text-slate-800 focus:border-violet-400"
                   />
                 </div>
                 <div>
-                  <Label className="text-white flex items-center gap-1">
+                  <Label className="text-slate-700 font-medium flex items-center gap-1">
                     <Building2 className="w-3 h-3" /> Manager
                   </Label>
                   <Select
                     value={editForm.manager_id || "none"}
                     onValueChange={(value) => setEditForm({...editForm, manager_id: value === "none" ? "" : value})}
                   >
-                    <SelectTrigger className="bg-[#181824] border-white/10 text-white">
+                    <SelectTrigger className="bg-slate-50 border-slate-200 text-slate-800">
                       <SelectValue placeholder="Kein Manager" />
                     </SelectTrigger>
-                    <SelectContent className="bg-[#181824] border-white/10">
-                      <SelectItem value="none" className="text-white">Kein Manager</SelectItem>
+                    <SelectContent className="bg-white border-slate-200">
+                      <SelectItem value="none" className="text-slate-600">Kein Manager</SelectItem>
                       {managers.map((manager) => (
-                        <SelectItem key={manager.id} value={manager.id} className="text-white">
+                        <SelectItem key={manager.id} value={manager.id} className="text-slate-800">
                           {manager.name} ({manager.cities?.join(', ') || 'Keine Stadt'})
                         </SelectItem>
                       ))}
@@ -491,44 +535,44 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
               
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <Label className="text-white text-xs">Instagram</Label>
+                  <Label className="text-slate-700 text-xs font-medium">Instagram</Label>
                   <Input
                     value={editForm.instagram}
                     onChange={(e) => setEditForm({...editForm, instagram: e.target.value})}
                     placeholder="@username"
-                    className="bg-[#181824] border-white/10 text-white text-sm"
+                    className="bg-slate-50 border-slate-200 text-slate-800 text-sm"
                   />
                 </div>
                 <div>
-                  <Label className="text-white text-xs">YouTube</Label>
+                  <Label className="text-slate-700 text-xs font-medium">YouTube</Label>
                   <Input
                     value={editForm.youtube}
                     onChange={(e) => setEditForm({...editForm, youtube: e.target.value})}
                     placeholder="Channel"
-                    className="bg-[#181824] border-white/10 text-white text-sm"
+                    className="bg-slate-50 border-slate-200 text-slate-800 text-sm"
                   />
                 </div>
                 <div>
-                  <Label className="text-white text-xs">TikTok</Label>
+                  <Label className="text-slate-700 text-xs font-medium">TikTok</Label>
                   <Input
                     value={editForm.tiktok}
                     onChange={(e) => setEditForm({...editForm, tiktok: e.target.value})}
                     placeholder="@username"
-                    className="bg-[#181824] border-white/10 text-white text-sm"
+                    className="bg-slate-50 border-slate-200 text-slate-800 text-sm"
                   />
                 </div>
               </div>
 
               {/* Status Toggle */}
-              <div className="p-3 bg-[#181824] rounded-lg">
-                <Label className="text-white mb-2 block">Status</Label>
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <Label className="text-slate-700 font-medium mb-3 block">Status</Label>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setEditForm({...editForm, is_active: true})}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${
                       editForm.is_active 
-                        ? 'bg-green-500 text-white' 
-                        : 'bg-[#0F0F16] text-[#94A3B8] hover:bg-[#252532]'
+                        ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg' 
+                        : 'bg-white text-slate-400 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
                     <CheckCircle className="w-4 h-4 inline mr-1" />
@@ -536,10 +580,10 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
                   </button>
                   <button
                     onClick={() => setEditForm({...editForm, is_active: false})}
-                    className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                    className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${
                       !editForm.is_active 
-                        ? 'bg-red-500 text-white' 
-                        : 'bg-[#0F0F16] text-[#94A3B8] hover:bg-[#252532]'
+                        ? 'bg-gradient-to-r from-red-500 to-rose-500 text-white shadow-lg' 
+                        : 'bg-white text-slate-400 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
                     <X className="w-4 h-4 inline mr-1" />
@@ -556,13 +600,13 @@ export function AdminInfluencers({ token, influencers, setInfluencers, fetchData
                   setShowEditModal(false);
                   setSelectedInfluencer(null);
                 }}
-                className="border-white/20 text-white"
+                className="border-slate-200 text-slate-600 hover:bg-slate-50"
               >
                 Abbrechen
               </Button>
               <Button
                 onClick={handleSaveEdit}
-                className="bg-[#7C3AED] hover:bg-[#7C3AED]/80"
+                className="bg-gradient-to-r from-violet-500 to-purple-500 hover:from-violet-400 hover:to-purple-400 text-white shadow-lg"
               >
                 <Save className="w-4 h-4 mr-1" />
                 Speichern
