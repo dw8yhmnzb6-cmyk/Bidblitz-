@@ -150,28 +150,30 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
           </div>
 
           {/* Beginner Auctions Config */}
-          <div className="glass-card rounded-xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center">
-                <span className="text-xl">🎓</span>
+          <div className="glass-card rounded-xl p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 sm:mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">🎓</span>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-sm sm:text-base">Anfänger-Auktionen</h3>
+                  <p className="text-[#94A3B8] text-xs sm:text-sm">Nur für neue Nutzer</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-white font-bold">Anfänger-Auktionen</h3>
-                <p className="text-[#94A3B8] text-sm">Nur für neue Nutzer</p>
-              </div>
-              <label className="ml-auto flex items-center gap-2">
+              <label className="sm:ml-auto flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={gameConfig.beginner_auction_enabled}
                   onChange={(e) => setGameConfig({...gameConfig, beginner_auction_enabled: e.target.checked})}
                   className="w-5 h-5 rounded"
                 />
-                <span className="text-white">Aktiv</span>
+                <span className="text-white text-sm">Aktiv</span>
               </label>
             </div>
             
             <div>
-              <Label className="text-white">Max. gewonnene Auktionen</Label>
+              <Label className="text-white text-sm">Max. gewonnene Auktionen</Label>
               <Input
                 type="number"
                 min="1"
@@ -184,28 +186,30 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
           </div>
 
           {/* Free Auctions Config */}
-          <div className="glass-card rounded-xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-green-500 flex items-center justify-center">
-                <span className="text-xl">🎁</span>
+          <div className="glass-card rounded-xl p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 sm:mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-green-500 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xl">🎁</span>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-sm sm:text-base">Gratis-Auktionen</h3>
+                  <p className="text-[#94A3B8] text-xs sm:text-sm">Keine Gebote nötig</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-white font-bold">Gratis-Auktionen</h3>
-                <p className="text-[#94A3B8] text-sm">Keine Gebote nötig</p>
-              </div>
-              <label className="ml-auto flex items-center gap-2">
+              <label className="sm:ml-auto flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={gameConfig.free_auction_enabled}
                   onChange={(e) => setGameConfig({...gameConfig, free_auction_enabled: e.target.checked})}
                   className="w-5 h-5 rounded"
                 />
-                <span className="text-white">Aktiv</span>
+                <span className="text-white text-sm">Aktiv</span>
               </label>
             </div>
             
             <div>
-              <Label className="text-white">Max. Teilnehmer pro Auktion</Label>
+              <Label className="text-white text-sm">Max. Teilnehmer pro Auktion</Label>
               <Input
                 type="number"
                 min="10"
@@ -217,29 +221,31 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
           </div>
 
           {/* Night Auctions Config */}
-          <div className="glass-card rounded-xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center">
-                <Moon className="w-5 h-5 text-white" />
+          <div className="glass-card rounded-xl p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 sm:mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-indigo-500 flex items-center justify-center flex-shrink-0">
+                  <Moon className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-sm sm:text-base">Nacht-Auktionen</h3>
+                  <p className="text-[#94A3B8] text-xs sm:text-sm">Weniger Gebote nötig</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-white font-bold">Nacht-Auktionen</h3>
-                <p className="text-[#94A3B8] text-sm">Weniger Gebote nötig</p>
-              </div>
-              <label className="ml-auto flex items-center gap-2">
+              <label className="sm:ml-auto flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={gameConfig.night_auction_enabled}
                   onChange={(e) => setGameConfig({...gameConfig, night_auction_enabled: e.target.checked})}
                   className="w-5 h-5 rounded"
                 />
-                <span className="text-white">Aktiv</span>
+                <span className="text-white text-sm">Aktiv</span>
               </label>
             </div>
             
             <div className="space-y-4">
               <div>
-                <Label className="text-white">Gebots-Rabatt (%)</Label>
+                <Label className="text-white text-sm">Gebots-Rabatt (%)</Label>
                 <Input
                   type="number"
                   min="0"
