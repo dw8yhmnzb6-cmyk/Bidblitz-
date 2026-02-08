@@ -312,6 +312,223 @@ export default function InfluencerDashboard() {
           </div>
         </div>
 
+        {/* Performance Analytics Section */}
+        <div className="glass-card rounded-2xl p-4 md:p-6">
+          <h2 className="text-lg md:text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-[#7C3AED]" />
+            {t('influencer.performanceAnalytics') || 'Performance-Analyse'}
+          </h2>
+          
+          {/* KPI Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="bg-white rounded-xl p-3 md:p-4 border border-slate-100">
+              <div className="flex items-center gap-2 mb-1">
+                <Percent className="w-4 h-4 text-[#06B6D4]" />
+                <span className="text-gray-500 text-xs">{t('influencer.conversionRate') || 'Konversionsrate'}</span>
+              </div>
+              <p className="text-xl md:text-2xl font-bold text-[#06B6D4]">
+                {stats?.total_customers > 0 
+                  ? ((stats?.total_purchases / stats?.total_customers) * 100).toFixed(1)
+                  : '0'}%
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {t('influencer.signupsToPurchases') || 'Anmeldungen → Käufe'}
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-3 md:p-4 border border-slate-100">
+              <div className="flex items-center gap-2 mb-1">
+                <ShoppingCart className="w-4 h-4 text-[#10B981]" />
+                <span className="text-gray-500 text-xs">{t('influencer.avgOrderValue') || 'Ø Bestellwert'}</span>
+              </div>
+              <p className="text-xl md:text-2xl font-bold text-[#10B981]">
+                €{stats?.total_purchases > 0 
+                  ? (stats?.total_revenue / stats?.total_purchases).toFixed(2)
+                  : '0.00'}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {t('influencer.perPurchase') || 'pro Kauf'}
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-3 md:p-4 border border-slate-100">
+              <div className="flex items-center gap-2 mb-1">
+                <Activity className="w-4 h-4 text-[#F59E0B]" />
+                <span className="text-gray-500 text-xs">{t('influencer.avgCommission') || 'Ø Provision'}</span>
+              </div>
+              <p className="text-xl md:text-2xl font-bold text-[#F59E0B]">
+                €{stats?.total_purchases > 0 
+                  ? (stats?.total_commission / stats?.total_purchases).toFixed(2)
+                  : '0.00'}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {t('influencer.perSale') || 'pro Verkauf'}
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-xl p-3 md:p-4 border border-slate-100">
+              <div className="flex items-center gap-2 mb-1">
+                <TrendingUp className="w-4 h-4 text-[#7C3AED]" />
+                <span className="text-gray-500 text-xs">{t('influencer.customerValue') || 'Kundenwert'}</span>
+              </div>
+              <p className="text-xl md:text-2xl font-bold text-[#7C3AED]">
+                €{stats?.total_customers > 0 
+                  ? (stats?.total_revenue / stats?.total_customers).toFixed(2)
+                  : '0.00'}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {t('influencer.revenuePerCustomer') || 'Umsatz/Kunde'}
+              </p>
+            </div>
+          </div>
+          
+          {/* Charts Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            {/* Revenue Chart */}
+            <div className="bg-white rounded-xl p-4 border border-slate-100">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-[#10B981]" />
+                {t('influencer.revenueChart') || 'Einnahmen (30 Tage)'}
+              </h3>
+              <div className="h-48 md:h-56">
+                {stats?.daily_stats && Object.keys(stats.daily_stats).length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart 
+                      data={Object.entries(stats.daily_stats)
+                        .slice(-14)
+                        .map(([date, data]) => ({
+                          date: new Date(date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }),
+                          revenue: data.revenue || 0,
+                          commission: (data.revenue || 0) * ((stats?.effective_commission || 10) / 100)
+                        }))}
+                    >
+                      <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#6B7280' }} />
+                      <YAxis tick={{ fontSize: 10, fill: '#6B7280' }} tickFormatter={(v) => `€${v}`} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '12px' }}
+                        formatter={(value, name) => [
+                          `€${value.toFixed(2)}`, 
+                          name === 'revenue' ? 'Umsatz' : 'Provision'
+                        ]}
+                      />
+                      <Area 
+                        type="monotone" 
+                        dataKey="revenue" 
+                        stroke="#10B981" 
+                        fillOpacity={1} 
+                        fill="url(#colorRevenue)" 
+                        strokeWidth={2}
+                        name="revenue"
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="commission" 
+                        stroke="#F59E0B" 
+                        strokeWidth={2}
+                        dot={false}
+                        name="commission"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-gray-400 text-sm">
+                    {t('influencer.noDataYet') || 'Noch keine Daten verfügbar'}
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Signups vs Purchases Chart */}
+            <div className="bg-white rounded-xl p-4 border border-slate-100">
+              <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#7C3AED]" />
+                {t('influencer.signupsVsPurchases') || 'Anmeldungen vs. Käufe'}
+              </h3>
+              <div className="h-48 md:h-56">
+                {stats?.daily_stats && Object.keys(stats.daily_stats).length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart 
+                      data={Object.entries(stats.daily_stats)
+                        .slice(-14)
+                        .map(([date, data]) => ({
+                          date: new Date(date).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' }),
+                          signups: data.signups || 0,
+                          purchases: data.purchases || 0
+                        }))}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#6B7280' }} />
+                      <YAxis tick={{ fontSize: 10, fill: '#6B7280' }} />
+                      <Tooltip 
+                        contentStyle={{ backgroundColor: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '12px' }}
+                        formatter={(value, name) => [value, name === 'signups' ? 'Anmeldungen' : 'Käufe']}
+                      />
+                      <Legend 
+                        formatter={(value) => value === 'signups' ? 'Anmeldungen' : 'Käufe'}
+                        wrapperStyle={{ fontSize: '12px' }}
+                      />
+                      <Bar dataKey="signups" fill="#7C3AED" radius={[4, 4, 0, 0]} name="signups" />
+                      <Bar dataKey="purchases" fill="#10B981" radius={[4, 4, 0, 0]} name="purchases" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-gray-400 text-sm">
+                    {t('influencer.noDataYet') || 'Noch keine Daten verfügbar'}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Performance Summary */}
+          <div className="mt-4 p-4 bg-gradient-to-r from-[#7C3AED]/10 to-[#F59E0B]/10 rounded-xl">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+              <div>
+                <h4 className="font-semibold text-gray-800 flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-[#7C3AED]" />
+                  {t('influencer.performanceSummary') || 'Performance-Zusammenfassung'}
+                </h4>
+                <p className="text-sm text-gray-500 mt-1">
+                  {stats?.total_customers > 0 ? (
+                    <>
+                      {t('influencer.youConverted') || 'Du hast'} <span className="font-bold text-[#10B981]">{stats?.total_purchases}</span> {t('influencer.of') || 'von'} <span className="font-bold text-[#7C3AED]">{stats?.total_customers}</span> {t('influencer.customersToSales') || 'Kunden zu Käufern gemacht'}!
+                    </>
+                  ) : (
+                    t('influencer.shareCodeToStart') || 'Teile deinen Code, um loszulegen!'
+                  )}
+                </p>
+              </div>
+              {stats?.total_purchases > 0 && (
+                <div className="flex items-center gap-2">
+                  {((stats?.total_purchases / stats?.total_customers) * 100) >= 30 ? (
+                    <span className="flex items-center gap-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                      <ArrowUp className="w-4 h-4" />
+                      {t('influencer.excellentPerformance') || 'Exzellent'}
+                    </span>
+                  ) : ((stats?.total_purchases / stats?.total_customers) * 100) >= 15 ? (
+                    <span className="flex items-center gap-1 px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
+                      <Activity className="w-4 h-4" />
+                      {t('influencer.goodPerformance') || 'Gut'}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-medium">
+                      <TrendingUp className="w-4 h-4" />
+                      {t('influencer.growthPotential') || 'Potenzial'}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Payout Card */}
         <div className="glass-card rounded-2xl p-4 md:p-6 border-l-4 border-[#10B981]">
           {/* Header Row */}
