@@ -112,8 +112,8 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
               </div>
               
               <div className="pt-4 border-t border-white/10">
-                <p className="text-[#94A3B8] text-sm mb-3">Streak-Bonus (zusätzliche Gebote)</p>
-                <div className="grid grid-cols-3 gap-3">
+                <p className="text-[#94A3B8] text-xs sm:text-sm mb-3">Streak-Bonus (zusätzliche Gebote)</p>
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
                   <div>
                     <Label className="text-white text-xs">7 Tage</Label>
                     <Input
