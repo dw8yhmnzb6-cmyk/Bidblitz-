@@ -528,14 +528,21 @@ export default function VIP() {
               <div className="text-right">
                 <p className="text-gray-400 text-sm">{texts.validUntil}</p>
                 <p className="text-white font-semibold">
-                  {new Date(vipStatus.next_renewal).toLocaleDateString(language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US')}
+                  {vipStatus.next_renewal && new Date(vipStatus.next_renewal).getFullYear() > 1970
+                    ? new Date(vipStatus.next_renewal).toLocaleDateString(language === 'de' ? 'de-DE' : language === 'fr' ? 'fr-FR' : 'en-US')
+                    : vipStatus.is_admin || vipStatus.is_manager || vipStatus.is_influencer
+                      ? '∞ ' + (language === 'de' ? 'Unbegrenzt' : 'Unlimited')
+                      : language === 'de' ? 'Aktiv' : 'Active'
+                  }
                 </p>
-                <button 
-                  onClick={handleCancel}
-                  className="text-red-400 text-sm hover:underline mt-2"
-                >
-                  {texts.cancelAnytime}
-                </button>
+                {!vipStatus.is_admin && !vipStatus.is_manager && !vipStatus.is_influencer && (
+                  <button 
+                    onClick={handleCancel}
+                    className="text-red-400 text-sm hover:underline mt-2"
+                  >
+                    {texts.cancelAnytime}
+                  </button>
+                )}
               </div>
             </div>
           </div>
