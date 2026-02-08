@@ -115,9 +115,41 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
   return children;
 };
 
+// Maintenance Mode Hook - checks if maintenance is active
+import { useState, useEffect } from 'react';
+const useMaintenanceCheck = () => {
+  const [isInMaintenance, setIsInMaintenance] = useState(false);
+  const { isAdmin } = useAuth();
+  
+  useEffect(() => {
+    const checkMaintenance = async () => {
+      try {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/maintenance/status`);
+        const data = await res.json();
+        // Only show maintenance page for non-admin users
+        setIsInMaintenance(data.enabled && !isAdmin);
+      } catch (error) {
+        console.error('Error checking maintenance status:', error);
+      }
+    };
+    
+    checkMaintenance();
+    const interval = setInterval(checkMaintenance, 30000); // Check every 30 seconds
+    return () => clearInterval(interval);
+  }, [isAdmin]);
+  
+  return isInMaintenance;
+};
+
 function AppContent() {
   const { language, mappedLanguage } = useLanguage();
   const { isDarkMode } = useTheme();
+  const isInMaintenance = useMaintenanceCheck();
+  
+  // Show maintenance page for non-admin users when maintenance mode is active
+  if (isInMaintenance) {
+    return <MaintenancePage />;
+  }
   
   return (
     <div className={`App min-h-screen flex flex-col overflow-x-hidden transition-colors duration-300 ${
