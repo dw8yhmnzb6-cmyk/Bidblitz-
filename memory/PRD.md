@@ -379,7 +379,13 @@ February 8, 2026
 ### 4. ✅ Admin Panel Mobile Responsive 📱
 - **Großkunden Tab**: Tabelle durch mobile-freundliche Karten ersetzt
 - **Influencer Tab**: Tabelle durch mobile-freundliche Karten ersetzt
+- **Zahlungen Tab**: NEU - Card-View für Mobile (md:hidden), Tabelle für Desktop (hidden md:block)
+- **Benutzer Tab**: NEU - Card-View für Mobile mit allen Aktionen (Bearbeiten, VIP, Sperren, etc.)
+- **Produkte Tab**: NEU - Card-View für Mobile mit Produktbild und Aktionen
+- **Gutscheine Tab**: NEU - Card-View für Mobile mit Typ, Wert und Status
+- **Auktionen Tab**: NEU - Card-View für Mobile mit Filter (Tag/Nacht) und allen Aktionen
 - Alle Informationen (Rabatt, Status, Aktionen) sichtbar auf mobilen Geräten
+- Theme auf Light-Mode umgestellt für bessere Lesbarkeit
 
 ### 5. ✅ Großkunden-Freischaltung verbessert 🏢
 - Freischaltung funktioniert ohne existierendes User-Konto
