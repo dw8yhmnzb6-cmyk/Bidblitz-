@@ -694,6 +694,120 @@ async def get_customer_stats(customer_number: str, customer = Depends(get_wholes
             "linked_since": link.get("created_at"),
             "transfer_count": len(transfers)
         },
+
+
+# ==================== B2B VOUCHER REDEMPTION ====================
+
+class B2BVoucherRedeem(BaseModel):
+    """Schema for redeeming a voucher"""
+    voucher_code: str
+
+@router.post("/redeem-voucher")
+async def redeem_b2b_voucher(data: B2BVoucherRedeem, customer = Depends(get_wholesale_user)):
+    """Redeem a voucher code for the B2B wholesale account"""
+    code = data.voucher_code.strip().upper()
+    
+    if len(code) < 4:
+        raise HTTPException(status_code=400, detail="Ungültiger Gutschein-Code")
+    
+    # Find the voucher
+    voucher = await db.vouchers.find_one({
+        "code": {"$regex": f"^{code}$", "$options": "i"},
+        "is_active": True
+    })
+    
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Gutschein nicht gefunden oder nicht mehr gültig")
+    
+    # Check if voucher is for B2B
+    if voucher.get("voucher_type") not in ["b2b", "universal", None]:
+        raise HTTPException(status_code=400, detail="Dieser Gutschein ist nicht für Großkunden gültig")
+    
+    # Check expiry
+    if voucher.get("valid_until"):
+        try:
+            expiry = datetime.fromisoformat(voucher["valid_until"].replace("Z", "+00:00"))
+            if datetime.now(timezone.utc) > expiry:
+                raise HTTPException(status_code=400, detail="Dieser Gutschein ist abgelaufen")
+        except:
+            pass
+    
+    # Check usage limit
+    if voucher.get("max_uses") and voucher.get("uses", 0) >= voucher["max_uses"]:
+        raise HTTPException(status_code=400, detail="Dieser Gutschein wurde bereits zu oft verwendet")
+    
+    # Check if this wholesale customer already used this voucher
+    existing_use = await db.b2b_voucher_uses.find_one({
+        "wholesale_id": customer["id"],
+        "voucher_code": code
+    })
+    
+    if existing_use:
+        raise HTTPException(status_code=400, detail="Sie haben diesen Gutschein bereits eingelöst")
+    
+    # Get the bids amount from voucher
+    bids_to_add = voucher.get("bids", 0)
+    discount_percent = voucher.get("discount_percent", 0)
+    credit_amount = voucher.get("credit_amount", 0)
+    
+    if bids_to_add == 0 and credit_amount == 0 and discount_percent == 0:
+        raise HTTPException(status_code=400, detail="Dieser Gutschein hat keinen Wert")
+    
+    # Record the redemption
+    redemption_doc = {
+        "id": str(uuid.uuid4()),
+        "wholesale_id": customer["id"],
+        "wholesale_company": customer["company_name"],
+        "voucher_id": voucher.get("id"),
+        "voucher_code": code,
+        "bids_added": bids_to_add,
+        "credit_added": credit_amount,
+        "discount_applied": discount_percent,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.b2b_voucher_uses.insert_one(redemption_doc)
+    
+    # Update voucher usage count
+    await db.vouchers.update_one(
+        {"code": {"$regex": f"^{code}$", "$options": "i"}},
+        {"$inc": {"uses": 1}}
+    )
+    
+    # Apply the voucher benefits
+    result_message = []
+    
+    if bids_to_add > 0:
+        # Find the linked user account and add bids
+        if customer.get("user_id"):
+            await db.users.update_one(
+                {"id": customer["user_id"]},
+                {"$inc": {"bids_balance": bids_to_add}}
+            )
+            result_message.append(f"{bids_to_add} Gebote")
+    
+    if credit_amount > 0:
+        # Add credit to wholesale account
+        await db.wholesale_customers.update_one(
+            {"id": customer["id"]},
+            {"$inc": {"credit_limit": credit_amount}}
+        )
+        result_message.append(f"€{credit_amount} Kredit")
+    
+    if discount_percent > 0:
+        # This would typically be applied on next order
+        result_message.append(f"{discount_percent}% Rabatt auf nächste Bestellung")
+    
+    logger.info(f"🎟️ B2B voucher redeemed: {customer['company_name']} used {code} - {', '.join(result_message)}")
+    
+    return {
+        "success": True,
+        "message": f"Gutschein eingelöst: {', '.join(result_message)}",
+        "bids_added": bids_to_add,
+        "credit_added": credit_amount,
+        "discount_applied": discount_percent
+    }
+
         "recent_transfers": transfers[:10]
     }
 
