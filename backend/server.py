@@ -357,15 +357,15 @@ async def bot_last_second_bidder():
     # Track which bots have bid on which auctions (for rotation)
     auction_bot_history = {}  # auction_id -> list of last 5 bot IDs
     
-    # MINIMUM price for NORMAL auctions - €20
-    MINIMUM_AUCTION_PRICE = 20.00
+    # MINIMUM price for NORMAL auctions - €25 (für echte Einnahmen)
+    MINIMUM_AUCTION_PRICE = 25.00
     
     # GUTSCHEIN-AUKTIONEN: 30% des Retail-Preises
     VOUCHER_MIN_PERCENTAGE = 0.30  # 30%
     
-    # Default price range for normal auctions (20.00 - 25.00 Euro)
-    DEFAULT_MIN_PRICE = 20.00
-    DEFAULT_MAX_PRICE = 25.00
+    # Default price range for normal auctions (25.00 - 35.00 Euro)
+    DEFAULT_MIN_PRICE = 25.00
+    DEFAULT_MAX_PRICE = 35.00
     
     # REALISTIC timing - vary between auctions
     MIN_BID_INTERVAL = 15.0   # Minimum 15 seconds between bids
