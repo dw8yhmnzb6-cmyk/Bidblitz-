@@ -1,3 +1,12 @@
+// Language mapping for regional variants
+const langMapping = {
+  'xk': 'sq',  // Kosovo -> Albanian
+  'us': 'en',  // US English -> English  
+  'ae': 'ar', // UAE -> Arabic
+};
+
+const getMappedLang = (lang) => langMapping[lang] || lang;
+
 /**
  * Get translated product name based on current language
  * Falls back to German (de) or the original name if translation not available
@@ -5,8 +14,13 @@
 export const getProductName = (product, language) => {
   if (!product) return '';
   
+  const mappedLang = getMappedLang(language);
+  
   // Check for translations object
   const translations = product.name_translations;
+  if (translations && translations[mappedLang]) {
+    return translations[mappedLang];
+  }
   if (translations && translations[language]) {
     return translations[language];
   }
@@ -27,8 +41,13 @@ export const getProductName = (product, language) => {
 export const getProductDescription = (product, language) => {
   if (!product) return '';
   
+  const mappedLang = getMappedLang(language);
+  
   // Check for translations object
   const translations = product.description_translations;
+  if (translations && translations[mappedLang]) {
+    return translations[mappedLang];
+  }
   if (translations && translations[language]) {
     return translations[language];
   }
@@ -48,8 +67,9 @@ export const getProductDescription = (product, language) => {
 export const hasTranslation = (product, language) => {
   if (!product) return false;
   
+  const mappedLang = getMappedLang(language);
   const nameTranslations = product.name_translations;
-  return nameTranslations && nameTranslations[language];
+  return nameTranslations && (nameTranslations[mappedLang] || nameTranslations[language]);
 };
 
 /**
