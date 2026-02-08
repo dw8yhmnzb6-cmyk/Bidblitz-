@@ -58,6 +58,10 @@ export default function AdminMobileNav({
     { icon: TrendingUp, label: 'Analytics', color: 'bg-amber-500', tab: 'analytics' },
     { icon: Bot, label: 'Bots', color: 'bg-indigo-500', tab: 'bots' },
     { icon: Zap, label: 'Influencer', color: 'bg-rose-500', tab: 'influencers' },
+    { icon: Users, label: 'Großkunden', color: 'bg-teal-500', tab: 'wholesale' },
+    { icon: Settings, label: 'Manager', color: 'bg-slate-500', tab: 'manager' },
+    { icon: Users, label: 'Mitarbeiter', color: 'bg-blue-500', tab: 'staff' },
+    { icon: Settings, label: 'Spiele', color: 'bg-orange-500', tab: 'game-config' },
   ];
 
   return (
