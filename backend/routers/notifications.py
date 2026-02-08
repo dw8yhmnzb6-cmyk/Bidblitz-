@@ -198,7 +198,8 @@ async def update_notification_preferences(
     """Update notification preferences"""
     allowed_keys = [
         "push_enabled", "email_enabled", "auction_ending",
-        "auction_won", "outbid", "daily_deals", "new_auctions", "marketing"
+        "auction_won", "outbid", "daily_deals", "new_auctions", "marketing",
+        "night_auction_start"
     ]
     
     updates = {k: v for k, v in preferences.items() if k in allowed_keys}
