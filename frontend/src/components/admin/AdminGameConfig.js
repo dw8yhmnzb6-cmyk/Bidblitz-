@@ -256,9 +256,9 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
                 />
                 <p className="text-[#94A3B8] text-xs mt-1">{gameConfig.night_auction_bid_discount}% weniger Gebote werden abgezogen</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <Label className="text-white">Start (Uhr)</Label>
+                  <Label className="text-white text-sm">Start (Uhr)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -269,7 +269,7 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
                   />
                 </div>
                 <div>
-                  <Label className="text-white">Ende (Uhr)</Label>
+                  <Label className="text-white text-sm">Ende (Uhr)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -284,49 +284,51 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
           </div>
 
           {/* Achievements Config */}
-          <div className="glass-card rounded-xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-[#7C3AED] flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-white" />
+          <div className="glass-card rounded-xl p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 sm:mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[#7C3AED] flex items-center justify-center flex-shrink-0">
+                  <Trophy className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-sm sm:text-base">Achievements</h3>
+                  <p className="text-[#94A3B8] text-xs sm:text-sm">Belohnungen für Meilensteine</p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-white font-bold">Achievements</h3>
-                <p className="text-[#94A3B8] text-sm">Belohnungen für Meilensteine</p>
-              </div>
-              <label className="ml-auto flex items-center gap-2">
+              <label className="sm:ml-auto flex items-center gap-2">
                 <input
                   type="checkbox"
                   checked={gameConfig.achievements_enabled}
                   onChange={(e) => setGameConfig({...gameConfig, achievements_enabled: e.target.checked})}
                   className="w-5 h-5 rounded"
                 />
-                <span className="text-white">Aktiv</span>
+                <span className="text-white text-sm">Aktiv</span>
               </label>
             </div>
             
-            <div className="text-center py-4">
-              <p className="text-[#94A3B8]">12 Achievements verfügbar</p>
-              <p className="text-white font-mono text-sm mt-2">
+            <div className="text-center py-3 sm:py-4">
+              <p className="text-[#94A3B8] text-sm">12 Achievements verfügbar</p>
+              <p className="text-white font-mono text-xs sm:text-sm mt-2">
                 🏆 🎯 ⭐ 👑 🦉 🐦 💎 🍀 🔥 💪 👥 🎓
               </p>
             </div>
           </div>
 
           {/* Referral Config */}
-          <div className="glass-card rounded-xl p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-lg bg-[#06B6D4] flex items-center justify-center">
+          <div className="glass-card rounded-xl p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-4 sm:mb-6">
+              <div className="w-10 h-10 rounded-lg bg-[#06B6D4] flex items-center justify-center flex-shrink-0">
                 <Users className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-bold">Freunde werben</h3>
-                <p className="text-[#94A3B8] text-sm">Referral-Belohnungen</p>
+                <h3 className="text-white font-bold text-sm sm:text-base">Freunde werben</h3>
+                <p className="text-[#94A3B8] text-xs sm:text-sm">Referral-Belohnungen</p>
               </div>
             </div>
             
             <div className="space-y-4">
               <div>
-                <Label className="text-white">Bonus-Gebote pro Empfehlung</Label>
+                <Label className="text-white text-sm">Bonus-Gebote pro Empfehlung</Label>
                 <Input
                   type="number"
                   min="0"
@@ -337,7 +339,7 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
                 <p className="text-[#94A3B8] text-xs mt-1">Beide erhalten diese Gebote</p>
               </div>
               <div>
-                <Label className="text-white">Min. Einzahlung (€)</Label>
+                <Label className="text-white text-sm">Min. Einzahlung (€)</Label>
                 <Input
                   type="number"
                   min="0"
@@ -357,12 +359,12 @@ export function AdminGameConfig({ token, gameConfig, setGameConfig, isConnected 
       )}
 
       {/* Info Box */}
-      <div className="glass-card rounded-xl p-4 border-l-4 border-[#7C3AED]">
-        <div className="flex items-start gap-3">
-          <Settings className="w-6 h-6 text-[#7C3AED] flex-shrink-0" />
+      <div className="glass-card rounded-xl p-3 sm:p-4 border-l-4 border-[#7C3AED]">
+        <div className="flex items-start gap-2 sm:gap-3">
+          <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-[#7C3AED] flex-shrink-0" />
           <div>
-            <h4 className="text-white font-semibold">Tipp</h4>
-            <p className="text-[#94A3B8] text-sm">
+            <h4 className="text-white font-semibold text-sm sm:text-base">Tipp</h4>
+            <p className="text-[#94A3B8] text-xs sm:text-sm">
               Änderungen werden sofort wirksam. Um eine Auktion als Anfänger-, Gratis- oder Nacht-Auktion zu markieren, 
               bearbeiten Sie diese im "Auktionen" Tab.
             </p>
