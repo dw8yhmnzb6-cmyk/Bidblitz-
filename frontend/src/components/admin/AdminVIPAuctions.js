@@ -129,124 +129,218 @@ export function AdminVIPAuctions({ token, vipAuctions, auctions, fetchData }) {
       </div>
 
       {/* Current VIP Auctions */}
-      <div className="glass-card rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+      <div className="glass-card rounded-xl p-4 sm:p-6">
+        <h3 className="text-base sm:text-lg font-semibold text-white mb-4 flex items-center gap-2">
           <Star className="w-5 h-5 text-yellow-400" />
           Aktuelle VIP-Auktionen ({vipAuctions?.length || 0})
         </h3>
         
         {vipAuctions?.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-[#181824]">
-                <tr>
-                  <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Produkt</th>
-                  <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Preis</th>
-                  <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">
-                    <div className="flex items-center gap-1">
-                      <Bot className="w-4 h-4 text-[#FFD700]" /><span>Bot-Ziel</span>
+          <>
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-3">
+              {vipAuctions.map((auction) => {
+                const botTarget = auction.bot_target_price || 0;
+                const currentPrice = auction.current_price || 0;
+                const botActive = botTarget > 0 && currentPrice < botTarget && auction.status === 'active';
+                const targetReached = botTarget > 0 && currentPrice >= botTarget;
+                
+                return (
+                  <div key={auction.id} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                    {/* Header with product and VIP badge */}
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="relative flex-shrink-0">
+                        <img src={auction.product?.image_url || '/placeholder.png'} 
+                          alt={auction.product?.name}
+                          className="w-14 h-14 object-contain bg-white/5 rounded" />
+                        <div className="absolute -top-1 -left-1 bg-gradient-to-r from-yellow-500 to-amber-400 rounded-full p-0.5">
+                          <Crown className="w-3 h-3 text-black" />
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-yellow-500 to-amber-400 text-black">VIP</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            auction.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'
+                          }`}>
+                            {auction.status === 'active' ? 'Aktiv' : 'Beendet'}
+                          </span>
+                        </div>
+                        <p className="text-white font-medium text-sm truncate">{auction.product?.name || 'N/A'}</p>
+                        <p className="text-gray-400 text-xs">UVP: €{auction.product?.retail_price?.toFixed(2)}</p>
+                      </div>
                     </div>
-                  </th>
-                  <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Gebote</th>
-                  <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Status</th>
-                  <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Aktionen</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {vipAuctions.map((auction) => {
-                  const botTarget = auction.bot_target_price || 0;
-                  const currentPrice = auction.current_price || 0;
-                  const botActive = botTarget > 0 && currentPrice < botTarget && auction.status === 'active';
-                  const targetReached = botTarget > 0 && currentPrice >= botTarget;
-                  
-                  return (
-                    <tr key={auction.id} className="hover:bg-white/5">
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-3">
-                          <div className="relative">
-                            <img src={auction.product?.image_url || '/placeholder.png'} 
-                              alt={auction.product?.name}
-                              className="w-12 h-12 object-contain bg-white/5 rounded" />
-                            <div className="absolute -top-1 -left-1 bg-gradient-to-r from-yellow-500 to-amber-400 rounded-full p-0.5">
-                              <Crown className="w-3 h-3 text-black" />
+                    
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-2 mb-3">
+                      <div className="bg-slate-900/50 rounded-lg p-2 text-center">
+                        <p className="text-[10px] text-gray-400">Preis</p>
+                        <p className="text-sm font-mono font-bold text-cyan-400">€{currentPrice.toFixed(2)}</p>
+                      </div>
+                      <div className="bg-slate-900/50 rounded-lg p-2 text-center">
+                        <p className="text-[10px] text-gray-400">Bot-Ziel</p>
+                        <p className={`text-sm font-mono font-bold ${targetReached ? 'text-emerald-400' : botTarget > 0 ? 'text-yellow-400' : 'text-gray-500'}`}>
+                          {botTarget > 0 ? `€${botTarget.toFixed(2)}` : '-'}
+                        </p>
+                        {botActive && <span className="text-[8px] text-yellow-400 animate-pulse">AKTIV</span>}
+                      </div>
+                      <div className="bg-slate-900/50 rounded-lg p-2 text-center">
+                        <p className="text-[10px] text-gray-400">Gebote</p>
+                        <p className="text-sm font-bold text-white">{auction.total_bids}</p>
+                      </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap gap-2">
+                      <Button size="sm" variant="ghost" className="flex-1 text-yellow-400 bg-yellow-400/10 text-xs"
+                        onClick={() => handleUpdateBotTarget(auction.id, botTarget)}>
+                        <Target className="w-3 h-3 mr-1" />Bot
+                      </Button>
+                      <Button size="sm" variant="ghost" 
+                        className={`flex-1 text-xs ${auction.auto_restart?.enabled ? 'text-violet-400 bg-violet-400/20' : 'text-gray-400 bg-gray-400/10'}`}
+                        onClick={() => handleSetAutoRestart(auction.id, auction.auto_restart?.duration_minutes || 10)}>
+                        <Repeat className="w-3 h-3 mr-1" />Auto
+                      </Button>
+                      {auction.status === 'active' ? (
+                        <>
+                          <Button size="sm" variant="ghost" className="text-cyan-400 bg-cyan-400/10 text-xs px-2" 
+                            onClick={() => handleExtendAuction(auction.id)}>
+                            <RefreshCw className="w-3 h-3" />
+                          </Button>
+                          <Button size="sm" variant="ghost" className="text-amber-400 bg-amber-400/10 text-xs px-2" 
+                            onClick={() => handleEndAuction(auction.id)}>
+                            <Square className="w-3 h-3" />
+                          </Button>
+                        </>
+                      ) : (
+                        <Button size="sm" variant="ghost" className="text-emerald-400 bg-emerald-400/10 text-xs px-2" 
+                          onClick={() => handleRestartAuction(auction.id)}>
+                          <Play className="w-3 h-3" />
+                        </Button>
+                      )}
+                      <Button size="sm" variant="ghost" className="text-red-400 bg-red-400/10 text-xs px-2"
+                        onClick={() => handleSetVipOnly(auction.id, true)}>
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-[#181824]">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Produkt</th>
+                    <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Preis</th>
+                    <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">
+                      <div className="flex items-center gap-1">
+                        <Bot className="w-4 h-4 text-[#FFD700]" /><span>Bot-Ziel</span>
+                      </div>
+                    </th>
+                    <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Gebote</th>
+                    <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Status</th>
+                    <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">Aktionen</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                  {vipAuctions.map((auction) => {
+                    const botTarget = auction.bot_target_price || 0;
+                    const currentPrice = auction.current_price || 0;
+                    const botActive = botTarget > 0 && currentPrice < botTarget && auction.status === 'active';
+                    const targetReached = botTarget > 0 && currentPrice >= botTarget;
+                    
+                    return (
+                      <tr key={auction.id} className="hover:bg-white/5">
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <img src={auction.product?.image_url || '/placeholder.png'} 
+                                alt={auction.product?.name}
+                                className="w-12 h-12 object-contain bg-white/5 rounded" />
+                              <div className="absolute -top-1 -left-1 bg-gradient-to-r from-yellow-500 to-amber-400 rounded-full p-0.5">
+                                <Crown className="w-3 h-3 text-black" />
+                              </div>
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-yellow-500 to-amber-400 text-black">VIP</span>
+                                <p className="text-white font-medium">{auction.product?.name || 'N/A'}</p>
+                              </div>
+                              <p className="text-gray-400 text-xs">UVP: €{auction.product?.retail_price?.toFixed(2)}</p>
                             </div>
                           </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gradient-to-r from-yellow-500 to-amber-400 text-black">VIP</span>
-                              <p className="text-white font-medium">{auction.product?.name || 'N/A'}</p>
-                            </div>
-                            <p className="text-gray-400 text-xs">UVP: €{auction.product?.retail_price?.toFixed(2)}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-[#06B6D4] font-mono">€{currentPrice.toFixed(2)}</td>
-                      <td className="px-4 py-3">
-                        <button onClick={() => handleUpdateBotTarget(auction.id, botTarget)} className="flex items-center gap-2 group">
-                          {botTarget > 0 ? (
-                            <div className="flex items-center gap-1">
-                              <span className={`font-mono ${targetReached ? 'text-[#10B981]' : 'text-[#FFD700]'}`}>
-                                €{botTarget.toFixed(2)}
-                              </span>
-                              {botActive && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FFD700]/20 text-[#FFD700] animate-pulse">AKTIV</span>}
-                              {targetReached && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#10B981]/20 text-[#10B981]">ERREICHT</span>}
-                            </div>
-                          ) : <span className="text-[#94A3B8]">-</span>}
-                          <Edit className="w-3 h-3 text-[#94A3B8] opacity-0 group-hover:opacity-100" />
-                        </button>
-                      </td>
-                      <td className="px-4 py-3 text-white">{auction.total_bids}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                          auction.status === 'active' ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/20 text-[#EF4444]'
-                        }`}>
-                          {auction.status === 'active' ? 'Aktiv' : 'Beendet'}
-                        </span>
-                        {auction.auto_restart?.enabled && (
-                          <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#7C3AED]/20 text-[#7C3AED]">AUTO</span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <Button size="sm" variant="ghost" className="text-[#FFD700] hover:bg-[#FFD700]/10"
-                            onClick={() => handleUpdateBotTarget(auction.id, botTarget)} title="Bot-Ziel">
-                            <Target className="w-4 h-4" />
-                          </Button>
-                          <Button size="sm" variant="ghost" 
-                            className={`${auction.auto_restart?.enabled ? 'text-[#7C3AED] bg-[#7C3AED]/20' : 'text-gray-400'} hover:bg-[#7C3AED]/10`}
-                            onClick={() => handleSetAutoRestart(auction.id, auction.auto_restart?.duration_minutes || 10)} title="Auto-Neustart">
-                            <Repeat className="w-4 h-4" />
-                          </Button>
-                          {auction.status === 'active' && (
-                            <>
-                              <Button size="sm" variant="ghost" className="text-[#06B6D4] hover:bg-[#06B6D4]/10" 
-                                onClick={() => handleExtendAuction(auction.id)} title="Verlängern">
-                                <RefreshCw className="w-4 h-4" />
-                              </Button>
-                              <Button size="sm" variant="ghost" className="text-[#F59E0B] hover:bg-[#F59E0B]/10" 
-                                onClick={() => handleEndAuction(auction.id)} title="Beenden">
-                                <Square className="w-4 h-4" />
-                              </Button>
-                            </>
+                        </td>
+                        <td className="px-4 py-3 text-[#06B6D4] font-mono">€{currentPrice.toFixed(2)}</td>
+                        <td className="px-4 py-3">
+                          <button onClick={() => handleUpdateBotTarget(auction.id, botTarget)} className="flex items-center gap-2 group">
+                            {botTarget > 0 ? (
+                              <div className="flex items-center gap-1">
+                                <span className={`font-mono ${targetReached ? 'text-[#10B981]' : 'text-[#FFD700]'}`}>
+                                  €{botTarget.toFixed(2)}
+                                </span>
+                                {botActive && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#FFD700]/20 text-[#FFD700] animate-pulse">AKTIV</span>}
+                                {targetReached && <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#10B981]/20 text-[#10B981]">ERREICHT</span>}
+                              </div>
+                            ) : <span className="text-[#94A3B8]">-</span>}
+                            <Edit className="w-3 h-3 text-[#94A3B8] opacity-0 group-hover:opacity-100" />
+                          </button>
+                        </td>
+                        <td className="px-4 py-3 text-white">{auction.total_bids}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                            auction.status === 'active' ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/20 text-[#EF4444]'
+                          }`}>
+                            {auction.status === 'active' ? 'Aktiv' : 'Beendet'}
+                          </span>
+                          {auction.auto_restart?.enabled && (
+                            <span className="ml-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#7C3AED]/20 text-[#7C3AED]">AUTO</span>
                           )}
-                          {auction.status === 'ended' && (
-                            <Button size="sm" variant="ghost" className="text-[#10B981] hover:bg-[#10B981]/10" 
-                              onClick={() => handleRestartAuction(auction.id)} title="Neu starten">
-                              <Play className="w-4 h-4" />
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <Button size="sm" variant="ghost" className="text-[#FFD700] hover:bg-[#FFD700]/10"
+                              onClick={() => handleUpdateBotTarget(auction.id, botTarget)} title="Bot-Ziel">
+                              <Target className="w-4 h-4" />
                             </Button>
-                          )}
-                          <Button size="sm" variant="ghost" className="text-red-400 hover:bg-red-400/10"
-                            onClick={() => handleSetVipOnly(auction.id, true)} title="VIP-Status entfernen">
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                            <Button size="sm" variant="ghost" 
+                              className={`${auction.auto_restart?.enabled ? 'text-[#7C3AED] bg-[#7C3AED]/20' : 'text-gray-400'} hover:bg-[#7C3AED]/10`}
+                              onClick={() => handleSetAutoRestart(auction.id, auction.auto_restart?.duration_minutes || 10)} title="Auto-Neustart">
+                              <Repeat className="w-4 h-4" />
+                            </Button>
+                            {auction.status === 'active' && (
+                              <>
+                                <Button size="sm" variant="ghost" className="text-[#06B6D4] hover:bg-[#06B6D4]/10" 
+                                  onClick={() => handleExtendAuction(auction.id)} title="Verlängern">
+                                  <RefreshCw className="w-4 h-4" />
+                                </Button>
+                                <Button size="sm" variant="ghost" className="text-[#F59E0B] hover:bg-[#F59E0B]/10" 
+                                  onClick={() => handleEndAuction(auction.id)} title="Beenden">
+                                  <Square className="w-4 h-4" />
+                                </Button>
+                              </>
+                            )}
+                            {auction.status === 'ended' && (
+                              <Button size="sm" variant="ghost" className="text-[#10B981] hover:bg-[#10B981]/10" 
+                                onClick={() => handleRestartAuction(auction.id)} title="Neu starten">
+                                <Play className="w-4 h-4" />
+                              </Button>
+                            )}
+                            <Button size="sm" variant="ghost" className="text-red-400 hover:bg-red-400/10"
+                              onClick={() => handleSetVipOnly(auction.id, true)} title="VIP-Status entfernen">
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : (
           <p className="text-gray-400 text-center py-8">Keine VIP-Auktionen vorhanden</p>
         )}
