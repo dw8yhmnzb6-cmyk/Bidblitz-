@@ -332,6 +332,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - `/app/test_reports/iteration_38.json` - Homepage Features (100% passed)
 - `/app/test_reports/iteration_39.json` - iPad Responsive & Bot Bidding
 - `/app/test_reports/iteration_40.json` - Nacht-Auktionen Timer & OpenAI Fix (100% passed)
+- `/app/test_reports/iteration_41.json` - Wartungsmodus & Freunde werben Link (100% passed)
 
 ---
 
