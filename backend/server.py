@@ -818,6 +818,12 @@ async def day_night_auction_scheduler():
                         {"$set": {"status": "day_paused", "paused_at": datetime.now(timezone.utc).isoformat()}}
                     )
                     
+                    # Get night auctions that will be resumed (for notifications)
+                    night_auctions_to_resume = await db.auctions.find(
+                        {"status": "night_paused", "is_night_auction": True},
+                        {"_id": 0, "id": 1, "product_id": 1}
+                    ).to_list(100)
+                    
                     # Resume night auctions
                     night_result = await db.auctions.update_many(
                         {"status": "night_paused", "is_night_auction": True},
@@ -828,6 +834,10 @@ async def day_night_auction_scheduler():
                     )
                     
                     logger.info(f"🌙 Night mode: Paused {day_result.modified_count} day auctions, Resumed {night_result.modified_count} night auctions")
+                    
+                    # Send notifications to users who bid on night auctions
+                    if night_auctions_to_resume:
+                        await send_night_auction_notifications(night_auctions_to_resume)
                     
                 else:
                     # DAY MODE: Resume day auctions, pause night auctions
