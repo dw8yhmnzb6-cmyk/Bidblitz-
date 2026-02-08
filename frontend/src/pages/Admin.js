@@ -3311,7 +3311,7 @@ export default function Admin() {
       {/* Voice Debug Floating Button */}
       <button
         onClick={() => setShowVoiceDebug(true)}
-        className="fixed bottom-6 left-64 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center z-40 group"
+        className="fixed bottom-6 left-64 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center z-40 group hidden md:flex"
         title="Sprach-Debug-Assistent"
         data-testid="voice-debug-btn"
       >
@@ -3320,6 +3320,17 @@ export default function Admin() {
           Hey BidBlitz 🎤
         </span>
       </button>
+      
+      {/* Mobile Bottom Navigation */}
+      <AdminMobileNav 
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        users={users}
+        onUserSelect={(user) => {
+          setEditingUser(user);
+          setActiveTab('users');
+        }}
+      />
     </div>
   );
 }
