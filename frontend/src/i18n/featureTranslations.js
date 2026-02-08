@@ -1484,7 +1484,7 @@ export const featureTranslations = {
 
 // Language mapping for regional variants (Kosovo uses Albanian)
 const languageMapping = {
-  'xk': 'sq',  // Kosovo -> Albanian
+  'xk': 'de',  // Kosovo -> Albanian
   'us': 'en',  // US English -> English
   'ae': 'ar', // UAE -> Arabic
 };

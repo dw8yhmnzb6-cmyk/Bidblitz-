@@ -77,7 +77,7 @@ const widgetTexts = {
 
 // Language mapping for regional variants
 const langMapping = {
-  'xk': 'sq',  // Kosovo -> Albanian
+  'xk': 'de',  // Kosovo -> Albanian
   'us': 'en',  // US English -> English  
   'ae': 'ar', // UAE -> Arabic
 };
