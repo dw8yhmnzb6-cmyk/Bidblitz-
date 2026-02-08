@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { 
   Building2, Package, ShoppingCart, FileText, User, LogOut, 
   TrendingUp, CreditCard, Percent, Clock, CheckCircle, RefreshCw,
-  ChevronRight, AlertCircle
+  ChevronRight, AlertCircle, Users, Send, Gift, Search, Plus, Trash2,
+  History, UserPlus, Zap
 } from 'lucide-react';
 import { toast } from 'sonner';
 
