@@ -415,8 +415,8 @@ async def bot_last_second_bidder():
                     # Check if it's time for next bid on this auction
                     next_bid_at = next_bid_time_per_auction.get(auction_id, 0)
                     
-                    # CRITICAL: If < 15 seconds left and price < €20, bid IMMEDIATELY
-                    is_urgent = seconds_left < 15 and current_price < 20.0
+                    # CRITICAL: If < 15 seconds left and price < €25, bid IMMEDIATELY
+                    is_urgent = seconds_left < 15 and current_price < 25.0
                     
                     if now_ts < next_bid_at and not is_urgent:
                         continue  # Not time yet (unless urgent)
