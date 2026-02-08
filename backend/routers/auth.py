@@ -95,10 +95,26 @@ async def register(user: UserCreate, request: Request):
     
     await db.users.insert_one(new_user)
     
+    # Check if this email is an approved wholesale customer waiting to be linked
+    wholesale_customer = await db.wholesale_customers.find_one({"email": user.email.lower(), "user_id": None})
+    if wholesale_customer:
+        # Link the wholesale customer to this new user
+        await db.wholesale_customers.update_one(
+            {"id": wholesale_customer["id"]},
+            {"$set": {"user_id": user_id}}
+        )
+        # Mark user as wholesale
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"is_wholesale": True, "wholesale_id": wholesale_customer["id"]}}
+        )
+        logger.info(f"🏢 Wholesale customer {wholesale_customer['company_name']} linked to new user {user.email}")
+    
     # Log successful registration
     await log_security_event("registration_success", user_id, {
         "email": user.email,
-        "referred_by": referred_by
+        "referred_by": referred_by,
+        "wholesale_linked": wholesale_customer is not None
     }, client_ip)
     
     token = create_token(user_id)
