@@ -810,14 +810,6 @@ async def send_night_auction_notifications(night_auctions: list):
         # Create a set of users who want night notifications (default is True)
         pref_map = {p["user_id"]: p.get("night_auction_start", True) for p in prefs}
         
-        # Get product names for better notification messages
-        product_ids = list(set(a.get("product_id") for a in night_auctions if a.get("product_id")))
-        products = await db.products.find(
-            {"id": {"$in": product_ids}},
-            {"_id": 0, "id": 1, "name": 1}
-        ).to_list(100)
-        product_names = {p["id"]: p["name"] for p in products}
-        
         # Create notifications for each bidder
         notifications = []
         for bidder in bidders:
