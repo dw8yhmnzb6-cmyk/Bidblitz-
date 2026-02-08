@@ -809,7 +809,3 @@ async def redeem_b2b_voucher(data: B2BVoucherRedeem, customer = Depends(get_whol
         "credit_added": credit_amount,
         "discount_applied": discount_percent
     }
-
-        "recent_transfers": transfers[:10]
-    }
-
