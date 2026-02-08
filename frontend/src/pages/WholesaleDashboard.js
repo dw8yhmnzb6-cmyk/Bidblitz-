@@ -7,7 +7,7 @@ import {
   Building2, Package, ShoppingCart, FileText, User, LogOut, 
   TrendingUp, CreditCard, Percent, Clock, CheckCircle, RefreshCw,
   ChevronRight, AlertCircle, Users, Send, Gift, Search, Plus, Trash2,
-  History, UserPlus, Zap
+  History, UserPlus, Zap, Ticket
 } from 'lucide-react';
 import { toast } from 'sonner';
 
