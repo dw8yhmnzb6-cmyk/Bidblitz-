@@ -207,19 +207,26 @@ export default function VIPAuctions() {
           </div>
         )}
         
-        {/* VIP Header */}
-        <div className="text-center py-8">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 px-6 py-2 rounded-full mb-4">
-            <Crown className="w-6 h-6 text-yellow-400" />
-            <span className="text-yellow-400 font-bold text-lg">VIP BEREICH</span>
-            <Crown className="w-6 h-6 text-yellow-400" />
+        {/* VIP Header - Premium Design */}
+        <div className="text-center py-10 relative">
+          {/* Background Glow Effect */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-96 h-96 bg-gradient-to-r from-yellow-500/20 via-orange-500/10 to-amber-500/20 rounded-full blur-3xl"></div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-            Exklusive VIP-Auktionen
-          </h1>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Premium-Produkte mit weniger Konkurrenz - nur für unsere VIP-Mitglieder
-          </p>
+          
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-yellow-500/30 via-amber-500/20 to-orange-500/30 px-8 py-3 rounded-2xl mb-6 border border-yellow-500/40 shadow-lg shadow-yellow-500/10">
+              <Crown className="w-8 h-8 text-yellow-400 animate-pulse" />
+              <span className="text-yellow-400 font-black text-xl tracking-wider">VIP EXKLUSIV</span>
+              <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-300 to-orange-400 mb-4">
+              Exklusive VIP-Auktionen
+            </h1>
+            <p className="text-gray-300 max-w-2xl mx-auto text-lg">
+              Premium-Produkte • Weniger Konkurrenz • Bessere Gewinnchancen
+            </p>
+          </div>
         </div>
 
         {/* VIP Status Banner */}
