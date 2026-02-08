@@ -424,8 +424,8 @@ async def bot_last_second_bidder():
                     should_bid = False
                     target_price = 0
                     
-                    # MINDESTPREIS: Immer €20 für echte Einnahmen
-                    effective_minimum = MINIMUM_AUCTION_PRICE  # €20
+                    # MINDESTPREIS: Immer €25 für echte Einnahmen
+                    effective_minimum = MINIMUM_AUCTION_PRICE  # €25
                     
                     # Verwende das Maximum aus explicit_target und effective_minimum
                     effective_target = max(explicit_target or 0, effective_minimum)
