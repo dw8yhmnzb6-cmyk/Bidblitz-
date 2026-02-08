@@ -924,8 +924,6 @@ async def day_night_auction_scheduler():
     # Keep task alive but do nothing (in case it's awaited elsewhere)
     while bot_task_running:
         await asyncio.sleep(3600)  # Sleep 1 hour, do nothing
-            logger.error(f"Day/Night scheduler error: {e}")
-            await asyncio.sleep(60)
     
     logger.info("Day/Night auction scheduler stopped")
 
