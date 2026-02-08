@@ -42,6 +42,14 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
      - `/app/backend/server.py` - Router registriert
      - `/app/frontend/src/components/admin/AdminAnalytics.js` - E-Mail-Widget hinzugefügt
 
+4. ✅ **P0 Additional Admin Mobile Fixes** (User-Reported Issues)
+   - **VIP-Auktionen Tab**: Neue mobile Card-View mit Produktbild, VIP-Badge, Stats-Grid, Action-Buttons
+   - **Großkunden (B2B) Tab**: Bewerbungen-Sektion mit mobile-optimierten Kontaktinfos und Full-Width Buttons
+   - Getestet: 3/3 Mobile Layout Tests bestanden (100% Erfolgsrate)
+   - Geänderte Dateien:
+     - `/app/frontend/src/components/admin/AdminVIPAuctions.js` - Neue md:hidden Card-View
+     - `/app/frontend/src/components/admin/AdminWholesale.js` - Applications-Grid optimiert
+
 ---
 
 ### ✅ Session Update - February 8, 2026 (Session 1)
