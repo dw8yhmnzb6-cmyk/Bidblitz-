@@ -3,7 +3,7 @@ Maintenance Mode Router
 Allows admins to enable/disable maintenance mode for the platform
 """
 from fastapi import APIRouter, Depends, HTTPException, Request
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from config import db, logger
 from dependencies import get_admin_user
 
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/maintenance", tags=["Maintenance"])
 @router.get("/status")
 async def get_maintenance_status():
     """Get current maintenance mode status - public endpoint"""
-    settings = db.settings.find_one({"type": "maintenance"})
+    settings = await db.settings.find_one({"type": "maintenance"})
     if not settings:
         return {
             "enabled": False,
@@ -39,9 +39,9 @@ async def toggle_maintenance_mode(
     estimated_end = None
     if enabled and estimated_minutes:
         estimated_end = (datetime.now(timezone.utc) + 
-                        __import__('datetime').timedelta(minutes=estimated_minutes)).isoformat()
+                        timedelta(minutes=estimated_minutes)).isoformat()
     
-    db.settings.update_one(
+    await db.settings.update_one(
         {"type": "maintenance"},
         {
             "$set": {
@@ -68,7 +68,7 @@ async def toggle_maintenance_mode(
 @router.get("/admin/status")
 async def get_maintenance_admin_status(admin = Depends(get_admin_user)):
     """Get detailed maintenance status for admin panel"""
-    settings = db.settings.find_one({"type": "maintenance"})
+    settings = await db.settings.find_one({"type": "maintenance"})
     if not settings:
         return {
             "enabled": False,
