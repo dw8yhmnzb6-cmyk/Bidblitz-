@@ -2627,6 +2627,11 @@ export default function Admin() {
             />
           )}
 
+          {/* Maintenance Tab */}
+          {activeTab === 'maintenance' && (
+            <AdminMaintenance token={token} />
+          )}
+
           {/* Game Config Tab */}
           {activeTab === 'game-config' && (
             <AdminGameConfig
