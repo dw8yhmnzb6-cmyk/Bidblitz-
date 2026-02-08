@@ -237,9 +237,8 @@ const PersonalizedRecommendations = memo(({ onBid }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Get translations
-  const lang = language === 'xk' ? 'xk' : language;
-  const t = translations[lang] || translations.de;
+  // Get translations - use langKey which maps sq/xk to de
+  const t = translations[langKey] || translations.de;
   
   const fetchRecommendations = async () => {
     if (!isAuthenticated || !token) return;
