@@ -335,13 +335,14 @@ export default function VIPAuctions() {
                   <Button 
                     onClick={() => {
                       if (!token) {
-                        // Not logged in - redirect to login
-                        toast.error('Bitte melden Sie sich an');
-                        navigate('/login');
+                        // Not logged in - redirect to login with VIP redirect
+                        toast.info('Bitte melden Sie sich an, um VIP zu werden');
+                        navigate('/login?redirect=/vip');
                         return;
                       }
                       if (!isVip) {
                         // Logged in but not VIP - redirect to VIP purchase
+                        toast.info('VIP-Mitgliedschaft erforderlich');
                         navigate('/vip');
                         return;
                       }
@@ -364,7 +365,7 @@ export default function VIPAuctions() {
                     ) : !token ? (
                       <>
                         <Lock className="w-4 h-4 mr-1" />
-                        ANMELDEN
+                        ANMELDEN & VIP KAUFEN
                       </>
                     ) : isVip ? (
                       <>
@@ -374,7 +375,7 @@ export default function VIPAuctions() {
                     ) : (
                       <>
                         <Crown className="w-4 h-4 mr-1" />
-                        VIP WERDEN
+                        VIP KAUFEN
                       </>
                     )}
                   </Button>
