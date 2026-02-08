@@ -126,7 +126,7 @@ const AdminAnalytics = ({ token }) => {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         <KPICard 
           title="Umsatz" 
           value={`€${data.revenue.total.toLocaleString('de-DE', { minimumFractionDigits: 2 })}`}
@@ -158,14 +158,14 @@ const AdminAnalytics = ({ token }) => {
       </div>
 
       {/* Charts Row 1 */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Revenue Chart */}
-        <div className="bg-gray-800/50 rounded-xl p-6 border border-gray-700/50">
-          <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-green-500" />
+        <div className="bg-gray-800/50 rounded-xl p-4 sm:p-6 border border-gray-700/50">
+          <h3 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
             Umsatzentwicklung
           </h3>
-          <ResponsiveContainer width="100%" height={250}>
+          <ResponsiveContainer width="100%" height={200}>
             <AreaChart data={data.revenue.daily}>
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
               <XAxis dataKey="date" stroke="#9CA3AF" tick={{ fontSize: 12 }} />
