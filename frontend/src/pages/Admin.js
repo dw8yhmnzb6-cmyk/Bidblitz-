@@ -48,6 +48,7 @@ import {
   AdminGlobalSearch,
   AdminAIChat,
   AdminAnalytics,
+  AdminStaff,
   AdminSurveys,
   AdminMaintenance,
   AdminMobileNav
