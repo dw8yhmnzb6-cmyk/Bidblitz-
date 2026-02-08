@@ -1307,17 +1307,15 @@ export default function Admin() {
         <main className="flex-1 lg:ml-56 xl:ml-64 p-4 lg:p-8 pt-20 lg:pt-8" style={{ WebkitOverflowScrolling: 'touch' }}>
           {/* Dashboard Tab */}
           {activeTab === 'dashboard' && (
-            <div className="space-y-4 lg:space-y-6">
-              {/* Header with Search */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <h1 className="text-xl lg:text-2xl font-bold text-gray-800">{t('admin.dashboard')}</h1>
-                <div className="flex items-center gap-2">
-                  <Button 
-                    onClick={() => setShowGlobalSearch(true)} 
-                    variant="outline" 
-                    className="border-gray-200 text-gray-800 flex-1 sm:flex-none justify-start"
-                    data-testid="global-search-btn"
-                  >
+            <AdminDashboard 
+              stats={stats}
+              detailedStats={detailedStats}
+              loading={loading}
+              fetchData={fetchData}
+              setShowGlobalSearch={setShowGlobalSearch}
+              t={t}
+            />
+          )}
                     <Search className="w-4 h-4 mr-2" />
                     <span className="text-gray-500 text-sm">Suchen...</span>
                     <kbd className="hidden sm:inline ml-2 px-1.5 py-0.5 text-xs bg-white/10 rounded">/</kbd>
