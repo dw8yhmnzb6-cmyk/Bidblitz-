@@ -511,57 +511,59 @@ export default function InfluencerBecome() {
         </div>
       </section>
       
-      {/* How it works */}
+      {/* How it works - Modern Steps */}
       <section className="py-16 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 text-center mb-14">
             {t.howItWorks}
           </h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {steps.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center text-2xl font-black text-black mx-auto mb-4">
+              <div key={index} className="text-center group">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center text-3xl font-black text-white mx-auto mb-5 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
                   {step.num}
                 </div>
-                <h3 className="text-lg font-bold text-gray-800 mb-1">{step.title}</h3>
-                <p className="text-gray-500 text-sm">{step.desc}</p>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">{step.title}</h3>
+                <p className="text-slate-500 text-sm">{step.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
       
-      {/* Application Form */}
+      {/* Application Form - Premium Design */}
       {showForm && (
         <section id="apply" className="py-16 px-4">
           <div className="max-w-xl mx-auto">
-            <div className="glass-card rounded-2xl p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <Star className="w-6 h-6 text-yellow-400" />
+            <div className="bg-white rounded-3xl p-8 md:p-10 shadow-2xl shadow-slate-200/60 border border-slate-100">
+              <h2 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+                  <Star className="w-5 h-5 text-white" fill="white" />
+                </div>
                 {t.becomePartner}
               </h2>
               
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-800">{t.name} *</Label>
+                    <Label className="text-slate-700 font-medium">{t.name} *</Label>
                     <Input
                       value={form.name}
                       onChange={(e) => setForm({...form, name: e.target.value})}
                       placeholder={t.yourName}
-                      className="bg-white border-gray-200 text-gray-800"
+                      className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400 focus:ring-amber-400"
                       required
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-800">{t.email} *</Label>
+                    <Label className="text-slate-700 font-medium">{t.email} *</Label>
                     <Input
                       type="email"
                       value={form.email}
                       onChange={(e) => setForm({...form, email: e.target.value})}
                       placeholder={t.yourEmail}
-                      className="bg-white border-gray-200 text-gray-800"
+                      className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400 focus:ring-amber-400"
                       required
                     />
                   </div>
@@ -569,63 +571,63 @@ export default function InfluencerBecome() {
                 
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label className="text-gray-800 flex items-center gap-1">
-                      <Instagram className="w-4 h-4" /> {t.instagram}
+                    <Label className="text-slate-700 font-medium flex items-center gap-1">
+                      <Instagram className="w-4 h-4 text-pink-500" /> {t.instagram}
                     </Label>
                     <Input
                       value={form.instagram}
                       onChange={(e) => setForm({...form, instagram: e.target.value})}
                       placeholder={t.username}
-                      className="bg-white border-gray-200 text-gray-800"
+                      className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-800 flex items-center gap-1">
-                      <Youtube className="w-4 h-4" /> {t.youtube}
+                    <Label className="text-slate-700 font-medium flex items-center gap-1">
+                      <Youtube className="w-4 h-4 text-red-500" /> {t.youtube}
                     </Label>
                     <Input
                       value={form.youtube}
                       onChange={(e) => setForm({...form, youtube: e.target.value})}
                       placeholder={t.channel}
-                      className="bg-white border-gray-200 text-gray-800"
+                      className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-800">{t.tiktok}</Label>
+                    <Label className="text-slate-700 font-medium">{t.tiktok}</Label>
                     <Input
                       value={form.tiktok}
                       onChange={(e) => setForm({...form, tiktok: e.target.value})}
                       placeholder={t.username}
-                      className="bg-white border-gray-200 text-gray-800"
+                      className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400"
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <Label className="text-gray-800">{t.followers} *</Label>
+                  <Label className="text-slate-700 font-medium">{t.followers} *</Label>
                   <Input
                     value={form.followers}
                     onChange={(e) => setForm({...form, followers: e.target.value})}
                     placeholder={t.followersPlaceholder}
-                    className="bg-white border-gray-200 text-gray-800"
+                    className="bg-slate-50 border-slate-200 text-slate-800 focus:border-amber-400"
                     required
                   />
                 </div>
                 
                 <div>
-                  <Label className="text-gray-800">{t.message}</Label>
+                  <Label className="text-slate-700 font-medium">{t.message}</Label>
                   <textarea
                     value={form.message}
                     onChange={(e) => setForm({...form, message: e.target.value})}
                     placeholder={t.messagePlaceholder}
-                    className="w-full bg-white border border-gray-200 text-gray-800 rounded-md p-3 h-24 resize-none"
+                    className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg p-3 h-28 resize-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 focus:outline-none"
                   />
                 </div>
                 
                 <Button
                   type="submit"
                   disabled={loading || !form.name || !form.email || !form.followers}
-                  className="w-full py-3 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-300 hover:to-amber-400 text-black font-bold"
+                  className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold text-lg rounded-xl shadow-lg shadow-amber-500/30 transition-all hover:scale-[1.02]"
                 >
                   {loading ? t.submitting : t.submit}
                 </Button>
