@@ -97,8 +97,8 @@ export default function SocialSharingRewards() {
     setLoading(true);
     try {
       const [statsRes, historyRes] = await Promise.all([
-        fetch(`${API}/api/social/stats`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API}/api/social/history`, { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API}/api/social-rewards/stats`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API}/api/social-rewards/history`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
 
       if (statsRes.ok) {
