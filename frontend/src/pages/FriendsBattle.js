@@ -8,8 +8,8 @@ import {
   Zap, Crown, Target, Medal, RefreshCw, ChevronRight
 } from 'lucide-react';
 import { toast } from 'sonner';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import { Navbar } from '../components/Navbar';
+import { Footer } from '../components/Footer';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
