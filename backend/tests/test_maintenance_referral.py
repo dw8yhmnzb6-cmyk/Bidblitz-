@@ -172,7 +172,7 @@ class TestReferralAPI:
     
     def test_referral_stats_requires_auth(self):
         """Test that referral stats requires authentication"""
-        response = requests.get(f"{BASE_URL}/api/referral/stats")
+        response = requests.get(f"{BASE_URL}/api/referrals/stats")
         
         # Should return 401 without auth
         assert response.status_code == 401, f"Expected 401 without auth, got {response.status_code}"
@@ -184,7 +184,7 @@ class TestReferralAPI:
         assert token is not None, "Failed to get admin token"
         
         response = requests.get(
-            f"{BASE_URL}/api/referral/stats",
+            f"{BASE_URL}/api/referrals/stats",
             headers={"Authorization": f"Bearer {token}"}
         )
         
