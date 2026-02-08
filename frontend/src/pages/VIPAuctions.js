@@ -94,8 +94,15 @@ export default function VIPAuctions() {
       
       setAuctions(auctionsRes.data || []);
       setBusinessHours(businessHoursRes.data || { is_open: true });
-      // Use VIP status from API or from AuthContext (for influencers)
-      setIsVip(userRes.data?.is_vip || userRes.data?.vip_status === 'active' || authIsVip || isInfluencer);
+      // ONLY use VIP status from API - be strict about VIP access
+      const apiIsVip = userRes.data?.is_vip === true || userRes.data?.vip_status === 'active';
+      setIsVip(apiIsVip);
+      
+      console.log('VIP Status check:', { 
+        apiIsVip, 
+        userResData: userRes.data,
+        token: !!token 
+      });
     } catch (error) {
       console.error('Error:', error);
     } finally {
