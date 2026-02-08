@@ -548,6 +548,7 @@ export default function InvestorPortal() {
                     onInvest={handleInvest}
                     loading={checkoutLoading}
                     t={t}
+                    language={language}
                   />
                 ))}
               </div>
