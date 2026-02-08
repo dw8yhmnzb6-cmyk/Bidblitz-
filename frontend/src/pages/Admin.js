@@ -2257,56 +2257,108 @@ export default function Admin() {
                             <p className="text-gray-500">{language === 'en' ? 'No influencers yet' : 'Noch keine Influencer'}</p>
                           </div>
                         ) : (
-                          <div className="bg-gradient-to-b from-cyan-50 to-cyan-100 rounded-lg overflow-hidden">
-                            <table className="w-full">
-                              <thead className="bg-white/5">
-                                <tr>
-                                  <th className="text-left text-gray-500 py-2 px-3 text-xs">Name</th>
-                                  <th className="text-left text-gray-500 py-2 px-3 text-xs">Code</th>
-                                  <th className="text-left text-gray-500 py-2 px-3 text-xs">{language === 'en' ? 'City' : 'Stadt'}</th>
-                                  <th className="text-right text-gray-500 py-2 px-3 text-xs">{language === 'en' ? 'Signups' : 'Anmeldungen'}</th>
-                                  <th className="text-right text-gray-500 py-2 px-3 text-xs">{language === 'en' ? 'Commission' : 'Provision'}</th>
-                                  <th className="text-center text-gray-500 py-2 px-3 text-xs">Status</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {managerInfluencers.map((inf) => (
-                                  <tr key={inf.id} className="border-t border-white/5 hover:bg-white/5">
-                                    <td className="py-2 px-3 text-gray-800 text-sm">{inf.name || inf.username}</td>
-                                    <td className="py-2 px-3">
-                                      <span className="px-2 py-0.5 bg-[#F59E0B]/20 text-[#F59E0B] rounded text-xs font-mono">
+                          <>
+                            {/* Mobile Card View */}
+                            <div className="md:hidden space-y-2">
+                              {managerInfluencers.map((inf) => (
+                                <div key={inf.id} className="bg-white rounded-lg p-3 border border-slate-100">
+                                  <div className="flex items-start justify-between mb-2">
+                                    <div className="min-w-0 flex-1">
+                                      <p className="font-medium text-slate-800 text-sm truncate">{inf.name || inf.username}</p>
+                                      <span className="px-2 py-0.5 bg-amber-100 text-amber-600 rounded text-xs font-mono">
                                         {inf.code}
                                       </span>
-                                    </td>
-                                    <td className="py-2 px-3 text-gray-500 text-sm">{inf.city || '-'}</td>
-                                    <td className="py-2 px-3 text-gray-800 text-right text-sm">{inf.signups || inf.total_signups || 0}</td>
-                                    <td className="py-2 px-3 text-[#10B981] text-right text-sm font-medium">
-                                      €{(inf.total_earnings || inf.commission || 0).toFixed(2)}
-                                    </td>
-                                    <td className="py-2 px-3 text-center">
-                                      {inf.is_active !== false ? (
-                                        <span className="px-2 py-0.5 bg-[#10B981]/20 text-[#10B981] rounded text-xs">Aktiv</span>
-                                      ) : (
-                                        <span className="px-2 py-0.5 bg-red-500/20 text-red-500 rounded text-xs">Inaktiv</span>
-                                      )}
-                                    </td>
+                                    </div>
+                                    {inf.is_active !== false ? (
+                                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-600 rounded text-xs flex-shrink-0">Aktiv</span>
+                                    ) : (
+                                      <span className="px-2 py-0.5 bg-red-100 text-red-500 rounded text-xs flex-shrink-0">Inaktiv</span>
+                                    )}
+                                  </div>
+                                  <div className="grid grid-cols-3 gap-2 text-center">
+                                    <div className="bg-slate-50 rounded p-1.5">
+                                      <p className="text-[10px] text-slate-400">{language === 'en' ? 'City' : 'Stadt'}</p>
+                                      <p className="text-xs font-medium text-slate-700 truncate">{inf.city || '-'}</p>
+                                    </div>
+                                    <div className="bg-slate-50 rounded p-1.5">
+                                      <p className="text-[10px] text-slate-400">{language === 'en' ? 'Signups' : 'Anmeld.'}</p>
+                                      <p className="text-xs font-bold text-slate-700">{inf.signups || inf.total_signups || 0}</p>
+                                    </div>
+                                    <div className="bg-slate-50 rounded p-1.5">
+                                      <p className="text-[10px] text-slate-400">{language === 'en' ? 'Comm.' : 'Prov.'}</p>
+                                      <p className="text-xs font-bold text-emerald-600">€{(inf.total_earnings || inf.commission || 0).toFixed(0)}</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                              {/* Mobile Totals */}
+                              <div className="bg-violet-50 rounded-lg p-3 border border-violet-100">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-sm font-medium text-violet-700">Gesamt</span>
+                                  <div className="flex gap-4">
+                                    <span className="text-sm font-bold text-slate-700">
+                                      {managerInfluencers.reduce((sum, inf) => sum + (inf.signups || inf.total_signups || 0), 0)} Anm.
+                                    </span>
+                                    <span className="text-sm font-bold text-emerald-600">
+                                      €{managerInfluencers.reduce((sum, inf) => sum + (inf.total_earnings || inf.commission || 0), 0).toFixed(2)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            {/* Desktop Table View */}
+                            <div className="hidden md:block bg-gradient-to-b from-cyan-50 to-cyan-100 rounded-lg overflow-hidden">
+                              <table className="w-full">
+                                <thead className="bg-white/5">
+                                  <tr>
+                                    <th className="text-left text-gray-500 py-2 px-3 text-xs">Name</th>
+                                    <th className="text-left text-gray-500 py-2 px-3 text-xs">Code</th>
+                                    <th className="text-left text-gray-500 py-2 px-3 text-xs">{language === 'en' ? 'City' : 'Stadt'}</th>
+                                    <th className="text-right text-gray-500 py-2 px-3 text-xs">{language === 'en' ? 'Signups' : 'Anmeldungen'}</th>
+                                    <th className="text-right text-gray-500 py-2 px-3 text-xs">{language === 'en' ? 'Commission' : 'Provision'}</th>
+                                    <th className="text-center text-gray-500 py-2 px-3 text-xs">Status</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                              <tfoot className="bg-white/5">
-                                <tr>
-                                  <td colSpan="3" className="py-2 px-3 text-gray-500 text-sm font-medium">Gesamt</td>
-                                  <td className="py-2 px-3 text-gray-800 text-right text-sm font-bold">
-                                    {managerInfluencers.reduce((sum, inf) => sum + (inf.signups || inf.total_signups || 0), 0)}
-                                  </td>
-                                  <td className="py-2 px-3 text-[#10B981] text-right text-sm font-bold">
-                                    €{managerInfluencers.reduce((sum, inf) => sum + (inf.total_earnings || inf.commission || 0), 0).toFixed(2)}
-                                  </td>
-                                  <td></td>
-                                </tr>
-                              </tfoot>
-                            </table>
-                          </div>
+                                </thead>
+                                <tbody>
+                                  {managerInfluencers.map((inf) => (
+                                    <tr key={inf.id} className="border-t border-white/5 hover:bg-white/5">
+                                      <td className="py-2 px-3 text-gray-800 text-sm">{inf.name || inf.username}</td>
+                                      <td className="py-2 px-3">
+                                        <span className="px-2 py-0.5 bg-[#F59E0B]/20 text-[#F59E0B] rounded text-xs font-mono">
+                                          {inf.code}
+                                        </span>
+                                      </td>
+                                      <td className="py-2 px-3 text-gray-500 text-sm">{inf.city || '-'}</td>
+                                      <td className="py-2 px-3 text-gray-800 text-right text-sm">{inf.signups || inf.total_signups || 0}</td>
+                                      <td className="py-2 px-3 text-[#10B981] text-right text-sm font-medium">
+                                        €{(inf.total_earnings || inf.commission || 0).toFixed(2)}
+                                      </td>
+                                      <td className="py-2 px-3 text-center">
+                                        {inf.is_active !== false ? (
+                                          <span className="px-2 py-0.5 bg-[#10B981]/20 text-[#10B981] rounded text-xs">Aktiv</span>
+                                        ) : (
+                                          <span className="px-2 py-0.5 bg-red-500/20 text-red-500 rounded text-xs">Inaktiv</span>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                                <tfoot className="bg-white/5">
+                                  <tr>
+                                    <td colSpan="3" className="py-2 px-3 text-gray-500 text-sm font-medium">Gesamt</td>
+                                    <td className="py-2 px-3 text-gray-800 text-right text-sm font-bold">
+                                      {managerInfluencers.reduce((sum, inf) => sum + (inf.signups || inf.total_signups || 0), 0)}
+                                    </td>
+                                    <td className="py-2 px-3 text-[#10B981] text-right text-sm font-bold">
+                                      €{managerInfluencers.reduce((sum, inf) => sum + (inf.total_earnings || inf.commission || 0), 0).toFixed(2)}
+                                    </td>
+                                    <td></td>
+                                  </tr>
+                                </tfoot>
+                              </table>
+                            </div>
+                          </>
                         )}
                       </div>
 
