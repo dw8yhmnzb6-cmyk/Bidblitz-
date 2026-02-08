@@ -3,13 +3,14 @@ import axios from 'axios';
 import { 
   BarChart3, TrendingUp, Users, DollarSign, ShoppingCart, 
   Eye, MousePointer, UserPlus, RefreshCw, Calendar, ArrowUp, ArrowDown,
-  Smartphone, Monitor, Tablet, Globe
+  Smartphone, Monitor, Tablet, Globe, Mail, Send, Settings
 } from 'lucide-react';
 import { 
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import { toast } from 'sonner';
 
 const API = process.env.REACT_APP_BACKEND_URL;
@@ -30,6 +31,8 @@ const AdminAnalytics = ({ token }) => {
   const [deviceData, setDeviceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState(7);
+  const [reportEmail, setReportEmail] = useState('');
+  const [sendingReport, setSendingReport] = useState(false);
 
   const fetchAnalytics = async () => {
     setLoading(true);
