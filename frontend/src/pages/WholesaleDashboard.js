@@ -213,6 +213,42 @@ export default function WholesaleDashboard() {
     }
   };
 
+  // Voucher Redemption Handler
+  const handleRedeemVoucher = async () => {
+    if (!voucherCode || voucherCode.length < 4) {
+      toast.error('Bitte geben Sie einen gültigen Gutschein-Code ein');
+      return;
+    }
+    
+    setVoucherLoading(true);
+    const token = localStorage.getItem('wholesale_token');
+    
+    try {
+      const res = await fetch(`${API}/api/wholesale/auth/redeem-voucher`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ voucher_code: voucherCode })
+      });
+      
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.detail || 'Gutschein konnte nicht eingelöst werden');
+      }
+      
+      toast.success(`Gutschein eingelöst! ${data.bids_added} Gebote wurden gutgeschrieben`);
+      setVoucherCode('');
+      fetchData();
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setVoucherLoading(false);
+    }
+  };
+
   const handleOrder = async (packageId) => {
     const token = localStorage.getItem('wholesale_token');
     try {
