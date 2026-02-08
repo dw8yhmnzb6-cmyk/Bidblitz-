@@ -219,7 +219,7 @@ class TestB2BRegistration:
                 "contact_name": "Test Person",
                 "email": unique_email,
                 "phone": "+49 123 456789",
-                "password": "TestPassword123!",
+                "password": "SecureTest@Pass123!",  # Stronger password with special chars
                 "website": "www.testcompany.de",
                 "tax_id": "DE123456789",
                 "expected_volume": "500-1000",
@@ -280,7 +280,7 @@ class TestB2BRegistration:
     def test_b2b_registration_pending_cannot_login(self):
         """Test that newly registered (pending) customer cannot login"""
         unique_email = f"test_pending_{uuid.uuid4().hex[:8]}@testcompany.de"
-        password = "TestPassword123!"
+        password = "SecureTest@Pass123!"  # Stronger password with special chars
         
         # Register
         reg_response = requests.post(
