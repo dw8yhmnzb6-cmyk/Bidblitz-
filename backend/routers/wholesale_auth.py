@@ -694,6 +694,8 @@ async def get_customer_stats(customer_number: str, customer = Depends(get_wholes
             "linked_since": link.get("created_at"),
             "transfer_count": len(transfers)
         },
+        "recent_transfers": transfers[:10]
+    }
 
 
 # ==================== B2B VOUCHER REDEMPTION ====================
