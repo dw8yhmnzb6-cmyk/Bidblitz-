@@ -384,6 +384,10 @@ February 8, 2026
 - **Produkte Tab**: NEU - Card-View für Mobile mit Produktbild und Aktionen
 - **Gutscheine Tab**: NEU - Card-View für Mobile mit Typ, Wert und Status
 - **Auktionen Tab**: NEU - Card-View für Mobile mit Filter (Tag/Nacht) und allen Aktionen
+- **Mobile Quick Actions Bar** (NEU!): Fixierte Bottom-Navigation auf Mobile mit:
+  - Dashboard, Suchen, Plus-Button (Schnellzugriff), Auktionen, Mehr
+  - Schnellzugriff-Popup mit 8 wichtigen Bereichen
+  - Benutzer-Suche mit Live-Ergebnissen
 - Alle Informationen (Rabatt, Status, Aktionen) sichtbar auf mobilen Geräten
 - Theme auf Light-Mode umgestellt für bessere Lesbarkeit
 
