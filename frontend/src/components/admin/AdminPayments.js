@@ -105,8 +105,8 @@ export default function AdminPayments({ payments, fetchData }) {
         )}
       </div>
 
-      {/* Payments Table - Desktop */}
-      <div className="hidden md:block bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100">
+      {/* Payments Table - Desktop (hidden on mobile) */}
+      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-100">
