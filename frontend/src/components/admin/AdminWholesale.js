@@ -182,11 +182,11 @@ export function AdminWholesale({
             {(wholesaleCustomers || []).map(customer => (
               <div key={customer.id} className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                 {/* Header with company name and status */}
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-slate-800 font-semibold truncate">{customer.company_name}</h3>
-                    <p className="text-slate-500 text-sm truncate">{customer.contact_name}</p>
-                    <p className="text-slate-400 text-xs truncate">{customer.email}</p>
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="flex-1 min-w-0 overflow-hidden">
+                    <h3 className="text-slate-800 font-semibold truncate text-sm md:text-base">{customer.company_name}</h3>
+                    <p className="text-slate-500 text-xs md:text-sm truncate">{customer.contact_name}</p>
+                    <p className="text-slate-400 text-xs truncate break-all">{customer.email}</p>
                     {!customer.user_id && (
                       <span className="inline-flex items-center gap-1 text-xs text-amber-600 mt-1">
                         <Info className="w-3 h-3" />
@@ -194,7 +194,7 @@ export function AdminWholesale({
                       </span>
                     )}
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ${
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 whitespace-nowrap ${
                     customer.status === 'active' 
                       ? 'bg-emerald-100 text-emerald-700' 
                       : 'bg-slate-100 text-slate-500'
