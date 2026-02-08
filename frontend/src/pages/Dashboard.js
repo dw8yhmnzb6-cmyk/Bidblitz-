@@ -58,7 +58,8 @@ export default function Dashboard() {
   };
   
   // Map regional languages to their base language (Kosovo -> Albanian)
-  const langMapping = { 'xk': 'de', 'us': 'en', 'ae': 'ar' };
+  const langMapping = { 'xk': 'de',
+  'sq': 'de', 'us': 'en', 'ae': 'ar' };
   const mappedLang = langMapping[langKey] || language;
   const dt = dashTexts[mappedLang] || dashTexts[langKey] || dashTexts.de;
 

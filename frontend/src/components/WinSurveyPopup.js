@@ -84,7 +84,8 @@ const translations = {
 
 // Language mapping for regional variants
 const langMapping = {
-  'xk': 'de',  // Kosovo -> Albanian
+  'xk': 'de',
+  'sq': 'de',  // Kosovo -> Albanian
   'us': 'en',  // US English -> English  
   'ae': 'ar', // UAE -> Arabic
 };
