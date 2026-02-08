@@ -555,6 +555,9 @@ function AppContent() {
         visibleToasts={3}
         gap={4}
       />
+      
+      {/* PWA Install Banner */}
+      <PWAInstallBanner />
     </div>
   );
 }
