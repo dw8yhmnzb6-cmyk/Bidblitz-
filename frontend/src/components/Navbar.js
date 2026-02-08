@@ -79,6 +79,16 @@ export const Navbar = () => {
                 <span className="hidden xl:inline">{t('nav.luckyWheel') || 'Glücksrad'}</span>
               </button>
             )}
+            {isAuthenticated && (
+              <Link 
+                to="/referral" 
+                className="text-pink-600 hover:text-pink-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
+                data-testid="nav-referral"
+              >
+                <Gift className="w-4 h-4" />
+                <span className="hidden xl:inline">{t('nav.referFriends') || 'Freunde werben'}</span>
+              </Link>
+            )}
             <Link 
               to="/vip-auctions" 
               className="text-purple-600 hover:text-purple-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
