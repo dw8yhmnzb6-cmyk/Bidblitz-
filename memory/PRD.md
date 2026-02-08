@@ -68,6 +68,31 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
    - Frontend AdminMaintenance.js funktioniert korrekt
    - Toggle zwischen "System Online" und "Wartungsmodus AKTIV" funktioniert
 
+7. ✅ **Admin.js Dashboard-Tab Refactoring**
+   - Dashboard-Tab inline Code durch AdminDashboard-Komponente ersetzt
+   - Admin.js von **3143** auf **2902** Zeilen reduziert (-241 Zeilen)
+   - Geänderte Dateien:
+     - `/app/frontend/src/pages/Admin.js` - Dashboard-Code durch Komponenten-Aufruf ersetzt
+     - `/app/frontend/src/components/admin/AdminDashboard.js` - Aktualisiert mit neuen Props
+
+8. ✅ **Auctions.js Code-Analyse**
+   - 1263 Zeilen, bereits gut strukturiert mit memo-Komponenten
+   - Wiederverwendbare Komponenten erstellt in `/app/frontend/src/components/auction/`
+   - Lokale Komponenten beibehalten, da sie seitenspezifisch sind
+
+---
+
+### Stripe Webhook Konfiguration (MANUELL ERFORDERLICH)
+
+Um B2B Zahlungen vollständig zu aktivieren, muss der Stripe Webhook im Stripe Dashboard konfiguriert werden:
+
+1. Gehe zu **Stripe Dashboard** → **Developers** → **Webhooks**
+2. Klicke auf "Add endpoint"
+3. URL: `https://penny-bidding-1.preview.emergentagent.com/api/wholesale/auth/webhook/payment`
+4. Events: Wähle `checkout.session.completed`
+5. Kopiere das **Webhook Signing Secret** und füge es in `backend/.env` als `STRIPE_WEBHOOK_SECRET=whsec_...` ein
+6. Starte Backend neu: `sudo supervisorctl restart backend`
+
 ---
 
 ### ✅ Session Update - February 8, 2026 (Session 1)
