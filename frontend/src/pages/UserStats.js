@@ -13,7 +13,9 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
 export default function UserStats() {
   const { user, token } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [stats, setStats] = useState(null);
   const [bidHistory, setBidHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +66,7 @@ export default function UserStats() {
       noData: 'No data available yet'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     fetchStats();

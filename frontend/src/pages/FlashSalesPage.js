@@ -14,7 +14,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const FlashSalesPage = () => {
   const { token, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [activeSales, setActiveSales] = useState([]);
   const [upcomingSales, setUpcomingSales] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +56,7 @@ const FlashSalesPage = () => {
       popular: 'Popular'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     fetchSales();

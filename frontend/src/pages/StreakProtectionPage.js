@@ -10,7 +10,9 @@ import { Flame, Shield, Gift, Calendar, Check, Lock, Trophy } from 'lucide-react
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function StreakProtectionPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token, isAuthenticated } = useAuth();
   const [status, setStatus] = useState(null);
   const [claimedRewards, setClaimedRewards] = useState([]);
@@ -63,7 +65,7 @@ export default function StreakProtectionPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   const milestones = [
     { days: 7, bids: 5, name: '1 Woche' },

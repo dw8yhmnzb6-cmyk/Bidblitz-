@@ -13,7 +13,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const LastChancePage = () => {
   const { token, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [endingSoon, setEndingSoon] = useState({});
   const [hotAuctions, setHotAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +63,7 @@ const LastChancePage = () => {
       warm: 'Active'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     fetchData();

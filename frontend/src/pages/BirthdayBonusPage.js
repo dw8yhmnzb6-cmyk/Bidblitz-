@@ -11,7 +11,9 @@ import { Gift, Cake, Calendar, Clock, Sparkles, PartyPopper } from 'lucide-react
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function BirthdayBonusPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token, isAuthenticated } = useAuth();
   const [status, setStatus] = useState(null);
   const [birthday, setBirthday] = useState('');
@@ -58,7 +60,7 @@ export default function BirthdayBonusPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (token) {

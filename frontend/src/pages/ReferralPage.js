@@ -11,7 +11,9 @@ import { Users, Gift, Copy, Share2, Trophy, Star, CheckCircle, ArrowRight } from
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function ReferralPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token, user } = useAuth();
   const [referralCode, setReferralCode] = useState('');
   const [stats, setStats] = useState({
@@ -75,7 +77,7 @@ export default function ReferralPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   const fetchReferralData = async () => {
     try {

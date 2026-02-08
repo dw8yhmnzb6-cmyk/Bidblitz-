@@ -14,7 +14,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const BundlesPage = () => {
   const { token, isAuthenticated, refreshUser } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [searchParams] = useSearchParams();
   const [bundles, setBundles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ const BundlesPage = () => {
       subscription: 'Subscription'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     fetchBundles();

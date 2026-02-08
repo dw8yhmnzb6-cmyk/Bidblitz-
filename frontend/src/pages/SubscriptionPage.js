@@ -10,7 +10,9 @@ import { Crown, Check, Zap, Star, Shield, Sparkles, Calendar, ArrowRight } from 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function SubscriptionPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token, isAuthenticated } = useAuth();
   const [plans, setPlans] = useState([]);
   const [mySubscription, setMySubscription] = useState(null);
@@ -66,7 +68,7 @@ export default function SubscriptionPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   const fetchPlans = async () => {
     try {

@@ -213,7 +213,9 @@ const profileTexts = {
 
 export default function Profile() {
   const { user, token, updateUser, refreshUser } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const texts = profileTexts[language] || profileTexts.de;
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -696,7 +698,7 @@ function PromoCodeSection({ token, language, refreshUser }) {
     }
   };
   
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
   
   // Check code validity
   const handleCheckCode = async () => {

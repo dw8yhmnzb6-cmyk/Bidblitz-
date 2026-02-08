@@ -10,7 +10,9 @@ import { Video, Play, Upload, Star, User } from 'lucide-react';
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function VideoTestimonialsPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { isAuthenticated } = useAuth();
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +53,7 @@ export default function VideoTestimonialsPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   const getPlaceholderVideos = () => [
     {

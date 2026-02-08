@@ -11,7 +11,9 @@ import { Bot, Zap, Play, Pause, Settings, TrendingUp } from 'lucide-react';
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function BidBuddyPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token } = useAuth();
   const [myBuddies, setMyBuddies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,7 +56,7 @@ export default function BidBuddyPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (token) {

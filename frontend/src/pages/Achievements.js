@@ -35,7 +35,9 @@ const CATEGORY_LABELS = {
 
 export default function Achievements() {
   const { user, token } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [achievements, setAchievements] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -70,7 +72,7 @@ export default function Achievements() {
       backToAuctions: "Back to Auctions"
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
   const catLabels = CATEGORY_LABELS[language] || CATEGORY_LABELS.de;
 
   useEffect(() => {

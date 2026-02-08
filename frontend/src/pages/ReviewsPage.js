@@ -14,7 +14,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const ReviewsPage = () => {
   const { token, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [reviews, setReviews] = useState([]);
   const [pendingReviews, setPendingReviews] = useState([]);
   const [stats, setStats] = useState({ average: 0, total: 0 });
@@ -79,7 +81,7 @@ const ReviewsPage = () => {
       bonusHint: '+2 Bids for each review'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     fetchData();

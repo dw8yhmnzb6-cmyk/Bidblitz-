@@ -11,7 +11,9 @@ import { Users, Crown, Trophy, Plus, Copy, UserPlus, LogOut, Zap } from 'lucide-
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function TeamAuctionsPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token, isAuthenticated } = useAuth();
   const [myTeam, setMyTeam] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -68,7 +70,7 @@ export default function TeamAuctionsPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (token) {

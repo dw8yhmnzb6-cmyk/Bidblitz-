@@ -14,7 +14,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const FlashEvents = () => {
   const { token, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [activeFlash, setActiveFlash] = useState([]);
   const [subscriptions, setSubscriptions] = useState({});
@@ -54,7 +56,7 @@ const FlashEvents = () => {
       unsubscribed: 'Notification disabled'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     fetchEvents();

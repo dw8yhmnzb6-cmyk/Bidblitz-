@@ -26,7 +26,9 @@ const CATEGORY_COLORS = {
 };
 
 export default function AchievementsPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token } = useAuth();
   const [achievements, setAchievements] = useState([]);
   const [stats, setStats] = useState(null);
@@ -75,7 +77,7 @@ export default function AchievementsPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (token) {

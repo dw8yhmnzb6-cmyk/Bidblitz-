@@ -12,7 +12,9 @@ import { Lightbulb, ThumbsUp, Check, Send, TrendingUp, Star } from 'lucide-react
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function WishlistPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token, isAuthenticated } = useAuth();
   const [wishes, setWishes] = useState([]);
   const [myVotes, setMyVotes] = useState([]);
@@ -55,7 +57,7 @@ export default function WishlistPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   const categories = [
     { id: 'electronics', name: 'Elektronik', icon: '📱' },

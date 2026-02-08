@@ -13,7 +13,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const LoyaltyPage = () => {
   const { token, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [loyaltyData, setLoyaltyData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [redeeming, setRedeeming] = useState(false);
@@ -54,7 +56,7 @@ const LoyaltyPage = () => {
       redeemSuccess: 'Successfully redeemed!'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (isAuthenticated) {

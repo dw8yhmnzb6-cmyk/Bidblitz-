@@ -12,7 +12,9 @@ import { Users, MapPin, Euro, TrendingUp, CheckCircle, XCircle, LogOut, Building
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function ManagerDashboard() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { user, isManager, logout: authLogout } = useAuth();
   const [manager, setManager] = useState(null);
   const [dashboard, setDashboard] = useState(null);
@@ -108,7 +110,7 @@ export default function ManagerDashboard() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   // Check for saved manager session OR global auth user who is a manager
   useEffect(() => {

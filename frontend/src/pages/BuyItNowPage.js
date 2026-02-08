@@ -10,7 +10,9 @@ import { ShoppingBag, Percent, Clock, ArrowRight, Tag } from 'lucide-react';
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 export default function BuyItNowPage() {
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const { token } = useAuth();
   const [offers, setOffers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +48,7 @@ export default function BuyItNowPage() {
     }
   };
 
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (token) fetchOffers();

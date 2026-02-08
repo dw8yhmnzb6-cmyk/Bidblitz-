@@ -24,7 +24,9 @@ const RANK_COLORS = {
 
 const ReferralDashboard = () => {
   const { token, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [referralData, setReferralData] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [myReferrals, setMyReferrals] = useState([]);
@@ -96,7 +98,7 @@ const ReferralDashboard = () => {
       loginRequired: 'Please login'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (token) {

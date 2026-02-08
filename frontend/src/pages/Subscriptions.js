@@ -13,7 +13,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const Subscriptions = () => {
   const { token, isAuthenticated, user } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [plans, setPlans] = useState([]);
   const [currentSub, setCurrentSub] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -61,7 +63,7 @@ const Subscriptions = () => {
       noPlan: 'No active subscription'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     fetchPlans();

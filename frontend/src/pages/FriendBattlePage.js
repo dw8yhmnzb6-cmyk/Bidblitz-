@@ -13,7 +13,9 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const FriendBattlePage = () => {
   const { token, user, isAuthenticated } = useAuth();
-  const { language } = useLanguage();
+  const { language , mappedLanguage } = useLanguage();
+  // Use mappedLanguage for regional variants (e.g., xk -> sq)
+  const langKey = mappedLanguage || language;
   const [battles, setBattles] = useState({});
   const [battleTypes, setBattleTypes] = useState([]);
   const [leaderboard, setLeaderboard] = useState([]);
@@ -90,7 +92,7 @@ const FriendBattlePage = () => {
       challengeDesc: 'Stake bids and compete with friends!'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (isAuthenticated) {
