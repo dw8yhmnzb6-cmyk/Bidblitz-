@@ -252,6 +252,27 @@ export default function WholesaleDashboard() {
   const handleOrder = async (packageId) => {
     const token = localStorage.getItem('wholesale_token');
     try {
+      // For prepaid customers, redirect to Stripe checkout
+      if (customer?.payment_terms === 'prepaid' || !customer?.payment_terms) {
+        const res = await fetch(`${API}/api/wholesale/auth/checkout?package_id=${packageId}&quantity=1`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        const data = await res.json();
+        
+        if (!res.ok) {
+          throw new Error(data.detail || 'Checkout fehlgeschlagen');
+        }
+        
+        // Redirect to Stripe checkout
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+          return;
+        }
+      }
+      
+      // For credit customers, use direct order
       const res = await fetch(`${API}/api/wholesale/auth/order?package_id=${packageId}&quantity=1`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
@@ -269,6 +290,23 @@ export default function WholesaleDashboard() {
       toast.error(error.message);
     }
   };
+
+  // Check for payment success/cancel from URL
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const paymentStatus = urlParams.get('payment');
+    const orderId = urlParams.get('order_id');
+    
+    if (paymentStatus === 'success') {
+      toast.success('Zahlung erfolgreich! Ihre Gebote werden gutgeschrieben.');
+      // Clean URL
+      window.history.replaceState({}, '', '/b2b/dashboard');
+      fetchData();
+    } else if (paymentStatus === 'cancelled') {
+      toast.info('Zahlung abgebrochen. Die Bestellung wurde nicht abgeschlossen.');
+      window.history.replaceState({}, '', '/b2b/dashboard');
+    }
+  }, []);
 
   if (loading) {
     return (
