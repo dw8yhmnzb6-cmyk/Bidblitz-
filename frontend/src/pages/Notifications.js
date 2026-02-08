@@ -353,12 +353,16 @@ export default function Notifications() {
                 { key: 'auction_ending', label: 'Auktion endet bald' },
                 { key: 'auction_won', label: 'Auktion gewonnen' },
                 { key: 'outbid', label: 'Überboten' },
+                { key: 'night_auction_start', label: '🌙 Nacht-Auktionen starten', hint: 'Um 23:30 benachrichtigt werden' },
                 { key: 'daily_deals', label: 'Tägliche Angebote' },
                 { key: 'new_auctions', label: 'Neue Auktionen' },
                 { key: 'marketing', label: 'Aktionen & Newsletter' },
-              ].map(({ key, label }) => (
+              ].map(({ key, label, hint }) => (
                 <label key={key} className="flex items-center justify-between p-2 hover:bg-gray-100 rounded cursor-pointer">
-                  <span className="text-gray-600 text-sm">{label}</span>
+                  <div>
+                    <span className="text-gray-600 text-sm">{label}</span>
+                    {hint && <p className="text-gray-400 text-xs">{hint}</p>}
+                  </div>
                   <input
                     type="checkbox"
                     checked={preferences[key] || false}
