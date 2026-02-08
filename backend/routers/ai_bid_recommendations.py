@@ -438,3 +438,240 @@ def get_current_time_quality():
         return {"quality": "low_competition", "message_de": "Wenig Konkurrenz - Schnäppchen möglich!", "message_en": "Low competition - deals possible!"}
     else:
         return {"quality": "normal", "message_de": "Normale Aktivität", "message_en": "Normal activity"}
+
+
+# ==================== AI PRODUCT RECOMMENDATIONS ====================
+
+@router.get("/product-recommendations")
+async def get_ai_product_recommendations(user: dict = Depends(get_current_user)):
+    """Get AI-powered product recommendations based on user behavior"""
+    user_id = user["id"]
+    
+    # 1. Get user's bidding history - what categories they like
+    user_bids = await db.auctions.find(
+        {"bid_history.user_id": user_id},
+        {"_id": 0, "product_id": 1, "category": 1}
+    ).to_list(100)
+    
+    # 2. Get user's won auctions
+    won_auctions = await db.won_auctions.find(
+        {"user_id": user_id},
+        {"_id": 0, "product_id": 1, "category": 1}
+    ).to_list(50)
+    
+    # 3. Analyze favorite categories
+    category_counts = {}
+    for auction in user_bids + won_auctions:
+        cat = auction.get("category", "Sonstige")
+        category_counts[cat] = category_counts.get(cat, 0) + 1
+    
+    favorite_categories = sorted(
+        category_counts.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:3]
+    favorite_cat_names = [c[0] for c in favorite_categories] if favorite_categories else ["Elektronik", "Mode", "Haushalt"]
+    
+    # 4. Get active auctions in favorite categories
+    recommended_auctions = []
+    
+    for category in favorite_cat_names:
+        auctions = await db.auctions.find(
+            {"status": "active", "category": category},
+            {"_id": 0, "id": 1, "product_id": 1, "current_price": 1, "end_time": 1, "total_bids": 1, "category": 1}
+        ).limit(3).to_list(3)
+        
+        for auction in auctions:
+            try:
+                product = await db.products.find_one(
+                    {"id": auction.get("product_id")},
+                    {"_id": 0, "name": 1, "image_url": 1, "retail_price": 1, "description": 1}
+                )
+                
+                end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
+                seconds_left = (end_time - datetime.now(timezone.utc)).total_seconds()
+                
+                if seconds_left > 0 and product:
+                    # Calculate savings potential
+                    retail = product.get("retail_price", 100)
+                    current = auction.get("current_price", 0)
+                    savings_percent = ((retail - current) / retail) * 100 if retail > 0 else 0
+                    
+                    recommended_auctions.append({
+                        "auction_id": auction["id"],
+                        "product_name": product.get("name", "Produkt"),
+                        "product_image": product.get("image_url"),
+                        "category": auction.get("category"),
+                        "retail_price": retail,
+                        "current_price": current,
+                        "savings_percent": round(savings_percent, 1),
+                        "seconds_left": int(seconds_left),
+                        "total_bids": auction.get("total_bids", 0),
+                        "reason": f"Basierend auf deinem Interesse an {category}",
+                        "match_score": 90 if category == favorite_cat_names[0] else 75 if category == favorite_cat_names[1] else 60
+                    })
+            except:
+                continue
+    
+    # 5. Add some "trending" auctions regardless of category
+    trending = await db.auctions.find(
+        {"status": "active"},
+        {"_id": 0, "id": 1, "product_id": 1, "current_price": 1, "end_time": 1, "total_bids": 1, "category": 1}
+    ).sort("total_bids", -1).limit(3).to_list(3)
+    
+    for auction in trending:
+        if auction["id"] not in [r["auction_id"] for r in recommended_auctions]:
+            try:
+                product = await db.products.find_one(
+                    {"id": auction.get("product_id")},
+                    {"_id": 0, "name": 1, "image_url": 1, "retail_price": 1}
+                )
+                
+                end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
+                seconds_left = (end_time - datetime.now(timezone.utc)).total_seconds()
+                
+                if seconds_left > 0 and product:
+                    retail = product.get("retail_price", 100)
+                    current = auction.get("current_price", 0)
+                    
+                    recommended_auctions.append({
+                        "auction_id": auction["id"],
+                        "product_name": product.get("name", "Produkt"),
+                        "product_image": product.get("image_url"),
+                        "category": auction.get("category"),
+                        "retail_price": retail,
+                        "current_price": current,
+                        "savings_percent": round(((retail - current) / retail) * 100, 1) if retail > 0 else 0,
+                        "seconds_left": int(seconds_left),
+                        "total_bids": auction.get("total_bids", 0),
+                        "reason": "🔥 Trending - Beliebt bei anderen Nutzern",
+                        "match_score": 50
+                    })
+            except:
+                continue
+    
+    # Sort by match score
+    recommended_auctions.sort(key=lambda x: x.get("match_score", 0), reverse=True)
+    
+    # 6. Get bid package recommendation based on user activity
+    user_bids_balance = user.get("bids_balance", 0)
+    total_activity = len(user_bids)
+    
+    if user_bids_balance < 10:
+        package_recommendation = {
+            "package": "100 Gebote",
+            "reason": "Dein Guthaben ist niedrig - Jetzt auffüllen!",
+            "urgency": "high",
+            "discount_hint": "Spare mit größeren Paketen"
+        }
+    elif total_activity > 50 and user_bids_balance < 50:
+        package_recommendation = {
+            "package": "250 Gebote",
+            "reason": "Du bist ein aktiver Bieter - Das lohnt sich!",
+            "urgency": "medium",
+            "discount_hint": "Perfekt für Power-User"
+        }
+    else:
+        package_recommendation = {
+            "package": "50 Gebote",
+            "reason": "Teste mit einem kleinen Paket",
+            "urgency": "low",
+            "discount_hint": None
+        }
+    
+    return {
+        "recommendations": recommended_auctions[:10],
+        "favorite_categories": [{"name": c[0], "activity": c[1]} for c in favorite_categories],
+        "package_recommendation": package_recommendation,
+        "user_stats": {
+            "total_bids_placed": total_activity,
+            "current_balance": user_bids_balance,
+            "auctions_won": len(won_auctions)
+        },
+        "tips": [
+            "Konzentriere dich auf deine Lieblingskategorien für höhere Gewinnchancen",
+            "Auktionen mit weniger Geboten haben oft bessere Chancen",
+            "Nutze den Bid Buddy für automatisches Bieten"
+        ]
+    }
+
+
+@router.get("/smart-alerts")
+async def get_smart_alerts(user: dict = Depends(get_current_user)):
+    """Get smart alerts for auctions the user might be interested in"""
+    user_id = user["id"]
+    
+    alerts = []
+    
+    # 1. Check for auctions ending soon in favorite categories
+    user_bids = await db.auctions.find(
+        {"bid_history.user_id": user_id},
+        {"_id": 0, "category": 1}
+    ).to_list(50)
+    
+    categories = list(set(a.get("category", "Sonstige") for a in user_bids))[:3]
+    
+    for category in categories:
+        ending_soon = await db.auctions.find(
+            {"status": "active", "category": category},
+            {"_id": 0, "id": 1, "product_id": 1, "end_time": 1, "current_price": 1}
+        ).to_list(10)
+        
+        for auction in ending_soon:
+            try:
+                end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
+                seconds_left = (end_time - datetime.now(timezone.utc)).total_seconds()
+                
+                if 0 < seconds_left < 300:  # Ending in 5 minutes
+                    product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0, "name": 1})
+                    alerts.append({
+                        "type": "ending_soon",
+                        "auction_id": auction["id"],
+                        "product_name": product.get("name") if product else "Produkt",
+                        "category": category,
+                        "seconds_left": int(seconds_left),
+                        "current_price": auction.get("current_price", 0),
+                        "message": f"⏰ Endet in {int(seconds_left/60)} Min!",
+                        "priority": "high"
+                    })
+            except:
+                continue
+    
+    # 2. Check for new auctions in favorite categories
+    one_hour_ago = (datetime.now(timezone.utc) - timedelta(hours=1)).isoformat()
+    
+    for category in categories:
+        new_auctions = await db.auctions.find(
+            {"status": "active", "category": category, "start_time": {"$gte": one_hour_ago}},
+            {"_id": 0, "id": 1, "product_id": 1}
+        ).limit(2).to_list(2)
+        
+        for auction in new_auctions:
+            product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0, "name": 1, "retail_price": 1})
+            if product:
+                alerts.append({
+                    "type": "new_auction",
+                    "auction_id": auction["id"],
+                    "product_name": product.get("name", "Produkt"),
+                    "category": category,
+                    "retail_price": product.get("retail_price", 0),
+                    "message": f"🆕 Neue {category}-Auktion!",
+                    "priority": "medium"
+                })
+    
+    # 3. Low balance warning
+    if user.get("bids_balance", 0) < 5:
+        alerts.append({
+            "type": "low_balance",
+            "message": "⚠️ Nur noch wenige Gebote übrig!",
+            "current_balance": user.get("bids_balance", 0),
+            "priority": "high",
+            "action": "buy_bids"
+        })
+    
+    # Sort by priority
+    priority_order = {"high": 0, "medium": 1, "low": 2}
+    alerts.sort(key=lambda x: priority_order.get(x.get("priority", "low"), 2))
+    
+    return {"alerts": alerts[:10], "total_alerts": len(alerts)}
+
