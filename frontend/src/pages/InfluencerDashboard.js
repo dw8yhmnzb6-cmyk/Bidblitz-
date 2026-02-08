@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
   Star, Users, DollarSign, TrendingUp, Award, 
   ChevronRight, LogOut, Copy, CheckCircle, Clock,
-  ArrowUp, Gift, Target, Crown, Wallet, CreditCard, Send, X
+  ArrowUp, ArrowDown, Gift, Target, Crown, Wallet, CreditCard, Send, X,
+  BarChart3, Activity, Percent, ShoppingCart
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -12,6 +13,10 @@ import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { toast } from 'sonner';
 import { useLanguage } from '../context/LanguageContext';
+import { 
+  AreaChart, Area, BarChart, Bar, LineChart, Line,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+} from 'recharts';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
