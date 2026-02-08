@@ -1232,7 +1232,18 @@ export const translations = {
       offersFound: "aanbiedingen gevonden",
       noOffers: "Geen aanbiedingen gevonden",
       tryAnother: "Probeer een andere categorie of zoekopdracht",
-      priceNote: "Vergelijkingsprijs = Adviesprijs fabrikant"
+      priceNote: "Vergelijkingsprijs = Adviesprijs fabrikant",
+      uvp: "APF",
+      bid: "BIEDEN",
+      lastSoldFor: "Verkocht voor",
+      activity: "Activiteit",
+      currentPrice: "Huidige prijs",
+      nightOnly: "NACHT",
+      startPrice: "Startprijs",
+      activityLow: "Laag",
+      activityMedium: "Gemiddeld",
+      activityHigh: "Hoog",
+      activityHot: "Heet"
     },
     auctionCard: {
       liveNow: "LIVE NU", comingSoon: "BINNENKORT", ended: "BEËINDIGD",
