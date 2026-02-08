@@ -32,4 +32,7 @@ export { default as AdminSurveys } from './AdminSurveys';
 // Maintenance Mode
 export { AdminMaintenance } from './AdminMaintenance';
 
+// Mobile Navigation
+export { default as AdminMobileNav } from './AdminMobileNav';
+
 // All components have been extracted!
