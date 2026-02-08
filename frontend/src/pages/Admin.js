@@ -1228,8 +1228,8 @@ export default function Admin() {
         
         {/* Mobile/Tablet Menu Dropdown */}
         {mobileMenuOpen && (
-          <div className="px-2 pb-3 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 max-h-[60vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+          <div className="px-2 pb-3 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 max-h-[70vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+            <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 py-2">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
@@ -1237,14 +1237,18 @@ export default function Admin() {
                     setActiveTab(tab.id);
                     setMobileMenuOpen(false);
                   }}
-                  className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-colors ${
+                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all ${
                     activeTab === tab.id
-                      ? 'bg-[#7C3AED]/20 text-[#7C3AED]'
-                      : 'text-gray-500 hover:bg-white/5'
+                      ? 'bg-[#7C3AED] text-white shadow-lg scale-105'
+                      : 'bg-white text-gray-600 hover:bg-gray-50 shadow-sm'
                   }`}
                 >
-                  {tab.icon}
-                  <span className="text-[10px]">{tab.label}</span>
+                  <span className={activeTab === tab.id ? 'text-white' : 'text-gray-500'}>
+                    {tab.icon}
+                  </span>
+                  <span className="text-[9px] xs:text-[10px] font-medium text-center leading-tight line-clamp-2">
+                    {tab.label}
+                  </span>
                 </button>
               ))}
             </div>
