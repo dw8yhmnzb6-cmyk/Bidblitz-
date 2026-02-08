@@ -145,10 +145,15 @@ const useMaintenanceCheck = () => {
   return isInMaintenance;
 };
 
+import { useDeviceTracking } from './hooks/useDeviceTracking';
+
 function AppContent() {
   const { language, mappedLanguage } = useLanguage();
   const { isDarkMode } = useTheme();
   const isInMaintenance = useMaintenanceCheck();
+  
+  // Track device info for analytics
+  useDeviceTracking();
   
   // Show maintenance page for non-admin users when maintenance mode is active
   if (isInMaintenance) {
