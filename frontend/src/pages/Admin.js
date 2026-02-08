@@ -1208,22 +1208,28 @@ export default function Admin() {
   return (
     <div className="min-h-screen pt-36 lg:pt-0" data-testid="admin-page">
       {/* Mobile/Tablet Tab Bar - visible on screens smaller than lg (1024px) */}
-      <div className="lg:hidden fixed top-28 left-0 right-0 z-40 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 shadow-md">
-        <div className="flex items-center justify-between px-4 py-2">
-          <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
+      <div className="lg:hidden fixed top-28 left-0 right-0 z-40 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 shadow-md safe-area-inset">
+        <div className="flex items-center justify-between px-3 py-2">
+          <h2 className="text-sm sm:text-base font-bold text-gray-800 flex items-center gap-2">
             <Settings className="w-4 h-4 text-[#7C3AED]" />
-            Admin Panel
+            <span className="hidden xs:inline">Admin Panel</span>
+            <span className="xs:hidden">Admin</span>
           </h2>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="text-gray-800 border-gray-300"
-            data-testid="admin-mobile-menu-btn"
-          >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-            <span className="ml-1 text-xs">Menü</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] text-gray-500 hidden sm:inline">
+              {tabs.find(t => t.id === activeTab)?.label}
+            </span>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-gray-800 border-gray-300 px-2 py-1"
+              data-testid="admin-mobile-menu-btn"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              <span className="ml-1 text-xs hidden xs:inline">Menü</span>
+            </Button>
+          </div>
         </div>
         
         {/* Mobile/Tablet Menu Dropdown */}
