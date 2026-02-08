@@ -414,6 +414,16 @@ export const Navbar = () => {
                 {language === 'de' ? 'Glücksrad' : 'Lucky Wheel'}
               </button>
             )}
+            {isAuthenticated && (
+              <Link 
+                to="/referral" 
+                className="block text-pink-600 hover:text-pink-700 py-2 flex items-center gap-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <Gift className="w-4 h-4" />
+                {t('nav.referFriends') || 'Freunde werben'}
+              </Link>
+            )}
           </div>
         </div>
       )}
