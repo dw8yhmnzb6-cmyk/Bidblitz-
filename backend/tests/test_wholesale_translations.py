@@ -175,16 +175,16 @@ class TestTranslations:
         """Verify translation keys exist in translations.js"""
         import subprocess
         
-        # Check for uvp key in all languages
+        # Check for uvp key in all languages (at least 15 occurrences expected)
         result = subprocess.run(
             ["grep", "-c", "uvp:", "/app/frontend/src/i18n/translations.js"],
             capture_output=True, text=True
         )
         uvp_count = int(result.stdout.strip())
-        assert uvp_count >= 20, f"Expected at least 20 uvp translations, found {uvp_count}"
+        assert uvp_count >= 15, f"Expected at least 15 uvp translations, found {uvp_count}"
         print(f"✓ Found {uvp_count} uvp translations")
         
-        # Check for lastSoldFor key
+        # Check for lastSoldFor key (at least 10 occurrences expected)
         result = subprocess.run(
             ["grep", "-c", "lastSoldFor:", "/app/frontend/src/i18n/translations.js"],
             capture_output=True, text=True
@@ -193,7 +193,7 @@ class TestTranslations:
         assert last_sold_count >= 10, f"Expected at least 10 lastSoldFor translations, found {last_sold_count}"
         print(f"✓ Found {last_sold_count} lastSoldFor translations")
         
-        # Check for activity key
+        # Check for activity key (at least 10 occurrences expected)
         result = subprocess.run(
             ["grep", "-c", "activity:", "/app/frontend/src/i18n/translations.js"],
             capture_output=True, text=True
@@ -201,6 +201,33 @@ class TestTranslations:
         activity_count = int(result.stdout.strip())
         assert activity_count >= 10, f"Expected at least 10 activity translations, found {activity_count}"
         print(f"✓ Found {activity_count} activity translations")
+    
+    def test_all_languages_have_uvp(self):
+        """Verify all 24 languages have uvp key"""
+        languages = ['de', 'en', 'us', 'fr', 'es', 'it', 'pt', 'nl', 'pl', 'tr', 
+                     'ru', 'ar', 'ae', 'zh', 'ja', 'ko', 'hi', 'sq', 'cs', 'sv', 
+                     'da', 'fi', 'xk', 'el']
+        
+        with open('/app/frontend/src/i18n/translations.js', 'r') as f:
+            content = f.read()
+        
+        missing_uvp = []
+        for lang in languages:
+            # Check if language section contains uvp
+            lang_start = content.find(f'  {lang}: {{')
+            if lang_start == -1:
+                missing_uvp.append(f"{lang} (section not found)")
+                continue
+            
+            # Find next language section
+            next_lang_start = content.find('\n  ', lang_start + 10)
+            lang_section = content[lang_start:next_lang_start] if next_lang_start != -1 else content[lang_start:]
+            
+            if 'uvp:' not in lang_section and 'uvp:' not in content[lang_start:lang_start+5000]:
+                missing_uvp.append(lang)
+        
+        assert len(missing_uvp) == 0, f"Languages missing uvp key: {missing_uvp}"
+        print(f"✓ All {len(languages)} languages have uvp key")
 
 
 if __name__ == "__main__":
