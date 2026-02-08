@@ -66,6 +66,7 @@ from routers.daily_quests import router as daily_quests_router
 from routers.power_hour import router as power_hour_router
 from routers.price_alerts import router as price_alerts_router
 from routers.social_share import router as social_share_router
+from routers.social_sharing import router as social_sharing_router
 from routers.battle_pass import router as battle_pass_router
 from routers.bundles import bundles_router
 from routers.flash_sales_v2 import flash_sales_router as flash_sales_v2_router
