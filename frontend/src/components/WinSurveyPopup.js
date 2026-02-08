@@ -82,12 +82,20 @@ const translations = {
   }
 };
 
+// Language mapping for regional variants
+const langMapping = {
+  'xk': 'sq',  // Kosovo -> Albanian
+  'us': 'en',  // US English -> English  
+  'ae': 'ar', // UAE -> Arabic
+};
+const getMappedLang = (lang) => langMapping[lang] || lang;
+
 const WinSurveyPopup = ({ isOpen, onClose, auctionId, productName, productImage, language = 'de', token }) => {
   const [score, setScore] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  
+  const langKey = getMappedLang(language);
   const t = translations[langKey] || translations.de;
 
   // Reset state when popup opens
