@@ -117,7 +117,6 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 };
 
 // Maintenance Mode Hook - checks if maintenance is active
-import { useState, useEffect } from 'react';
 const useMaintenanceCheck = () => {
   const [isInMaintenance, setIsInMaintenance] = useState(false);
   const { isAdmin } = useAuth();
