@@ -454,6 +454,11 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Push Notifications */}
+        <div className="mb-8">
+          <PushNotificationSettings token={token} />
+        </div>
+
         {/* Lucky Wheel & Leaderboard Row */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {/* Lucky Wheel Card */}
