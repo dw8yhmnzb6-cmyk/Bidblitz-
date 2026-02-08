@@ -5,7 +5,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { 
   Building2, Mail, Clock, Package, CheckCircle, X, 
-  Edit, Trash2, Save, Percent, CreditCard 
+  Edit, Trash2, Save, Percent, CreditCard, AlertCircle, Info
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -30,10 +30,16 @@ export function AdminWholesale({
 
   const handleApproveWholesale = async (id) => {
     try {
-      await axios.post(`${API}/admin/wholesale/approve/${id}`, wholesaleForm, {
+      const response = await axios.post(`${API}/admin/wholesale/approve/${id}`, wholesaleForm, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Großkunde freigeschaltet');
+      
+      if (response.data.user_linked === false) {
+        toast.success('Großkunde freigeschaltet! Das Benutzerkonto wird bei der Registrierung verknüpft.');
+      } else {
+        toast.success('Großkunde freigeschaltet');
+      }
+      
       setShowWholesaleModal(false);
       setSelectedWholesale(null);
       fetchData();
@@ -89,47 +95,49 @@ export function AdminWholesale({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Building2 className="w-8 h-8 text-[#06B6D4]" />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg">
+            <Building2 className="w-6 h-6 text-white" />
+          </div>
           <div>
-            <h1 className="text-2xl font-bold text-white">Großkunden (B2B)</h1>
-            <p className="text-[#94A3B8]">Verwalten Sie Bewerbungen und Großkunden</p>
+            <h1 className="text-2xl font-bold text-slate-800">Großkunden (B2B)</h1>
+            <p className="text-slate-500 text-sm">Verwalten Sie Bewerbungen und Großkunden</p>
           </div>
         </div>
       </div>
 
       {/* Applications Section */}
-      <div className="glass-card rounded-xl p-6">
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Mail className="w-5 h-5 text-yellow-500" />
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <Mail className="w-5 h-5 text-amber-500" />
           Offene Bewerbungen ({(wholesaleApplications || []).filter(a => a.status === 'pending').length})
         </h2>
         
         {(wholesaleApplications || []).filter(a => a.status === 'pending').length === 0 ? (
-          <p className="text-gray-400 text-center py-4">Keine offenen Bewerbungen</p>
+          <p className="text-slate-400 text-center py-8">Keine offenen Bewerbungen</p>
         ) : (
           <div className="space-y-4">
             {(wholesaleApplications || []).filter(a => a.status === 'pending').map(app => (
-              <div key={app.id} className="bg-[#181824] rounded-xl p-4 border border-white/10">
+              <div key={app.id} className="bg-slate-50 rounded-xl p-4 border border-slate-200">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-white font-semibold">{app.company_name}</h3>
-                    <p className="text-gray-400 text-sm">{app.contact_name}</p>
+                    <h3 className="text-slate-800 font-semibold">{app.company_name}</h3>
+                    <p className="text-slate-500 text-sm">{app.contact_name}</p>
                     <div className="flex flex-wrap gap-4 mt-2 text-sm">
-                      <span className="text-gray-400">
-                        <Mail className="w-4 h-4 inline mr-1" />
+                      <span className="text-slate-600 flex items-center gap-1">
+                        <Mail className="w-4 h-4 text-slate-400" />
                         {app.email}
                       </span>
-                      <span className="text-gray-400">
-                        <Clock className="w-4 h-4 inline mr-1" />
+                      <span className="text-slate-600 flex items-center gap-1">
+                        <Clock className="w-4 h-4 text-slate-400" />
                         {app.phone}
                       </span>
-                      <span className="text-[#FFD700]">
-                        <Package className="w-4 h-4 inline mr-1" />
+                      <span className="text-amber-600 flex items-center gap-1 font-medium">
+                        <Package className="w-4 h-4" />
                         {app.expected_volume} Gebote/Monat
                       </span>
                     </div>
                     {app.message && (
-                      <p className="text-gray-500 text-sm mt-2 italic">"{app.message}"</p>
+                      <p className="text-slate-500 text-sm mt-2 italic bg-white p-2 rounded-lg">"{app.message}"</p>
                     )}
                   </div>
                   <div className="flex gap-2">
@@ -139,7 +147,8 @@ export function AdminWholesale({
                         setSelectedWholesale(app);
                         setShowWholesaleModal(true);
                       }}
-                      className="bg-green-600 hover:bg-green-700"
+                      className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                      data-testid={`approve-wholesale-${app.id}`}
                     >
                       <CheckCircle className="w-4 h-4 mr-1" />
                       Freischalten
@@ -160,54 +169,60 @@ export function AdminWholesale({
       </div>
 
       {/* Active Customers Section */}
-      <div className="glass-card rounded-xl p-6">
-        <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <Building2 className="w-5 h-5 text-[#06B6D4]" />
+      <div className="bg-white rounded-2xl p-6 shadow-lg border border-slate-100">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <Building2 className="w-5 h-5 text-cyan-500" />
           Aktive Großkunden ({(wholesaleCustomers || []).length})
         </h2>
         
         {(wholesaleCustomers || []).length === 0 ? (
-          <p className="text-gray-400 text-center py-4">Keine aktiven Großkunden</p>
+          <p className="text-slate-400 text-center py-8">Keine aktiven Großkunden</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-gray-400 text-sm border-b border-white/10">
-                  <th className="pb-3">Firma</th>
-                  <th className="pb-3">Kontakt</th>
-                  <th className="pb-3">Rabatt</th>
-                  <th className="pb-3">Kreditlimit</th>
-                  <th className="pb-3">Zahlung</th>
-                  <th className="pb-3">Status</th>
-                  <th className="pb-3">Aktionen</th>
+                <tr className="text-left text-slate-500 text-sm border-b border-slate-200">
+                  <th className="pb-3 font-medium">Firma</th>
+                  <th className="pb-3 font-medium">Kontakt</th>
+                  <th className="pb-3 font-medium">Rabatt</th>
+                  <th className="pb-3 font-medium">Kreditlimit</th>
+                  <th className="pb-3 font-medium">Zahlung</th>
+                  <th className="pb-3 font-medium">Status</th>
+                  <th className="pb-3 font-medium">Aktionen</th>
                 </tr>
               </thead>
               <tbody>
                 {(wholesaleCustomers || []).map(customer => (
-                  <tr key={customer.id} className="border-b border-white/5">
+                  <tr key={customer.id} className="border-b border-slate-100 hover:bg-slate-50">
                     <td className="py-4">
-                      <p className="text-white font-medium">{customer.company_name}</p>
-                      <p className="text-gray-500 text-xs">{customer.email}</p>
+                      <p className="text-slate-800 font-medium">{customer.company_name}</p>
+                      <p className="text-slate-400 text-xs">{customer.email}</p>
+                      {!customer.user_id && (
+                        <span className="inline-flex items-center gap-1 text-xs text-amber-600 mt-1">
+                          <Info className="w-3 h-3" />
+                          Kein Benutzerkonto
+                        </span>
+                      )}
                     </td>
-                    <td className="py-4 text-gray-300">{customer.contact_name}</td>
+                    <td className="py-4 text-slate-600">{customer.contact_name}</td>
                     <td className="py-4">
-                      <span className="px-2 py-1 rounded-full bg-green-500/20 text-green-500 text-sm">
+                      <span className="px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
                         {customer.discount_percent}%
                       </span>
                     </td>
-                    <td className="py-4 text-white">
+                    <td className="py-4 text-slate-800">
                       {customer.credit_limit > 0 ? `€${customer.credit_limit.toLocaleString()}` : '-'}
                     </td>
-                    <td className="py-4 text-gray-300 text-sm">
+                    <td className="py-4 text-slate-600 text-sm">
                       {customer.payment_terms === 'prepaid' ? 'Vorkasse' : 
                        customer.payment_terms === 'net15' ? 'Netto 15' : 
                        customer.payment_terms === 'net30' ? 'Netto 30' : customer.payment_terms}
                     </td>
                     <td className="py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         customer.status === 'active' 
-                          ? 'bg-green-500/20 text-green-500' 
-                          : 'bg-gray-500/20 text-gray-500'
+                          ? 'bg-emerald-100 text-emerald-700' 
+                          : 'bg-slate-100 text-slate-500'
                       }`}>
                         {customer.status === 'active' ? 'Aktiv' : 'Inaktiv'}
                       </span>
@@ -227,7 +242,7 @@ export function AdminWholesale({
                             });
                             setShowWholesaleModal(true);
                           }}
-                          className="border-white/20 text-white"
+                          className="border-slate-200 text-slate-600 hover:bg-slate-50"
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -248,13 +263,13 @@ export function AdminWholesale({
         )}
       </div>
 
-      {/* Wholesale Modal */}
+      {/* Wholesale Modal - Light Theme */}
       {showWholesaleModal && selectedWholesale && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-[#0F0F16] rounded-2xl p-6 w-full max-w-md border border-white/10">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-white">
-                {selectedWholesale.company_name ? 'Großkunde bearbeiten' : 'Bewerbung freischalten'}
+              <h3 className="text-xl font-bold text-slate-800">
+                {selectedWholesale.status === 'pending' ? 'Bewerbung freischalten' : 'Großkunde bearbeiten'}
               </h3>
               <Button
                 variant="ghost"
@@ -264,20 +279,32 @@ export function AdminWholesale({
                   setSelectedWholesale(null);
                   setWholesaleForm({ discount_percent: 10, credit_limit: 0, payment_terms: 'prepaid', notes: '' });
                 }}
+                className="text-slate-400 hover:text-slate-600"
               >
                 <X className="w-5 h-5" />
               </Button>
             </div>
 
             <div className="space-y-4">
-              <div className="p-4 bg-white/5 rounded-xl">
-                <p className="text-white font-semibold">{selectedWholesale.company_name}</p>
-                <p className="text-gray-400 text-sm">{selectedWholesale.contact_name} • {selectedWholesale.email}</p>
+              {/* Customer Info */}
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                <p className="text-slate-800 font-semibold">{selectedWholesale.company_name || selectedWholesale.contact_name}</p>
+                <p className="text-slate-500 text-sm">{selectedWholesale.contact_name} • {selectedWholesale.email}</p>
               </div>
 
+              {/* Info Banner for new applications */}
+              {selectedWholesale.status === 'pending' && (
+                <div className="p-3 bg-blue-50 rounded-xl border border-blue-200 flex items-start gap-2">
+                  <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-blue-700">
+                    Falls noch kein Benutzerkonto existiert, wird die Freischaltung gespeichert und automatisch verknüpft, sobald sich der Kunde registriert.
+                  </p>
+                </div>
+              )}
+
               <div>
-                <Label className="text-white flex items-center gap-2">
-                  <Percent className="w-4 h-4 text-green-500" />
+                <Label className="text-slate-700 flex items-center gap-2">
+                  <Percent className="w-4 h-4 text-emerald-500" />
                   Rabatt (%)
                 </Label>
                 <Input
@@ -285,12 +312,12 @@ export function AdminWholesale({
                   value={wholesaleForm.discount_percent}
                   onChange={(e) => setWholesaleForm({...wholesaleForm, discount_percent: parseFloat(e.target.value) || 0})}
                   placeholder="10"
-                  className="bg-[#181824] border-white/10 text-white mt-1"
+                  className="bg-slate-50 border-slate-200 text-slate-800 mt-1 focus:border-cyan-400"
                 />
               </div>
 
               <div>
-                <Label className="text-white flex items-center gap-2">
+                <Label className="text-slate-700 flex items-center gap-2">
                   <CreditCard className="w-4 h-4 text-blue-500" />
                   Kreditlimit (€)
                 </Label>
@@ -299,16 +326,16 @@ export function AdminWholesale({
                   value={wholesaleForm.credit_limit}
                   onChange={(e) => setWholesaleForm({...wholesaleForm, credit_limit: parseFloat(e.target.value) || 0})}
                   placeholder="0 = kein Limit"
-                  className="bg-[#181824] border-white/10 text-white mt-1"
+                  className="bg-slate-50 border-slate-200 text-slate-800 mt-1 focus:border-cyan-400"
                 />
               </div>
 
               <div>
-                <Label className="text-white">Zahlungsziel</Label>
+                <Label className="text-slate-700">Zahlungsziel</Label>
                 <select
                   value={wholesaleForm.payment_terms}
                   onChange={(e) => setWholesaleForm({...wholesaleForm, payment_terms: e.target.value})}
-                  className="w-full px-4 py-2 rounded-lg bg-[#181824] border border-white/10 text-white mt-1"
+                  className="w-full px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 mt-1 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
                 >
                   <option value="prepaid">Vorkasse</option>
                   <option value="net15">Netto 15 Tage</option>
@@ -317,13 +344,13 @@ export function AdminWholesale({
               </div>
 
               <div>
-                <Label className="text-white">Notizen / Sonderkonditionen</Label>
+                <Label className="text-slate-700">Notizen / Sonderkonditionen</Label>
                 <textarea
                   value={wholesaleForm.notes}
                   onChange={(e) => setWholesaleForm({...wholesaleForm, notes: e.target.value})}
                   placeholder="Interne Notizen..."
                   rows={3}
-                  className="w-full px-4 py-2 rounded-lg bg-[#181824] border border-white/10 text-white mt-1 resize-none"
+                  className="w-full px-4 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-800 mt-1 resize-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
                 />
               </div>
             </div>
@@ -335,7 +362,7 @@ export function AdminWholesale({
                   setShowWholesaleModal(false);
                   setSelectedWholesale(null);
                 }}
-                className="border-white/20 text-white"
+                className="border-slate-200 text-slate-600"
               >
                 Abbrechen
               </Button>
@@ -347,7 +374,8 @@ export function AdminWholesale({
                     handleUpdateWholesale(selectedWholesale.id);
                   }
                 }}
-                className="bg-[#10B981] hover:bg-[#10B981]/80"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white"
+                data-testid="wholesale-submit-btn"
               >
                 {selectedWholesale.status === 'pending' ? (
                   <>
