@@ -662,6 +662,8 @@ export default function Home() {
                 onBid={handleBid}
                 onRefresh={fetchData}
                 language={mappedLang}
+                isAuthenticated={isAuthenticated}
+                isVip={isVip}
               />
             ))}
           </div>
