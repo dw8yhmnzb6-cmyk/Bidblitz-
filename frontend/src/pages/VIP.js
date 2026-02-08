@@ -353,8 +353,10 @@ export default function VIP() {
 
   const handleSubscribe = async (planId) => {
     if (!token) {
-      toast.error(texts.loginRequired);
-      navigate('/login');
+      // Save the intended plan in sessionStorage so we can continue after login
+      sessionStorage.setItem('pendingVipPlan', planId);
+      toast.info(texts.loginRequired);
+      navigate('/login?redirect=/vip');
       return;
     }
     
@@ -367,12 +369,22 @@ export default function VIP() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      // Redirect to Stripe Checkout
       window.location.href = response.data.url;
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Subscription error');
       setSubscribing(null);
     }
   };
+  
+  // Check for pending VIP plan after login
+  useEffect(() => {
+    const pendingPlan = sessionStorage.getItem('pendingVipPlan');
+    if (pendingPlan && token) {
+      sessionStorage.removeItem('pendingVipPlan');
+      handleSubscribe(pendingPlan);
+    }
+  }, [token]);
 
   const handleCancel = async () => {
     if (!confirm(texts.cancelConfirm)) return;
