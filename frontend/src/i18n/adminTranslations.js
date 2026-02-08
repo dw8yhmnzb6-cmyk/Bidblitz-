@@ -669,8 +669,18 @@ export const adminTranslations = {
   }
 };
 
+// Language mapping for regional variants
+const langMapping = {
+  'xk': 'sq',  // Kosovo -> Albanian
+  'us': 'en',  // US English -> English  
+  'ae': 'ar', // UAE -> Arabic
+};
+
+const getMappedLang = (lang) => langMapping[lang] || lang;
+
 // Helper function to get admin translation
 export const getAdminText = (language, key) => {
-  const translations = adminTranslations[language] || adminTranslations.de;
+  const mappedLang = getMappedLang(language);
+  const translations = adminTranslations[mappedLang] || adminTranslations[language] || adminTranslations.de;
   return translations[key] || adminTranslations.de[key] || key;
 };

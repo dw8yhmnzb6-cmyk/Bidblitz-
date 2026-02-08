@@ -1134,14 +1134,25 @@ export const pageTranslations = {
   }
 };
 
+// Language mapping for regional variants
+const langMapping = {
+  'xk': 'sq',  // Kosovo -> Albanian
+  'us': 'en',  // US English -> English  
+  'ae': 'ar', // UAE -> Arabic
+};
+
+const getMappedLang = (lang) => langMapping[lang] || lang;
+
 // Helper function to get translations for a specific language
 export const getPageText = (language, key) => {
-  const langTrans = pageTranslations[language] || pageTranslations.de;
+  const mappedLang = getMappedLang(language);
+  const langTrans = pageTranslations[mappedLang] || pageTranslations[language] || pageTranslations.de;
   return langTrans[key] || pageTranslations.de[key] || key;
 };
 
 // Hook-style helper for components
 export const usePageTranslations = (language) => {
-  const texts = pageTranslations[language] || pageTranslations.de;
+  const mappedLang = getMappedLang(language);
+  const texts = pageTranslations[mappedLang] || pageTranslations[language] || pageTranslations.de;
   return texts;
 };
