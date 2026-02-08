@@ -18,6 +18,19 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
      - `/app/frontend/src/components/admin/AdminGameConfig.js` - Header und Cards responsiv
      - `/app/frontend/src/components/admin/AdminAnalytics.js` - KPI Cards und Charts responsiv
 
+2. ✅ **NEUES FEATURE: Mobile-Traffic-Analytics-Widget**
+   - Automatisches Device-Tracking für alle Besucher (Mobile, Tablet, Desktop)
+   - Device-Summary-Cards mit Prozentanteilen
+   - Geräte-Trend-Chart (Stacked Area Chart)
+   - Geräte-Verteilung-Pie-Chart
+   - Betriebssystem- und Browser-Statistiken
+   - Neue Dateien:
+     - `/app/frontend/src/hooks/useDeviceTracking.js` - Device-Detection Hook
+     - `/app/backend/routers/analytics.py` - Neue Endpoints: `/track-device`, `/devices`
+   - Geänderte Dateien:
+     - `/app/frontend/src/App.js` - Device-Tracking Hook integriert
+     - `/app/frontend/src/components/admin/AdminAnalytics.js` - Widget hinzugefügt
+
 ---
 
 ### ✅ Session Update - February 8, 2026 (Session 1)
