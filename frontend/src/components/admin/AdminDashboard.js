@@ -1,12 +1,14 @@
 // Admin Dashboard Tab Component
 import { 
-  Users, Gavel, Package, BarChart3, RefreshCw, TrendingUp, Activity 
+  Users, Gavel, Package, BarChart3, RefreshCw, TrendingUp, Activity, Search 
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { 
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Area, AreaChart
 } from 'recharts';
+import AdminQuickActions from './AdminQuickActions';
+import AdminLiveWidgets from './AdminLiveWidgets';
 
 const CHART_COLORS = {
   primary: '#FFD700',
@@ -19,15 +21,34 @@ const CHART_COLORS = {
 
 const PIE_COLORS = ['#10B981', '#F59E0B', '#94A3B8'];
 
-export default function AdminDashboard({ stats, detailedStats, loading, fetchData, t }) {
+export default function AdminDashboard({ stats, detailedStats, loading, fetchData, setShowGlobalSearch, t }) {
   return (
-    <div className="space-y-6 lg:space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-xl lg:text-2xl font-bold text-white">{t('admin.dashboard')}</h1>
-        <Button onClick={fetchData} variant="outline" className="border-white/10 text-white w-full sm:w-auto">
-          <RefreshCw className="w-4 h-4 mr-2" />{t('admin.refresh')}
-        </Button>
+    <div className="space-y-4 lg:space-y-6">
+      {/* Header with Search */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <h1 className="text-xl lg:text-2xl font-bold text-gray-800">{t('admin.dashboard')}</h1>
+        <div className="flex items-center gap-2">
+          <Button 
+            onClick={() => setShowGlobalSearch && setShowGlobalSearch(true)} 
+            variant="outline" 
+            className="border-gray-200 text-gray-800 flex-1 sm:flex-none justify-start"
+            data-testid="global-search-btn"
+          >
+            <Search className="w-4 h-4 mr-2" />
+            <span className="text-gray-500 text-sm">Suchen...</span>
+            <kbd className="hidden sm:inline ml-2 px-1.5 py-0.5 text-xs bg-white/10 rounded">/</kbd>
+          </Button>
+          <Button onClick={fetchData} variant="outline" className="border-gray-200 text-gray-800 px-3" data-testid="refresh-btn">
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </Button>
+        </div>
       </div>
+      
+      {/* Quick Actions Bar */}
+      <AdminQuickActions onRefresh={fetchData} stats={stats} />
+      
+      {/* Live Widgets */}
+      <AdminLiveWidgets stats={stats} detailedStats={detailedStats} />
       
       {/* Summary Stats Cards */}
       {stats && (
