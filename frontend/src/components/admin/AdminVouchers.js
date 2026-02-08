@@ -360,26 +360,99 @@ export default function AdminVouchers({
         </div>
       )}
 
-      {/* Vouchers List */}
-      <div className="glass-card rounded-xl overflow-hidden">
+      {/* Vouchers List - Mobile Card View */}
+      <div className="md:hidden space-y-3">
+        {(vouchers || []).map((voucher) => (
+          <div key={voucher.id} className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+            {/* Header with code and status */}
+            <div className="flex items-start justify-between mb-3">
+              <span 
+                className="font-mono text-pink-600 bg-pink-50 px-3 py-1 rounded-lg cursor-pointer hover:bg-pink-100 font-bold"
+                onClick={() => {
+                  navigator.clipboard.writeText(voucher.code);
+                  toast.success(`${voucher.code} kopiert!`);
+                }}
+              >
+                {voucher.code}
+              </span>
+              <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                voucher.is_active !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
+              }`}>
+                {voucher.is_active !== false ? t('admin.active') : t('admin.inactive')}
+              </span>
+            </div>
+            
+            {/* Stats Grid */}
+            <div className="grid grid-cols-3 gap-2 mb-3">
+              <div className="bg-slate-50 rounded-lg p-2 text-center">
+                <p className="text-xs text-slate-400">Typ</p>
+                <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                  voucher.type === 'euro' ? 'bg-emerald-100 text-emerald-600' :
+                  voucher.type === 'discount' ? 'bg-violet-100 text-violet-600' :
+                  'bg-blue-100 text-blue-600'
+                }`}>
+                  {voucher.type === 'euro' ? '€ Euro' : 
+                   voucher.type === 'discount' ? '% Rabatt' : 
+                   'Gebote'}
+                </span>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-2 text-center">
+                <p className="text-xs text-slate-400">Wert</p>
+                <p className="text-sm font-bold text-cyan-600">{getDisplayValue(voucher)}</p>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-2 text-center">
+                <p className="text-xs text-slate-400">Genutzt</p>
+                <p className="text-sm font-bold text-slate-700">{voucher.used_count || 0} / {voucher.max_uses || 1}</p>
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                variant="outline"
+                className={voucher.is_active !== false ? "flex-1 border-amber-300 text-amber-600" : "flex-1 border-emerald-300 text-emerald-600"} 
+                onClick={() => handleToggleVoucher(voucher.id)}
+              >
+                {voucher.is_active !== false ? <ToggleRight className="w-4 h-4 mr-1" /> : <ToggleLeft className="w-4 h-4 mr-1" />}
+                {voucher.is_active !== false ? 'Deaktivieren' : 'Aktivieren'}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="destructive"
+                onClick={() => handleDeleteVoucher(voucher.id)}
+                className="px-3"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        ))}
+        {(vouchers || []).length === 0 && (
+          <p className="text-center text-slate-400 py-8">Keine Gutscheine vorhanden</p>
+        )}
+      </div>
+
+      {/* Vouchers List - Desktop Table View */}
+      <div className="hidden md:block bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-[#181824]">
+            <thead className="bg-slate-50 border-b border-slate-100">
               <tr>
-                <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.voucherCode')}</th>
-                <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.voucherType')}</th>
-                <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.value')}</th>
-                <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.used')}</th>
-                <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.status')}</th>
-                <th className="px-4 py-3 text-left text-[#94A3B8] font-medium">{t('admin.actions')}</th>
+                <th className="px-4 py-3 text-left text-slate-600 font-medium">{t('admin.voucherCode')}</th>
+                <th className="px-4 py-3 text-left text-slate-600 font-medium">{t('admin.voucherType')}</th>
+                <th className="px-4 py-3 text-left text-slate-600 font-medium">{t('admin.value')}</th>
+                <th className="px-4 py-3 text-left text-slate-600 font-medium">{t('admin.used')}</th>
+                <th className="px-4 py-3 text-left text-slate-600 font-medium">{t('admin.status')}</th>
+                <th className="px-4 py-3 text-left text-slate-600 font-medium">{t('admin.actions')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/10">
+            <tbody className="divide-y divide-slate-100">
               {(vouchers || []).map((voucher) => (
-                <tr key={voucher.id} className="hover:bg-white/5">
+                <tr key={voucher.id} className="hover:bg-slate-50">
                   <td className="px-4 py-3">
                     <span 
-                      className="font-mono text-[#EC4899] bg-[#EC4899]/10 px-2 py-1 rounded cursor-pointer hover:bg-[#EC4899]/20"
+                      className="font-mono text-pink-600 bg-pink-50 px-2 py-1 rounded cursor-pointer hover:bg-pink-100"
                       onClick={() => {
                         navigator.clipboard.writeText(voucher.code);
                         toast.success(`${voucher.code} kopiert!`);
@@ -390,9 +463,9 @@ export default function AdminVouchers({
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded text-xs font-bold ${
-                      voucher.type === 'euro' ? 'bg-green-500/20 text-green-400' :
-                      voucher.type === 'discount' ? 'bg-purple-500/20 text-purple-400' :
-                      'bg-blue-500/20 text-blue-400'
+                      voucher.type === 'euro' ? 'bg-emerald-100 text-emerald-600' :
+                      voucher.type === 'discount' ? 'bg-violet-100 text-violet-600' :
+                      'bg-blue-100 text-blue-600'
                     }`}>
                       {voucher.type === 'euro' ? '€ Euro' : 
                        voucher.type === 'discount' ? '% Rabatt' : 
@@ -400,18 +473,18 @@ export default function AdminVouchers({
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-[#06B6D4] font-bold">
+                    <span className="text-cyan-600 font-bold">
                       {getDisplayValue(voucher)}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-[#94A3B8]">
+                    <span className="text-slate-500">
                       {voucher.used_count || 0} / {voucher.max_uses || 1}
                     </span>
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      voucher.is_active !== false ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-[#EF4444]/20 text-[#EF4444]'
+                      voucher.is_active !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'
                     }`}>
                       {voucher.is_active !== false ? t('admin.active') : t('admin.inactive')}
                     </span>
@@ -421,7 +494,7 @@ export default function AdminVouchers({
                       <Button 
                         size="sm" 
                         variant="ghost" 
-                        className={voucher.is_active !== false ? "text-[#F59E0B] hover:bg-[#F59E0B]/10" : "text-[#10B981] hover:bg-[#10B981]/10"} 
+                        className={voucher.is_active !== false ? "text-amber-500 hover:bg-amber-50" : "text-emerald-500 hover:bg-emerald-50"} 
                         onClick={() => handleToggleVoucher(voucher.id)}
                       >
                         {voucher.is_active !== false ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
@@ -429,7 +502,7 @@ export default function AdminVouchers({
                       <Button 
                         size="sm" 
                         variant="ghost" 
-                        className="text-[#EF4444] hover:bg-[#EF4444]/10" 
+                        className="text-red-500 hover:bg-red-50" 
                         onClick={() => handleDeleteVoucher(voucher.id)}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -442,7 +515,7 @@ export default function AdminVouchers({
           </table>
         </div>
         {(vouchers || []).length === 0 && (
-          <p className="text-center text-[#94A3B8] py-8">Keine Gutscheine vorhanden</p>
+          <p className="text-center text-slate-400 py-8">Keine Gutscheine vorhanden</p>
         )}
       </div>
     </div>
