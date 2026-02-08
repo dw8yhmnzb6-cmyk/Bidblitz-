@@ -75,8 +75,17 @@ const widgetTexts = {
   }
 };
 
+// Language mapping for regional variants
+const langMapping = {
+  'xk': 'sq',  // Kosovo -> Albanian
+  'us': 'en',  // US English -> English  
+  'ae': 'ar', // UAE -> Arabic
+};
+const getMappedLang = (lang) => langMapping[lang] || lang;
+
 // Leaderboard entry component
 const LeaderboardEntry = memo(({ entry, rank, language = 'de' }) => {
+  const langKey = getMappedLang(language);
   const t = widgetTexts[langKey] || widgetTexts.de;
   
   const getRankIcon = (r) => {
