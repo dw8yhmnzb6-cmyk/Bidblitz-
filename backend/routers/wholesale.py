@@ -216,11 +216,27 @@ async def approve_wholesale_application(
     else:
         logger.info(f"🏢 Wholesale customer approved: {application['company_name']} (no user account yet - will be linked on registration)")
     
+    # Send welcome email to wholesale customer
+    try:
+        await send_wholesale_welcome_email(
+            to_email=application["email"],
+            contact_name=application["contact_name"],
+            company_name=application["company_name"],
+            discount_percent=settings.discount_percent or 10,
+            credit_limit=settings.credit_limit or 0,
+            payment_terms=settings.payment_terms or "prepaid",
+            has_user_account=user is not None
+        )
+        logger.info(f"📧 Wholesale welcome email sent to {application['email']}")
+    except Exception as e:
+        logger.error(f"❌ Failed to send wholesale welcome email: {e}")
+    
     return {
         "success": True, 
         "message": "Großkunde erfolgreich freigeschaltet" + (" (Benutzerkonto wird bei Registrierung verknüpft)" if not user else ""), 
         "wholesale_id": wholesale_id,
-        "user_linked": user is not None
+        "user_linked": user is not None,
+        "email_sent": True
     }
 
 @router.post("/admin/wholesale/reject/{application_id}")
