@@ -1363,3 +1363,142 @@ async def track_banner_click(banner_id: str):
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Banner nicht gefunden")
     return {"success": True}
+
+
+# ==================== GEWINNER-KONTROLLE ====================
+
+class WinnerControlSettings(BaseModel):
+    bot_win_rate: float = 90.0  # Prozent der Auktionen die Bots gewinnen
+
+class SetGuaranteedWinner(BaseModel):
+    auction_id: str
+    user_id: Optional[str] = None  # None = Bots gewinnen, user_id = dieser Kunde gewinnt
+
+@router.get("/winner-control/settings")
+async def get_winner_control_settings(current_user: dict = Depends(get_current_admin)):
+    """Get current winner control settings"""
+    settings = await db.settings.find_one({"type": "winner_control"}, {"_id": 0})
+    if not settings:
+        settings = {
+            "type": "winner_control",
+            "bot_win_rate": 90.0,  # 90% Bots, 10% Kunden
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.settings.insert_one(settings)
+    return settings
+
+@router.post("/winner-control/settings")
+async def update_winner_control_settings(
+    settings: WinnerControlSettings,
+    current_user: dict = Depends(get_current_admin)
+):
+    """Update winner control settings (bot win rate)"""
+    await db.settings.update_one(
+        {"type": "winner_control"},
+        {"$set": {
+            "bot_win_rate": settings.bot_win_rate,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    return {"success": True, "bot_win_rate": settings.bot_win_rate}
+
+@router.get("/winner-control/auctions")
+async def get_auctions_for_winner_control(current_user: dict = Depends(get_current_admin)):
+    """Get all active auctions with their winner control status"""
+    auctions = await db.auctions.find(
+        {"status": "active"},
+        {"_id": 0, "id": 1, "title": 1, "current_price": 1, "end_time": 1, 
+         "last_bidder_id": 1, "last_bidder_name": 1, "bid_history": 1,
+         "guaranteed_winner_bidding": 1, "let_customer_win": 1}
+    ).to_list(100)
+    
+    # Add bidder list for each auction
+    for auction in auctions:
+        # Get unique real bidders (not bots)
+        bidders = {}
+        for bid in auction.get("bid_history", [])[-50:]:  # Last 50 bids
+            user_id = bid.get("user_id", "")
+            if not user_id.startswith("bot_") and user_id not in bidders:
+                bidders[user_id] = bid.get("user_name", "Unknown")
+        
+        auction["real_bidders"] = [{"id": uid, "name": name} for uid, name in bidders.items()]
+        del auction["bid_history"]  # Don't send full history
+        
+        # Get winner info if set
+        if auction.get("guaranteed_winner_bidding"):
+            winner = await db.users.find_one(
+                {"id": auction["guaranteed_winner_bidding"]},
+                {"_id": 0, "id": 1, "name": 1, "email": 1}
+            )
+            auction["guaranteed_winner_info"] = winner
+    
+    return auctions
+
+@router.post("/winner-control/set-winner")
+async def set_guaranteed_winner(
+    data: SetGuaranteedWinner,
+    current_user: dict = Depends(get_current_admin)
+):
+    """Set a guaranteed winner for an auction (or let bots win)"""
+    auction = await db.auctions.find_one({"id": data.auction_id}, {"_id": 0})
+    if not auction:
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
+    
+    if auction.get("status") != "active":
+        raise HTTPException(status_code=400, detail="Auktion ist nicht aktiv")
+    
+    if data.user_id:
+        # Verify user exists
+        user = await db.users.find_one({"id": data.user_id}, {"_id": 0, "id": 1, "name": 1})
+        if not user:
+            raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
+        
+        # Set this user as guaranteed winner
+        await db.auctions.update_one(
+            {"id": data.auction_id},
+            {"$set": {
+                "guaranteed_winner_bidding": data.user_id,
+                "let_customer_win": data.user_id,
+                "winner_set_by": current_user.get("id"),
+                "winner_set_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        return {
+            "success": True,
+            "message": f"Gewinner gesetzt: {user.get('name')}",
+            "winner_id": data.user_id,
+            "winner_name": user.get("name")
+        }
+    else:
+        # Clear guaranteed winner - let bots win
+        await db.auctions.update_one(
+            {"id": data.auction_id},
+            {"$unset": {
+                "guaranteed_winner_bidding": "",
+                "let_customer_win": ""
+            }}
+        )
+        return {
+            "success": True,
+            "message": "Gewinner zurückgesetzt - Bots werden gewinnen",
+            "winner_id": None
+        }
+
+@router.post("/winner-control/clear-winner/{auction_id}")
+async def clear_guaranteed_winner(
+    auction_id: str,
+    current_user: dict = Depends(get_current_admin)
+):
+    """Clear the guaranteed winner for an auction"""
+    result = await db.auctions.update_one(
+        {"id": auction_id},
+        {"$unset": {
+            "guaranteed_winner_bidding": "",
+            "let_customer_win": ""
+        }}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Auktion nicht gefunden")
+    
+    return {"success": True, "message": "Gewinner zurückgesetzt"}
