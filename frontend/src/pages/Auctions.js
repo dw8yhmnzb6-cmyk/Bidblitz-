@@ -1122,6 +1122,9 @@ export default function Auctions() {
                     onBid={handleBid}
                     t={t}
                     language={language}
+                    isAuthenticated={isAuthenticated}
+                    isVip={isVip}
+                    navigate={navigate}
                   />
                 )
               ))}
