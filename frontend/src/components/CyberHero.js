@@ -7,9 +7,18 @@ import { Zap, Clock, TrendingUp, ChevronRight } from 'lucide-react';
  * Features: Animated background, Auction of the Day, Stats
  */
 
+// Language mapping for regional variants
+const langMapping = {
+  'xk': 'sq',  // Kosovo -> Albanian
+  'us': 'en',  // US English -> English  
+  'ae': 'ar', // UAE -> Arabic
+};
+const getMappedLang = (lang) => langMapping[lang] || lang;
+
 const CyberHero = ({ auctionOfDay, stats, onBid, language = 'de' }) => {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
+  const langKey = getMappedLang(language);
   
   // Translations
   const t = {
