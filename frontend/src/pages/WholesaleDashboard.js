@@ -708,6 +708,41 @@ export default function WholesaleDashboard() {
         {/* Order Tab */}
         {activeTab === 'order' && pricing && (
           <div className="space-y-6">
+            {/* Voucher Redemption Section */}
+            <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-2xl p-4 md:p-6 border border-amber-500/30">
+              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                <Ticket className="w-5 h-5 text-amber-400" />
+                Gutschein einlösen
+              </h3>
+              <p className="text-slate-300 text-sm mb-4">
+                Haben Sie einen Gutschein-Code? Lösen Sie ihn hier ein und erhalten Sie sofort Gebote!
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Input
+                  value={voucherCode}
+                  onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                  placeholder="z.B. B2B-WELCOME-2024"
+                  className="flex-1 bg-slate-900/50 border-amber-500/30 text-white placeholder:text-slate-500 uppercase"
+                  onKeyDown={(e) => e.key === 'Enter' && handleRedeemVoucher()}
+                />
+                <Button
+                  onClick={handleRedeemVoucher}
+                  disabled={voucherLoading || !voucherCode}
+                  className="bg-amber-500 hover:bg-amber-600 text-white min-w-[140px]"
+                >
+                  {voucherLoading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Gift className="w-4 h-4 mr-2" />
+                      Einlösen
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+            
+            {/* Discount Info */}
             <div className="bg-emerald-500/10 rounded-xl p-4 border border-emerald-500/30 flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-emerald-400" />
               <p className="text-emerald-300">
