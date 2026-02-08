@@ -63,7 +63,7 @@ const HappyHourBanner = () => {
       buyNow: 'Acheter des Offres!'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     const fetchStatus = async () => {

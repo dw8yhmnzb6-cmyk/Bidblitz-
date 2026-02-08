@@ -63,7 +63,7 @@ const StreakIndicator = ({ auctionId, currentStreak = 0, onStreakUpdate }) => {
       freeBids: 'Offres Gratuites'
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (!token || !auctionId) return;

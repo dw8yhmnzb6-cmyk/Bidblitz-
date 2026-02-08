@@ -125,7 +125,7 @@ const WeeklyChallenges = () => {
       }
     }
   };
-  const t = texts[language] || texts.de;
+  const t = texts[langKey] || texts.de;
 
   useEffect(() => {
     if (token) {
