@@ -29,6 +29,10 @@ export default function WholesaleDashboard() {
   const [sendBidsTarget, setSendBidsTarget] = useState(null);
   const [sendBidsAmount, setSendBidsAmount] = useState('');
   const [sendBidsMessage, setSendBidsMessage] = useState('');
+  
+  // Voucher State
+  const [voucherCode, setVoucherCode] = useState('');
+  const [voucherLoading, setVoucherLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('wholesale_token');
