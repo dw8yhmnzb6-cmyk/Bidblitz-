@@ -184,7 +184,8 @@ async def get_notification_preferences(user: dict = Depends(get_current_user)):
             "outbid": True,
             "daily_deals": True,
             "new_auctions": False,
-            "marketing": False
+            "marketing": False,
+            "night_auction_start": True
         }
     
     return prefs
