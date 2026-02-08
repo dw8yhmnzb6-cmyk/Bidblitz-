@@ -783,6 +783,78 @@ async def auction_reminder_processor():
     logger.info("Reminder processor stopped")
 
 
+
+async def send_night_auction_notifications(night_auctions: list):
+    """Send notifications to users who have bid on night auctions that are now active"""
+    try:
+        now = datetime.now(timezone.utc).isoformat()
+        auction_ids = [a["id"] for a in night_auctions]
+        
+        # Find users who have bid on these auctions and want notifications
+        bidders = await db.bids.aggregate([
+            {"$match": {"auction_id": {"$in": auction_ids}}},
+            {"$group": {"_id": "$user_id", "auctions": {"$addToSet": "$auction_id"}}}
+        ]).to_list(1000)
+        
+        if not bidders:
+            logger.info("🌙 No bidders to notify for night auctions")
+            return
+        
+        # Get user preferences
+        user_ids = [b["_id"] for b in bidders]
+        prefs = await db.notification_preferences.find(
+            {"user_id": {"$in": user_ids}},
+            {"_id": 0, "user_id": 1, "night_auction_start": 1}
+        ).to_list(1000)
+        
+        # Create a set of users who want night notifications (default is True)
+        pref_map = {p["user_id"]: p.get("night_auction_start", True) for p in prefs}
+        
+        # Get product names for better notification messages
+        product_ids = list(set(a.get("product_id") for a in night_auctions if a.get("product_id")))
+        products = await db.products.find(
+            {"id": {"$in": product_ids}},
+            {"_id": 0, "id": 1, "name": 1}
+        ).to_list(100)
+        product_names = {p["id"]: p["name"] for p in products}
+        
+        # Create notifications for each bidder
+        notifications = []
+        for bidder in bidders:
+            user_id = bidder["_id"]
+            
+            # Skip if user has disabled night notifications
+            if not pref_map.get(user_id, True):
+                continue
+            
+            # Skip bots
+            user = await db.users.find_one({"id": user_id}, {"_id": 0, "is_bot": 1})
+            if user and user.get("is_bot"):
+                continue
+            
+            auction_count = len(bidder["auctions"])
+            
+            # Create notification
+            notification = {
+                "id": str(uuid.uuid4()),
+                "user_id": user_id,
+                "title": "🌙 Deine Nacht-Auktionen sind jetzt aktiv!",
+                "message": f"{auction_count} Auktion(en), auf die du geboten hast, {'ist' if auction_count == 1 else 'sind'} jetzt live. Viel Erfolg!",
+                "type": "auction",
+                "link": "/auctions?filter=nacht",
+                "read": False,
+                "created_at": now
+            }
+            notifications.append(notification)
+        
+        if notifications:
+            await db.notifications.insert_many(notifications)
+            logger.info(f"🌙 Sent {len(notifications)} night auction notifications")
+        
+    except Exception as e:
+        logger.error(f"Error sending night auction notifications: {e}")
+
+
 async def day_night_auction_scheduler():
     """Background task - Automatically pause/resume auctions based on day/night schedule
     
