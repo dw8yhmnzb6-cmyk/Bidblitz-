@@ -67,6 +67,30 @@ export default function WholesaleDashboard() {
       setCustomer(profile);
       setPricing(pricingData);
       setOrders(ordersData.orders || []);
+      
+      // Fetch B2B customer data
+      try {
+        const [customersRes, transfersRes] = await Promise.all([
+          fetch(`${API}/api/wholesale/auth/my-customers`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`${API}/api/wholesale/auth/bid-transfers`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+        ]);
+        
+        if (customersRes.ok) {
+          const customersData = await customersRes.json();
+          setB2bCustomers(customersData.customers || []);
+        }
+        
+        if (transfersRes.ok) {
+          const transfersData = await transfersRes.json();
+          setBidTransfers(transfersData.transfers || []);
+        }
+      } catch (e) {
+        console.log('B2B data fetch error:', e);
+      }
     } catch (error) {
       toast.error('Sitzung abgelaufen');
       localStorage.removeItem('wholesale_token');
