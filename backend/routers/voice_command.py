@@ -1025,7 +1025,7 @@ Beschreibung (Deutsch): {german_desc if german_desc else "Keine Beschreibung vor
         # Calculate overall translation percentage
         max_translations = total_products * (len(languages) - 1)  # Exclude German
         actual_translations = sum(
-            len([l for l in product.get("name_translations", {}).keys() if l != "de"])
+            len([l for l in (product.get("name_translations") or {}).keys() if l != "de"])
             for product in products
         )
         percentage = round((actual_translations / max_translations) * 100, 1) if max_translations > 0 else 0
