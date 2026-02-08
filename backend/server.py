@@ -118,6 +118,7 @@ from routers.referrals import router as referrals_router
 from routers.analytics import router as analytics_router
 from routers.surveys import router as surveys_router
 from routers.maintenance import router as maintenance_router
+from routers.push_notifications import router as push_notifications_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
