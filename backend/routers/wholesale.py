@@ -7,6 +7,7 @@ import uuid
 
 from config import db, logger
 from dependencies import get_current_user, get_admin_user
+from utils.email import send_wholesale_welcome_email
 
 router = APIRouter(tags=["Wholesale"])
 
