@@ -2430,8 +2430,11 @@ export const languageList = {
 };
 
 // Language mapping for regional variants
+// NOTE: Albanian (sq) and Kosovo (xk) are mapped to German (de) since this is a German platform
+// and we want to show German content by default for these regions
 export const langMapping = {
-  'xk': 'sq',  // Kosovo -> Albanian
+  'xk': 'de',  // Kosovo -> German (platform default)
+  'sq': 'de',  // Albanian -> German (platform default)
   'us': 'en',  // US English -> English  
   'ae': 'ar', // UAE -> Arabic
 };
