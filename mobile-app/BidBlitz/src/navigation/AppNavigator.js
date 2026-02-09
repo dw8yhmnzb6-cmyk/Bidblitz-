@@ -21,6 +21,8 @@ import TeamBiddingScreen from '../screens/TeamBiddingScreen';
 import AIAdvisorScreen from '../screens/AIAdvisorScreen';
 import DuelScreen from '../screens/DuelScreen';
 import MysteryBoxScreen from '../screens/MysteryBoxScreen';
+import BidBuddyScreen from '../screens/BidBuddyScreen';
+import DailySpinScreen from '../screens/DailySpinScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
