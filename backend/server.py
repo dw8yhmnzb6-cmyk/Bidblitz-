@@ -660,7 +660,10 @@ async def bot_last_second_bidder():
                             })
                             
                             # Determine phase for logging
-                            phase_name = "Phase1 (bis €3)" if current_price < 3.0 else "Endspurt (bis €25)"
+                            if current_price < PHASE1_TARGET:
+                                phase_name = f"Phase1 (bis €{PHASE1_TARGET:.2f})"
+                            else:
+                                phase_name = f"Endspurt (bis €{FINAL_TARGET:.0f})"
                             logger.info(f"🤖 Bot '{bot['name']}' bid €{new_price:.2f} [{phase_name}] (target: €{target_price:.2f}, {seconds_left:.0f}s left, next in {next_interval:.0f}s)")
                             
                 except Exception as e:
