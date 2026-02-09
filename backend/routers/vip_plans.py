@@ -144,10 +144,10 @@ async def get_available_plans(language: str = "de"):
         
         plan_data = {
             "id": plan["id"],
-            "name": plan["name_translations"].get(language, plan["name"]),
+            "name": plan.get("name_translations", {}).get(language, plan["name"]),
             "interval": plan["interval"],
             "price": plan["price"],
-            "benefits": plan["benefits_translations"].get(language, plan["benefits"]),
+            "benefits": plan.get("benefits_translations", {}).get(language, plan.get("benefits", [])),
             "badge": plan.get("badge"),
             "badge_color": plan.get("badge_color"),
             "highlighted": plan.get("highlighted", False)
