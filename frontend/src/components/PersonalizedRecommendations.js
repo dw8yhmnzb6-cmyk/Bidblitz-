@@ -358,6 +358,7 @@ const PersonalizedRecommendations = memo(({ onBid }) => {
           onBid={onBid}
           t={t}
           color="cyan"
+          langKey={langKey}
         />
         
         {/* Ending Soon - Urgency */}
@@ -368,6 +369,7 @@ const PersonalizedRecommendations = memo(({ onBid }) => {
           onBid={onBid}
           t={t}
           color="red"
+          langKey={langKey}
         />
         
         {/* Hot Right Now */}
@@ -378,6 +380,7 @@ const PersonalizedRecommendations = memo(({ onBid }) => {
           onBid={onBid}
           t={t}
           color="orange"
+          langKey={langKey}
         />
         
         {/* Similar to Won */}
@@ -388,6 +391,7 @@ const PersonalizedRecommendations = memo(({ onBid }) => {
           onBid={onBid}
           t={t}
           color="green"
+          langKey={langKey}
         />
       </div>
     </div>
