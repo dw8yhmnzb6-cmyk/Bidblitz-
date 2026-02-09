@@ -543,8 +543,11 @@ async def bot_last_second_bidder():
                                 # Longer pause (1-3 minutes)
                                 next_interval = random.uniform(60, 180)
                             else:
-                                # Normal interval (15-90 seconds)
-                                next_interval = random.uniform(MIN_BID_INTERVAL, MAX_BID_INTERVAL)
+                                # Normal interval (20-120 seconds) with extra randomness
+                                base_interval = random.uniform(MIN_BID_INTERVAL, MAX_BID_INTERVAL)
+                                # Add per-auction variation
+                                auction_variation = random.uniform(0.8, 1.3)
+                                next_interval = base_interval * auction_variation
                             
                             next_bid_time_per_auction[auction_id] = now_ts + next_interval
                             
