@@ -271,6 +271,97 @@ const AppNavigator = () => {
                 title: '🏆 Gewinner-Galerie',
               }}
             />
+            {/* 9 NEW Feature Screens */}
+            <Stack.Screen 
+              name="BidAlarm" 
+              component={BidAlarmScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#8B5CF6' },
+                headerTintColor: '#fff',
+                title: '⏰ Bid-Alarm',
+              }}
+            />
+            <Stack.Screen 
+              name="WelcomeBonus" 
+              component={WelcomeBonusScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#10B981' },
+                headerTintColor: '#fff',
+                title: '🎁 Willkommens-Bonus',
+              }}
+            />
+            <Stack.Screen 
+              name="ActivityFeed" 
+              component={ActivityFeedScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#EC4899' },
+                headerTintColor: '#fff',
+                title: '📊 Live-Aktivität',
+              }}
+            />
+            <Stack.Screen 
+              name="Tournament" 
+              component={TournamentScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#F59E0B' },
+                headerTintColor: '#fff',
+                title: '🏅 Turnier',
+              }}
+            />
+            <Stack.Screen 
+              name="AuctionChat" 
+              component={AuctionChatScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#8B5CF6' },
+                headerTintColor: '#fff',
+                title: '💬 Auktions-Chat',
+              }}
+            />
+            <Stack.Screen 
+              name="Recommendations" 
+              component={RecommendationsScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#EC4899' },
+                headerTintColor: '#fff',
+                title: '🎯 Empfehlungen',
+              }}
+            />
+            <Stack.Screen 
+              name="Watchers" 
+              component={WatchersScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#8B5CF6' },
+                headerTintColor: '#fff',
+                title: '👀 Live-Zuschauer',
+              }}
+            />
+            <Stack.Screen 
+              name="RevengeBid" 
+              component={RevengeBidScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#EF4444' },
+                headerTintColor: '#fff',
+                title: '⚡ Revenge Bid',
+              }}
+            />
+            <Stack.Screen 
+              name="Wallet" 
+              component={WalletScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#3B82F6' },
+                headerTintColor: '#fff',
+                title: '📱 Digital Wallet',
+              }}
+            />
           </>
         ) : (
           <Stack.Screen name="Auth" component={AuthStack} />
