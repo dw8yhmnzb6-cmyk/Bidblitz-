@@ -215,8 +215,7 @@ const WinnerGalleryScreen = ({ navigation }) => {
       {/* Filter */}
       <View style={styles.filterRow}>
         <FilterButton value="all" label="Alle" />
-        <FilterButton value="week" label="Diese Woche" />
-        <FilterButton value="month" label="Diesen Monat" />
+        <FilterButton value="featured" label="Highlights" />
       </View>
 
       {/* Winners List */}
