@@ -212,17 +212,23 @@ def get_personalized_greeting(name: str) -> dict:
     if hour < 12:
         greetings = {
             "de": f"Guten Morgen{', ' + name if name else ''}! ☀️",
-            "en": f"Good morning{', ' + name if name else ''}! ☀️"
+            "en": f"Good morning{', ' + name if name else ''}! ☀️",
+            "sq": f"Mirëmëngjes{', ' + name if name else ''}! ☀️",
+            "xk": f"Mirëmëngjes{', ' + name if name else ''}! ☀️"
         }
     elif hour < 18:
         greetings = {
             "de": f"Hallo{', ' + name if name else ''}! 👋",
-            "en": f"Hello{', ' + name if name else ''}! 👋"
+            "en": f"Hello{', ' + name if name else ''}! 👋",
+            "sq": f"Përshëndetje{', ' + name if name else ''}! 👋",
+            "xk": f"Përshëndetje{', ' + name if name else ''}! 👋"
         }
     else:
         greetings = {
             "de": f"Guten Abend{', ' + name if name else ''}! 🌙",
-            "en": f"Good evening{', ' + name if name else ''}! 🌙"
+            "en": f"Good evening{', ' + name if name else ''}! 🌙",
+            "sq": f"Mirëmbrëma{', ' + name if name else ''}! 🌙",
+            "xk": f"Mirëmbrëma{', ' + name if name else ''}! 🌙"
         }
     
     return greetings
