@@ -73,4 +73,53 @@ export const dailyRewardAPI = {
   claim: () => api.post('/auth/claim-daily-reward'),
 };
 
+// Achievements API
+export const achievementsAPI = {
+  getAll: (language = 'de') => api.get(`/achievements/all?language=${language}`),
+  getMy: (language = 'de') => api.get(`/achievements/my-achievements?language=${language}`),
+  getProgress: () => api.get('/achievements/progress'),
+};
+
+// Winner Gallery API
+export const winnerGalleryAPI = {
+  getFeed: (params) => api.get('/winner-gallery/feed', { params }),
+  getEntry: (id) => api.get(`/winner-gallery/${id}`),
+  like: (id) => api.post(`/winner-gallery/${id}/like`),
+  upload: (data) => api.post('/winner-gallery/upload', data),
+  getMySubmissions: () => api.get('/winner-gallery/my-submissions'),
+};
+
+// Buy it Now API
+export const buyItNowAPI = {
+  getBidsUsed: (auctionId) => api.get(`/buy-it-now/bids-used/${auctionId}`),
+  getAvailable: () => api.get('/buy-it-now/available'),
+  purchase: (data) => api.post('/buy-it-now/purchase', data),
+};
+
+// Daily Spin / Wheel API
+export const wheelAPI = {
+  getStatus: () => api.get('/wheel/status'),
+  spin: () => api.post('/wheel/spin'),
+};
+
+// Mystery Box API
+export const mysteryBoxAPI = {
+  getAll: () => api.get('/mystery-box'),
+  open: (boxId) => api.post(`/mystery-box/${boxId}/open`),
+};
+
+// Favorites API
+export const favoritesAPI = {
+  getAll: () => api.get('/favorites'),
+  add: (auctionId) => api.post('/favorites/add', { auction_id: auctionId }),
+  remove: (auctionId) => api.delete(`/favorites/${auctionId}`),
+};
+
+// Bid Buddy API
+export const bidBuddyAPI = {
+  getAll: () => api.get('/bid-buddy'),
+  create: (data) => api.post('/bid-buddy/create', data),
+  stop: (id) => api.post(`/bid-buddy/${id}/stop`),
+};
+
 export default api;
