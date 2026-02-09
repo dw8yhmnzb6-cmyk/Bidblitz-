@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   discountBadge: {
     position: 'absolute',
     top: 15,
-    right: 15,
+    right: 60,
     backgroundColor: '#EF4444',
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -256,6 +256,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  favoriteButton: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   timerContainer: {
     position: 'absolute',
