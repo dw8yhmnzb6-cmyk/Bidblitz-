@@ -368,6 +368,7 @@ async def bot_last_second_bidder():
     
     # Track which bots have bid on which auctions (for rotation)
     auction_bot_history = {}  # auction_id -> list of last 5 bot IDs
+    auction_start_offset = {}  # auction_id -> random offset in seconds (0-60)
     
     # MINIMUM price for NORMAL auctions - €25 (für echte Einnahmen)
     MINIMUM_AUCTION_PRICE = 25.00
@@ -380,9 +381,9 @@ async def bot_last_second_bidder():
     DEFAULT_MAX_PRICE = 35.00
     
     # REALISTIC timing - vary between auctions
-    MIN_BID_INTERVAL = 15.0   # Minimum 15 seconds between bids
-    MAX_BID_INTERVAL = 90.0   # Maximum 90 seconds between bids
-    PAUSE_CHANCE = 0.15       # 15% chance of longer pause (1-3 minutes)
+    MIN_BID_INTERVAL = 20.0   # Minimum 20 seconds between bids
+    MAX_BID_INTERVAL = 120.0  # Maximum 2 minutes between bids
+    PAUSE_CHANCE = 0.20       # 20% chance of longer pause (2-4 minutes)
     
     while bot_task_running:
         try:
@@ -394,6 +395,13 @@ async def bot_last_second_bidder():
             now = datetime.now(timezone.utc)
             now_ts = now.timestamp()
             
+            # Initialize random offsets for new auctions (to desync bot bidding)
+            for auction in active_auctions:
+                aid = auction.get("id")
+                if aid and aid not in auction_start_offset:
+                    # Each auction gets a random offset so bots don't bid simultaneously
+                    auction_start_offset[aid] = random.uniform(0, 90)
+            
             # PRIORITIZE auctions ending soon (< 30 seconds) - process ALL of them
             urgent_auctions = [a for a in active_auctions if (datetime.fromisoformat(a["end_time"].replace("Z", "+00:00")) - now).total_seconds() < 30]
             
@@ -401,8 +409,8 @@ async def bot_last_second_bidder():
             non_urgent = [a for a in active_auctions if a not in urgent_auctions]
             random.shuffle(non_urgent)
             
-            # Process ALL urgent + 5 non-urgent per cycle
-            auctions_to_process = urgent_auctions + non_urgent[:5]
+            # Process ALL urgent + up to 3 non-urgent per cycle (more staggered)
+            auctions_to_process = urgent_auctions + non_urgent[:3]
             
             for auction in auctions_to_process:
                 try:
