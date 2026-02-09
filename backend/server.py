@@ -138,6 +138,18 @@ from routers.watchers import watchers_router
 from routers.revenge_bid import revenge_bid_router
 from routers.wallet import wallet_router
 
+# NEW: 10 additional features (batch 2)
+from routers.email_marketing import email_marketing_router
+from routers.winner_media import winner_media_router
+from routers.bid_bundles import bid_bundles_router
+from routers.vip_plans import vip_plans_router
+from routers.transparency import transparency_router
+from routers.user_reviews import user_reviews_router
+from routers.app_store import app_store_router
+from routers.affiliate_dashboard import affiliate_dashboard_router
+from routers.social_media_share import social_media_share_router
+from routers.user_reports import user_reports_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
 
