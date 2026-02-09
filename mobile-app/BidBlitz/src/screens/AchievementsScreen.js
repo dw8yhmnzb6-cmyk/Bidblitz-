@@ -12,107 +12,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
+import { achievementsAPI } from '../services/api';
 
-// Achievement definitions
-const ACHIEVEMENTS = [
-  {
-    id: 'first_bid',
-    name: 'Erster Schritt',
-    description: 'Platziere dein erstes Gebot',
-    icon: 'flag',
-    color: '#10B981',
-    xp: 10,
-  },
-  {
-    id: 'first_win',
-    name: 'Gewinner!',
-    description: 'Gewinne deine erste Auktion',
-    icon: 'trophy',
-    color: '#F59E0B',
-    xp: 50,
-  },
-  {
-    id: 'bid_master',
-    name: 'Bieter-Meister',
-    description: 'Platziere 100 Gebote',
-    icon: 'flash',
-    color: '#8B5CF6',
-    xp: 100,
-  },
-  {
-    id: 'early_bird',
-    name: 'Frühaufsteher',
-    description: 'Biete vor 7 Uhr morgens',
-    icon: 'sunny',
-    color: '#F59E0B',
-    xp: 25,
-  },
-  {
-    id: 'night_owl',
-    name: 'Nachteule',
-    description: 'Biete nach Mitternacht',
-    icon: 'moon',
-    color: '#6366F1',
-    xp: 25,
-  },
-  {
-    id: 'social_butterfly',
-    name: 'Social Butterfly',
-    description: 'Lade 5 Freunde ein',
-    icon: 'people',
-    color: '#EC4899',
-    xp: 75,
-  },
-  {
-    id: 'streak_7',
-    name: '7-Tage-Streak',
-    description: 'Logge dich 7 Tage hintereinander ein',
-    icon: 'flame',
-    color: '#EF4444',
-    xp: 70,
-  },
-  {
-    id: 'streak_30',
-    name: '30-Tage-Streak',
-    description: 'Logge dich 30 Tage hintereinander ein',
-    icon: 'bonfire',
-    color: '#EF4444',
-    xp: 300,
-  },
-  {
-    id: 'big_spender',
-    name: 'Big Spender',
-    description: 'Kaufe 500 Gebote',
-    icon: 'wallet',
-    color: '#10B981',
-    xp: 150,
-  },
-  {
-    id: 'vip_member',
-    name: 'VIP Member',
-    description: 'Werde VIP-Mitglied',
-    icon: 'star',
-    color: '#F59E0B',
-    xp: 200,
-  },
-  {
-    id: 'team_player',
-    name: 'Teamplayer',
-    description: 'Gewinne mit einem Team',
-    icon: 'people-circle',
-    color: '#8B5CF6',
-    xp: 100,
-  },
-  {
-    id: 'mystery_master',
-    name: 'Mystery Master',
-    description: 'Gewinne 3 Mystery Boxen',
-    icon: 'gift',
-    color: '#EC4899',
-    xp: 150,
-  },
-];
+// Icon mapping from text to Ionicons
+const ICON_MAP = {
+  '🎯': 'flag',
+  '⚡': 'flash',
+  '🔥': 'flame',
+  '💎': 'diamond',
+  '👑': 'crown',
+  '🏆': 'trophy',
+  '🥇': 'medal',
+  '🌟': 'star',
+  '🎖️': 'ribbon',
+  '🦉': 'moon',
+  '💰': 'cash',
+  '🤝': 'people',
+  '🌐': 'globe',
+  '✍️': 'create',
+  '📅': 'calendar',
+  '🏠': 'home',
+};
 
 // Level thresholds
 const LEVELS = [
@@ -128,10 +48,18 @@ const LEVELS = [
   { level: 10, xp: 20000, title: 'BidBlitz König' },
 ];
 
+const CATEGORY_COLORS = {
+  bidding: '#8B5CF6',
+  winning: '#F59E0B',
+  special: '#EC4899',
+  social: '#10B981',
+  loyalty: '#6366F1',
+};
+
 const AchievementsScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [achievements, setAchievements] = useState([]);
-  const [totalXP, setTotalXP] = useState(0);
+  const [stats, setStats] = useState({ earned: 0, total: 0, progress_percent: 0, total_rewards_earned: 0 });
   const [loading, setLoading] = useState(true);
   const progressAnim = useRef(new Animated.Value(0)).current;
 
@@ -141,16 +69,9 @@ const AchievementsScreen = ({ navigation }) => {
 
   const fetchAchievements = async () => {
     try {
-      const response = await api.get('/achievements/my');
-      const earned = response.data?.achievements || [];
-      setAchievements(earned);
-      
-      // Calculate total XP
-      const xp = earned.reduce((sum, a) => {
-        const def = ACHIEVEMENTS.find(d => d.id === a.achievement_id);
-        return sum + (def?.xp || 0);
-      }, 0);
-      setTotalXP(xp);
+      const response = await achievementsAPI.getMy('de');
+      setAchievements(response.data?.achievements || []);
+      setStats(response.data?.stats || { earned: 0, total: 0, progress_percent: 0, total_rewards_earned: 0 });
       
       // Animate progress
       Animated.timing(progressAnim, {
@@ -160,17 +81,16 @@ const AchievementsScreen = ({ navigation }) => {
         useNativeDriver: false,
       }).start();
     } catch (error) {
-      console.log('Error:', error);
-      // Demo data
-      setAchievements([
-        { achievement_id: 'first_bid', earned_at: new Date().toISOString() },
-        { achievement_id: 'streak_7', earned_at: new Date().toISOString() },
-      ]);
-      setTotalXP(80);
+      console.log('Error fetching achievements:', error);
+      // Use empty state
+      setAchievements([]);
+      setStats({ earned: 0, total: 0, progress_percent: 0, total_rewards_earned: 0 });
     } finally {
       setLoading(false);
     }
   };
+
+  const totalXP = stats.total_rewards_earned * 10; // Convert bids to XP
 
   const getCurrentLevel = () => {
     for (let i = LEVELS.length - 1; i >= 0; i--) {
@@ -189,14 +109,21 @@ const AchievementsScreen = ({ navigation }) => {
 
   const currentLevel = getCurrentLevel();
   const nextLevel = getNextLevel();
-  const xpProgress = (totalXP - currentLevel.xp) / (nextLevel.xp - currentLevel.xp);
+  const xpProgress = nextLevel.xp > currentLevel.xp 
+    ? (totalXP - currentLevel.xp) / (nextLevel.xp - currentLevel.xp) 
+    : 1;
 
-  const isEarned = (achievementId) => {
-    return achievements.some(a => a.achievement_id === achievementId);
+  const getIconName = (emoji) => {
+    return ICON_MAP[emoji] || 'star';
+  };
+
+  const getCategoryColor = (category) => {
+    return CATEGORY_COLORS[category] || '#8B5CF6';
   };
 
   const renderAchievement = (achievement) => {
-    const earned = isEarned(achievement.id);
+    const earned = achievement.earned;
+    const color = getCategoryColor(achievement.category);
     
     return (
       <TouchableOpacity
@@ -208,9 +135,9 @@ const AchievementsScreen = ({ navigation }) => {
           }
         }}
       >
-        <View style={[styles.achievementIcon, { backgroundColor: earned ? achievement.color : '#374151' }]}>
+        <View style={[styles.achievementIcon, { backgroundColor: earned ? color : '#374151' }]}>
           <Ionicons 
-            name={achievement.icon} 
+            name={getIconName(achievement.icon)} 
             size={24} 
             color={earned ? '#fff' : '#6B7280'} 
           />
@@ -225,12 +152,15 @@ const AchievementsScreen = ({ navigation }) => {
           {earned ? (
             <Ionicons name="checkmark-circle" size={24} color="#10B981" />
           ) : (
-            <Text style={styles.xpText}>+{achievement.xp} XP</Text>
+            <Text style={styles.xpText}>+{achievement.reward_bids} Gebote</Text>
           )}
         </View>
       </TouchableOpacity>
     );
   };
+
+  const earnedAchievements = achievements.filter(a => a.earned);
+  const lockedAchievements = achievements.filter(a => !a.earned);
 
   return (
     <ScrollView style={styles.container}>
@@ -269,15 +199,15 @@ const AchievementsScreen = ({ navigation }) => {
       {/* Stats */}
       <View style={styles.statsRow}>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>{achievements.length}</Text>
+          <Text style={styles.statValue}>{stats.earned}</Text>
           <Text style={styles.statLabel}>Freigeschaltet</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>{ACHIEVEMENTS.length - achievements.length}</Text>
+          <Text style={styles.statValue}>{stats.total - stats.earned}</Text>
           <Text style={styles.statLabel}>Verbleibend</Text>
         </View>
         <View style={styles.statCard}>
-          <Text style={styles.statValue}>{Math.round((achievements.length / ACHIEVEMENTS.length) * 100)}%</Text>
+          <Text style={styles.statValue}>{Math.round(stats.progress_percent)}%</Text>
           <Text style={styles.statLabel}>Abgeschlossen</Text>
         </View>
       </View>
@@ -287,17 +217,17 @@ const AchievementsScreen = ({ navigation }) => {
         <Text style={styles.sectionTitle}>🏆 Alle Achievements</Text>
         
         {/* Earned */}
-        {achievements.length > 0 && (
+        {earnedAchievements.length > 0 && (
           <View style={styles.subsection}>
             <Text style={styles.subsectionTitle}>✅ Freigeschaltet</Text>
-            {ACHIEVEMENTS.filter(a => isEarned(a.id)).map(renderAchievement)}
+            {earnedAchievements.map(renderAchievement)}
           </View>
         )}
         
         {/* Locked */}
         <View style={styles.subsection}>
           <Text style={styles.subsectionTitle}>🔒 Noch zu verdienen</Text>
-          {ACHIEVEMENTS.filter(a => !isEarned(a.id)).map(renderAchievement)}
+          {lockedAchievements.map(renderAchievement)}
         </View>
       </View>
     </ScrollView>
