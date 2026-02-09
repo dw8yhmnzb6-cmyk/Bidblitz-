@@ -162,7 +162,12 @@ async def get_personalized_homepage(user: dict = Depends(get_current_user)):
             "current_price": auction.get("current_price", 0),
             "end_time": auction.get("end_time"),
             "minutes_left": int(mins_left),
-            "reason": f"Endet in {int(mins_left)} Minuten!"
+            "reason": {
+                "de": f"Endet in {int(mins_left)} Minuten!",
+                "en": f"Ends in {int(mins_left)} minutes!",
+                "sq": f"Përfundon në {int(mins_left)} minuta!",
+                "xk": f"Përfundon në {int(mins_left)} minuta!"
+            }
         })
     
     # Section 5: Similar to what you won
