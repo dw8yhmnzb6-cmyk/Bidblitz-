@@ -127,6 +127,17 @@ from routers.ai_advisor import router as ai_advisor_router
 from routers.duel import router as duel_router
 from routers.mystery_box import router as mystery_box_router
 
+# NEW: 9 additional features
+from routers.bid_alarm import bid_alarm_router
+from routers.welcome_bonus import welcome_bonus_router
+from routers.activity_feed import activity_feed_router
+from routers.tournament import tournament_router
+from routers.auction_chat import auction_chat_router
+from routers.recommendations import recommendations_router
+from routers.watchers import watchers_router
+from routers.revenge_bid import revenge_bid_router
+from routers.wallet import wallet_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
 
