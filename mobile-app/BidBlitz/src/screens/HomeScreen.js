@@ -172,6 +172,57 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.statLabel}>Gebote</Text>
         </View>
       </View>
+
+      {/* New Features Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>🆕 Neue Features</Text>
+        <View style={styles.featuresGrid}>
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#EF4444' }]}
+            onPress={() => navigation.navigate('LiveStream')}
+          >
+            <Text style={styles.featureEmoji}>📺</Text>
+            <Text style={styles.featureTitle}>Live Stream</Text>
+            <Text style={styles.featureDesc}>Sei live dabei!</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#8B5CF6' }]}
+            onPress={() => navigation.navigate('TeamBidding')}
+          >
+            <Text style={styles.featureEmoji}>👥</Text>
+            <Text style={styles.featureTitle}>Team Bidding</Text>
+            <Text style={styles.featureDesc}>Mit Freunden bieten</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#6366F1' }]}
+            onPress={() => navigation.navigate('AIAdvisor')}
+          >
+            <Text style={styles.featureEmoji}>🧠</Text>
+            <Text style={styles.featureTitle}>KI-Berater</Text>
+            <Text style={styles.featureDesc}>Smarte Tipps</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#DC2626' }]}
+            onPress={() => navigation.navigate('Duel')}
+          >
+            <Text style={styles.featureEmoji}>⚔️</Text>
+            <Text style={styles.featureTitle}>Duell</Text>
+            <Text style={styles.featureDesc}>1 vs 1 Kampf</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#F59E0B' }]}
+            onPress={() => navigation.navigate('MysteryBox')}
+          >
+            <Text style={styles.featureEmoji}>📦</Text>
+            <Text style={styles.featureTitle}>Mystery Box</Text>
+            <Text style={styles.featureDesc}>Überraschung!</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </ScrollView>
   );
 };
