@@ -257,6 +257,79 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.featureTitle}>Gewinner</Text>
             <Text style={styles.featureDesc}>Galerie ansehen</Text>
           </TouchableOpacity>
+          
+          {/* 9 NEW Features */}
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#8B5CF6' }]}
+            onPress={() => navigation.navigate('BidAlarm')}
+          >
+            <Text style={styles.featureEmoji}>⏰</Text>
+            <Text style={styles.featureTitle}>Bid-Alarm</Text>
+            <Text style={styles.featureDesc}>Countdown-Alert</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#10B981' }]}
+            onPress={() => navigation.navigate('WelcomeBonus')}
+          >
+            <Text style={styles.featureEmoji}>🎁</Text>
+            <Text style={styles.featureTitle}>Bonus</Text>
+            <Text style={styles.featureDesc}>Gratis-Gebote</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#EC4899' }]}
+            onPress={() => navigation.navigate('ActivityFeed')}
+          >
+            <Text style={styles.featureEmoji}>📊</Text>
+            <Text style={styles.featureTitle}>Live-Feed</Text>
+            <Text style={styles.featureDesc}>Was passiert</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#F59E0B' }]}
+            onPress={() => navigation.navigate('Tournament')}
+          >
+            <Text style={styles.featureEmoji}>🏅</Text>
+            <Text style={styles.featureTitle}>Turnier</Text>
+            <Text style={styles.featureDesc}>Wöchentlich</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#6366F1' }]}
+            onPress={() => navigation.navigate('Recommendations')}
+          >
+            <Text style={styles.featureEmoji}>🎯</Text>
+            <Text style={styles.featureTitle}>Für dich</Text>
+            <Text style={styles.featureDesc}>Empfehlungen</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#8B5CF6' }]}
+            onPress={() => navigation.navigate('Watchers')}
+          >
+            <Text style={styles.featureEmoji}>👀</Text>
+            <Text style={styles.featureTitle}>Zuschauer</Text>
+            <Text style={styles.featureDesc}>Wer schaut zu</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#EF4444' }]}
+            onPress={() => navigation.navigate('RevengeBid')}
+          >
+            <Text style={styles.featureEmoji}>⚡</Text>
+            <Text style={styles.featureTitle}>Revenge</Text>
+            <Text style={styles.featureDesc}>Zurückschlagen!</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.featureCard, { backgroundColor: '#3B82F6' }]}
+            onPress={() => navigation.navigate('Wallet')}
+          >
+            <Text style={styles.featureEmoji}>📱</Text>
+            <Text style={styles.featureTitle}>Wallet</Text>
+            <Text style={styles.featureDesc}>Digital Cards</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
