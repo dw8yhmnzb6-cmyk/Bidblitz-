@@ -679,7 +679,9 @@ async def bot_last_second_bidder():
                             })
                             
                             # Determine phase for logging
-                            if current_price < PHASE1_TARGET:
+                            if is_super_urgent or is_urgent:
+                                phase_name = f"⚠️ URGENT ({seconds_left:.0f}s left!)"
+                            elif current_price < PHASE1_TARGET:
                                 phase_name = f"Phase1 (bis €{PHASE1_TARGET:.2f})"
                             else:
                                 phase_name = f"Endspurt (bis €{FINAL_TARGET:.0f})"
