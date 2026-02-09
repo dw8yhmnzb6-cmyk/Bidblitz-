@@ -291,6 +291,12 @@ app.include_router(analytics_reports_router)  # Has its own prefix
 app.include_router(surveys_router, prefix="/api")
 app.include_router(maintenance_router, prefix="/api")
 app.include_router(push_notifications_router, prefix="/api")
+# New feature routers
+app.include_router(live_stream_router, prefix="/api")
+app.include_router(team_bidding_router, prefix="/api")
+app.include_router(ai_advisor_router, prefix="/api")
+app.include_router(duel_router, prefix="/api")
+app.include_router(mystery_box_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
