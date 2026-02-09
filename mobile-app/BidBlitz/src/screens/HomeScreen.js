@@ -168,7 +168,7 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.statLabel}>Ihre Gewinne</Text>
         </View>
         <View style={styles.statBox}>
-          <Text style={styles.statNumber}>{user?.bids || 0}</Text>
+          <Text style={styles.statNumber}>{user?.bids_balance || user?.bids || 0}</Text>
           <Text style={styles.statLabel}>Gebote</Text>
         </View>
       </View>
