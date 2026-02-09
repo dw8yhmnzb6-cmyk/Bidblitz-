@@ -125,7 +125,7 @@ const translations = {
 };
 
 // Single recommendation card
-const RecommendationCard = memo(({ item, onBid, t }) => {
+const RecommendationCard = memo(({ item, onBid, t, langKey }) => {
   if (!item) return null;
   
   return (
