@@ -60,7 +60,7 @@ export const userAPI = {
 };
 
 export const jackpotAPI = {
-  getStatus: () => api.get('/wheel/jackpot'),
+  getStatus: () => api.get('/excitement/global-jackpot'),
 };
 
 export const checkoutAPI = {
