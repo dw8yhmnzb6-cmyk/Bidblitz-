@@ -348,6 +348,7 @@ const PersonalizedRecommendations = memo(({ onBid }) => {
           onBid={onBid}
           t={t}
           color="purple"
+          langKey={langKey}
         />
         
         {/* Recommended for You */}
