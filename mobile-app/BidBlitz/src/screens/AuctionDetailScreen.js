@@ -151,6 +151,15 @@ const AuctionDetailScreen = ({ route, navigation }) => {
         <Text style={styles.discountText}>-{discount}%</Text>
       </View>
 
+      {/* Favorite Button */}
+      <TouchableOpacity style={styles.favoriteButton} onPress={toggleFavorite}>
+        <Ionicons 
+          name={isFavorite ? 'heart' : 'heart-outline'} 
+          size={28} 
+          color={isFavorite ? '#EF4444' : '#fff'} 
+        />
+      </TouchableOpacity>
+
       {/* Timer */}
       <View style={styles.timerContainer}>
         <LinearGradient
