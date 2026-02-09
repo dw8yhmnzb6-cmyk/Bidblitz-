@@ -11,13 +11,13 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import api from '../services/api';
+import { winnerGalleryAPI } from '../services/api';
 
 const WinnerGalleryScreen = ({ navigation }) => {
   const [winners, setWinners] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filter, setFilter] = useState('all'); // all, week, month
+  const [filter, setFilter] = useState('all'); // all, featured
 
   useEffect(() => {
     fetchWinners();
@@ -25,69 +25,37 @@ const WinnerGalleryScreen = ({ navigation }) => {
 
   const fetchWinners = async () => {
     try {
-      const response = await api.get(`/winner-gallery?period=${filter}`);
-      setWinners(response.data || []);
+      const response = await winnerGalleryAPI.getFeed({ 
+        limit: 20, 
+        offset: 0,
+        featured_only: filter === 'featured'
+      });
+      
+      const entries = response.data?.entries || [];
+      // Map the API response to our display format
+      const mapped = entries.map(entry => ({
+        id: entry.id,
+        user_name: entry.user_name || 'Gewinner',
+        user_avatar: null,
+        product_name: entry.product_name || 'Produkt',
+        product_image: entry.product_image,
+        retail_price: entry.retail_price || 0,
+        won_price: entry.final_price || 0,
+        savings_percent: entry.retail_price > 0 
+          ? Math.round(((entry.retail_price - entry.final_price) / entry.retail_price) * 100)
+          : 0,
+        photo_url: null,
+        comment: entry.caption || '',
+        likes: entry.likes || 0,
+        won_at: entry.created_at || new Date().toISOString(),
+        featured: entry.featured || false,
+      }));
+      
+      setWinners(mapped);
     } catch (error) {
-      console.log('Error:', error);
-      // Demo data
-      setWinners([
-        {
-          id: '1',
-          user_name: 'Max M.',
-          user_avatar: null,
-          product_name: 'iPhone 15 Pro Max',
-          product_image: 'https://via.placeholder.com/200',
-          retail_price: 1399,
-          won_price: 12.50,
-          savings_percent: 99,
-          photo_url: null,
-          comment: 'Unglaublich! Für nur €12 bekommen!',
-          likes: 234,
-          won_at: new Date().toISOString(),
-        },
-        {
-          id: '2',
-          user_name: 'Sarah K.',
-          user_avatar: null,
-          product_name: 'PlayStation 5',
-          product_image: 'https://via.placeholder.com/200',
-          retail_price: 549,
-          won_price: 8.30,
-          savings_percent: 98,
-          photo_url: null,
-          comment: 'Mein Mann hat sich so gefreut! 🎮',
-          likes: 189,
-          won_at: new Date().toISOString(),
-        },
-        {
-          id: '3',
-          user_name: 'Thomas B.',
-          user_avatar: null,
-          product_name: 'Samsung OLED TV 65"',
-          product_image: 'https://via.placeholder.com/200',
-          retail_price: 1899,
-          won_price: 24.70,
-          savings_percent: 99,
-          photo_url: null,
-          comment: 'Der beste Fernseher den ich je hatte!',
-          likes: 312,
-          won_at: new Date().toISOString(),
-        },
-        {
-          id: '4',
-          user_name: 'Lisa H.',
-          user_avatar: null,
-          product_name: 'Dyson V15 Detect',
-          product_image: 'https://via.placeholder.com/200',
-          retail_price: 749,
-          won_price: 6.80,
-          savings_percent: 99,
-          photo_url: null,
-          comment: 'Putzen macht jetzt sogar Spaß 😂',
-          likes: 156,
-          won_at: new Date().toISOString(),
-        },
-      ]);
+      console.log('Error fetching winners:', error);
+      // Fallback to empty state
+      setWinners([]);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -102,14 +70,25 @@ const WinnerGalleryScreen = ({ navigation }) => {
   const likeWinner = async (winnerId) => {
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     
+    // Optimistic update
     setWinners(prev => prev.map(w => 
       w.id === winnerId ? { ...w, likes: w.likes + 1, liked: true } : w
     ));
     
     try {
-      await api.post(`/winner-gallery/${winnerId}/like`);
+      const response = await winnerGalleryAPI.like(winnerId);
+      if (!response.data?.liked) {
+        // Was actually an unlike
+        setWinners(prev => prev.map(w => 
+          w.id === winnerId ? { ...w, likes: w.likes - 2, liked: false } : w
+        ));
+      }
     } catch (error) {
       console.log('Error liking:', error);
+      // Revert on error
+      setWinners(prev => prev.map(w => 
+        w.id === winnerId ? { ...w, likes: w.likes - 1, liked: false } : w
+      ));
     }
   };
 
