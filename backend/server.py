@@ -120,6 +120,12 @@ from routers.analytics_reports import router as analytics_reports_router
 from routers.surveys import router as surveys_router
 from routers.maintenance import router as maintenance_router
 from routers.push_notifications import router as push_notifications_router
+# New feature routers
+from routers.live_stream import router as live_stream_router
+from routers.team_bidding import router as team_bidding_router
+from routers.ai_advisor import router as ai_advisor_router
+from routers.duel import router as duel_router
+from routers.mystery_box import router as mystery_box_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
