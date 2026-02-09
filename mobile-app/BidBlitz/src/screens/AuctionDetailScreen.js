@@ -10,8 +10,10 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { useAuth } from '../context/AuthContext';
 import { auctionsAPI } from '../services/api';
+import api from '../services/api';
 
 const AuctionDetailScreen = ({ route, navigation }) => {
   const { auction: initialAuction } = route.params;
@@ -19,6 +21,49 @@ const AuctionDetailScreen = ({ route, navigation }) => {
   const [auction, setAuction] = useState(initialAuction);
   const [bidding, setBidding] = useState(false);
   const [timeLeft, setTimeLeft] = useState('');
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoriteId, setFavoriteId] = useState(null);
+
+  useEffect(() => {
+    checkIfFavorite();
+  }, []);
+
+  const checkIfFavorite = async () => {
+    try {
+      const response = await api.get('/favorites/my');
+      const favorites = response.data || [];
+      const found = favorites.find(f => f.product_id === auction.product?.id);
+      if (found) {
+        setIsFavorite(true);
+        setFavoriteId(found.id);
+      }
+    } catch (error) {
+      console.log('Error checking favorites:', error);
+    }
+  };
+
+  const toggleFavorite = async () => {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    
+    try {
+      if (isFavorite) {
+        // Remove from favorites
+        await api.delete(`/favorites/${favoriteId}`);
+        setIsFavorite(false);
+        setFavoriteId(null);
+      } else {
+        // Add to favorites
+        const response = await api.post('/favorites/add', {
+          product_id: auction.product?.id,
+        });
+        setIsFavorite(true);
+        setFavoriteId(response.data?.favorite_id);
+        Alert.alert('Favorit', 'Zu Favoriten hinzugefügt! ❤️');
+      }
+    } catch (error) {
+      Alert.alert('Fehler', error.response?.data?.detail || 'Konnte Favorit nicht aktualisieren');
+    }
+  };
 
   useEffect(() => {
     // Update timer every second
