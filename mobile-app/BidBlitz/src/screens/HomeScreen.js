@@ -81,7 +81,7 @@ const HomeScreen = ({ navigation }) => {
         <Text style={styles.welcomeText}>Willkommen, {user?.name || 'Gast'}!</Text>
         <View style={styles.bidsContainer}>
           <Ionicons name="wallet" size={20} color="#fff" />
-          <Text style={styles.bidsText}>{user?.bids || 0} Gebote</Text>
+          <Text style={styles.bidsText}>{user?.bids_balance || user?.bids || 0} Gebote</Text>
         </View>
       </LinearGradient>
 
