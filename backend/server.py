@@ -459,6 +459,9 @@ async def bot_last_second_bidder():
                     # Check if it's time for next bid on this auction
                     next_bid_at = next_bid_time_per_auction.get(auction_id, 0)
                     
+                    # Apply per-auction offset to desync bidding
+                    auction_offset = auction_start_offset.get(auction_id, 0)
+                    
                     # ============================================
                     # NEUE BOT-LOGIK: 2-Phasen-System
                     # Phase 1: Früh bieten bis €3
@@ -477,8 +480,9 @@ async def bot_last_second_bidder():
                     # CRITICAL: If < 15 seconds left and price < €25, bid IMMEDIATELY
                     is_urgent = seconds_left < 15 and current_price < FINAL_TARGET
                     
-                    # Skip if not time yet (unless urgent)
-                    if now_ts < next_bid_at and not is_urgent:
+                    # Skip if not time yet (unless urgent) - apply offset
+                    effective_next_bid = next_bid_at + (auction_offset if next_bid_at == 0 else 0)
+                    if now_ts < effective_next_bid and not is_urgent:
                         continue
                     
                     should_bid = False
