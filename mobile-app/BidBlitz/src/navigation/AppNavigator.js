@@ -23,6 +23,9 @@ import DuelScreen from '../screens/DuelScreen';
 import MysteryBoxScreen from '../screens/MysteryBoxScreen';
 import BidBuddyScreen from '../screens/BidBuddyScreen';
 import DailySpinScreen from '../screens/DailySpinScreen';
+import BuyItNowScreen from '../screens/BuyItNowScreen';
+import AchievementsScreen from '../screens/AchievementsScreen';
+import WinnerGalleryScreen from '../screens/WinnerGalleryScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
