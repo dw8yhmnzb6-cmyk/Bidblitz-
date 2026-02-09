@@ -208,6 +208,26 @@ const AppNavigator = () => {
                 title: '📦 Mystery Box',
               }}
             />
+            <Stack.Screen 
+              name="BidBuddy" 
+              component={BidBuddyScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#8B5CF6' },
+                headerTintColor: '#fff',
+                title: '🤖 Bid Buddy',
+              }}
+            />
+            <Stack.Screen 
+              name="DailySpin" 
+              component={DailySpinScreen}
+              options={{ 
+                headerShown: true,
+                headerStyle: { backgroundColor: '#F59E0B' },
+                headerTintColor: '#fff',
+                title: '🎡 Glücksrad',
+              }}
+            />
           </>
         ) : (
           <Stack.Screen name="Auth" component={AuthStack} />
