@@ -197,7 +197,7 @@ const RecommendationCard = memo(({ item, onBid, t, langKey }) => {
 });
 
 // Section with horizontal scroll
-const RecommendationSection = memo(({ title, icon: Icon, items, onBid, t, color = "cyan" }) => {
+const RecommendationSection = memo(({ title, icon: Icon, items, onBid, t, color = "cyan", langKey }) => {
   if (!items || items.length === 0) return null;
   
   const colorClasses = {
@@ -220,7 +220,7 @@ const RecommendationSection = memo(({ title, icon: Icon, items, onBid, t, color 
       
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
         {items.map((item, idx) => (
-          <RecommendationCard key={item.auction_id || idx} item={item} onBid={onBid} t={t} />
+          <RecommendationCard key={item.auction_id || idx} item={item} onBid={onBid} t={t} langKey={langKey} />
         ))}
       </div>
     </div>
