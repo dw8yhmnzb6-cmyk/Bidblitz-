@@ -180,7 +180,7 @@ const RecommendationCard = memo(({ item, onBid, t }) => {
         
         {item.reason && (
           <p className="mt-1 text-[9px] text-gray-500 line-clamp-1 italic">
-            {item.reason}
+            {typeof item.reason === 'object' ? (item.reason[langKey] || item.reason.de || item.reason.en) : item.reason}
           </p>
         )}
         
