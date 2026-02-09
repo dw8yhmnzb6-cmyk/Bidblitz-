@@ -497,14 +497,22 @@ async def bot_last_second_bidder():
                     auction_offset = auction_start_offset.get(auction_id, 0)
                     
                     # ============================================
-                    # NEUE BOT-LOGIK: 2-Phasen-System
-                    # Phase 1: Früh bieten bis €3
-                    # Pause: Zwischen €3 und letzten 3 Minuten
-                    # Phase 2: Endspurt - letzte 3 Minuten bis €25
+                    # NEUE BOT-LOGIK: 2-Phasen-System (REALISTISCH)
+                    # Phase 1: Früh bieten bis €3-3,50 (variiert pro Bot)
+                    # Pause: Zwischen €3,50 und letzten 2-3 Minuten
+                    # Phase 2: Endspurt - letzte 2-3 Minuten bis €25
                     # ============================================
                     
-                    PHASE1_TARGET = 3.00  # Bots bieten früh bis €3
-                    ENDSPURT_TIME = 180   # Letzten 3 Minuten = 180 Sekunden
+                    # Bot-spezifische Variation für Realismus
+                    # Jeder Bot hat ein leicht unterschiedliches Verhalten
+                    bot_seed = hash(auction_id) % 100
+                    
+                    # Phase 1 Target: zwischen €3.00 und €3.50 (variiert pro Auktion)
+                    PHASE1_TARGET = 3.00 + (bot_seed % 50) / 100  # €3.00 - €3.49
+                    
+                    # Endspurt Zeit: zwischen 120 und 180 Sekunden (variiert)
+                    ENDSPURT_TIME = 120 + (bot_seed % 60)  # 2-3 Minuten
+                    
                     FINAL_TARGET = 25.00  # Endpreis-Ziel
                     
                     # Determine which phase we're in
@@ -522,18 +530,19 @@ async def bot_last_second_bidder():
                     should_bid = False
                     target_price = 0
                     
-                    # PHASE 1: Frühes Bieten bis €3
+                    # PHASE 1: Frühes Bieten bis €3-3,50
                     if in_phase1 and not in_endspurt:
-                        # Bots bieten langsam bis €3
+                        # Bots bieten langsam bis Phase 1 Target
                         target_price = PHASE1_TARGET
                         should_bid = True
                     
-                    # PAUSE PHASE: Zwischen €3 und Endspurt - NICHT bieten
+                    # PAUSE PHASE: Zwischen €3-3,50 und Endspurt - NICHT bieten
+                    # Hier sollen echte Nutzer bieten
                     elif current_price >= PHASE1_TARGET and not in_endspurt:
                         # Warten auf Endspurt - echte Nutzer sollen bieten
                         should_bid = False
                     
-                    # PHASE 2: Endspurt - letzte 3 Minuten
+                    # PHASE 2: Endspurt - letzte 2-3 Minuten
                     elif in_endspurt and current_price < FINAL_TARGET:
                         # Aggressiv bieten bis €25
                         target_price = FINAL_TARGET
