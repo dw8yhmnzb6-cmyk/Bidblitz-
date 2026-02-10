@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { 
@@ -173,12 +174,14 @@ export default function CryptoPaymentPage() {
     }
   };
   
-  const copyAddress = () => {
+  const copyAddress = async () => {
     if (payment?.wallet_address) {
-      navigator.clipboard.writeText(payment.wallet_address);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      toast.success(t.copied);
+      const success = await safeCopyToClipboard(payment.wallet_address);
+      if (success) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        toast.success(t.copied);
+      }
     }
   };
   
