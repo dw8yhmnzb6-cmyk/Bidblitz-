@@ -227,7 +227,7 @@ export default function Dashboard() {
   const handleDeleteAutobidder = async (autobidderId) => {
     try {
       await axios.delete(`${API}/autobidder/${autobidderId}`, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success(language === 'en' ? 'Auto-bidder deleted' : 'Autobidder gelöscht');
+      toast.success(language === 'en' ? 'Auto-bidder deleted' : (language === 'sq' || language === 'xk') ? 'Autobidderi u fshi' : 'Autobidder gelöscht');
       fetchData();
     } catch (error) {
       toast.error(language === 'en' ? 'Error deleting' : 'Fehler beim Löschen');
