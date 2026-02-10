@@ -220,7 +220,7 @@ export default function Dashboard() {
         : (language === 'en' ? 'Auto-bidder enabled' : (language === 'sq' || language === 'xk') ? 'Autobidderi u aktivizua' : 'Autobidder aktiviert'));
       fetchData();
     } catch (error) {
-      toast.error(language === 'en' ? 'Error changing status' : 'Fehler beim Ändern');
+      toast.error(language === 'en' ? 'Error changing status' : (language === 'sq' || language === 'xk') ? 'Gabim gjatë ndryshimit' : 'Fehler beim Ändern');
     }
   };
 
