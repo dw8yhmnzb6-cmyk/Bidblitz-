@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Progress } from '../components/ui/progress';
@@ -10,13 +11,140 @@ import {
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
+// Tournament translations
+const tournamentTexts = {
+  de: {
+    title: 'Wöchentliches Turnier',
+    subtitle: 'Kämpfe um die Spitze und gewinne Preise!',
+    remaining: 'verbleibend',
+    yourStanding: 'Dein aktueller Stand',
+    keepItUp: 'Weiter so!',
+    topTenWins: 'Top 10 = Preis!',
+    place: 'Platz',
+    bids: 'Gebote',
+    currentLeaderboard: 'Aktuelle Rangliste',
+    noParticipants: 'Noch keine Teilnehmer diese Woche',
+    beFirst: 'Sei der Erste!',
+    joinNow: 'Jetzt mitmachen!',
+    signUpAndCompete: 'Melde dich an und kämpfe um die Spitze',
+    registerFree: 'Kostenlos registrieren',
+    wins: 'Gewinne',
+    savings: '€ gespart',
+    streak: 'Tage Streak',
+    points: 'Punkte'
+  },
+  en: {
+    title: 'Weekly Tournament',
+    subtitle: 'Compete for the top and win prizes!',
+    remaining: 'remaining',
+    yourStanding: 'Your current standing',
+    keepItUp: 'Keep it up!',
+    topTenWins: 'Top 10 = Prize!',
+    place: 'Place',
+    bids: 'Bids',
+    currentLeaderboard: 'Current Leaderboard',
+    noParticipants: 'No participants this week yet',
+    beFirst: 'Be the first!',
+    joinNow: 'Join Now!',
+    signUpAndCompete: 'Sign up and compete for the top',
+    registerFree: 'Register for free',
+    wins: 'Wins',
+    savings: '€ saved',
+    streak: 'Day Streak',
+    points: 'Points'
+  },
+  sq: {
+    title: 'Turneu Javor',
+    subtitle: 'Garoni për majën dhe fitoni çmime!',
+    remaining: 'të mbetura',
+    yourStanding: 'Pozita juaj aktuale',
+    keepItUp: 'Vazhdoni kështu!',
+    topTenWins: 'Top 10 = Çmim!',
+    place: 'Vendi',
+    bids: 'Oferta',
+    currentLeaderboard: 'Renditja Aktuale',
+    noParticipants: 'Ende pa pjesëmarrës këtë javë',
+    beFirst: 'Bëhu i pari!',
+    joinNow: 'Bashkohu Tani!',
+    signUpAndCompete: 'Regjistrohuni dhe garoni për majën',
+    registerFree: 'Regjistrohu falas',
+    wins: 'Fitore',
+    savings: '€ kursyer',
+    streak: 'Ditë Streak',
+    points: 'Pikë'
+  },
+  xk: {
+    title: 'Turneu Javor',
+    subtitle: 'Garoni për majën dhe fitoni çmime!',
+    remaining: 'të mbetura',
+    yourStanding: 'Pozita juaj aktuale',
+    keepItUp: 'Vazhdoni kështu!',
+    topTenWins: 'Top 10 = Çmim!',
+    place: 'Vendi',
+    bids: 'Oferta',
+    currentLeaderboard: 'Renditja Aktuale',
+    noParticipants: 'Ende pa pjesëmarrës këtë javë',
+    beFirst: 'Bëhu i pari!',
+    joinNow: 'Bashkohu Tani!',
+    signUpAndCompete: 'Regjistrohuni dhe garoni për majën',
+    registerFree: 'Regjistrohu falas',
+    wins: 'Fitore',
+    savings: '€ kursyer',
+    streak: 'Ditë Streak',
+    points: 'Pikë'
+  },
+  tr: {
+    title: 'Haftalık Turnuva',
+    subtitle: 'Zirve için yarış ve ödüller kazan!',
+    remaining: 'kalan',
+    yourStanding: 'Mevcut durumunuz',
+    keepItUp: 'Böyle devam!',
+    topTenWins: 'İlk 10 = Ödül!',
+    place: 'Sıra',
+    bids: 'Teklifler',
+    currentLeaderboard: 'Güncel Sıralama',
+    noParticipants: 'Bu hafta henüz katılımcı yok',
+    beFirst: 'İlk sen ol!',
+    joinNow: 'Şimdi Katıl!',
+    signUpAndCompete: 'Kayıt ol ve zirve için yarış',
+    registerFree: 'Ücretsiz kayıt ol',
+    wins: 'Kazanmalar',
+    savings: '€ tasarruf',
+    streak: 'Gün Serisi',
+    points: 'Puan'
+  },
+  fr: {
+    title: 'Tournoi Hebdomadaire',
+    subtitle: 'Combattez pour le sommet et gagnez des prix!',
+    remaining: 'restant',
+    yourStanding: 'Votre position actuelle',
+    keepItUp: 'Continuez!',
+    topTenWins: 'Top 10 = Prix!',
+    place: 'Place',
+    bids: 'Enchères',
+    currentLeaderboard: 'Classement Actuel',
+    noParticipants: 'Pas encore de participants cette semaine',
+    beFirst: 'Soyez le premier!',
+    joinNow: 'Rejoignez Maintenant!',
+    signUpAndCompete: 'Inscrivez-vous et concourez pour le sommet',
+    registerFree: 'Inscription gratuite',
+    wins: 'Victoires',
+    savings: '€ économisés',
+    streak: 'Jours Consécutifs',
+    points: 'Points'
+  }
+};
+
 export default function Tournaments() {
   const { isAuthenticated, token } = useAuth();
+  const { language } = useLanguage();
   const [tournament, setTournament] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
   const [myPosition, setMyPosition] = useState(null);
   const [loading, setLoading] = useState(true);
   const [timeRemaining, setTimeRemaining] = useState(0);
+  
+  const t = tournamentTexts[language] || tournamentTexts.de;
 
   useEffect(() => {
     fetchTournamentData();
@@ -70,11 +198,11 @@ export default function Tournaments() {
 
   const getMetricLabel = (metric) => {
     return {
-      wins: 'Gewinne',
-      bids: 'Gebote',
-      savings: '€ gespart',
-      streak: 'Tage Streak'
-    }[metric] || 'Punkte';
+      wins: t.wins,
+      bids: t.bids,
+      savings: t.savings,
+      streak: t.streak
+    }[metric] || t.points;
   };
 
   if (loading) {
@@ -94,8 +222,8 @@ export default function Tournaments() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg mb-4">
             <Trophy className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">Wöchentliches Turnier</h1>
-          <p className="text-gray-500 mt-2">Kämpfe um die Spitze und gewinne Preise!</p>
+          <h1 className="text-3xl font-bold text-gray-800">{t.title}</h1>
+          <p className="text-gray-500 mt-2">{t.subtitle}</p>
         </div>
 
         {/* Current Tournament Card */}
@@ -114,7 +242,7 @@ export default function Tournaments() {
                   <Clock className="w-5 h-5" />
                   <span className="font-bold text-lg">{formatTime(timeRemaining)}</span>
                 </div>
-                <p className="text-xs text-gray-400">verbleibend</p>
+                <p className="text-xs text-gray-400">{t.remaining}</p>
               </div>
             </div>
             
@@ -123,14 +251,14 @@ export default function Tournaments() {
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-4 mb-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-gray-600 text-sm">Dein aktueller Stand</p>
+                    <p className="text-gray-600 text-sm">{t.yourStanding}</p>
                     <p className="text-2xl font-bold text-gray-800">
                       {myPosition.score} {getMetricLabel(tournament.metric)}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-amber-600 font-medium">Weiter so!</p>
-                    <p className="text-sm text-gray-500">Top 10 = Preis!</p>
+                    <p className="text-amber-600 font-medium">{t.keepItUp}</p>
+                    <p className="text-sm text-gray-500">{t.topTenWins}</p>
                   </div>
                 </div>
               </div>
@@ -140,18 +268,18 @@ export default function Tournaments() {
             <div className="grid grid-cols-3 gap-3">
               <div className="bg-gradient-to-br from-amber-100 to-amber-200 rounded-xl p-3 text-center">
                 <span className="text-2xl">🥇</span>
-                <p className="font-bold text-amber-800">1. Platz</p>
-                <p className="text-amber-600 text-sm">100 Gebote</p>
+                <p className="font-bold text-amber-800">1. {t.place}</p>
+                <p className="text-amber-600 text-sm">100 {t.bids}</p>
               </div>
               <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl p-3 text-center">
                 <span className="text-2xl">🥈</span>
-                <p className="font-bold text-gray-700">2. Platz</p>
-                <p className="text-gray-600 text-sm">50 Gebote</p>
+                <p className="font-bold text-gray-700">2. {t.place}</p>
+                <p className="text-gray-600 text-sm">50 {t.bids}</p>
               </div>
               <div className="bg-gradient-to-br from-orange-100 to-orange-200 rounded-xl p-3 text-center">
                 <span className="text-2xl">🥉</span>
-                <p className="font-bold text-orange-800">3. Platz</p>
-                <p className="text-orange-600 text-sm">25 Gebote</p>
+                <p className="font-bold text-orange-800">3. {t.place}</p>
+                <p className="text-orange-600 text-sm">25 {t.bids}</p>
               </div>
             </div>
           </div>
@@ -161,14 +289,14 @@ export default function Tournaments() {
         <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-200">
           <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-cyan-500" />
-            Aktuelle Rangliste
+            {t.currentLeaderboard}
           </h3>
           
           {leaderboard.length === 0 ? (
             <div className="text-center py-8">
               <Trophy className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">Noch keine Teilnehmer diese Woche</p>
-              <p className="text-gray-400 text-sm">Sei der Erste!</p>
+              <p className="text-gray-500">{t.noParticipants}</p>
+              <p className="text-gray-400 text-sm">{t.beFirst}</p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -217,13 +345,13 @@ export default function Tournaments() {
         {/* Call to Action */}
         {!isAuthenticated && (
           <div className="mt-6 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-2xl p-6 text-center text-white">
-            <h3 className="text-xl font-bold mb-2">Jetzt mitmachen!</h3>
-            <p className="mb-4 opacity-90">Melde dich an und kämpfe um die Spitze</p>
+            <h3 className="text-xl font-bold mb-2">{t.joinNow}</h3>
+            <p className="mb-4 opacity-90">{t.signUpAndCompete}</p>
             <Button 
               className="bg-white text-cyan-600 hover:bg-cyan-50"
               onClick={() => window.location.href = '/register'}
             >
-              Kostenlos registrieren
+              {t.registerFree}
               <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
