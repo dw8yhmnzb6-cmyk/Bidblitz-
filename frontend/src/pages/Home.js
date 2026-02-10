@@ -632,6 +632,9 @@ export default function Home() {
         {/* Live Winner Ticker - Social Proof */}
         <LiveWinnerTicker />
         
+        {/* Daily Login Streak - Gamification */}
+        {isAuthenticated && <DailyLoginStreak />}
+        
         {/* VIP Benefits Banner - Only for non-VIP users */}
         {!user?.is_vip && <VIPBenefitsBanner isVIP={user?.is_vip} />}
         
