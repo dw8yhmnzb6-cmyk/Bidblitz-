@@ -640,6 +640,9 @@ export default function Home() {
         {/* VIP Benefits Banner - Only for non-VIP users */}
         {!user?.is_vip && <VIPBenefitsBanner isVIP={user?.is_vip} />}
         
+        {/* Share & Win Feature */}
+        {isAuthenticated && <ShareAndWin />}
+        
         {/* Global Jackpot - Prominent Position */}
         <GlobalJackpot className="mb-6" />
         
