@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import { Button } from '../components/ui/button';
 import { Users, Gift, Copy, CheckCircle, Share2, Zap } from 'lucide-react';
 import { toast } from 'sonner';
@@ -221,12 +222,14 @@ export default function InviteFriends() {
     }
   };
 
-  const copyLink = () => {
+  const copyLink = async () => {
     const link = referralData?.referral_link || `https://bidblitz.de/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`;
-    navigator.clipboard.writeText(link);
-    setCopied(true);
-    toast.success(texts.copied);
-    setTimeout(() => setCopied(false), 2000);
+    const success = await safeCopyToClipboard(link);
+    if (success) {
+      setCopied(true);
+      toast.success(texts.copied);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const shareLink = async () => {
