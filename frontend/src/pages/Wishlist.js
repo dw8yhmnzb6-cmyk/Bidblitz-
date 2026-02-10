@@ -53,11 +53,11 @@ export default function Wishlist() {
         { product_id: productId, category: category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success('Zur Wunschliste hinzugefügt!');
+      toast.success(t.added);
       setShowAddModal(false);
       fetchData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Fehler beim Hinzufügen');
+      toast.error(error.response?.data?.detail || t.addError);
     }
   };
 
@@ -66,10 +66,10 @@ export default function Wishlist() {
       await axios.delete(`${API}/wishlist/${itemId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Von Wunschliste entfernt');
+      toast.success(t.removed);
       fetchData();
     } catch (error) {
-      toast.error('Fehler beim Entfernen');
+      toast.error(t.removeError);
     }
   };
 
@@ -85,10 +85,10 @@ export default function Wishlist() {
       <div className="min-h-screen pt-24 pb-12 px-4 flex items-center justify-center">
         <div className="glass-card p-8 rounded-xl text-center max-w-md">
           <Heart className="w-16 h-16 text-[#FF4D4D] mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Wunschliste</h2>
-          <p className="text-gray-500 mb-6">Melden Sie sich an, um Ihre Wunschliste zu sehen.</p>
+          <h2 className="text-xl font-bold text-gray-800 mb-4">{t.loginTitle}</h2>
+          <p className="text-gray-500 mb-6">{t.loginDesc}</p>
           <Button className="btn-primary" onClick={() => window.location.href = '/login'}>
-            Anmelden
+            {t.login}
           </Button>
         </div>
       </div>
@@ -111,10 +111,10 @@ export default function Wishlist() {
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-3">
               <Heart className="w-8 h-8 text-[#FF4D4D]" />
-              Meine Wunschliste
+              {t.title}
             </h1>
             <p className="text-gray-500 mt-1">
-              Werde benachrichtigt, wenn deine Wunschprodukte versteigert werden!
+              {t.subtitle}
             </p>
           </div>
           <Button 
@@ -123,7 +123,7 @@ export default function Wishlist() {
             data-testid="add-wishlist-btn"
           >
             <Plus className="w-5 h-5 mr-2" />
-            Hinzufügen
+            {t.add}
           </Button>
         </div>
 
