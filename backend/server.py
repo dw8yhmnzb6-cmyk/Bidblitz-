@@ -669,7 +669,7 @@ async def bot_last_second_bidder():
                             new_price = round(current_price + bid_increment, 2)
                             
                             # CHECK: Is this a FIXED END auction?
-                            is_fixed_end = auction.get("is_fixed_end", False)
+                            is_fixed_end = current_auction.get("is_fixed_end", False)
                             
                             if is_fixed_end:
                                 # FIXED END: Endzeit bleibt unverändert
