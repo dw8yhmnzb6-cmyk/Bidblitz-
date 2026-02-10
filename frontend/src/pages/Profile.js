@@ -47,7 +47,14 @@ const profileTexts = {
     photoRemoved: "Profilbild entfernt",
     passwordMismatch: "Passwörter stimmen nicht überein",
     passwordChanged: "Passwort erfolgreich geändert!",
-    profileUpdated: "Profil aktualisiert!"
+    profileUpdated: "Profil aktualisiert!",
+    passwordMinLength: "Neues Passwort muss mindestens 6 Zeichen lang sein",
+    updateAccountInfo: "Aktualisieren Sie Ihre Kontoinformationen",
+    secureAccount: "Sichern Sie Ihr Konto mit einem starken Passwort",
+    atLeastChars: "Mindestens 6 Zeichen",
+    repeat: "Wiederholen",
+    bidHistory: "Gebots-Historie",
+    myPurchases: "Meine Käufe"
   },
   en: {
     title: "Edit Profile",
@@ -79,7 +86,14 @@ const profileTexts = {
     photoRemoved: "Profile photo removed",
     passwordMismatch: "Passwords do not match",
     passwordChanged: "Password changed successfully!",
-    profileUpdated: "Profile updated!"
+    profileUpdated: "Profile updated!",
+    passwordMinLength: "Password must be at least 6 characters",
+    updateAccountInfo: "Update your account information",
+    secureAccount: "Secure your account with a strong password",
+    atLeastChars: "At least 6 characters",
+    repeat: "Repeat",
+    bidHistory: "Bid History",
+    myPurchases: "My Purchases"
   },
   sq: {
     title: "Ndrysho Profilin",
@@ -111,7 +125,14 @@ const profileTexts = {
     photoRemoved: "Fotoja e profilit u hoq",
     passwordMismatch: "Fjalëkalimet nuk përputhen",
     passwordChanged: "Fjalëkalimi u ndryshua me sukses!",
-    profileUpdated: "Profili u përditësua!"
+    profileUpdated: "Profili u përditësua!",
+    passwordMinLength: "Fjalëkalimi duhet të ketë së paku 6 karaktere",
+    updateAccountInfo: "Përditësoni informacionin e llogarisë",
+    secureAccount: "Siguroni llogarinë me një fjalëkalim të fortë",
+    atLeastChars: "Së paku 6 karaktere",
+    repeat: "Përsërit",
+    bidHistory: "Historiku i Ofertave",
+    myPurchases: "Blerjet e Mia"
   },
   xk: {
     title: "Ndrysho Profilin",
@@ -143,7 +164,14 @@ const profileTexts = {
     photoRemoved: "Fotoja e profilit u hoq",
     passwordMismatch: "Fjalëkalimet nuk përputhen",
     passwordChanged: "Fjalëkalimi u ndryshua me sukses!",
-    profileUpdated: "Profili u përditësua!"
+    profileUpdated: "Profili u përditësua!",
+    passwordMinLength: "Fjalëkalimi duhet të ketë së paku 6 karaktere",
+    updateAccountInfo: "Përditësoni informacionin e llogarisë",
+    secureAccount: "Siguroni llogarinë me një fjalëkalim të fortë",
+    atLeastChars: "Së paku 6 karaktere",
+    repeat: "Përsërit",
+    bidHistory: "Historiku i Ofertave",
+    myPurchases: "Blerjet e Mia"
   },
   tr: {
     title: "Profili Düzenle",
@@ -175,7 +203,14 @@ const profileTexts = {
     photoRemoved: "Profil fotoğrafı kaldırıldı",
     passwordMismatch: "Şifreler uyuşmuyor",
     passwordChanged: "Şifre başarıyla değiştirildi!",
-    profileUpdated: "Profil güncellendi!"
+    profileUpdated: "Profil güncellendi!",
+    passwordMinLength: "Şifre en az 6 karakter olmalıdır",
+    updateAccountInfo: "Hesap bilgilerinizi güncelleyin",
+    secureAccount: "Hesabınızı güçlü bir şifre ile güvence altına alın",
+    atLeastChars: "En az 6 karakter",
+    repeat: "Tekrarla",
+    bidHistory: "Teklif Geçmişi",
+    myPurchases: "Satın Alımlarım"
   },
   fr: {
     title: "Modifier le Profil",
@@ -207,7 +242,14 @@ const profileTexts = {
     photoRemoved: "Photo de profil supprimée",
     passwordMismatch: "Les mots de passe ne correspondent pas",
     passwordChanged: "Mot de passe changé avec succès!",
-    profileUpdated: "Profil mis à jour!"
+    profileUpdated: "Profil mis à jour!",
+    passwordMinLength: "Le mot de passe doit contenir au moins 6 caractères",
+    updateAccountInfo: "Mettez à jour vos informations",
+    secureAccount: "Sécurisez votre compte avec un mot de passe fort",
+    atLeastChars: "Au moins 6 caractères",
+    repeat: "Répéter",
+    bidHistory: "Historique des Enchères",
+    myPurchases: "Mes Achats"
   }
 };
 
@@ -336,12 +378,7 @@ export default function Profile() {
     }
 
     if (newPassword.length < 6) {
-      const minLengthMsg = language === 'en' ? 'Password must be at least 6 characters' : 
-                          language === 'sq' ? 'Fjalëkalimi duhet të ketë së paku 6 karaktere' :
-                          language === 'tr' ? 'Şifre en az 6 karakter olmalıdır' :
-                          language === 'fr' ? 'Le mot de passe doit contenir au moins 6 caractères' :
-                          'Neues Passwort muss mindestens 6 Zeichen lang sein';
-      toast.error(minLengthMsg);
+      toast.error(texts.passwordMinLength);
       return;
     }
 
@@ -469,11 +506,11 @@ export default function Profile() {
             <div className="glass-card rounded-2xl p-4 mt-4 space-y-2">
               <Link to="/bid-history" className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-gray-500 hover:text-gray-800">
                 <Zap className="w-5 h-5" />
-                <span>{language === 'en' ? 'Bid History' : language === 'sq' ? 'Historiku i Ofertave' : language === 'tr' ? 'Teklif Geçmişi' : language === 'fr' ? 'Historique des Enchères' : 'Gebots-Historie'}</span>
+                <span>{texts.bidHistory}</span>
               </Link>
               <Link to="/purchases" className="flex items-center gap-3 p-3 rounded-lg hover:bg-white/5 transition-colors text-gray-500 hover:text-gray-800">
                 <Trophy className="w-5 h-5" />
-                <span>{language === 'en' ? 'My Purchases' : language === 'sq' ? 'Blerjet e Mia' : language === 'tr' ? 'Satın Alımlarım' : language === 'fr' ? 'Mes Achats' : 'Meine Käufe'}</span>
+                <span>{texts.myPurchases}</span>
               </Link>
             </div>
           </div>
@@ -488,7 +525,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">{texts.personalInfo}</h3>
-                  <p className="text-gray-500 text-sm">{language === 'en' ? 'Update your account information' : language === 'sq' ? 'Përditësoni informacionin e llogarisë' : language === 'tr' ? 'Hesap bilgilerinizi güncelleyin' : language === 'fr' ? 'Mettez à jour vos informations' : 'Aktualisieren Sie Ihre Kontoinformationen'}</p>
+                  <p className="text-gray-500 text-sm">{texts.updateAccountInfo}</p>
                 </div>
               </div>
 
@@ -544,7 +581,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-gray-800">{texts.changePassword}</h3>
-                  <p className="text-gray-500 text-sm">{language === 'en' ? 'Secure your account with a strong password' : language === 'sq' ? 'Siguroni llogarinë me një fjalëkalim të fortë' : language === 'tr' ? 'Hesabınızı güçlü bir şifre ile güvence altına alın' : language === 'fr' ? 'Sécurisez votre compte avec un mot de passe fort' : 'Sichern Sie Ihr Konto mit einem starken Passwort'}</p>
+                  <p className="text-gray-500 text-sm">{texts.secureAccount}</p>
                 </div>
               </div>
 
@@ -572,7 +609,7 @@ export default function Profile() {
                         type="password"
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder={language === 'en' ? 'At least 6 characters' : language === 'sq' ? 'Së paku 6 karaktere' : language === 'tr' ? 'En az 6 karakter' : language === 'fr' ? 'Au moins 6 caractères' : 'Mindestens 6 Zeichen'}
+                        placeholder={texts.atLeastChars}
                         className="bg-white border-gray-200 text-gray-800 pl-10 h-12"
                         data-testid="new-password-input"
                       />
@@ -586,7 +623,7 @@ export default function Profile() {
                         type="password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder={language === 'en' ? 'Repeat' : language === 'sq' ? 'Përsërit' : language === 'tr' ? 'Tekrarla' : language === 'fr' ? 'Répéter' : 'Wiederholen'}
+                        placeholder={texts.repeat}
                         className="bg-white border-gray-200 text-gray-800 pl-10 h-12"
                         data-testid="confirm-password-input"
                       />
