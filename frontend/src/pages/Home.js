@@ -668,6 +668,9 @@ export default function Home() {
           />
         )}
         
+        {/* Winner Gallery & Testimonials */}
+        <WinnerGalleryHome />
+        
         {/* Leaderboard Widget - NEW */}
         <LeaderboardWidget 
           className="mb-6" 
