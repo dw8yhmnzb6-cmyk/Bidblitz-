@@ -54,21 +54,7 @@ export default function LiveWinnerTicker() {
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
-    // Fetch real winners or use demo data
-    const fetchWinners = async () => {
-      try {
-        const response = await axios.get(`${API}/auctions/recent-winners?limit=10`);
-        if (response.data?.winners?.length > 0) {
-          setWinners(response.data.winners);
-        } else {
-          // Generate demo winners
-          generateDemoWinners();
-        }
-      } catch (error) {
-        generateDemoWinners();
-      }
-    };
-
+    // Generate demo winners immediately on mount
     const generateDemoWinners = () => {
       const demo = Array(8).fill(null).map(() => {
         const product = demoProducts[Math.floor(Math.random() * demoProducts.length)];
@@ -77,11 +63,27 @@ export default function LiveWinnerTicker() {
           city: demoCities[Math.floor(Math.random() * demoCities.length)],
           product_name: product.name,
           retail_price: product.price,
-          final_price: product.wonFor + (Math.random() * 5).toFixed(2) * 1,
+          final_price: parseFloat((product.wonFor + Math.random() * 5).toFixed(2)),
           won_at: new Date().toISOString()
         };
       });
       setWinners(demo);
+    };
+
+    // Initialize with demo data
+    generateDemoWinners();
+
+    // Fetch real winners or use demo data
+    const fetchWinners = async () => {
+      try {
+        const response = await axios.get(`${API}/auctions/recent-winners?limit=10`);
+        if (response.data?.winners?.length > 0) {
+          setWinners(response.data.winners);
+        }
+      } catch (error) {
+        // Keep demo data
+        console.log('Using demo winners');
+      }
     };
 
     fetchWinners();
