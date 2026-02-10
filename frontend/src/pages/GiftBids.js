@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -390,11 +391,13 @@ export default function GiftBids() {
     }
   };
 
-  const copyCustomerNumber = () => {
-    navigator.clipboard.writeText(customerNumber);
-    setCopied(true);
-    toast.success(t.copied);
-    setTimeout(() => setCopied(false), 2000);
+  const copyCustomerNumber = async () => {
+    const success = await safeCopyToClipboard(customerNumber);
+    if (success) {
+      setCopied(true);
+      toast.success(t.copied);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   if (!token) {
