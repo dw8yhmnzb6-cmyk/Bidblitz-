@@ -5,6 +5,27 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 10, 2026)
 
+### ✅ Session Update - February 10, 2026 (Session 8) - TRANSLATION REFACTORING
+
+**Completed in this session:**
+
+1. ✅ **Übersetzungs-Refaktorierung - Albanisch (sq/xk) Unterstützung erweitert**
+   - **Profile.js**: 7 hardcodierte ternäre Operatoren durch zentrale Übersetzungen ersetzt
+   - **BundlesPage.js**: Trust Badges und fehlende Übersetzungen für sq/xk/tr/fr hinzugefügt
+   - **Login.js**: Apple Login und "oder"-Text für alle Sprachen übersetzt
+   - **Register.js**: "oder"-Text für alle Sprachen übersetzt
+   - **BeginnerAuctions.js**: Vollständige sq/xk/fr Übersetzungen hinzugefügt + hardcodierte Texte ersetzt
+   - **SpinWheel.js**: sq/xk Übersetzungen für Glücksrad hinzugefügt
+   - **Dashboard.js**: weeklyLeaderboard/weeklyLeaderboardDesc Übersetzungen + xk Sprache hinzugefügt
+   - **BattlePassPage.js**: Alle hardcodierten Texte in zentrales Übersetzungs-Objekt migriert
+   - **Home.js**: Bug gefixt - `langKey` war undefiniert in ActivityIndex Komponente
+
+2. ✅ **Home.js ActivityIndex Bug behoben**
+   - **Problem:** `langKey` wurde im memo Component verwendet, aber nicht definiert
+   - **Fix:** `langKey` durch `language` (prop) ersetzt
+
+---
+
 ### ✅ Session Update - February 10, 2026 (Session 7)
 
 **Completed in this session:**
