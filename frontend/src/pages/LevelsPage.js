@@ -44,30 +44,37 @@ const LevelsPage = () => {
   const [xpHistory, setXpHistory] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Helper function for multi-language support
+  const getLangText = (de, en, sq) => {
+    if (language === 'sq' || language === 'xk') return sq;
+    if (language === 'en') return en;
+    return de;
+  };
+
   // Use centralized translations
   const ft = getFeatureTranslation('levels', language);
   const t = {
     ...ft,
-    title: language === 'de' ? 'Level-System' : 'Level System',
-    subtitle: ft.subtitle || 'Level up and unlock exclusive benefits!',
-    currentLevel: ft.currentLevel || 'Current Level',
-    xpProgress: language === 'de' ? 'XP Fortschritt' : 'XP Progress',
-    nextLevel: language === 'de' ? 'Nächstes Level' : 'Next Level',
-    xpNeeded: language === 'de' ? 'XP benötigt' : 'XP needed',
-    yourPerks: language === 'de' ? 'Deine Vorteile' : 'Your Perks',
-    allLevels: language === 'de' ? 'Alle Level' : 'All Levels',
-    leaderboard: language === 'de' ? 'XP Rangliste' : 'XP Leaderboard',
-    howToEarn: ft.howToEarnXp || 'How to earn XP',
-    perBid: language === 'de' ? 'XP pro Gebot' : 'XP per bid',
-    perWin: language === 'de' ? 'XP pro Gewinn' : 'XP per win',
-    perPurchase: language === 'de' ? 'XP pro €10 Kauf' : 'XP per €10 purchase',
-    perLogin: language === 'de' ? 'XP pro Tag Login' : 'XP per daily login',
-    perReview: language === 'de' ? 'XP pro Bewertung' : 'XP per review',
-    perReferral: language === 'de' ? 'XP pro Empfehlung' : 'XP per referral',
-    unlockAt: language === 'de' ? 'Freischalten bei' : 'Unlock at',
+    title: getLangText('Level-System', 'Level System', 'Sistemi i Niveleve'),
+    subtitle: ft.subtitle || getLangText('Steige auf und schalte exklusive Vorteile frei!', 'Level up and unlock exclusive benefits!', 'Ngrihu në nivel dhe zhblloko përfitime ekskluzive!'),
+    currentLevel: ft.currentLevel || getLangText('Aktuelles Level', 'Current Level', 'Niveli Aktual'),
+    xpProgress: getLangText('XP Fortschritt', 'XP Progress', 'Progresi XP'),
+    nextLevel: getLangText('Nächstes Level', 'Next Level', 'Niveli i Ardhshëm'),
+    xpNeeded: getLangText('XP benötigt', 'XP needed', 'XP të nevojshme'),
+    yourPerks: getLangText('Deine Vorteile', 'Your Perks', 'Përfitimet e Tua'),
+    allLevels: getLangText('Alle Level', 'All Levels', 'Të Gjitha Nivelet'),
+    leaderboard: getLangText('XP Rangliste', 'XP Leaderboard', 'Renditja XP'),
+    howToEarn: ft.howToEarnXp || getLangText('Wie man XP verdient', 'How to earn XP', 'Si të fitosh XP'),
+    perBid: getLangText('XP pro Gebot', 'XP per bid', 'XP për ofertë'),
+    perWin: getLangText('XP pro Gewinn', 'XP per win', 'XP për fitore'),
+    perPurchase: getLangText('XP pro €10 Kauf', 'XP per €10 purchase', 'XP për blerje €10'),
+    perLogin: getLangText('XP pro Tag Login', 'XP per daily login', 'XP për hyrje ditore'),
+    perReview: getLangText('XP pro Bewertung', 'XP per review', 'XP për vlerësim'),
+    perReferral: getLangText('XP pro Empfehlung', 'XP per referral', 'XP për referim'),
+    unlockAt: getLangText('Freischalten bei', 'Unlock at', 'Zhblloko në'),
     xp: 'XP',
-    rank: language === 'de' ? 'Platz' : 'Rank',
-    recentXp: language === 'de' ? 'Letzte XP-Aktivität' : 'Recent XP Activity'
+    rank: getLangText('Platz', 'Rank', 'Pozicioni'),
+    recentXp: getLangText('Letzte XP-Aktivität', 'Recent XP Activity', 'Aktiviteti i Fundit XP')
   };
 
   useEffect(() => {
