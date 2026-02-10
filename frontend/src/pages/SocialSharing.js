@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import { Button } from '../components/ui/button';
 import { 
   Share2, Gift, Twitter, Facebook, MessageCircle, Copy, 
@@ -163,8 +164,8 @@ export default function SocialSharing() {
         window.location.href = `mailto:?subject=${encodeURIComponent('Check this auction!')}&body=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`;
         break;
       case 'copy':
-        navigator.clipboard.writeText(shareUrl);
-        toast.success(t.copied);
+        const success = await safeCopyToClipboard(shareUrl);
+        if (success) toast.success(t.copied);
         break;
     }
 
