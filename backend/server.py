@@ -149,6 +149,7 @@ from routers.app_store import app_store_router
 from routers.affiliate_dashboard import affiliate_dashboard_router
 from routers.social_media_share import social_media_share_router
 from routers.user_reports import user_reports_router
+from routers.daily_streak import daily_streak_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
