@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
@@ -112,32 +113,6 @@ export default function ReferFriends() {
       console.error('Failed to fetch referral data:', error);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Safe clipboard function that works on all devices
-  const safeCopyToClipboard = async (text) => {
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } else {
-        // Fallback for older browsers / iOS Safari
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-9999px';
-        textArea.style.top = '-9999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        const result = document.execCommand('copy');
-        document.body.removeChild(textArea);
-        return result;
-      }
-    } catch (err) {
-      console.error('Copy failed:', err);
-      return false;
     }
   };
 
