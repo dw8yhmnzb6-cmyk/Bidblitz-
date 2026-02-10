@@ -215,7 +215,9 @@ export default function Dashboard() {
   const handleToggleAutobidder = async (autobidderId, currentStatus) => {
     try {
       await axios.put(`${API}/autobidder/${autobidderId}/toggle`, {}, { headers: { Authorization: `Bearer ${token}` } });
-      toast.success(currentStatus ? (language === 'en' ? 'Auto-bidder disabled' : 'Autobidder deaktiviert') : (language === 'en' ? 'Auto-bidder enabled' : 'Autobidder aktiviert'));
+      toast.success(currentStatus 
+        ? (language === 'en' ? 'Auto-bidder disabled' : (language === 'sq' || language === 'xk') ? 'Autobidderi u çaktivizua' : 'Autobidder deaktiviert') 
+        : (language === 'en' ? 'Auto-bidder enabled' : (language === 'sq' || language === 'xk') ? 'Autobidderi u aktivizua' : 'Autobidder aktiviert'));
       fetchData();
     } catch (error) {
       toast.error(language === 'en' ? 'Error changing status' : 'Fehler beim Ändern');
