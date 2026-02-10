@@ -96,6 +96,37 @@ const ReferralDashboard = () => {
       prizes: 'Top referrers win prizes every month!',
       nextRank: '{n} more referrals until',
       loginRequired: 'Please login'
+    },
+    sq: {
+      title: 'Ftoni miq',
+      subtitle: 'Rekomandoni BidBlitz dhe fitoni oferta falas!',
+      yourCode: 'Kodi juaj i rekomandimit',
+      yourLink: 'Linku juaj i rekomandimit',
+      copy: 'Kopjo',
+      copied: 'U kopjua!',
+      share: 'Ndaj',
+      stats: 'Statistikat tuaja',
+      totalReferrals: 'Klientë të ftuar',
+      successfulReferrals: 'Rekomandimet e suksesshme',
+      bidsEarned: 'Oferta të fituara',
+      yourRank: 'Rangu juaj',
+      leaderboard: 'Renditja e rekomanduesve',
+      all: 'Totali',
+      month: 'Këtë muaj',
+      week: 'Këtë javë',
+      position: 'Pozicioni',
+      referrals: 'Rekomandimet',
+      myReferrals: 'Rekomandimet e mia',
+      noReferrals: 'Ende asnjë rekomandim',
+      howItWorks: 'Si funksionon',
+      step1: '1. Ndani kodin tuaj me miqtë',
+      step2: '2. Ata regjistrohen me kodin tuaj',
+      step3: '3. Në blerjen e parë: Të dy merrni bonus!',
+      step3Detail: 'Ju: 10 oferta • Miku: 5 oferta',
+      vipBonus: '🌟 VIP+ Bonus: 20 oferta për rekomandimet e abonimit!',
+      prizes: 'Rekomanduesit kryesorë fitojnë çmime çdo muaj!',
+      nextRank: 'Ende {n} rekomandimet deri',
+      loginRequired: 'Ju lutemi identifikohuni'
     }
   };
   const t = texts[langKey] || texts.de;
