@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Button } from '../components/ui/button';
 import { 
   Trophy, CreditCard, Clock, Package, CheckCircle, 
@@ -11,9 +12,80 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+const pageTexts = {
+  de: {
+    errorNotFound: 'Gewonnene Auktion nicht gefunden',
+    bidsCredited: 'Gebote wurden gutgeschrieben!',
+    paymentSuccess: 'Zahlung erfolgreich!',
+    paymentFailed: 'Zahlung fehlgeschlagen',
+    backToDashboard: 'Zurück zum Dashboard',
+    auctionNotFound: 'Auktion nicht gefunden',
+    notYourAuction: 'Diese gewonnene Auktion existiert nicht oder gehört nicht zu Ihrem Konto.',
+    congratulations: 'Herzlichen Glückwunsch!',
+    youWon: 'Sie haben diese Auktion gewonnen',
+    rrp: 'UVP:',
+    youSave: 'Sie sparen',
+    freeBids: 'Gratis-Gebote',
+    creditedImmediately: 'Werden sofort Ihrem Konto gutgeschrieben!',
+    yourFinalPrice: 'Ihr Endpreis',
+    priceFree: 'Preis (GRATIS gewonnen)',
+    free: 'GRATIS',
+    paid: 'Bezahlt',
+    paymentDeadline: 'Zahlungsfrist',
+    paymentDeadlineInfo: 'Bitte bezahlen Sie innerhalb von 7 Tagen, sonst verfällt Ihr Gewinn.',
+    deadline: 'Frist:',
+    paymentMethod: 'Zahlungsmethode',
+    creditDebitCard: 'Kreditkarte / Debitkarte',
+    cardTypes: 'Visa, Mastercard, American Express',
+    securePayment: 'Sichere Zahlung über Stripe - SSL verschlüsselt',
+    processing: 'Wird verarbeitet...',
+    claimBids: '100 Gebote jetzt abholen!',
+    payNow: 'Jetzt',
+    pay: 'bezahlen',
+    paymentComplete: 'Zahlung abgeschlossen!',
+    bidsAddedToAccount: 'Die 100 Gebote wurden Ihrem Konto gutgeschrieben.',
+    productWillShip: 'Ihr Produkt wird in Kürze versandt.'
+  },
+  sq: {
+    errorNotFound: 'Ankandi i fituar nuk u gjet',
+    bidsCredited: 'Ofertat u kredituan!',
+    paymentSuccess: 'Pagesa u krye me sukses!',
+    paymentFailed: 'Pagesa dështoi',
+    backToDashboard: 'Kthehu te paneli',
+    auctionNotFound: 'Ankandi nuk u gjet',
+    notYourAuction: 'Ky ankand i fituar nuk ekziston ose nuk i përket llogarisë suaj.',
+    congratulations: 'Urime!',
+    youWon: 'Ju fituat këtë ankand',
+    rrp: 'Çmimi i rekomanduar:',
+    youSave: 'Ju kurseni',
+    freeBids: 'Oferta falas',
+    creditedImmediately: 'Do të kreditohen menjëherë në llogarinë tuaj!',
+    yourFinalPrice: 'Çmimi juaj përfundimtar',
+    priceFree: 'Çmimi (FITUAR FALAS)',
+    free: 'FALAS',
+    paid: 'Paguar',
+    paymentDeadline: 'Afati i pagesës',
+    paymentDeadlineInfo: 'Ju lutemi paguani brenda 7 ditëve, përndryshe fitimi juaj do të skadojë.',
+    deadline: 'Afati:',
+    paymentMethod: 'Metoda e pagesës',
+    creditDebitCard: 'Kartë krediti / debiti',
+    cardTypes: 'Visa, Mastercard, American Express',
+    securePayment: 'Pagesë e sigurt përmes Stripe - e enkriptuar me SSL',
+    processing: 'Duke u përpunuar...',
+    claimBids: 'Merr 100 oferta tani!',
+    payNow: 'Paguaj tani',
+    pay: 'paguaj',
+    paymentComplete: 'Pagesa u krye!',
+    bidsAddedToAccount: '100 ofertat u shtuan në llogarinë tuaj.',
+    productWillShip: 'Produkti juaj do të dërgohet së shpejti.'
+  }
+};
+
 export default function WonAuctionCheckout() {
   const { auctionId } = useParams();
   const { token, user, refreshUser } = useAuth();
+  const { language } = useLanguage();
+  const t = pageTexts[language] || pageTexts.de;
   const navigate = useNavigate();
   
   const [wonAuction, setWonAuction] = useState(null);

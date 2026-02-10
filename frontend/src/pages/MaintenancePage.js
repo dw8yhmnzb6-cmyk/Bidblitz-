@@ -1,10 +1,36 @@
 import { useState, useEffect } from 'react';
 import { Wrench, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { useLanguage } from '../context/LanguageContext';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+const pageTexts = {
+  de: {
+    title: 'Wartungsarbeiten',
+    defaultMessage: 'Wir führen gerade Wartungsarbeiten durch, um BidBlitz noch besser zu machen. Bitte versuchen Sie es in Kürze erneut.',
+    estimatedTime: 'Geschätzte Restzeit:',
+    hours: 'Stunden',
+    minutes: 'Minuten',
+    seconds: 'Sekunden',
+    retry: 'Erneut versuchen',
+    backSoon: 'Wir sind bald zurück!'
+  },
+  sq: {
+    title: 'Mirëmbajtje',
+    defaultMessage: 'Po kryejmë mirëmbajtje për ta bërë BidBlitz edhe më të mirë. Ju lutemi provoni përsëri së shpejti.',
+    estimatedTime: 'Koha e mbetur e vlerësuar:',
+    hours: 'Orë',
+    minutes: 'Minuta',
+    seconds: 'Sekonda',
+    retry: 'Provo përsëri',
+    backSoon: 'Do të kthehemi së shpejti!'
+  }
+};
+
 export default function MaintenancePage() {
+  const { language } = useLanguage();
+  const t = pageTexts[language] || pageTexts.de;
   const [maintenanceData, setMaintenanceData] = useState(null);
   const [countdown, setCountdown] = useState(null);
 

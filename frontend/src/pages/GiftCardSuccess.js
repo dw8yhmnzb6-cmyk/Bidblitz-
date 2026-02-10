@@ -2,16 +2,56 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { Gift, Check, Copy, Mail, Download, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+const pageTexts = {
+  de: {
+    errorLoading: 'Fehler beim Laden der Geschenkkarte',
+    codeCopied: 'Code kopiert!',
+    notFound: 'Geschenkkarte nicht gefunden',
+    backToGiftcards: 'Zurück zu Geschenkkarten',
+    purchaseSuccess: 'Kauf erfolgreich!',
+    cardReady: 'Ihre Geschenkkarte ist bereit',
+    giftCard: 'GESCHENKKARTE',
+    giftcardCode: 'Geschenkkarten-Code',
+    copyCode: 'Code kopieren',
+    value: 'Wert',
+    bids: 'Gebote',
+    emailSent: 'E-Mail wurde an',
+    sent: 'gesendet',
+    buyAnother: 'Weitere Geschenkkarte kaufen',
+    backToDashboard: 'Zurück zum Dashboard'
+  },
+  sq: {
+    errorLoading: 'Gabim gjatë ngarkimit të kartës dhuratë',
+    codeCopied: 'Kodi u kopjua!',
+    notFound: 'Karta dhuratë nuk u gjet',
+    backToGiftcards: 'Kthehu te kartat dhuratë',
+    purchaseSuccess: 'Blerja u krye me sukses!',
+    cardReady: 'Karta juaj dhuratë është gati',
+    giftCard: 'KARTË DHURATË',
+    giftcardCode: 'Kodi i kartës dhuratë',
+    copyCode: 'Kopjo kodin',
+    value: 'Vlera',
+    bids: 'Oferta',
+    emailSent: 'Email-i u dërgua te',
+    sent: 'dërguar',
+    buyAnother: 'Bli kartë tjetër dhuratë',
+    backToDashboard: 'Kthehu te paneli'
+  }
+};
+
 export default function GiftCardSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { token } = useAuth();
+  const { language } = useLanguage();
+  const t = pageTexts[language] || pageTexts.de;
   
   const [loading, setLoading] = useState(true);
   const [giftcard, setGiftcard] = useState(null);

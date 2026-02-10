@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import axios from 'axios';
 import { FileText, Download, Trophy, CreditCard, Calendar } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -7,8 +8,41 @@ import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+const pageTexts = {
+  de: {
+    pageTitle: 'Meine Rechnungen',
+    invoicesCount: 'Rechnungen',
+    errorLoading: 'Fehler beim Laden der Rechnungen',
+    downloadSuccess: 'Rechnung heruntergeladen',
+    downloadError: 'Fehler beim Download',
+    loginPrompt: 'Melden Sie sich an, um Ihre Rechnungen zu sehen.',
+    login: 'Anmelden',
+    noInvoices: 'Keine Rechnungen',
+    invoicesAppear: 'Ihre Rechnungen erscheinen hier nach dem Kauf',
+    auctionWin: 'Gewinn',
+    purchase: 'Kauf',
+    vatInfo: 'Alle Rechnungen enthalten die gesetzlich vorgeschriebene Mehrwertsteuer (19%). Bei Fragen wenden Sie sich an support@bidblitz.de'
+  },
+  sq: {
+    pageTitle: 'Faturat e mia',
+    invoicesCount: 'Fatura',
+    errorLoading: 'Gabim gjatë ngarkimit të faturave',
+    downloadSuccess: 'Fatura u shkarkua',
+    downloadError: 'Gabim gjatë shkarkimit',
+    loginPrompt: 'Identifikohuni për të parë faturat tuaja.',
+    login: 'Identifikohu',
+    noInvoices: 'Nuk ka fatura',
+    invoicesAppear: 'Faturat tuaja do të shfaqen këtu pas blerjes',
+    auctionWin: 'Fitim',
+    purchase: 'Blerje',
+    vatInfo: 'Të gjitha faturat përfshijnë TVSH-në e detyrueshme ligjore (19%). Për pyetje kontaktoni support@bidblitz.de'
+  }
+};
+
 export default function Invoices() {
   const { isAuthenticated, token } = useAuth();
+  const { language } = useLanguage();
+  const t = pageTexts[language] || pageTexts.de;
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
 
