@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import axios from 'axios';
 import { Button } from '../components/ui/button';
 import { Progress } from '../components/ui/progress';
@@ -14,8 +15,169 @@ import {
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
+// MyStats translations
+const statsTexts = {
+  de: {
+    title: 'Meine Statistiken',
+    overview: 'Übersicht',
+    achievements: 'Erfolge',
+    leaderboard: 'Rangliste',
+    dailyReward: 'Tägliche Belohnung',
+    claimNow: 'Jetzt abholen!',
+    alreadyClaimed: 'Bereits abgeholt',
+    streak: 'Streak',
+    days: 'Tage',
+    totalBids: 'Gebote gesamt',
+    auctionsWon: 'Auktionen gewonnen',
+    moneySaved: 'Geld gespart',
+    loginDays: 'Login-Tage',
+    progress: 'Fortschritt',
+    unlock: 'Freischalten',
+    unlocked: 'Freigeschaltet',
+    locked: 'Gesperrt',
+    reward: 'Belohnung',
+    top5: 'Top 5 diese Woche',
+    bids: 'Gebote',
+    won: 'Gewonnen',
+    loginRequired: 'Bitte melden Sie sich an',
+    login: 'Anmelden',
+    rewardClaimed: 'Belohnung abgeholt!'
+  },
+  en: {
+    title: 'My Statistics',
+    overview: 'Overview',
+    achievements: 'Achievements',
+    leaderboard: 'Leaderboard',
+    dailyReward: 'Daily Reward',
+    claimNow: 'Claim Now!',
+    alreadyClaimed: 'Already Claimed',
+    streak: 'Streak',
+    days: 'Days',
+    totalBids: 'Total Bids',
+    auctionsWon: 'Auctions Won',
+    moneySaved: 'Money Saved',
+    loginDays: 'Login Days',
+    progress: 'Progress',
+    unlock: 'Unlock',
+    unlocked: 'Unlocked',
+    locked: 'Locked',
+    reward: 'Reward',
+    top5: 'Top 5 this week',
+    bids: 'Bids',
+    won: 'Won',
+    loginRequired: 'Please log in',
+    login: 'Login',
+    rewardClaimed: 'Reward claimed!'
+  },
+  sq: {
+    title: 'Statistikat e Mia',
+    overview: 'Pasqyrë',
+    achievements: 'Arritjet',
+    leaderboard: 'Renditja',
+    dailyReward: 'Shpërblimi Ditor',
+    claimNow: 'Merr Tani!',
+    alreadyClaimed: 'Tashmë Marrë',
+    streak: 'Streak',
+    days: 'Ditë',
+    totalBids: 'Oferta Totale',
+    auctionsWon: 'Ankande të Fituara',
+    moneySaved: 'Para të Kursyera',
+    loginDays: 'Ditë Hyrjeje',
+    progress: 'Progresi',
+    unlock: 'Zhblloko',
+    unlocked: 'Zhbllokuar',
+    locked: 'Bllokuar',
+    reward: 'Shpërblim',
+    top5: 'Top 5 këtë javë',
+    bids: 'Oferta',
+    won: 'Fituar',
+    loginRequired: 'Ju lutem hyni',
+    login: 'Hyr',
+    rewardClaimed: 'Shpërblimi u mor!'
+  },
+  xk: {
+    title: 'Statistikat e Mia',
+    overview: 'Pasqyrë',
+    achievements: 'Arritjet',
+    leaderboard: 'Renditja',
+    dailyReward: 'Shpërblimi Ditor',
+    claimNow: 'Merr Tani!',
+    alreadyClaimed: 'Tashmë Marrë',
+    streak: 'Streak',
+    days: 'Ditë',
+    totalBids: 'Oferta Totale',
+    auctionsWon: 'Ankande të Fituara',
+    moneySaved: 'Para të Kursyera',
+    loginDays: 'Ditë Hyrjeje',
+    progress: 'Progresi',
+    unlock: 'Zhblloko',
+    unlocked: 'Zhbllokuar',
+    locked: 'Bllokuar',
+    reward: 'Shpërblim',
+    top5: 'Top 5 këtë javë',
+    bids: 'Oferta',
+    won: 'Fituar',
+    loginRequired: 'Ju lutem hyni',
+    login: 'Hyr',
+    rewardClaimed: 'Shpërblimi u mor!'
+  },
+  tr: {
+    title: 'İstatistiklerim',
+    overview: 'Genel Bakış',
+    achievements: 'Başarılar',
+    leaderboard: 'Sıralama',
+    dailyReward: 'Günlük Ödül',
+    claimNow: 'Şimdi Al!',
+    alreadyClaimed: 'Zaten Alındı',
+    streak: 'Seri',
+    days: 'Gün',
+    totalBids: 'Toplam Teklif',
+    auctionsWon: 'Kazanılan Açık Artırmalar',
+    moneySaved: 'Tasarruf Edilen',
+    loginDays: 'Giriş Günleri',
+    progress: 'İlerleme',
+    unlock: 'Kilidi Aç',
+    unlocked: 'Açıldı',
+    locked: 'Kilitli',
+    reward: 'Ödül',
+    top5: 'Bu hafta Top 5',
+    bids: 'Teklifler',
+    won: 'Kazanılan',
+    loginRequired: 'Lütfen giriş yapın',
+    login: 'Giriş',
+    rewardClaimed: 'Ödül alındı!'
+  },
+  fr: {
+    title: 'Mes Statistiques',
+    overview: 'Aperçu',
+    achievements: 'Succès',
+    leaderboard: 'Classement',
+    dailyReward: 'Récompense Quotidienne',
+    claimNow: 'Réclamer!',
+    alreadyClaimed: 'Déjà réclamé',
+    streak: 'Série',
+    days: 'Jours',
+    totalBids: 'Enchères Totales',
+    auctionsWon: 'Enchères Gagnées',
+    moneySaved: 'Argent Économisé',
+    loginDays: 'Jours de Connexion',
+    progress: 'Progression',
+    unlock: 'Débloquer',
+    unlocked: 'Débloqué',
+    locked: 'Verrouillé',
+    reward: 'Récompense',
+    top5: 'Top 5 cette semaine',
+    bids: 'Enchères',
+    won: 'Gagnées',
+    loginRequired: 'Veuillez vous connecter',
+    login: 'Connexion',
+    rewardClaimed: 'Récompense réclamée!'
+  }
+};
+
 export default function MyStats() {
   const { isAuthenticated, token } = useAuth();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [achievements, setAchievements] = useState(null);
@@ -24,6 +186,8 @@ export default function MyStats() {
   const [loading, setLoading] = useState(true);
   const [claimingReward, setClaimingReward] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  
+  const t = statsTexts[language] || statsTexts.de;
 
   useEffect(() => {
     if (isAuthenticated) {
