@@ -107,8 +107,17 @@ const WinSurveyPopup = ({ isOpen, onClose, auctionId, productName, productImage,
   }, [isOpen]);
 
   const handleSubmit = async () => {
+    const ratingErrorTexts = {
+      de: 'Bitte wähle eine Bewertung',
+      en: 'Please select a rating',
+      sq: 'Ju lutem zgjidhni një vlerësim',
+      xk: 'Ju lutem zgjidhni një vlerësim',
+      tr: 'Lütfen bir puan seçin',
+      fr: 'Veuillez sélectionner une note'
+    };
+    
     if (score === null) {
-      toast.error(language === 'de' ? 'Bitte wähle eine Bewertung' : 'Please select a rating');
+      toast.error(ratingErrorTexts[language] || ratingErrorTexts.de);
       return;
     }
 
