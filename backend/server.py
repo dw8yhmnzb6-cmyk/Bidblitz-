@@ -472,7 +472,21 @@ async def bot_last_second_bidder():
             
             for auction in auctions_to_process:
                 try:
-                    end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
+                    auction_id = auction.get("id")
+                    
+                    # IMPORTANT: Re-check if auction is still active in DB
+                    # This prevents bidding on auctions that were just ended
+                    current_auction = await db.auctions.find_one(
+                        {"id": auction_id, "status": "active"},
+                        {"_id": 0, "end_time": 1, "current_price": 1, "bid_increment": 1, "is_fixed_end": 1, "total_bids": 1, "bid_count": 1}
+                    )
+                    
+                    if not current_auction:
+                        # Auction no longer active, skip
+                        continue
+                    
+                    # Use fresh data from DB
+                    end_time = datetime.fromisoformat(current_auction["end_time"].replace("Z", "+00:00"))
                     seconds_left = (end_time - now).total_seconds()
                     
                     if seconds_left <= 0:
