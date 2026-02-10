@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
@@ -130,24 +131,32 @@ export default function ReferralPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  const copyCode = () => {
-    navigator.clipboard.writeText(referralCode);
-    toast.success(t.copied);
+  const copyCode = async () => {
+    const success = await safeCopyToClipboard(referralCode);
+    if (success) {
+      toast.success(t.copied);
+    }
   };
 
-  const shareLink = () => {
+  const shareLink = async () => {
     const url = `${window.location.origin}/register?ref=${referralCode}`;
     const text = `${t.shareText} ${referralCode}\n${url}`;
     
     if (navigator.share) {
-      navigator.share({
-        title: 'BidBlitz',
-        text: text,
-        url: url
-      });
+      try {
+        await navigator.share({
+          title: 'BidBlitz',
+          text: text,
+          url: url
+        });
+      } catch (err) {
+        // User cancelled or share failed, try copy
+        const success = await safeCopyToClipboard(text);
+        if (success) toast.success(t.copied);
+      }
     } else {
-      navigator.clipboard.writeText(text);
-      toast.success(t.copied);
+      const success = await safeCopyToClipboard(text);
+      if (success) toast.success(t.copied);
     }
   };
 
