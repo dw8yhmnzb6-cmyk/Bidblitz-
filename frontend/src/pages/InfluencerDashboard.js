@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import { 
   Star, Users, DollarSign, TrendingUp, Award, 
   ChevronRight, LogOut, Copy, CheckCircle, Clock,
@@ -147,11 +148,13 @@ export default function InfluencerDashboard() {
     toast.success('Erfolgreich abgemeldet');
   };
 
-  const copyCode = () => {
-    navigator.clipboard.writeText(influencer?.code || '');
-    setCopied(true);
-    toast.success('Code kopiert!');
-    setTimeout(() => setCopied(false), 2000);
+  const copyCode = async () => {
+    const success = await safeCopyToClipboard(influencer?.code || '');
+    if (success) {
+      setCopied(true);
+      toast.success('Code kopiert!');
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const currentTier = stats?.current_tier || 'Bronze';
