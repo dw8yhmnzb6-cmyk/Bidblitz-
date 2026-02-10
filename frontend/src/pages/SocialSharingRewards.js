@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import { Button } from '../components/ui/button';
 import { 
   Share2, Gift, Trophy, Twitter, Facebook, 
@@ -161,11 +162,13 @@ export default function SocialSharingRewards() {
     }
   };
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(referralLink);
-    setCopied(true);
-    toast.success(t.copied);
-    setTimeout(() => setCopied(false), 2000);
+  const copyLink = async () => {
+    const success = await safeCopyToClipboard(referralLink);
+    if (success) {
+      setCopied(true);
+      toast.success(t.copied);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const shareOptions = [
