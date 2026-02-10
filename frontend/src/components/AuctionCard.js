@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Timer, Users, Zap, Calendar } from 'lucide-react';
+import { Timer, Users, Zap, Calendar, Volume2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { useLanguage } from '../context/LanguageContext';
 import { getProductName } from '../utils/productTranslation';
+import { useCountdownSound } from './CountdownSound';
 
-export const AuctionCard = ({ auction, onBid, isAuthenticated }) => {
+export const AuctionCard = ({ auction, onBid, isAuthenticated, enableSound = false }) => {
   const { language } = useLanguage();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [startTimeLeft, setStartTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isUrgent, setIsUrgent] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(enableSound);
+  
+  // Countdown sound effect
+  useCountdownSound(timeLeft.seconds, soundEnabled && isUrgent);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
