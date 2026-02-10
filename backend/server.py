@@ -344,6 +344,7 @@ app.include_router(app_store_router, prefix="/api")
 app.include_router(affiliate_dashboard_router, prefix="/api")
 app.include_router(social_media_share_router, prefix="/api")
 app.include_router(user_reports_router, prefix="/api")
+app.include_router(daily_streak_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
