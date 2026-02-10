@@ -44,7 +44,13 @@ const BeginnerAuctions = () => {
       specialBadge: 'NUR FÜR ANFÄNGER',
       protectedAuction: 'Geschützte Auktion',
       lessBidders: 'Weniger Bieter',
-      betterChances: 'Bessere Chancen'
+      betterChances: 'Bessere Chancen',
+      participants: 'Teilnehmer',
+      higher: 'höher',
+      bidPlaced: 'Gebot platziert!',
+      pleaseLogin: 'Bitte anmelden um zu bieten',
+      bidError: 'Fehler beim Bieten',
+      ended: 'Beendet'
     },
     en: {
       title: 'Beginner Auctions',
@@ -67,7 +73,71 @@ const BeginnerAuctions = () => {
       specialBadge: 'BEGINNERS ONLY',
       protectedAuction: 'Protected Auction',
       lessBidders: 'Less bidders',
-      betterChances: 'Better chances'
+      betterChances: 'Better chances',
+      participants: 'participants',
+      higher: 'higher',
+      bidPlaced: 'Bid placed!',
+      pleaseLogin: 'Please log in to bid',
+      bidError: 'Error placing bid',
+      ended: 'Ended'
+    },
+    sq: {
+      title: 'Ankande për Fillestarë',
+      subtitle: 'Ankande ekskluzive vetëm për ofertues të rinj!',
+      description: 'Më pak konkurrencë = Shanse më të larta fitoreje',
+      eligible: 'Ju jeni i përshtatshëm!',
+      notEligible: 'Nuk jeni më fillestar',
+      criteria: 'Kualifikimi',
+      maxWins: 'Më pak se 10 fitore',
+      or: 'ose',
+      newUser: 'Regjistruar brenda 7 ditëve',
+      yourWins: 'Fitoret tuaja',
+      daysRegistered: 'Ditë që nga regjistrimi',
+      noAuctions: 'Asnjë ankand për fillestarë',
+      checkBack: 'Kontrolloni më vonë!',
+      currentPrice: 'Çmimi Aktual',
+      endsIn: 'Përfundon në',
+      bid: 'Ofertohu',
+      loginRequired: 'Ju lutem hyni',
+      specialBadge: 'VETËM PËR FILLESTARË',
+      protectedAuction: 'Ankand i Mbrojtur',
+      lessBidders: 'Më pak ofertues',
+      betterChances: 'Shanse më të mira',
+      participants: 'pjesëmarrës',
+      higher: 'më e lartë',
+      bidPlaced: 'Oferta u vendos!',
+      pleaseLogin: 'Ju lutem hyni për të ofruar',
+      bidError: 'Gabim në vendosjen e ofertës',
+      ended: 'Përfundoi'
+    },
+    xk: {
+      title: 'Ankande për Fillestarë',
+      subtitle: 'Ankande ekskluzive vetëm për ofertues të rinj!',
+      description: 'Më pak konkurrencë = Shanse më të larta fitoreje',
+      eligible: 'Ju jeni i përshtatshëm!',
+      notEligible: 'Nuk jeni më fillestar',
+      criteria: 'Kualifikimi',
+      maxWins: 'Më pak se 10 fitore',
+      or: 'ose',
+      newUser: 'Regjistruar brenda 7 ditëve',
+      yourWins: 'Fitoret tuaja',
+      daysRegistered: 'Ditë që nga regjistrimi',
+      noAuctions: 'Asnjë ankand për fillestarë',
+      checkBack: 'Kontrolloni më vonë!',
+      currentPrice: 'Çmimi Aktual',
+      endsIn: 'Përfundon në',
+      bid: 'Ofertohu',
+      loginRequired: 'Ju lutem hyni',
+      specialBadge: 'VETËM PËR FILLESTARË',
+      protectedAuction: 'Ankand i Mbrojtur',
+      lessBidders: 'Më pak ofertues',
+      betterChances: 'Shanse më të mira',
+      participants: 'pjesëmarrës',
+      higher: 'më e lartë',
+      bidPlaced: 'Oferta u vendos!',
+      pleaseLogin: 'Ju lutem hyni për të ofruar',
+      bidError: 'Gabim në vendosjen e ofertës',
+      ended: 'Përfundoi'
     },
     tr: {
       title: 'Yeni Başlayan Açık Artırmaları',
@@ -90,7 +160,42 @@ const BeginnerAuctions = () => {
       specialBadge: 'SADECE YENİ BAŞLAYANLAR',
       protectedAuction: 'Korumalı Açık Artırma',
       lessBidders: 'Daha az teklifçi',
-      betterChances: 'Daha iyi şanslar'
+      betterChances: 'Daha iyi şanslar',
+      participants: 'katılımcı',
+      higher: 'daha yüksek',
+      bidPlaced: 'Teklif verildi!',
+      pleaseLogin: 'Teklif vermek için giriş yapın',
+      bidError: 'Teklif verme hatası',
+      ended: 'Bitti'
+    },
+    fr: {
+      title: 'Enchères Débutants',
+      subtitle: 'Enchères exclusives pour les nouveaux enchérisseurs!',
+      description: 'Moins de concurrence = Plus de chances de gagner',
+      eligible: 'Vous êtes éligible!',
+      notEligible: 'Vous n\'êtes plus débutant',
+      criteria: 'Éligibilité',
+      maxWins: 'Moins de 10 victoires',
+      or: 'ou',
+      newUser: 'Inscrit dans les 7 jours',
+      yourWins: 'Vos victoires',
+      daysRegistered: 'Jours depuis l\'inscription',
+      noAuctions: 'Aucune enchère débutant disponible',
+      checkBack: 'Revenez plus tard!',
+      currentPrice: 'Prix Actuel',
+      endsIn: 'Se termine dans',
+      bid: 'Enchérir',
+      loginRequired: 'Veuillez vous connecter',
+      specialBadge: 'DÉBUTANTS UNIQUEMENT',
+      protectedAuction: 'Enchère Protégée',
+      lessBidders: 'Moins d\'enchérisseurs',
+      betterChances: 'Meilleures chances',
+      participants: 'participants',
+      higher: 'plus élevé',
+      bidPlaced: 'Enchère placée!',
+      pleaseLogin: 'Veuillez vous connecter pour enchérir',
+      bidError: 'Erreur lors de l\'enchère',
+      ended: 'Terminé'
     }
   };
   const t = texts[langKey] || texts.de;
@@ -140,15 +245,15 @@ const BeginnerAuctions = () => {
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success('Gebot platziert!');
+      toast.success(t.bidPlaced);
     } catch (err) {
       // Check if it's an authentication error
       if (err.response?.status === 401 || err.response?.status === 403) {
-        toast.error('Bitte anmelden um zu bieten');
+        toast.error(t.pleaseLogin);
         navigate('/login');
         return;
       }
-      toast.error(err.response?.data?.detail || 'Fehler beim Bieten');
+      toast.error(err.response?.data?.detail || t.bidError);
     }
   };
 
@@ -158,7 +263,7 @@ const BeginnerAuctions = () => {
     const now = new Date();
     const diff = end - now;
     
-    if (diff <= 0) return 'Beendet';
+    if (diff <= 0) return t.ended;
     
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -265,12 +370,12 @@ const BeginnerAuctions = () => {
           <div className="glass-card p-4 rounded-xl text-center">
             <Users className="w-8 h-8 text-blue-400 mx-auto mb-2" />
             <p className="text-gray-800 font-bold">{t.lessBidders}</p>
-            <p className="text-gray-500 text-sm">&lt; 10 {language === 'de' ? 'Teilnehmer' : 'participants'}</p>
+            <p className="text-gray-500 text-sm">&lt; 10 {t.participants}</p>
           </div>
           <div className="glass-card p-4 rounded-xl text-center">
             <Gift className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
             <p className="text-gray-800 font-bold">{t.betterChances}</p>
-            <p className="text-gray-500 text-sm">3x {language === 'de' ? 'höher' : 'higher'}</p>
+            <p className="text-gray-500 text-sm">3x {t.higher}</p>
           </div>
         </div>
 
