@@ -40,7 +40,7 @@ const ActivityIndex = memo(({ auctionId = '', language = 'de' }) => {
   return (
     <div className="mt-3">
       <div className="flex items-center gap-2">
-        <span className="text-[11px] text-gray-400">{activityLabel[langKey] || activityLabel.de}</span>
+        <span className="text-[11px] text-gray-400">{activityLabel[language] || activityLabel.de}</span>
         <div className="flex gap-0.5">
           {[...Array(10)].map((_, i) => (
             <div 
