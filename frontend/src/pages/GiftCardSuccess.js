@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
+import { safeCopyToClipboard } from '../utils/clipboard';
 import { Gift, Check, Copy, Mail, Download, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
@@ -83,12 +84,14 @@ export default function GiftCardSuccess() {
     }
   };
 
-  const copyCode = () => {
+  const copyCode = async () => {
     if (giftcard?.code) {
-      navigator.clipboard.writeText(giftcard.code);
-      setCopied(true);
-      toast.success(t.codeCopied);
-      setTimeout(() => setCopied(false), 2000);
+      const success = await safeCopyToClipboard(giftcard.code);
+      if (success) {
+        setCopied(true);
+        toast.success(t.codeCopied);
+        setTimeout(() => setCopied(false), 2000);
+      }
     }
   };
 
