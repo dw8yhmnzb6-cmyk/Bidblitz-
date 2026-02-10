@@ -64,7 +64,12 @@ const ReferralDashboard = () => {
       vipBonus: '🌟 VIP+ Bonus: 20 Gebote bei Abo-Empfehlungen!',
       prizes: 'Top-Werber gewinnen jeden Monat Preise!',
       nextRank: 'Noch {n} Empfehlungen bis',
-      loginRequired: 'Bitte einloggen'
+      loginRequired: 'Bitte einloggen',
+      referralsCount: 'Empfehlungen',
+      stillNeeded: 'Noch',
+      until: 'bis',
+      bids: 'Gebote',
+      waitingForPurchase: 'Warte auf Kauf'
     },
     en: {
       title: 'Refer a Friend',
@@ -95,7 +100,12 @@ const ReferralDashboard = () => {
       vipBonus: '🌟 VIP+ Bonus: 20 bids for subscription referrals!',
       prizes: 'Top referrers win prizes every month!',
       nextRank: '{n} more referrals until',
-      loginRequired: 'Please login'
+      loginRequired: 'Please login',
+      referralsCount: 'Referrals',
+      stillNeeded: 'Still',
+      until: 'until',
+      bids: 'Bids',
+      waitingForPurchase: 'Waiting for purchase'
     },
     sq: {
       title: 'Ftoni miq',
@@ -126,7 +136,12 @@ const ReferralDashboard = () => {
       vipBonus: '🌟 VIP+ Bonus: 20 oferta për rekomandimet e abonimit!',
       prizes: 'Rekomanduesit kryesorë fitojnë çmime çdo muaj!',
       nextRank: 'Ende {n} rekomandimet deri',
-      loginRequired: 'Ju lutemi identifikohuni'
+      loginRequired: 'Ju lutemi identifikohuni',
+      referralsCount: 'Rekomandimet',
+      stillNeeded: 'Ende',
+      until: 'deri',
+      bids: 'Oferta',
+      waitingForPurchase: 'Duke pritur blerjen'
     }
   };
   const t = texts[langKey] || texts.de;
