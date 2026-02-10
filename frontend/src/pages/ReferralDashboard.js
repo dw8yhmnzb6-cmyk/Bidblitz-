@@ -433,7 +433,7 @@ const ReferralDashboard = () => {
                   <div>
                     <p className="text-gray-800 font-medium">{ref.referred_name}</p>
                     <p className="text-gray-500 text-sm">
-                      {new Date(ref.created_at).toLocaleDateString('de-DE')}
+                      {new Date(ref.created_at).toLocaleDateString(langKey === 'sq' ? 'sq-AL' : langKey === 'en' ? 'en-US' : 'de-DE')}
                     </p>
                   </div>
                   <div className="text-right">
