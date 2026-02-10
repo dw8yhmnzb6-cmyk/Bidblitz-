@@ -490,6 +490,15 @@ async def get_email_templates(admin: dict = Depends(get_admin_user)):
         }
     ]
 
+@router.get("/email/campaigns")
+async def get_email_campaigns(admin: dict = Depends(get_admin_user)):
+    """Get list of sent email campaigns"""
+    campaigns = await db.email_campaigns.find(
+        {},
+        {"_id": 0}
+    ).sort("sent_at", -1).limit(50).to_list(50)
+    return campaigns
+
 class EmailCampaignRequest(BaseModel):
     subject: str
     html_content: str
