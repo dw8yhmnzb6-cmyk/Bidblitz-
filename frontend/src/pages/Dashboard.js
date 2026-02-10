@@ -230,7 +230,7 @@ export default function Dashboard() {
       toast.success(language === 'en' ? 'Auto-bidder deleted' : (language === 'sq' || language === 'xk') ? 'Autobidderi u fshi' : 'Autobidder gelöscht');
       fetchData();
     } catch (error) {
-      toast.error(language === 'en' ? 'Error deleting' : 'Fehler beim Löschen');
+      toast.error(language === 'en' ? 'Error deleting' : (language === 'sq' || language === 'xk') ? 'Gabim gjatë fshirjes' : 'Fehler beim Löschen');
     }
   };
 
