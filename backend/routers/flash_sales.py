@@ -304,3 +304,5 @@ async def process_flash_purchase_complete(session_id: str):
     logger.info(f"Flash purchase completed: {purchase['bids']} bids for {purchase['user_id']}")
 
 __all__ = ['process_flash_purchase_complete', 'DEFAULT_FLASH_PACKAGES']
+
+flash_sales_router = router
