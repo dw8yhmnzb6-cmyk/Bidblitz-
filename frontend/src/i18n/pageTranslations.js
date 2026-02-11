@@ -46,7 +46,7 @@ export const pageTranslations = {
     bonusBids: "Sie erhalten 5 Bonus-Gebote nach Ihrem ersten Kauf!",
     
     // Dashboard
-    dashboard: "Dashboard",
+    dashboard: "Übersicht",
     myBids: "Meine Gebote",
     bidBalance: "Gebot-Guthaben",
     buyMoreBids: "Mehr Gebote kaufen",
