@@ -101,6 +101,8 @@ const AdminSustainability = () => {
         body: JSON.stringify(newProject)
       });
       
+      const data = await response.json();
+      
       if (response.ok) {
         toast.success('Projekt erstellt!');
         setShowNewProject(false);
@@ -115,7 +117,8 @@ const AdminSustainability = () => {
         });
         fetchData();
       } else {
-        throw new Error('Create failed');
+        console.error('Create project error:', data);
+        toast.error(data.detail || 'Fehler beim Erstellen');
       }
     } catch (err) {
       toast.error('Fehler beim Erstellen');
