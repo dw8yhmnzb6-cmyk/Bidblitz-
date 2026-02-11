@@ -172,32 +172,33 @@ const AdminMysteryBox = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <Gift className="w-8 h-8 text-purple-600" />
+          <Gift className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" />
           <div>
-            <h2 className="text-xl font-bold text-gray-800">Mystery Boxes</h2>
-            <p className="text-sm text-gray-500">Überraschungs-Auktionen verwalten</p>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800">Mystery Boxes</h2>
+            <p className="text-xs sm:text-sm text-gray-500">Überraschungs-Auktionen</p>
           </div>
         </div>
         <div className="flex gap-2">
           <Button onClick={fetchData} variant="outline" size="sm">
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Aktualisieren
+            <RefreshCw className="w-4 h-4" />
+            <span className="hidden sm:inline ml-2">Aktualisieren</span>
           </Button>
-          <Button onClick={() => setShowCreate(!showCreate)} className="bg-purple-600 hover:bg-purple-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Neue Mystery Box
+          <Button onClick={() => setShowCreate(!showCreate)} className="bg-purple-600 hover:bg-purple-700" size="sm">
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline ml-2">Neue Mystery Box</span>
+            <span className="sm:hidden ml-1">Neu</span>
           </Button>
         </div>
       </div>
 
       {/* Create Form */}
       {showCreate && (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
-          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 sm:p-6 border border-purple-200 overflow-x-auto">
+          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-sm sm:text-base">
             <Sparkles className="w-5 h-5 text-purple-600" />
             Neue Mystery Box erstellen
           </h3>
