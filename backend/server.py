@@ -150,6 +150,19 @@ from routers.affiliate_dashboard import affiliate_dashboard_router
 from routers.social_media_share import social_media_share_router
 from routers.user_reports import user_reports_router
 from routers.daily_streak import daily_streak_router
+# New gamification and revenue routers
+from routers.vip_tiers import vip_tiers_router
+from routers.coupons import coupons_router
+from routers.duels import duels_router
+from routers.flash_sales import flash_sales_router
+from routers.price_alerts import price_alerts_router
+from routers.bid_combo import bid_combo_router
+from routers.weekly_challenge import weekly_challenge_router
+from routers.birthday import birthday_router
+from routers.ab_testing import ab_testing_router
+from routers.fraud_detection import fraud_detection_router
+from routers.winback import winback_router
+from routers.abandoned_cart import abandoned_cart_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
