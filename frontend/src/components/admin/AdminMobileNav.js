@@ -79,7 +79,7 @@ export default function AdminMobileNav({
             }`}
           >
             <LayoutDashboard className="w-5 h-5 mb-0.5" />
-            <span className="text-[10px] font-medium">Dashboard</span>
+            <span className="text-[10px] font-medium">Übersicht</span>
           </button>
 
           {/* Search */}
