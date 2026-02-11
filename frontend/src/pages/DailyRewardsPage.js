@@ -42,6 +42,7 @@ const DailyRewardsPage = () => {
       hours: 'Stunden'
     },
     en: {
+      dailyRewards: 'Daily Rewards',
       subtitle: 'Come back every day and claim your bonuses!',
       inProgress: 'In Progress',
       allCompleted: 'All quests completed!',
