@@ -2616,6 +2616,11 @@ export default function Admin() {
             <AdminWinnerControl />
           )}
 
+          {/* Weekly Challenges Tab */}
+          {activeTab === 'weekly-challenges' && (
+            <AdminWeeklyChallenges />
+          )}
+
           {/* Promo Codes Tab */}
           {activeTab === 'promo-codes' && (
             <div className="space-y-6">
