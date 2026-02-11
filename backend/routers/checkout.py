@@ -280,6 +280,140 @@ async def create_crypto_charge(
         
         raise HTTPException(status_code=500, detail=f"Krypto-Zahlung fehlgeschlagen: Bitte versuchen Sie es später erneut.")
 
+
+# ==================== STRIPE WEBHOOK ====================
+
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET")
+
+@router.post("/webhook")
+async def stripe_webhook(request: Request):
+    """Handle Stripe webhooks for payment confirmations"""
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+    
+    if not STRIPE_WEBHOOK_SECRET or STRIPE_WEBHOOK_SECRET.startswith("whsec_placeholder"):
+        logger.warning("Stripe webhook secret not configured")
+        # Still try to process without signature verification for testing
+        try:
+            event = stripe.Event.construct_from(
+                await request.json(), stripe.api_key
+            )
+        except Exception as e:
+            logger.error(f"Webhook parsing error: {e}")
+            raise HTTPException(status_code=400, detail="Invalid payload")
+    else:
+        try:
+            event = stripe.Webhook.construct_event(
+                payload, sig_header, STRIPE_WEBHOOK_SECRET
+            )
+        except stripe.error.SignatureVerificationError as e:
+            logger.error(f"Webhook signature verification failed: {e}")
+            raise HTTPException(status_code=400, detail="Invalid signature")
+        except Exception as e:
+            logger.error(f"Webhook error: {e}")
+            raise HTTPException(status_code=400, detail=str(e))
+    
+    event_type = event.get("type")
+    data = event.get("data", {}).get("object", {})
+    
+    logger.info(f"📥 Stripe webhook received: {event_type}")
+    
+    try:
+        if event_type == "checkout.session.completed":
+            session_id = data.get("id")
+            metadata = data.get("metadata", {})
+            payment_type = metadata.get("type")
+            
+            if payment_type == "bid_package":
+                # Bid package purchase
+                user_id = metadata.get("user_id")
+                bids = int(metadata.get("bids", 0))
+                bonus = int(metadata.get("bonus", 0))
+                total_bids = bids + bonus
+                amount = float(metadata.get("amount", 0))
+                
+                if user_id and total_bids > 0:
+                    # Credit bids to user
+                    await db.users.update_one(
+                        {"id": user_id},
+                        {"$inc": {"bids": total_bids}}
+                    )
+                    
+                    # Record transaction
+                    await db.transactions.insert_one({
+                        "id": str(uuid.uuid4()),
+                        "user_id": user_id,
+                        "type": "purchase",
+                        "amount": amount,
+                        "bids": total_bids,
+                        "payment_method": "stripe",
+                        "stripe_session_id": session_id,
+                        "status": "completed",
+                        "created_at": datetime.now(timezone.utc).isoformat()
+                    })
+                    
+                    logger.info(f"✅ Bid package: {total_bids} bids credited to user {user_id}")
+                    
+                    # Process referral reward
+                    await process_referral_reward_checkout(user_id, amount, is_subscription=False)
+            
+            elif payment_type == "auction_win":
+                # Won auction payment
+                auction_id = metadata.get("auction_id")
+                user_id = metadata.get("user_id")
+                payment_id = metadata.get("payment_id")
+                
+                if auction_id and user_id:
+                    now = datetime.now(timezone.utc).isoformat()
+                    
+                    # Update payment record
+                    await db.auction_payments.update_one(
+                        {"id": payment_id},
+                        {"$set": {
+                            "status": "paid",
+                            "paid_at": now,
+                            "stripe_payment_intent": data.get("payment_intent")
+                        }}
+                    )
+                    
+                    # Update auction
+                    await db.auctions.update_one(
+                        {"id": auction_id},
+                        {"$set": {
+                            "payment_status": "paid",
+                            "paid_at": now
+                        }}
+                    )
+                    
+                    logger.info(f"✅ Auction payment: {auction_id} paid by user {user_id}")
+            
+            elif payment_type == "subscription":
+                # VIP subscription
+                user_id = metadata.get("user_id")
+                if user_id:
+                    await db.users.update_one(
+                        {"id": user_id},
+                        {"$set": {
+                            "is_vip": True,
+                            "vip_since": datetime.now(timezone.utc).isoformat()
+                        }}
+                    )
+                    logger.info(f"✅ VIP subscription activated for user {user_id}")
+        
+        elif event_type == "payment_intent.succeeded":
+            logger.info(f"💰 Payment succeeded: {data.get('id')}")
+        
+        elif event_type == "payment_intent.payment_failed":
+            logger.warning(f"❌ Payment failed: {data.get('id')} - {data.get('last_payment_error', {}).get('message')}")
+        
+        return {"status": "success", "event": event_type}
+        
+    except Exception as e:
+        logger.error(f"Webhook processing error: {e}")
+        # Return 200 to prevent Stripe from retrying
+        return {"status": "error", "message": str(e)}
+
+
 @router.post("/webhook/coinbase")
 async def coinbase_webhook(request: Request):
     """Handle Coinbase Commerce webhooks"""
