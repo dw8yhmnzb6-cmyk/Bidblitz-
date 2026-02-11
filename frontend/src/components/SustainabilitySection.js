@@ -146,7 +146,7 @@ const SustainabilitySection = () => {
     }
   };
   
-  const text = t[language] || t.de;
+  const text = translations[langKey] || translations.de;
   
   // Use real stats from backend
   const impactStats = {
