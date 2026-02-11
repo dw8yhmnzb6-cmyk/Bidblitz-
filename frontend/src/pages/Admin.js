@@ -2625,6 +2625,11 @@ export default function Admin() {
             <AdminWeeklyChallenges />
           )}
 
+          {/* Coupons Tab */}
+          {activeTab === 'coupons' && (
+            <AdminCoupons />
+          )}
+
           {/* Promo Codes Tab */}
           {activeTab === 'promo-codes' && (
             <div className="space-y-6">
