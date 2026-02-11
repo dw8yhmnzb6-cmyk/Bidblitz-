@@ -63,6 +63,9 @@ import AdminWeeklyChallenges from '../components/admin/AdminWeeklyChallenges';
 // Import Coupons
 import AdminCoupons from '../components/admin/AdminCoupons';
 
+// Import Sustainability
+import AdminSustainability from '../components/admin/AdminSustainability';
+
 // Import Voice Debug Assistant
 import VoiceDebugAssistant from '../components/VoiceDebugAssistant';
 
