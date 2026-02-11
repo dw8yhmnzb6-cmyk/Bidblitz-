@@ -15,14 +15,6 @@ const galleryTexts = {
     viewAll: 'Alle Gewinner ansehen',
     testimonialTitle: 'Was unsere Gewinner sagen'
   },
-  sq: {
-    title: 'Fituesit e vërtetë',
-    subtitle: 'Shiko çfarë kanë fituar të tjerët',
-    wonFor: 'fituar për vetëm',
-    saved: 'kursyer',
-    viewAll: 'Shiko të gjithë fituesit',
-    testimonialTitle: 'Çfarë thonë fituesit tanë'
-  },
   en: {
     title: 'Real Winners',
     subtitle: 'See what others have won',
@@ -30,6 +22,38 @@ const galleryTexts = {
     saved: 'saved',
     viewAll: 'View all winners',
     testimonialTitle: 'What our winners say'
+  },
+  sq: {
+    title: 'Fituesit e Vërtetë',
+    subtitle: 'Shiko çfarë kanë fituar të tjerët',
+    wonFor: 'fituar për vetëm',
+    saved: 'kursyer',
+    viewAll: 'Shiko të gjithë fituesit',
+    testimonialTitle: 'Çfarë thonë fituesit tanë'
+  },
+  xk: {
+    title: 'Fituesit e Vërtetë',
+    subtitle: 'Shiko çfarë kanë fituar të tjerët',
+    wonFor: 'fituar për vetëm',
+    saved: 'kursyer',
+    viewAll: 'Shiko të gjithë fituesit',
+    testimonialTitle: 'Çfarë thonë fituesit tanë'
+  },
+  tr: {
+    title: 'Gerçek Kazananlar',
+    subtitle: 'Diğerlerinin ne kazandığını gör',
+    wonFor: 'sadece',
+    saved: 'tasarruf',
+    viewAll: 'Tüm kazananları gör',
+    testimonialTitle: 'Kazananlarımız ne diyor'
+  },
+  fr: {
+    title: 'Vrais Gagnants',
+    subtitle: 'Voyez ce que les autres ont gagné',
+    wonFor: 'gagné pour seulement',
+    saved: 'économisé',
+    viewAll: 'Voir tous les gagnants',
+    testimonialTitle: 'Ce que disent nos gagnants'
   }
 };
 
