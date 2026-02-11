@@ -1049,6 +1049,32 @@ export default function Auctions() {
       {/* Exit Intent Popup for new visitors */}
       <ExitIntentPopup />
       
+      {/* Live Winner Ticker - Social Proof at very top */}
+      <div className="max-w-7xl mx-auto mb-3 px-2">
+        <LiveWinnerTicker />
+      </div>
+      
+      {/* Daily Login Streak - Gamification for logged-in users */}
+      {isAuthenticated && (
+        <div className="max-w-4xl mx-auto mb-3 px-2">
+          <DailyLoginStreak />
+        </div>
+      )}
+      
+      {/* VIP Benefits Banner - Only for non-VIP users */}
+      {isAuthenticated && !isVip && (
+        <div className="max-w-4xl mx-auto mb-3 px-2">
+          <VIPBenefitsBanner isVIP={isVip} />
+        </div>
+      )}
+      
+      {/* Share & Win Feature - For logged-in users */}
+      {isAuthenticated && (
+        <div className="max-w-4xl mx-auto mb-3 px-2">
+          <ShareAndWin />
+        </div>
+      )}
+      
       {/* Global Jackpot - Top of Page */}
       <div className="max-w-4xl mx-auto mb-4 px-2">
         <GlobalJackpot />
