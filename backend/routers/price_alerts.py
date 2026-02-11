@@ -209,3 +209,5 @@ async def trigger_price_alert(alert: dict, auction_id: str, current_price: float
     logger.info(f"Price alert triggered: {user_id} - {product_name} at €{current_price}")
 
 __all__ = ['check_price_alerts']
+
+price_alerts_router = router
