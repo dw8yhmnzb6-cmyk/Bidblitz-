@@ -601,6 +601,68 @@ function AppContent() {
           <Route path="/friends-battle" element={<FriendsBattle />} />
           <Route path="/freunde-battle" element={<FriendsBattle />} />
           
+          {/* Duels / 1v1 */}
+          <Route path="/duels" element={
+            <ProtectedRoute>
+              <DuelsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/duelle" element={
+            <ProtectedRoute>
+              <DuelsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/1v1" element={
+            <ProtectedRoute>
+              <DuelsPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* Social Betting */}
+          <Route path="/betting" element={
+            <ProtectedRoute>
+              <SocialBettingPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/wetten" element={
+            <ProtectedRoute>
+              <SocialBettingPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/social-betting" element={
+            <ProtectedRoute>
+              <SocialBettingPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* Bid Alarm */}
+          <Route path="/bid-alarm" element={
+            <ProtectedRoute>
+              <BidAlarmPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/gebot-alarm" element={
+            <ProtectedRoute>
+              <BidAlarmPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/alarm" element={
+            <ProtectedRoute>
+              <BidAlarmPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* AI Advisor */}
+          <Route path="/ai-advisor" element={<AIAdvisorPage />} />
+          <Route path="/ki-berater" element={<AIAdvisorPage />} />
+          <Route path="/advisor" element={<AIAdvisorPage />} />
+          
+          {/* Voucher Auctions */}
+          <Route path="/voucher-auctions" element={<VoucherAuctionsPage />} />
+          <Route path="/gutschein-auktionen" element={<VoucherAuctionsPage />} />
+          <Route path="/vouchers" element={<VoucherAuctionsPage />} />
+          <Route path="/gutscheine" element={<VoucherAuctionsPage />} />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
