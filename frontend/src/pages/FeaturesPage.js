@@ -131,23 +131,36 @@ const translations = {
   }
 };
 
-const FeatureCard = ({ icon: Icon, title, description, route, color, isNew, navigate }) => (
+const FeatureCard = ({ icon: Icon, title, description, route, colorClass, isNew, navigate }) => (
   <div
     onClick={() => navigate(route)}
-    className={`relative bg-gray-800/80 backdrop-blur rounded-xl p-4 border border-gray-700 hover:border-${color}-500/50 transition-all cursor-pointer group hover:shadow-lg hover:shadow-${color}-500/10`}
+    className={`relative bg-gray-800/80 backdrop-blur rounded-xl p-4 border border-gray-700 hover:border-opacity-50 transition-all cursor-pointer group hover:shadow-lg ${colorClass.hover}`}
   >
     {isNew && (
       <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-full">
         NEU
       </span>
     )}
-    <div className={`w-12 h-12 bg-${color}-500/20 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-      <Icon className={`w-6 h-6 text-${color}-400`} />
+    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform ${colorClass.bg}`}>
+      <Icon className={`w-6 h-6 ${colorClass.text}`} />
     </div>
     <h3 className="text-white font-bold mb-1">{title}</h3>
     <p className="text-gray-400 text-sm">{description}</p>
   </div>
 );
+
+// Define color classes for each feature type
+const colorClasses = {
+  orange: { bg: 'bg-orange-500/20', text: 'text-orange-400', hover: 'hover:shadow-orange-500/20' },
+  yellow: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', hover: 'hover:shadow-yellow-500/20' },
+  green: { bg: 'bg-green-500/20', text: 'text-green-400', hover: 'hover:shadow-green-500/20' },
+  red: { bg: 'bg-red-500/20', text: 'text-red-400', hover: 'hover:shadow-red-500/20' },
+  purple: { bg: 'bg-purple-500/20', text: 'text-purple-400', hover: 'hover:shadow-purple-500/20' },
+  blue: { bg: 'bg-blue-500/20', text: 'text-blue-400', hover: 'hover:shadow-blue-500/20' },
+  pink: { bg: 'bg-pink-500/20', text: 'text-pink-400', hover: 'hover:shadow-pink-500/20' },
+  cyan: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', hover: 'hover:shadow-cyan-500/20' },
+  amber: { bg: 'bg-amber-500/20', text: 'text-amber-400', hover: 'hover:shadow-amber-500/20' },
+};
 
 const FeaturesPage = () => {
   const { isAuthenticated, user } = useAuth();
