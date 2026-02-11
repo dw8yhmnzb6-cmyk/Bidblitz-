@@ -23,7 +23,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 | `/api/flash-sales/*` | Flash-Verkäufe mit Timer | ✅ |
 | `/api/alerts/*` | Preis-Alerts für Produkte | ✅ |
 | `/api/bid-combo/*` | Combo-Boni (bis 3x Multiplier) | ✅ |
-| `/api/weekly-challenge/*` | Wöchentliche Challenges mit Preisen | ✅ |
+| `/api/weekly-challenge/*` | Wöchentliche Challenges mit Preisen + **ADMIN-BEREICH** | ✅ |
 | `/api/birthday/*` | Geburtstags-Bonus (10-30 Gebote) | ✅ |
 | `/api/ab-testing/*` | A/B Testing für Conversion | ✅ |
 | `/api/fraud-detection/*` | Betrugs-Erkennung & Alerts | ✅ |
@@ -31,7 +31,24 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 | `/api/abandoned-cart/*` | Warenkorbabbruch Tracking | ✅ |
 | `/api/daily-streak/*` | Tägliche Login-Belohnungen | ✅ |
 
-#### 3. Admin Mobile Responsiveness - Verifiziert
+#### 3. ADMIN WEEKLY CHALLENGES - NEU ERSTELLT
+- **Komponente:** `/app/frontend/src/components/admin/AdminWeeklyChallenges.js`
+- **Features:**
+  - Challenge-Liste mit Status (Aktiv/Beendet/Vorzeitig beendet)
+  - Statistik-Übersicht (Challenges, Aktiv, Teilnehmer, Gebote vergeben)
+  - Challenge-Details mit Leaderboard
+  - Neue Challenge erstellen (Titel, Beschreibung, Preis, Dauer)
+  - Challenge beenden & Preis vergeben
+  - Challenge löschen (nur ohne Teilnehmer)
+- **Backend-Endpunkte:**
+  - `GET /api/weekly-challenge/admin/all` - Alle Challenges abrufen
+  - `POST /api/weekly-challenge/admin/create` - Neue Challenge erstellen
+  - `PUT /api/weekly-challenge/admin/{id}` - Challenge bearbeiten
+  - `POST /api/weekly-challenge/admin/{id}/end` - Beenden & Preis vergeben
+  - `GET /api/weekly-challenge/admin/{id}/leaderboard` - Volles Leaderboard
+  - `DELETE /api/weekly-challenge/admin/{id}` - Löschen
+
+#### 4. Admin Mobile Responsiveness - Verifiziert
 - Testing Agent: 100% Frontend Success Rate
 - Dashboard, Users, Products - alle responsive
 
