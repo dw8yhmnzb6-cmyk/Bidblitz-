@@ -224,10 +224,35 @@ const BattlePassPage = () => {
 
   const season = data?.season || {};
   const progress = data?.user_progress || {};
-  const rewards = data?.rewards || [];
   const hasPremium = progress.has_premium;
   const currentTier = progress.current_tier || 0;
   const maxTier = data?.max_tier || 50;
+  
+  // Default rewards if none from API
+  const defaultRewards = Array.from({ length: maxTier }, (_, i) => {
+    const tier = i + 1;
+    // Free rewards every tier
+    const freeReward = tier % 5 === 0 
+      ? { icon: '🎁', name: `${tier} Premium-Gebote` }
+      : tier % 3 === 0
+        ? { icon: '⏰', name: '24h VIP' }
+        : tier % 2 === 0
+          ? { icon: '🎯', name: '5 Gebote' }
+          : { icon: '✨', name: '2 Gebote' };
+    
+    // Premium rewards
+    const premiumReward = tier % 10 === 0
+      ? { icon: '👑', name: 'VIP Woche' }
+      : tier % 5 === 0
+        ? { icon: '💎', name: `${tier * 2} Premium-Gebote` }
+        : tier % 2 === 0
+          ? { icon: '🏆', name: '10 Gebote' }
+          : { icon: '⭐', name: '5 Gebote' };
+    
+    return { tier, free: freeReward, premium: premiumReward };
+  });
+  
+  const rewards = data?.rewards?.length > 0 ? data.rewards : defaultRewards;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 py-8 px-4" data-testid="battle-pass-page">
