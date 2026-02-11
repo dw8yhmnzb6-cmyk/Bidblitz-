@@ -133,18 +133,21 @@ export default function WonAuctionCheckout() {
         return;
       }
       
-      // For physical products, redirect to Stripe
+      // For physical products, create Stripe checkout session
       const response = await axios.post(
-        `${API}/won-auctions/${auctionId}/checkout`,
-        { payment_method: paymentMethod },
+        `${API}/checkout/won-auction`,
+        { 
+          auction_id: auctionId,
+          shipping_address: null // Will be collected by Stripe
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      if (response.data.checkout_url) {
-        window.location.href = response.data.checkout_url;
+      if (response.data.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = response.data.url;
       } else {
-        toast.success(t.paymentSuccess);
-        navigate('/dashboard');
+        toast.error(t.paymentFailed);
       }
     } catch (error) {
       toast.error(error.response?.data?.detail || t.paymentFailed);
