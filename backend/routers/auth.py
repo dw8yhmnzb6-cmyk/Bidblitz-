@@ -27,17 +27,17 @@ if RESEND_API_KEY and RESEND_API_KEY != 're_123_placeholder':
 async def register(user: UserCreate, request: Request):
     client_ip = get_client_ip(request)
     
-    # Check VPN/Proxy
-    vpn_check = await check_vpn_proxy(client_ip)
-    if vpn_check.get("is_vpn") or vpn_check.get("is_proxy") or vpn_check.get("is_datacenter"):
-        await log_security_event("registration_blocked_vpn", "unknown", {
-            "email": user.email,
-            "vpn_check": vpn_check
-        }, client_ip)
-        raise HTTPException(
-            status_code=403,
-            detail="VPN, Proxy oder Datacenter-Verbindungen sind nicht erlaubt. Bitte deaktivieren Sie Ihren VPN und versuchen Sie es erneut."
-        )
+    # VPN/Proxy check disabled - allow mobile devices and all connections
+    # vpn_check = await check_vpn_proxy(client_ip)
+    # if vpn_check.get("is_vpn") or vpn_check.get("is_proxy") or vpn_check.get("is_datacenter"):
+    #     await log_security_event("registration_blocked_vpn", "unknown", {
+    #         "email": user.email,
+    #         "vpn_check": vpn_check
+    #     }, client_ip)
+    #     raise HTTPException(
+    #         status_code=403,
+    #         detail="VPN, Proxy oder Datacenter-Verbindungen sind nicht erlaubt. Bitte deaktivieren Sie Ihren VPN und versuchen Sie es erneut."
+    #     )
     
     # Check IP registration limit
     existing_from_ip = await db.users.count_documents({"registration_ip": client_ip})
