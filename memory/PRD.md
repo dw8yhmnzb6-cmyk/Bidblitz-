@@ -146,14 +146,15 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ### P0 - Critical
 - ✅ ~~Homepage Features Bug~~ (Fixed Session 10)
+- ✅ ~~Frontend UIs für Backend APIs~~ (7 neue Seiten - Session 12)
 
 ### P1 - High Priority  
-- ⏳ Backend-Logik für 15+ neue Router implementieren
-- ⏳ Mobile App via Expo Go testen
-- ⏳ Push-Notifications
+- ⏳ Mobile App via Expo Go testen (blockiert - Server startet nicht)
+- ⏳ Weitere Frontend-UIs implementieren (noch viele APIs ohne UI)
+- ⏳ Push-Notifications Frontend testen
 
 ### P2 - Medium Priority
-- ⏳ Admin.js Refactoring
+- ⏳ Admin.js Refactoring (wird zu groß)
 - ⏳ Stripe Webhook Secret konfigurieren
 
 ### P3 - Low Priority
