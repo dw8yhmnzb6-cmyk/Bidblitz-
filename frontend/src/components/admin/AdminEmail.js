@@ -173,7 +173,7 @@ export function AdminEmail({ token, emailTemplates, emailUserStats, emailCampaig
                 className="border-[#06B6D4] text-[#06B6D4]"
               >
                 <Eye className="w-4 h-4 mr-1" />
-                Test
+                Testen
               </Button>
             </div>
           </div>
