@@ -666,6 +666,47 @@ function AppContent() {
           <Route path="/vouchers" element={<VoucherAuctionsPage />} />
           <Route path="/gutscheine" element={<VoucherAuctionsPage />} />
           
+          {/* Gift Cards */}
+          <Route path="/gift-cards" element={
+            <ProtectedRoute>
+              <GiftCardsPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/geschenkkarten" element={
+            <ProtectedRoute>
+              <GiftCardsPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* Friend Battles (new page) */}
+          <Route path="/friend-battles" element={
+            <ProtectedRoute>
+              <FriendBattlesPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/freunde-battles" element={
+            <ProtectedRoute>
+              <FriendBattlesPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* Team Bidding */}
+          <Route path="/team-bidding" element={
+            <ProtectedRoute>
+              <TeamBiddingPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/team-bieten" element={
+            <ProtectedRoute>
+              <TeamBiddingPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/teams" element={
+            <ProtectedRoute>
+              <TeamBiddingPage />
+            </ProtectedRoute>
+          } />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
