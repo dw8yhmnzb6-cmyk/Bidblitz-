@@ -2,6 +2,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
 from datetime import datetime, timezone
 from typing import Optional
+from pydantic import BaseModel
 import uuid
 import os
 import stripe
