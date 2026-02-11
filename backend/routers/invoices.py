@@ -316,3 +316,95 @@ async def get_user_invoices(user: dict = Depends(get_current_user)):
     invoices.sort(key=lambda x: x.get("date", ""), reverse=True)
     
     return {"invoices": invoices}
+
+
+@router.get("/auction-win/{auction_id}")
+async def download_auction_win_invoice(auction_id: str, user: dict = Depends(get_current_user)):
+    """Download PDF invoice for a won auction"""
+    # Get payment record
+    payment = await db.auction_payments.find_one({
+        "auction_id": auction_id,
+        "user_id": user["id"],
+        "status": "paid"
+    }, {"_id": 0})
+    
+    if not payment:
+        # Try to get from auction directly
+        auction = await db.auctions.find_one({
+            "id": auction_id,
+            "winner_id": user["id"],
+            "payment_status": "paid"
+        }, {"_id": 0})
+        
+        if not auction:
+            raise HTTPException(status_code=404, detail="Keine bezahlte Rechnung gefunden")
+        
+        # Get product
+        product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0})
+        
+        final_price = auction.get("final_price") or auction.get("current_price", 0)
+        payment = {
+            "product_name": product.get("name") if product else "Auktionsgewinn",
+            "final_price": final_price,
+            "shipping_cost": 4.99,
+            "total_amount": final_price + 4.99,
+            "paid_at": auction.get("paid_at"),
+            "shipping_address": None
+        }
+    
+    # Prepare invoice data
+    invoice_number = f"WIN-{auction_id[:8].upper()}"
+    
+    invoice_data = {
+        "invoice_number": invoice_number,
+        "date": payment.get("paid_at", "")[:10] if payment.get("paid_at") else datetime.now().strftime("%Y-%m-%d"),
+        "customer": {
+            "name": user.get("username", "Kunde"),
+            "email": user.get("email", ""),
+            "address": ""
+        },
+        "company": {
+            "name": "BidBlitz GmbH",
+            "address": "Musterstraße 123, 10115 Berlin, Deutschland",
+            "email": "support@bidblitz.de",
+            "phone": "+49 30 123456789",
+            "tax_id": "DE123456789"
+        },
+        "items": [
+            {
+                "description": payment.get("product_name", "Auktionsgewinn"),
+                "quantity": 1,
+                "unit_price": payment.get("final_price", 0),
+                "total": payment.get("final_price", 0)
+            },
+            {
+                "description": "Versandkosten",
+                "quantity": 1,
+                "unit_price": payment.get("shipping_cost", 4.99),
+                "total": payment.get("shipping_cost", 4.99)
+            }
+        ],
+        "subtotal": payment.get("final_price", 0) + payment.get("shipping_cost", 0),
+        "tax_rate": 19,
+        "tax_amount": (payment.get("total_amount", 0)) * 0.19 / 1.19,
+        "total": payment.get("total_amount", 0),
+        "payment_method": "Stripe",
+        "notes": "Vielen Dank für Ihren Auktionsgewinn bei BidBlitz!"
+    }
+    
+    # Add shipping address if available
+    if payment.get("shipping_address"):
+        addr = payment["shipping_address"]
+        invoice_data["customer"]["address"] = f"{addr.get('street', '')}, {addr.get('postal_code', '')} {addr.get('city', '')}, {addr.get('country', '')}"
+    
+    # Generate PDF
+    pdf_buffer = generate_invoice_pdf(invoice_data)
+    
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=rechnung-{auction_id[:8]}.pdf"
+        }
+    )
+
