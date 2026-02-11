@@ -620,9 +620,15 @@ async def bot_last_second_bidder():
                     
                     # PAUSE PHASE: Zwischen €3-3,50 und Endspurt - NICHT bieten
                     # Hier sollen echte Nutzer bieten
+                    # ABER: Wenn weniger als 300 Sek (5 Min) übrig sind, trotzdem bieten!
                     elif current_price >= PHASE1_TARGET and not in_endspurt:
-                        # Warten auf Endspurt - echte Nutzer sollen bieten
-                        should_bid = False
+                        # Wenn weniger als 5 Minuten übrig, trotzdem bieten um Auktion nicht zu verlieren
+                        if seconds_left < 300:
+                            should_bid = True
+                            target_price = FINAL_TARGET
+                        else:
+                            # Warten auf Endspurt - echte Nutzer sollen bieten
+                            should_bid = False
                     
                     # PHASE 2: Endspurt - letzte 2-3 Minuten
                     elif in_endspurt and current_price < FINAL_TARGET:
