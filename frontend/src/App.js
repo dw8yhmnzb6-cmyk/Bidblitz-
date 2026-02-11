@@ -103,6 +103,9 @@ import BidAlarmPage from "./pages/BidAlarmPage";
 import AIAdvisorPage from "./pages/AIAdvisorPage";
 import VoucherAuctionsPage from "./pages/VoucherAuctionsPage";
 import DuelsPage from "./pages/DuelsPage";
+import GiftCardsPage from "./pages/GiftCardsPage";
+import FriendBattlesPage from "./pages/FriendBattlesPage";
+import TeamBiddingPage from "./pages/TeamBiddingPage";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
