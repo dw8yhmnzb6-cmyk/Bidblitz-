@@ -467,7 +467,10 @@ const BattlePassPage = () => {
                         )}
                       </>
                     ) : (
-                      <span className="text-gray-600">-</span>
+                      <>
+                        <span className="text-2xl mb-1">🎁</span>
+                        <span className="text-xs text-center text-gray-500">Belohnung</span>
+                      </>
                     )}
                   </div>
                 );
