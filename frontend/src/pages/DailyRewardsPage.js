@@ -247,7 +247,7 @@ const DailyRewardsPage = () => {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-orange-500/20 to-red-500/20 mb-4">
             <Calendar className="w-5 h-5 text-orange-400" />
-            <span className="text-gray-800 font-bold">Daily Rewards</span>
+            <span className="text-gray-800 font-bold">{t.dailyRewards || 'Tägliche Belohnungen'}</span>
           </div>
           <h1 className="text-4xl font-bold text-gray-800 mb-2">{t.title}</h1>
           <p className="text-gray-500">{t.subtitle}</p>
