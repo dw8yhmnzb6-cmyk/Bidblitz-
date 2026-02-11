@@ -2,7 +2,7 @@
 export const adminTranslations = {
   de: {
     // Tabs
-    dashboard: 'Dashboard',
+    dashboard: "Übersicht",
     products: 'Produkte',
     auctions: 'Auktionen',
     vipAuctions: 'VIP-Auktionen',
