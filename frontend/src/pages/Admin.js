@@ -60,6 +60,9 @@ import AdminWinnerControl from '../components/admin/AdminWinnerControl';
 // Import Weekly Challenges
 import AdminWeeklyChallenges from '../components/admin/AdminWeeklyChallenges';
 
+// Import Coupons
+import AdminCoupons from '../components/admin/AdminCoupons';
+
 // Import Voice Debug Assistant
 import VoiceDebugAssistant from '../components/VoiceDebugAssistant';
 
