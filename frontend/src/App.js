@@ -43,6 +43,7 @@ import FAQ from "./pages/FAQ";
 import Contact from "./pages/Contact";
 import VIP from "./pages/VIP";
 import VIPAuctions from "./pages/VIPAuctions";
+import VIPDashboard from "./pages/VIPDashboard";
 import WonAuctionCheckout from "./pages/WonAuctionCheckout";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
 import InfluencerBecome from "./pages/InfluencerBecome";
