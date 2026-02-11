@@ -522,7 +522,10 @@ const BattlePassPage = () => {
                         )}
                       </>
                     ) : (
-                      <span className="text-yellow-600">-</span>
+                      <>
+                        <span className="text-2xl mb-1">💎</span>
+                        <span className="text-xs text-center text-yellow-500">Premium</span>
+                      </>
                     )}
                   </div>
                 );
