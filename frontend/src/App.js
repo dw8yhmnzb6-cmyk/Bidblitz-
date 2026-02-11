@@ -45,6 +45,7 @@ import VIP from "./pages/VIP";
 import VIPAuctions from "./pages/VIPAuctions";
 import VIPDashboard from "./pages/VIPDashboard";
 import WonAuctionCheckout from "./pages/WonAuctionCheckout";
+import WonAuctionSuccess from "./pages/WonAuctionSuccess";
 import InfluencerDashboard from "./pages/InfluencerDashboard";
 import InfluencerBecome from "./pages/InfluencerBecome";
 import WholesaleApply from "./pages/WholesaleApply";
