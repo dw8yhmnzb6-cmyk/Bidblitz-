@@ -808,7 +808,7 @@ async def bot_last_second_bidder():
                             else:
                                 phase_name = f"Endspurt (bis €{FINAL_TARGET:.0f})"
                             
-                            # Log mit UVP-Info wenn verfügbar
+                            # Log mit UVP-Info wenn verfügbar - zeige immer FINAL_TARGET
                             uvp_info = f", UVP €{retail_price:.0f}" if retail_price > 0 else ""
                             logger.info(f"🤖 Bot '{bot['name']}' bid €{new_price:.2f} [{phase_name}] (target: €{FINAL_TARGET:.2f}{uvp_info}, {seconds_left:.0f}s left, next in {next_interval:.0f}s)")
                             
