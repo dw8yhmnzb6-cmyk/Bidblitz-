@@ -1036,31 +1036,15 @@ export default function Auctions() {
       {/* Exit Intent Popup for new visitors */}
       <ExitIntentPopup />
       
-      {/* Live Winner Ticker - Social Proof at very top */}
+      {/* Features-Link Banner */}
       <div className="max-w-7xl mx-auto mb-3 px-2">
-        <LiveWinnerTicker />
+        <Link 
+          to="/features" 
+          className="block bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl p-3 text-center text-white font-bold hover:from-purple-500 hover:to-pink-500 transition-all shadow-lg"
+        >
+          ✨ {t('auctionPage.discoverFeatures') || 'Entdecke alle Features & Extras'} →
+        </Link>
       </div>
-      
-      {/* Daily Login Streak - Gamification for logged-in users */}
-      {isAuthenticated && (
-        <div className="max-w-4xl mx-auto mb-3 px-2">
-          <DailyLoginStreak />
-        </div>
-      )}
-      
-      {/* VIP Benefits Banner - Only for non-VIP users */}
-      {isAuthenticated && !isVip && (
-        <div className="max-w-4xl mx-auto mb-3 px-2">
-          <VIPBenefitsBanner isVIP={isVip} />
-        </div>
-      )}
-      
-      {/* Share & Win Feature - For logged-in users */}
-      {isAuthenticated && (
-        <div className="max-w-4xl mx-auto mb-3 px-2">
-          <ShareAndWin />
-        </div>
-      )}
       
       {/* Global Jackpot - Top of Page */}
       <div className="max-w-4xl mx-auto mb-4 px-2">
@@ -1070,50 +1054,6 @@ export default function Auctions() {
       {/* Excitement Status Bar */}
       <div className="max-w-7xl mx-auto mb-3 px-2">
         <ExcitementStatusBar />
-      </div>
-      
-      {/* Winner Gallery - Social Proof */}
-      <div className="max-w-7xl mx-auto mb-4 px-2">
-        <WinnerGallery />
-      </div>
-      
-      {/* Winner Gallery Home - Enhanced with Testimonials */}
-      <div className="max-w-7xl mx-auto mb-4 px-2">
-        <WinnerGalleryHome />
-      </div>
-      
-      {/* Leaderboard Widget - Weekly Champions */}
-      <div className="max-w-4xl mx-auto mb-4 px-2">
-        <LeaderboardWidget language={language} />
-      </div>
-      
-      {/* VIP Promo Banner - Only for non-VIP users */}
-      {isAuthenticated && !user?.is_vip && (
-        <div className="max-w-4xl mx-auto mb-4 px-2">
-          <VIPPromoBanner onJoin={() => navigate('/vip')} />
-        </div>
-      )}
-      
-      {/* Daily Quests Widget - For logged-in users */}
-      {isAuthenticated && (
-        <div className="max-w-4xl mx-auto mb-4 px-2">
-          <DailyQuestsWidget />
-        </div>
-      )}
-      
-      {/* Personalized Recommendations - Only shown to logged-in users */}
-      <div className="max-w-7xl mx-auto mb-4 px-2">
-        <PersonalizedRecommendations onBid={handleBid} />
-      </div>
-      
-      {/* Flash Sales Banner */}
-      <div className="max-w-7xl mx-auto mb-4 px-2">
-        <FlashSaleBanner />
-      </div>
-      
-      {/* Mystery Box Section */}
-      <div className="max-w-7xl mx-auto mb-4 px-2">
-        <MysteryBoxSection />
       </div>
       
       <div className="text-center text-[10px] text-gray-600 mb-2">
