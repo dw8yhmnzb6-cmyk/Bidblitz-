@@ -1,0 +1,425 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { toast } from 'sonner';
+import { 
+  Leaf, TreePine, Heart, Globe, Users, Plus, Trash2, 
+  Save, RefreshCw, TrendingUp, Calendar, MapPin, Image
+} from 'lucide-react';
+import { Button } from '../ui/button';
+
+const API = process.env.REACT_APP_BACKEND_URL;
+
+const AdminSustainability = () => {
+  const { token } = useAuth();
+  const [stats, setStats] = useState({
+    trees_planted: 0,
+    projects_supported: 0,
+    co2_offset_kg: 0,
+    donations_total: 0,
+    last_updated: null
+  });
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [editedStats, setEditedStats] = useState({});
+  const [showNewProject, setShowNewProject] = useState(false);
+  const [newProject, setNewProject] = useState({
+    name: '',
+    description: '',
+    category: 'trees',
+    amount: 0,
+    impact_value: 0,
+    location: '',
+    image_url: ''
+  });
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [statsRes, projectsRes] = await Promise.all([
+        fetch(`${API}/api/sustainability/stats`),
+        fetch(`${API}/api/sustainability/projects`)
+      ]);
+      
+      const statsData = await statsRes.json();
+      const projectsData = await projectsRes.json();
+      
+      setStats(statsData);
+      setEditedStats(statsData);
+      setProjects(projectsData);
+    } catch (err) {
+      console.error('Error fetching sustainability data:', err);
+      toast.error('Fehler beim Laden der Daten');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveStats = async () => {
+    setSaving(true);
+    try {
+      const response = await fetch(`${API}/api/sustainability/stats`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editedStats)
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data.stats);
+        toast.success('Statistiken gespeichert!');
+      } else {
+        throw new Error('Save failed');
+      }
+    } catch (err) {
+      toast.error('Fehler beim Speichern');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCreateProject = async () => {
+    if (!newProject.name || !newProject.description) {
+      toast.error('Name und Beschreibung erforderlich');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/api/sustainability/projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newProject)
+      });
+      
+      if (response.ok) {
+        toast.success('Projekt erstellt!');
+        setShowNewProject(false);
+        setNewProject({
+          name: '',
+          description: '',
+          category: 'trees',
+          amount: 0,
+          impact_value: 0,
+          location: '',
+          image_url: ''
+        });
+        fetchData();
+      } else {
+        throw new Error('Create failed');
+      }
+    } catch (err) {
+      toast.error('Fehler beim Erstellen');
+    }
+  };
+
+  const handleDeleteProject = async (projectId) => {
+    if (!window.confirm('Projekt wirklich löschen?')) return;
+    
+    try {
+      const response = await fetch(`${API}/api/sustainability/projects/${projectId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        toast.success('Projekt gelöscht');
+        fetchData();
+      }
+    } catch (err) {
+      toast.error('Fehler beim Löschen');
+    }
+  };
+
+  const categoryIcons = {
+    trees: <TreePine className="w-5 h-5 text-emerald-600" />,
+    donations: <Heart className="w-5 h-5 text-rose-600" />,
+    climate: <Globe className="w-5 h-5 text-teal-600" />,
+    community: <Users className="w-5 h-5 text-amber-600" />
+  };
+
+  const categoryLabels = {
+    trees: 'Baumpflanzung',
+    donations: 'Spenden',
+    climate: 'Klimaschutz',
+    community: 'Community'
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <RefreshCw className="w-8 h-8 animate-spin text-emerald-500" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Leaf className="w-8 h-8 text-emerald-600" />
+          <div>
+            <h2 className="text-xl font-bold text-gray-800">Nachhaltigkeit</h2>
+            <p className="text-sm text-gray-500">CSR & Social Responsibility verwalten</p>
+          </div>
+        </div>
+        <Button onClick={fetchData} variant="outline" size="sm">
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Aktualisieren
+        </Button>
+      </div>
+
+      {/* Stats Editor */}
+      <div className="bg-white rounded-xl border border-emerald-200 p-6 shadow-sm">
+        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-emerald-600" />
+          Impact-Statistiken bearbeiten
+        </h3>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          {/* Trees */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+              <TreePine className="w-4 h-4 text-emerald-500" />
+              Bäume gepflanzt
+            </label>
+            <input
+              type="number"
+              value={editedStats.trees_planted || 0}
+              onChange={(e) => setEditedStats({...editedStats, trees_planted: parseInt(e.target.value) || 0})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          
+          {/* Projects */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+              <Heart className="w-4 h-4 text-rose-500" />
+              Projekte unterstützt
+            </label>
+            <input
+              type="number"
+              value={editedStats.projects_supported || 0}
+              onChange={(e) => setEditedStats({...editedStats, projects_supported: parseInt(e.target.value) || 0})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          
+          {/* CO2 */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+              <Globe className="w-4 h-4 text-teal-500" />
+              CO₂ kompensiert (kg)
+            </label>
+            <input
+              type="number"
+              value={editedStats.co2_offset_kg || 0}
+              onChange={(e) => setEditedStats({...editedStats, co2_offset_kg: parseInt(e.target.value) || 0})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+          
+          {/* Donations */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+              <Heart className="w-4 h-4 text-rose-500" />
+              Spenden gesamt (€)
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={editedStats.donations_total || 0}
+              onChange={(e) => setEditedStats({...editedStats, donations_total: parseFloat(e.target.value) || 0})}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+            />
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-gray-500">
+            Zuletzt aktualisiert: {stats.last_updated ? new Date(stats.last_updated).toLocaleString('de-DE') : 'Nie'}
+          </p>
+          <Button onClick={handleSaveStats} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
+            {saving ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
+            Speichern
+          </Button>
+        </div>
+      </div>
+
+      {/* Projects */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-gray-800 flex items-center gap-2">
+            <Leaf className="w-5 h-5 text-emerald-600" />
+            Projekte ({projects.length})
+          </h3>
+          <Button onClick={() => setShowNewProject(!showNewProject)} variant="outline" size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Neues Projekt
+          </Button>
+        </div>
+
+        {/* New Project Form */}
+        {showNewProject && (
+          <div className="bg-emerald-50 rounded-lg p-4 mb-4 border border-emerald-200">
+            <h4 className="font-medium text-gray-800 mb-3">Neues Projekt erstellen</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700">Name *</label>
+                <input
+                  type="text"
+                  value={newProject.name}
+                  onChange={(e) => setNewProject({...newProject, name: e.target.value})}
+                  placeholder="z.B. Aufforstung Schwarzwald"
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Kategorie</label>
+                <select
+                  value={newProject.category}
+                  onChange={(e) => setNewProject({...newProject, category: e.target.value})}
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
+                >
+                  <option value="trees">🌲 Baumpflanzung</option>
+                  <option value="donations">❤️ Spenden</option>
+                  <option value="climate">🌍 Klimaschutz</option>
+                  <option value="community">👥 Community</option>
+                </select>
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-sm font-medium text-gray-700">Beschreibung *</label>
+                <textarea
+                  value={newProject.description}
+                  onChange={(e) => setNewProject({...newProject, description: e.target.value})}
+                  placeholder="Beschreiben Sie das Projekt..."
+                  rows={2}
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Standort</label>
+                <input
+                  type="text"
+                  value={newProject.location}
+                  onChange={(e) => setNewProject({...newProject, location: e.target.value})}
+                  placeholder="z.B. Bayern, Deutschland"
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Impact-Wert</label>
+                <input
+                  type="number"
+                  value={newProject.impact_value}
+                  onChange={(e) => setNewProject({...newProject, impact_value: parseInt(e.target.value) || 0})}
+                  placeholder="z.B. 500 (Bäume)"
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Betrag (€)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={newProject.amount}
+                  onChange={(e) => setNewProject({...newProject, amount: parseFloat(e.target.value) || 0})}
+                  placeholder="z.B. 5000"
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700">Bild-URL</label>
+                <input
+                  type="url"
+                  value={newProject.image_url}
+                  onChange={(e) => setNewProject({...newProject, image_url: e.target.value})}
+                  placeholder="https://..."
+                  className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 mt-4">
+              <Button onClick={handleCreateProject} className="bg-emerald-600 hover:bg-emerald-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Erstellen
+              </Button>
+              <Button onClick={() => setShowNewProject(false)} variant="outline">
+                Abbrechen
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Projects List */}
+        {projects.length === 0 ? (
+          <p className="text-gray-500 text-center py-8">Noch keine Projekte erstellt</p>
+        ) : (
+          <div className="space-y-3">
+            {projects.map((project) => (
+              <div key={project.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
+                  {categoryIcons[project.category] || <Leaf className="w-5 h-5 text-emerald-600" />}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-medium text-gray-800">{project.name}</h4>
+                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs rounded-full">
+                      {categoryLabels[project.category]}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 line-clamp-2">{project.description}</p>
+                  <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                    {project.location && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {project.location}
+                      </span>
+                    )}
+                    {project.impact_value > 0 && (
+                      <span className="flex items-center gap-1">
+                        <TrendingUp className="w-3 h-3" />
+                        Impact: {project.impact_value.toLocaleString()}
+                      </span>
+                    )}
+                    {project.amount > 0 && (
+                      <span className="font-medium text-emerald-600">
+                        €{project.amount.toLocaleString()}
+                      </span>
+                    )}
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {new Date(project.created_at).toLocaleDateString('de-DE')}
+                    </span>
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => handleDeleteProject(project.id)} 
+                  variant="ghost" 
+                  size="sm"
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdminSustainability;
