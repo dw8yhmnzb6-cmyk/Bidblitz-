@@ -55,6 +55,7 @@ const DailyRewardsPage = () => {
       hours: 'Hours'
     },
     sq: {
+      dailyRewards: 'Shpërblimet Ditore',
       subtitle: 'Kthehuni çdo ditë dhe merrni bonuset tuaja!',
       inProgress: 'Në progres',
       allCompleted: 'Të gjitha detyrat u përfunduan!',
