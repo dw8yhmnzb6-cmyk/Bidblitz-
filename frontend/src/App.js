@@ -282,6 +282,9 @@ function AppContent() {
           <Route path="/vip" element={<VIP />} />
           <Route path="/vip/success" element={<VIP />} />
           <Route path="/vip-dashboard" element={<VIPDashboard />} />
+          {/* Features & Extras Page */}
+          <Route path="/features" element={<FeaturesPage />} />
+          <Route path="/extras" element={<FeaturesPage />} />
           {/* Influencer Pages */}
           <Route path="/influencer-login" element={<InfluencerDashboard />} />
           <Route path="/influencer-dashboard" element={<InfluencerDashboard />} />
