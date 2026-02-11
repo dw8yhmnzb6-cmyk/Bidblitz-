@@ -170,27 +170,27 @@ const FeaturesPage = () => {
   const t = translations[langKey] || translations.de;
 
   const gamificationFeatures = [
-    { icon: Swords, title: t.duels, description: t.duelsDesc, route: '/duels', color: 'orange', isNew: true },
-    { icon: Coins, title: t.betting, description: t.bettingDesc, route: '/betting', color: 'yellow', isNew: true },
-    { icon: Users, title: t.teams, description: t.teamsDesc, route: '/teams', color: 'green', isNew: true },
-    { icon: Gamepad2, title: t.battles, description: t.battlesDesc, route: '/friend-battles', color: 'red', isNew: true },
-    { icon: Trophy, title: t.tournaments, description: '', route: '/tournaments', color: 'purple' },
-    { icon: Award, title: t.achievements, description: '', route: '/achievements', color: 'blue' },
+    { icon: Swords, title: t.duels, description: t.duelsDesc, route: '/duels', colorClass: colorClasses.orange, isNew: true },
+    { icon: Coins, title: t.betting, description: t.bettingDesc, route: '/betting', colorClass: colorClasses.yellow, isNew: true },
+    { icon: Users, title: t.teams, description: t.teamsDesc, route: '/teams', colorClass: colorClasses.green, isNew: true },
+    { icon: Gamepad2, title: t.battles, description: t.battlesDesc, route: '/friend-battles', colorClass: colorClasses.red, isNew: true },
+    { icon: Trophy, title: t.tournaments, description: '', route: '/tournaments', colorClass: colorClasses.purple },
+    { icon: Award, title: t.achievements, description: '', route: '/achievements', colorClass: colorClasses.blue },
   ];
 
   const utilityFeatures = [
-    { icon: Brain, title: t.aiAdvisor, description: t.aiAdvisorDesc, route: '/ki-berater', color: 'blue', isNew: true },
-    { icon: Ticket, title: t.vouchers, description: t.vouchersDesc, route: '/gutscheine', color: 'purple', isNew: true },
-    { icon: Gift, title: t.gifts, description: t.giftsDesc, route: '/gift-cards', color: 'pink', isNew: true },
-    { icon: Bell, title: t.alarm, description: t.alarmDesc, route: '/alarm', color: 'red', isNew: true },
-    { icon: Target, title: t.dealRadar, description: '', route: '/deal-radar', color: 'cyan' },
-    { icon: TrendingUp, title: t.priceAlerts, description: '', route: '/price-alerts', color: 'green' },
+    { icon: Brain, title: t.aiAdvisor, description: t.aiAdvisorDesc, route: '/ki-berater', colorClass: colorClasses.blue, isNew: true },
+    { icon: Ticket, title: t.vouchers, description: t.vouchersDesc, route: '/gutscheine', colorClass: colorClasses.purple, isNew: true },
+    { icon: Gift, title: t.gifts, description: t.giftsDesc, route: '/gift-cards', colorClass: colorClasses.pink, isNew: true },
+    { icon: Bell, title: t.alarm, description: t.alarmDesc, route: '/alarm', colorClass: colorClasses.red, isNew: true },
+    { icon: Target, title: t.dealRadar, description: '', route: '/deal-radar', colorClass: colorClasses.cyan },
+    { icon: TrendingUp, title: t.priceAlerts, description: '', route: '/price-alerts', colorClass: colorClasses.green },
   ];
 
   const rewardFeatures = [
-    { icon: Calendar, title: t.dailyQuests, description: '', route: '/daily-rewards', color: 'orange' },
-    { icon: Star, title: t.battlePass, description: '', route: '/battle-pass', color: 'yellow' },
-    { icon: Crown, title: t.vipDashboard, description: '', route: '/vip-dashboard', color: 'amber' },
+    { icon: Calendar, title: t.dailyQuests, description: '', route: '/daily-rewards', colorClass: colorClasses.orange },
+    { icon: Star, title: t.battlePass, description: '', route: '/battle-pass', colorClass: colorClasses.yellow },
+    { icon: Crown, title: t.vipDashboard, description: '', route: '/vip-dashboard', colorClass: colorClasses.amber },
   ];
 
   return (
