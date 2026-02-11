@@ -396,11 +396,12 @@ const AdminMysteryBox = () => {
                     <Button 
                       onClick={() => handleDeleteBox(box.id)} 
                       variant="ghost" 
-                    size="sm"
-                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                      size="sm"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
