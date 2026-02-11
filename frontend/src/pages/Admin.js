@@ -1219,6 +1219,7 @@ export default function Admin() {
     { id: 'winner-control', label: '🎯 Gewinner', icon: <Target className="w-5 h-5" />, highlight: true },
     { id: 'weekly-challenges', label: '🏅 Challenges', icon: <Trophy className="w-5 h-5" />, highlight: true },
     { id: 'coupons', label: '🎟️ Gutscheine', icon: <Ticket className="w-5 h-5" />, highlight: true },
+    { id: 'mystery-box', label: '🎁 Mystery Box', icon: <Gift className="w-5 h-5" />, highlight: true },
     { id: 'sustainability', label: '🌿 Nachhaltigkeit', icon: <Leaf className="w-5 h-5" />, highlight: true },
     { id: 'promo-codes', label: '🎫 Gutschein-Codes', icon: <Gift className="w-5 h-5" />, highlight: true },
     { id: 'game-config', label: at('gameSettings'), icon: <Settings className="w-5 h-5" /> }
