@@ -549,8 +549,9 @@ async def bot_last_second_bidder():
                         # Auction no longer active, skip
                         continue
                     
-                    # Use fresh data from DB
+                    # Use fresh data from DB - recalculate time
                     end_time = datetime.fromisoformat(current_auction["end_time"].replace("Z", "+00:00"))
+                    now = datetime.now(timezone.utc)  # Refresh now timestamp
                     seconds_left = (end_time - now).total_seconds()
                     
                     if seconds_left <= 0:
@@ -559,6 +560,42 @@ async def bot_last_second_bidder():
                     # Use fresh data from current_auction
                     current_price = current_auction.get("current_price", 0)
                     bid_increment = current_auction.get("bid_increment", 0.01)
+                    
+                    # CRITICAL: Check if this is SUPER URGENT (< 15 seconds) and price < €25
+                    # If so, BID IMMEDIATELY without any other checks!
+                    is_emergency = seconds_left < 15 and current_price < 25
+                    
+                    if is_emergency:
+                        # EMERGENCY BID - No other checks, just bid NOW!
+                        random_bot = random.choice(active_bots)
+                        new_price = round(current_price + bid_increment, 2)
+                        
+                        # Extend timer by 10-15 seconds
+                        timer_extension = random.randint(10, 15)
+                        new_end_time = now + timedelta(seconds=timer_extension)
+                        
+                        await db.auctions.update_one(
+                            {"id": auction_id, "status": "active"},
+                            {"$set": {
+                                "current_price": new_price,
+                                "last_bidder": random_bot["name"],
+                                "last_bidder_id": f"bot_{random_bot['id']}",
+                                "end_time": new_end_time.isoformat(),
+                                "last_bid_time": now.isoformat()
+                            }, "$inc": {"bid_count": 1, "total_bids": 1}}
+                        )
+                        
+                        logger.warning(f"🚨🚨 EMERGENCY BID! Bot '{random_bot['name']}' saved auction {auction_id[:8]} at €{new_price:.2f} with only {seconds_left:.0f}s left!")
+                        
+                        # Broadcast update
+                        await broadcast_bid_update(auction_id, {
+                            "current_price": new_price,
+                            "last_bidder": random_bot["name"],
+                            "end_time": new_end_time.isoformat(),
+                            "bid_count": current_auction.get("bid_count", 0) + 1,
+                            "bidder_message": f"🚨 {random_bot['name']} hat geboten!"
+                        })
+                        continue  # Move to next auction
                     
                     # These can still come from the original auction object (less critical)
                     explicit_target = auction.get("bot_target_price", 0)
