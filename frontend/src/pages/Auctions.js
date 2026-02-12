@@ -941,11 +941,19 @@ export default function Auctions() {
     return category === 'bidblitz gutscheine';
   };
 
+  // Helper function to check if it's a restaurant voucher auction
+  const isRestaurantAuction = (auction) => {
+    return auction.auction_type === 'restaurant_voucher' || 
+           auction.category === 'restaurant_voucher' ||
+           (auction.product && auction.product.category === 'restaurant_voucher');
+  };
+
   // Count auctions by type - Night auctions always counted
   const auctionCounts = {
     live: publicAuctions.filter(a => a.status === 'active').length,
     anfaenger: publicAuctions.filter(a => (a.is_beginner_only || a.is_beginner_auction) && a.status === 'active').length,
     gratis: publicAuctions.filter(a => isVoucherProduct(a.product_id) && a.status === 'active').length,
+    restaurant: publicAuctions.filter(a => isRestaurantAuction(a) && a.status === 'active').length,
     nacht: publicAuctions.filter(a => a.is_night_auction).length,
     ende: endedAuctions.length, // Use endedAuctions from auction_history
     vip: auctions.filter(a => a.is_vip_only && a.status === 'active').length
@@ -959,6 +967,9 @@ export default function Auctions() {
       case 'gratis':
         // Filter by product category - show only BidBlitz's own vouchers
         return publicAuctions.filter(a => isVoucherProduct(a.product_id) && a.status === 'active');
+      case 'restaurant':
+        // Filter restaurant voucher auctions
+        return publicAuctions.filter(a => isRestaurantAuction(a) && a.status === 'active');
       case 'nacht':
         // Night auctions always visible - show with timer/label when not night time
         return publicAuctions.filter(a => a.is_night_auction);
