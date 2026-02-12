@@ -140,6 +140,49 @@ const translations = {
       thankyou: 'Faleminderit',
       general: 'I Përgjithshëm'
     }
+  },
+  xk: {
+    title: 'Kartat e Dhuratave',
+    subtitle: 'Dhuro ofertat BidBlitz miqve dhe familjes!',
+    buyCard: 'Bli Kartën e Dhuratës',
+    sendGift: 'Dërgo Dhuratë',
+    myCards: 'Kartat e Mia',
+    receivedGifts: 'Dhuratat e Marra',
+    selectAmount: 'Zgjidh Shumën',
+    bids: 'Oferta',
+    price: 'Çmimi',
+    recipient: 'Marrësi',
+    recipientEmail: 'Email i Marrësit',
+    message: 'Mesazhi (opsionale)',
+    personalMessage: 'Shkruaj një mesazh personal...',
+    preview: 'Parapamje',
+    from: 'Nga',
+    to: 'Për',
+    purchase: 'Bli',
+    send: 'Dërgo',
+    noCards: 'Asnjë kartë dhurate ende',
+    noGifts: 'Asnjë dhuratë e marrë ende',
+    buyFirst: 'Bli kartën e parë të dhuratës!',
+    validUntil: 'E vlefshme deri',
+    redeemed: 'E përdorur',
+    pending: 'Në pritje',
+    sent: 'Dërguar',
+    loginRequired: 'Ju lutem identifikohuni',
+    loginToUse: 'Identifikohuni për të blerë karta dhuratash',
+    popular: 'Popullore',
+    bestValue: 'Vlera më e Mirë',
+    loading: 'Duke ngarkuar...',
+    howItWorks: 'Si funksionon',
+    step1: 'Zgjidh një shumë',
+    step2: 'Fut email-in e marrësit',
+    step3: 'Marrësi merr ofertat menjëherë!',
+    giftDesign: 'Dizajni i Dhuratës',
+    designs: {
+      birthday: 'Ditëlindje',
+      christmas: 'Krishtlindje',
+      thankyou: 'Faleminderit',
+      general: 'I Përgjithshëm'
+    }
   }
 };
 
