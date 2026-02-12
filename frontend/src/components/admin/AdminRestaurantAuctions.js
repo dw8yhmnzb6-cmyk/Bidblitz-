@@ -1,9 +1,9 @@
 // Admin Restaurant Voucher Auctions Component
 import { useState, useEffect } from 'react';
 import { 
-  Utensils, Plus, ExternalLink, Trash2, Copy, Loader2, 
-  MapPin, Globe, Gavel, Euro, Percent, Clock, Users,
-  TrendingUp, CheckCircle, XCircle, RefreshCw, Play
+  Utensils, Plus, ExternalLink, Trash2, Loader2, 
+  MapPin, Globe, Gavel, Euro, Clock, Image,
+  TrendingUp, RefreshCw, X
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
