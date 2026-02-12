@@ -100,6 +100,36 @@ const translations = {
     noChallenges: 'Asnjë sfidë',
     challengeSent: 'Sfida u dërgua!',
     loginRequired: 'Ju lutem identifikohuni'
+  },
+  xk: {
+    title: 'Duele 1v1',
+    subtitle: 'Sfido lojtarët e tjerë!',
+    createDuel: 'Krijo Duel',
+    activeDuels: 'Duelet Aktive',
+    pendingChallenges: 'Sfidat',
+    myDuels: 'Duelet e Mia',
+    history: 'Historia',
+    betBids: 'Bast (Oferta)',
+    opponent: 'Kundërshtari',
+    randomOpponent: 'Kundërshtar i Rastësishëm',
+    searchUser: 'Kërko lojtar...',
+    startDuel: 'Fillo Duelin',
+    accept: 'Prano',
+    decline: 'Refuzo',
+    waiting: 'Duke pritur...',
+    inProgress: 'Në Progres',
+    completed: 'Përfunduar',
+    won: 'Fituar',
+    lost: 'Humbur',
+    pot: 'Pot',
+    vs: 'VS',
+    you: 'Ti',
+    score: 'Pikët',
+    timeLeft: 'Koha e mbetur',
+    noDuels: 'Asnjë duel aktiv',
+    noChallenges: 'Asnjë sfidë',
+    challengeSent: 'Sfida u dërgua!',
+    loginRequired: 'Ju lutem identifikohuni'
   }
 };
 
