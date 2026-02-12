@@ -16,18 +16,44 @@ router = APIRouter(tags=["Vouchers"])
 
 class VoucherCreate(BaseModel):
     code: Optional[str] = None  # Auto-generate if empty
-    type: str = "bids"  # bids, discount, euro
+    type: str = "bids"  # bids, discount, euro, restaurant
     value: int = 10
     max_uses: int = 1
     expires_days: Optional[int] = 30
+    # Restaurant/Partner Voucher fields
+    merchant_name: Optional[str] = None  # e.g., "Pizza Roma"
+    merchant_url: Optional[str] = None   # e.g., "https://pizzaroma.de"
+    merchant_logo: Optional[str] = None  # Logo URL
+    merchant_address: Optional[str] = None  # Address
+    merchant_category: str = "restaurant"  # restaurant, shop, service, etc.
+    description: Optional[str] = None  # Beschreibung des Gutscheins
 
 class BulkVoucherCreate(BaseModel):
     count: int = 10  # How many vouchers to create
-    type: str = "bids"  # bids, discount, euro
+    type: str = "bids"  # bids, discount, euro, restaurant
     value: int = 10
     max_uses: int = 1
     expires_days: Optional[int] = 30
     prefix: str = ""  # Optional prefix like "NEUJAHR"
+    # Restaurant/Partner fields for bulk
+    merchant_name: Optional[str] = None
+    merchant_url: Optional[str] = None
+    merchant_logo: Optional[str] = None
+    merchant_address: Optional[str] = None
+    merchant_category: str = "restaurant"
+    description: Optional[str] = None
+
+class RestaurantVoucherCreate(BaseModel):
+    """Spezielles Schema für Restaurant-Gutscheine"""
+    restaurant_name: str
+    restaurant_url: Optional[str] = None
+    restaurant_logo: Optional[str] = None
+    restaurant_address: Optional[str] = None
+    voucher_value: int = 25  # Wert in Euro
+    discount_percent: Optional[int] = None  # z.B. 20% Rabatt
+    description: str = "Genießen Sie ein leckeres Essen"
+    valid_days: int = 90
+    quantity: int = 1  # Wie viele Gutscheine erstellen
 
 class VoucherRedeemRequest(BaseModel):
     code: str
