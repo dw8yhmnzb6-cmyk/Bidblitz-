@@ -104,6 +104,37 @@ const translations = {
     loading: 'Duke ngarkuar...',
     minutes: 'min',
     hours: 'orë'
+  },
+  xk: {
+    title: 'Alarmi i Ofertave',
+    subtitle: 'Merr njoftim kur ankandat përfundojnë!',
+    activeAlarms: 'Alarmet Aktive',
+    noAlarms: 'Asnjë alarm aktiv',
+    createAlarm: 'Krijo Alarm',
+    notifyAt: 'Njofto në',
+    seconds: 'sekonda',
+    beforeEnd: 'para fundit',
+    delete: 'Fshi',
+    auction: 'Ankand',
+    currentPrice: 'Çmimi Aktual',
+    timeLeft: 'Koha e Mbetur',
+    addAlarm: 'Shto Alarm',
+    selectAuction: 'Zgjidh një ankand',
+    alarmSet: 'Alarmi u vendos!',
+    alarmDeleted: 'Alarmi u fshi',
+    loginRequired: 'Ju lutem identifikohuni',
+    loginToUse: 'Identifikohuni për të vendosur alarme',
+    quickAlarm: 'Alarm i Shpejtë',
+    customAlarm: 'Personalizuar',
+    preset10s: '10 sek',
+    preset30s: '30 sek',
+    preset60s: '1 min',
+    preset120s: '2 min',
+    soundEnabled: 'Tingulli aktiv',
+    soundDisabled: 'Tingulli çaktivizuar',
+    loading: 'Duke ngarkuar...',
+    minutes: 'min',
+    hours: 'orë'
   }
 };
 
