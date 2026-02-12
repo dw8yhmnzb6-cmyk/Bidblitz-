@@ -23,13 +23,36 @@ export default function AdminRestaurantAuctions({ token, API }) {
     restaurant_url: '',
     restaurant_logo: '',
     restaurant_address: '',
-    voucher_value: 25,
-    discount_percent: 0,
+    restaurant_images: [], // Array für mehrere Restaurant-Fotos
+    voucher_value: 25,  // Standard: Euro-Wert (nicht Prozent)
+    discount_percent: 0,  // Prozent-Rabatt nur optional
     description: 'Genießen Sie ein leckeres Essen bei uns!',
     duration_hours: 24,
     start_price: 0.01,
     bot_target_price: 8
   });
+
+  // Image URL input state
+  const [imageUrlInput, setImageUrlInput] = useState('');
+
+  // Add image to restaurant images
+  const addRestaurantImage = () => {
+    if (imageUrlInput.trim() && newAuction.restaurant_images.length < 5) {
+      setNewAuction({
+        ...newAuction,
+        restaurant_images: [...newAuction.restaurant_images, imageUrlInput.trim()]
+      });
+      setImageUrlInput('');
+    }
+  };
+
+  // Remove image from restaurant images
+  const removeRestaurantImage = (index) => {
+    setNewAuction({
+      ...newAuction,
+      restaurant_images: newAuction.restaurant_images.filter((_, i) => i !== index)
+    });
+  };
 
   // Fetch existing restaurant auctions
   const fetchAuctions = async () => {
