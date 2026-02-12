@@ -274,37 +274,22 @@ export default function AdminRestaurantAuctions({ token, API }) {
               />
             </div>
             
-            {/* Voucher Value */}
+            {/* Voucher Value - NUR EURO */}
             <div className="space-y-1">
               <Label className="text-gray-700 text-sm flex items-center gap-1">
                 <Euro className="w-3 h-3" />
-                Gutscheinwert (€)
+                Gutscheinwert (€) *
               </Label>
               <Input 
                 type="number"
                 value={newAuction.voucher_value}
-                onChange={(e) => setNewAuction({...newAuction, voucher_value: parseInt(e.target.value) || 0})}
+                onChange={(e) => setNewAuction({...newAuction, voucher_value: parseInt(e.target.value) || 25})}
                 className="bg-white border-gray-200"
-                min="1"
+                min="5"
                 max="500"
+                required
               />
-            </div>
-            
-            {/* OR Discount Percent */}
-            <div className="space-y-1">
-              <Label className="text-gray-700 text-sm flex items-center gap-1">
-                <Percent className="w-3 h-3" />
-                ODER Rabatt (%)
-              </Label>
-              <Input 
-                type="number"
-                value={newAuction.discount_percent}
-                onChange={(e) => setNewAuction({...newAuction, discount_percent: parseInt(e.target.value) || 0})}
-                className="bg-white border-gray-200"
-                min="0"
-                max="50"
-                placeholder="0 = Euro-Wert nutzen"
-              />
+              <p className="text-xs text-gray-400">z.B. 25€, 50€, 100€</p>
             </div>
             
             {/* Duration */}
