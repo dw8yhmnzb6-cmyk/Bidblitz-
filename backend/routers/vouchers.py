@@ -775,14 +775,27 @@ async def get_restaurant_auctions(
 ):
     """Alle Restaurant-Gutschein-Auktionen abrufen (Admin)"""
     query = {"auction_type": "restaurant_voucher"}
+    
     if status:
-        query["status"] = status
+        if status == "active":
+            # "active" includes both "active" and "day_paused"
+            query["status"] = {"$in": ["active", "day_paused"]}
+        elif status == "ended":
+            query["status"] = "ended"
+        else:
+            query["status"] = status
     
     auctions = await db.auctions.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
     
+    # Count active auctions (includes day_paused)
+    active_count = await db.auctions.count_documents({
+        "auction_type": "restaurant_voucher", 
+        "status": {"$in": ["active", "day_paused"]}
+    })
+    
     stats = {
         "total": await db.auctions.count_documents({"auction_type": "restaurant_voucher"}),
-        "active": await db.auctions.count_documents({"auction_type": "restaurant_voucher", "status": "active"}),
+        "active": active_count,
         "ended": await db.auctions.count_documents({"auction_type": "restaurant_voucher", "status": "ended"})
     }
     
