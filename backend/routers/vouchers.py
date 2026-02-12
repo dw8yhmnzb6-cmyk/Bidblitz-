@@ -459,3 +459,181 @@ async def get_restaurant_voucher_details(restaurant_name: str):
             "is_available": v.get("used_count", 0) < v.get("max_uses", 1)
         } for v in vouchers]
     }
+
+
+# ==================== RESTAURANT PARTNER APPLICATIONS ====================
+
+class RestaurantPartnerApplication(BaseModel):
+    """Schema für Restaurant-Partner Bewerbung"""
+    restaurant_name: str
+    contact_name: str
+    email: str
+    phone: Optional[str] = None
+    website: Optional[str] = None
+    address: str
+    city: str
+    description: str  # Was macht das Restaurant besonders?
+    voucher_type: str = "discount"  # discount oder euro
+    voucher_value: int = 10  # Prozent oder Euro-Wert
+    message: Optional[str] = None  # Zusätzliche Nachricht
+
+
+@router.post("/vouchers/restaurant-partner/apply")
+async def apply_as_restaurant_partner(application: RestaurantPartnerApplication):
+    """Öffentlicher Endpoint für Restaurant-Partner Bewerbungen"""
+    
+    # Prüfe ob bereits eine Bewerbung mit dieser E-Mail existiert
+    existing = await db.restaurant_applications.find_one({
+        "email": application.email.lower(),
+        "status": {"$in": ["pending", "approved"]}
+    })
+    
+    if existing:
+        raise HTTPException(
+            status_code=400, 
+            detail="Eine Bewerbung mit dieser E-Mail-Adresse existiert bereits"
+        )
+    
+    application_id = str(uuid.uuid4())
+    doc = {
+        "id": application_id,
+        "restaurant_name": application.restaurant_name,
+        "contact_name": application.contact_name,
+        "email": application.email.lower(),
+        "phone": application.phone,
+        "website": application.website,
+        "address": application.address,
+        "city": application.city,
+        "description": application.description,
+        "voucher_type": application.voucher_type,
+        "voucher_value": application.voucher_value,
+        "message": application.message,
+        "status": "pending",  # pending, approved, rejected
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "reviewed_at": None,
+        "reviewed_by": None,
+        "admin_notes": None
+    }
+    
+    await db.restaurant_applications.insert_one(doc)
+    doc.pop("_id", None)
+    
+    logger.info(f"🍽️ Neue Restaurant-Partner Bewerbung: {application.restaurant_name} ({application.email})")
+    
+    return {
+        "success": True,
+        "message": "Ihre Bewerbung wurde erfolgreich eingereicht! Wir melden uns in Kürze bei Ihnen.",
+        "application_id": application_id
+    }
+
+
+@router.get("/admin/restaurant-applications")
+async def get_restaurant_applications(
+    status: Optional[str] = None,
+    admin: dict = Depends(get_admin_user)
+):
+    """Alle Restaurant-Partner Bewerbungen abrufen (Admin)"""
+    query = {}
+    if status:
+        query["status"] = status
+    
+    applications = await db.restaurant_applications.find(
+        query,
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(200)
+    
+    # Statistiken
+    stats = {
+        "total": await db.restaurant_applications.count_documents({}),
+        "pending": await db.restaurant_applications.count_documents({"status": "pending"}),
+        "approved": await db.restaurant_applications.count_documents({"status": "approved"}),
+        "rejected": await db.restaurant_applications.count_documents({"status": "rejected"})
+    }
+    
+    return {
+        "applications": applications,
+        "stats": stats
+    }
+
+
+@router.put("/admin/restaurant-applications/{application_id}/review")
+async def review_restaurant_application(
+    application_id: str,
+    action: str,  # approve oder reject
+    admin_notes: Optional[str] = None,
+    admin: dict = Depends(get_admin_user)
+):
+    """Restaurant-Partner Bewerbung genehmigen oder ablehnen"""
+    
+    if action not in ["approve", "reject"]:
+        raise HTTPException(status_code=400, detail="Aktion muss 'approve' oder 'reject' sein")
+    
+    application = await db.restaurant_applications.find_one({"id": application_id})
+    if not application:
+        raise HTTPException(status_code=404, detail="Bewerbung nicht gefunden")
+    
+    new_status = "approved" if action == "approve" else "rejected"
+    
+    await db.restaurant_applications.update_one(
+        {"id": application_id},
+        {
+            "$set": {
+                "status": new_status,
+                "reviewed_at": datetime.now(timezone.utc).isoformat(),
+                "reviewed_by": admin.get("email", "admin"),
+                "admin_notes": admin_notes
+            }
+        }
+    )
+    
+    # Wenn genehmigt, automatisch Gutscheine erstellen
+    if action == "approve":
+        # Erstelle 5 Gutscheine für den neuen Partner
+        prefix = application["restaurant_name"][:4].upper().replace(" ", "")
+        for i in range(5):
+            code = generate_voucher_code(prefix=prefix, length=6)
+            while await db.vouchers.find_one({"code": code}):
+                code = generate_voucher_code(prefix=prefix, length=6)
+            
+            voucher_doc = {
+                "id": str(uuid.uuid4()),
+                "code": code,
+                "type": "restaurant",
+                "value": application["voucher_value"] if application["voucher_type"] == "euro" else 0,
+                "discount_percent": application["voucher_value"] if application["voucher_type"] == "discount" else None,
+                "bids": 0,
+                "max_uses": 1,
+                "used_count": 0,
+                "used_by": [],
+                "is_active": True,
+                "expires_at": (datetime.now(timezone.utc) + timedelta(days=90)).isoformat(),
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "created_by": "system",
+                "merchant_name": application["restaurant_name"],
+                "merchant_url": application.get("website"),
+                "merchant_address": f"{application['address']}, {application['city']}",
+                "merchant_category": "restaurant",
+                "description": application.get("description", "Genießen Sie ein leckeres Essen")
+            }
+            await db.vouchers.insert_one(voucher_doc)
+        
+        logger.info(f"✅ Restaurant-Partner '{application['restaurant_name']}' genehmigt - 5 Gutscheine erstellt")
+    
+    return {
+        "success": True,
+        "message": f"Bewerbung wurde {'genehmigt' if action == 'approve' else 'abgelehnt'}",
+        "status": new_status
+    }
+
+
+@router.delete("/admin/restaurant-applications/{application_id}")
+async def delete_restaurant_application(
+    application_id: str,
+    admin: dict = Depends(get_admin_user)
+):
+    """Restaurant-Partner Bewerbung löschen"""
+    result = await db.restaurant_applications.delete_one({"id": application_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Bewerbung nicht gefunden")
+    return {"message": "Bewerbung gelöscht"}
+
