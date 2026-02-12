@@ -138,7 +138,7 @@ export default function AdminVouchers({
     <div className="space-y-6 sm:space-y-8">
       <h1 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2 sm:gap-3">
         <Ticket className="w-6 h-6 sm:w-8 sm:h-8 text-[#EC4899]" />
-        {t('admin.manageVouchers')}
+        Gutscheine verwalten
       </h1>
       
       {/* Mode Toggle */}
@@ -162,7 +162,7 @@ export default function AdminVouchers({
       {/* Create Voucher Form */}
       <div className="glass-card rounded-xl p-4 sm:p-6">
         <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-4">
-          {bulkMode ? 'Mehrere Gutscheine erstellen' : t('admin.newVoucher')}
+          {bulkMode ? 'Mehrere Gutscheine erstellen' : 'Neuen Gutschein erstellen'}
         </h3>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
