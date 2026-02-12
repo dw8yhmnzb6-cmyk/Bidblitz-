@@ -240,6 +240,28 @@ export default function AdminRestaurantAuctions({ token, API }) {
     setEditData(null);
   };
 
+  // Delete restaurant auction
+  const handleDelete = async (auctionId) => {
+    if (!window.confirm('Diese Auktion wirklich löschen?')) return;
+    
+    try {
+      const response = await fetch(`${API}/admin/restaurant-auctions/${auctionId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success('Auktion gelöscht!');
+        fetchAuctions();
+      } else {
+        toast.error('Fehler beim Löschen');
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Fehler beim Löschen');
+    }
+  };
+
   // Fetch existing restaurant auctions
   const fetchAuctions = async () => {
     setLoading(true);
