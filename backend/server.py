@@ -597,6 +597,18 @@ async def bot_last_second_bidder():
                     ENDSPURT_TIME = 120 + (bot_seed % 60)  # 2-3 Minuten
                     
                     # ============================================
+                    # KURZE AUKTIONEN: Wenn Gesamtdauer < 15 Min, sofort aggressiv bieten!
+                    # ============================================
+                    auction_duration = auction.get("duration_seconds", 0)
+                    is_short_auction = auction_duration > 0 and auction_duration < 900  # < 15 Minuten
+                    
+                    if is_short_auction:
+                        # Bei kurzen Auktionen: Keine Pause-Phase, sofort bis Target bieten
+                        PHASE1_TARGET = 0  # Überspringen Phase 1
+                        ENDSPURT_TIME = auction_duration  # Immer im "Endspurt"
+                        logger.debug(f"🚀 Short auction detected ({auction_duration}s): Aggressive bidding mode for {auction_id[:8]}")
+                    
+                    # ============================================
                     # DYNAMISCHES TARGET basierend auf Produkt-UVP
                     # ============================================
                     product_id = auction.get("product_id")
