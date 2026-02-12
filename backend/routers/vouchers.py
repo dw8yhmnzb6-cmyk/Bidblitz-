@@ -646,8 +646,8 @@ class CreateRestaurantAuctionRequest(BaseModel):
     restaurant_url: Optional[str] = None
     restaurant_logo: Optional[str] = None
     restaurant_address: str
-    voucher_value: int = 25  # Euro-Wert des Gutscheins
-    discount_percent: Optional[int] = None  # Alternative: Prozent-Rabatt
+    restaurant_images: Optional[list] = []  # Liste von Restaurant-Fotos
+    voucher_value: int = 25  # Euro-Wert des Gutscheins (NUR Euro, keine Prozente)
     description: str = "Genießen Sie ein leckeres Essen!"
     duration_hours: int = 24
     start_price: float = 0.01
@@ -659,19 +659,15 @@ async def create_restaurant_voucher_auction(
     data: CreateRestaurantAuctionRequest,
     admin: dict = Depends(get_admin_user)
 ):
-    """Erstellt eine Auktion für einen Restaurant-Gutschein (Admin)"""
+    """Erstellt eine Auktion für einen Restaurant-Gutschein (Admin) - NUR Euro-Wert"""
     
     now = datetime.now(timezone.utc)
     end_time = now + timedelta(hours=data.duration_hours)
     auction_id = str(uuid.uuid4())
     
-    # Titel erstellen
-    if data.discount_percent:
-        title = f"🍽️ {data.discount_percent}% Rabatt bei {data.restaurant_name}"
-        display_value = f"{data.discount_percent}% Rabatt"
-    else:
-        title = f"🍽️ {data.voucher_value}€ Gutschein bei {data.restaurant_name}"
-        display_value = f"{data.voucher_value}€"
+    # Titel erstellen - NUR Euro-Wert
+    title = f"🍽️ {data.voucher_value}€ Gutschein bei {data.restaurant_name}"
+    display_value = f"{data.voucher_value}€"
     
     # Gutschein-Code generieren
     prefix = data.restaurant_name[:4].upper().replace(" ", "")
@@ -679,13 +675,17 @@ async def create_restaurant_voucher_auction(
     while await db.vouchers.find_one({"code": voucher_code}):
         voucher_code = generate_voucher_code(prefix=prefix, length=6)
     
+    # Standard-Bild falls keine Bilder
+    images = data.restaurant_images if data.restaurant_images else []
+    main_image = images[0] if images else "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400"
+    
     # Erstelle den Gutschein in der DB
     voucher_doc = {
         "id": str(uuid.uuid4()),
         "code": voucher_code,
         "type": "restaurant_auction",
-        "value": data.voucher_value if not data.discount_percent else 0,
-        "discount_percent": data.discount_percent,
+        "value": data.voucher_value,
+        "discount_percent": None,  # Keine Prozente mehr
         "bids": 0,
         "max_uses": 1,
         "used_count": 0,
