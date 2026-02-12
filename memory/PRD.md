@@ -5,6 +5,32 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 12, 2026)
 
+### ✅ Session Update - February 12, 2026 (Session 15) - MOBILE UI FIXES
+
+**Mobile Admin Panel UI-Optimierungen:**
+
+Die Mobile-Ansicht des Admin-Panels wurde komplett überarbeitet, um abgeschnittene Inhalte und schlecht formatierte Layouts zu beheben.
+
+**Behobene Probleme:**
+
+| Komponente | Problem | Lösung |
+|------------|---------|--------|
+| **AdminSustainability.js** | Stats-Karten auf rechter Seite abgeschnitten | Grid von `grid-cols-2 md:grid-cols-4` zu `grid-cols-1 sm:grid-cols-2 lg:grid-cols-4` geändert, farbige Hintergründe hinzugefügt |
+| **AdminCoupons.js** | Stats und Tabelle auf Mobile abgeschnitten | Mobile Card-Ansicht für Gutscheine hinzugefügt, Tabelle nur auf Desktop |
+| **AdminPayments.js** | Header und "Aktualisieren" Button abgeschnitten | Responsive Header mit `flex-col sm:flex-row`, Button volle Breite auf Mobile |
+| **AdminVouchers.js** | Form-Layout und Header zu klein | Responsive Header, verbesserte Button-Größen |
+| **Admin.js (Promo-Codes)** | Tabelle komplett abgeschnitten auf Mobile | Neue Mobile Card-Ansicht mit Stats-Grid hinzugefügt |
+| **AdminRestaurantAuctions.js** | Syntax-Fehler (fehlende schließende Tags) | JSX-Struktur korrigiert |
+
+**Neue Mobile-UI-Features:**
+- Vertikales Stacking von Stats-Karten auf kleinen Bildschirmen
+- Card-basierte Ansichten statt Tabellen auf Mobile
+- Responsive Button-Breiten (volle Breite auf Mobile)
+- Bessere Icon-Größen und Abstände
+- Truncation für lange Texte mit `truncate` und `min-w-0`
+
+---
+
 ### ✅ Session Update - February 12, 2026 (Session 14) - MYSTERY BOX FIX + RESTAURANT PARTNER
 
 **Bug Fix: Mystery Box "Auktion nicht gefunden"**
