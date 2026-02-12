@@ -2457,12 +2457,13 @@ export const getTranslation = (lang, key) => {
   const mappedLang = getMappedLanguage(lang);
   
   const keys = key.split('.');
-  let value = translations[mappedLang] || translations[lang] || translations.de;
+  // First try the original language, then the mapped language, then fallback to German
+  let value = translations[lang] || translations[mappedLang] || translations.de;
   for (const k of keys) {
     value = value?.[k];
   }
   // Fallback to German if translation not found
-  if (!value && mappedLang !== 'de') {
+  if (!value && lang !== 'de') {
     value = translations.de;
     for (const k of keys) {
       value = value?.[k];
