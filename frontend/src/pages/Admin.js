@@ -1441,6 +1441,14 @@ export default function Admin() {
             />
           )}
 
+          {/* Restaurant Voucher Auctions Tab */}
+          {activeTab === 'restaurant-auctions' && (
+            <AdminRestaurantAuctions
+              token={token}
+              API={API}
+            />
+          )}
+
           {/* Restaurant Partner Applications Tab */}
           {activeTab === 'restaurant-applications' && (
             <AdminRestaurantApplications />
