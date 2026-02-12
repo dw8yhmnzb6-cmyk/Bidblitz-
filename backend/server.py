@@ -916,6 +916,166 @@ async def bot_last_second_bidder():
     logger.info("Bot bidder stopped")
 
 
+async def mystery_box_bot_bidder():
+    """Background task - bots bid on mystery boxes to make them interesting.
+    
+    Mystery Boxes need bot activity to:
+    1. Keep the auctions active and interesting
+    2. Ensure prices reach reasonable levels
+    3. Create competition for real users
+    """
+    global bot_task_running
+    
+    logger.info("🎁 Mystery Box Bot bidder started")
+    
+    # Track last bot and bid time per mystery box
+    last_bot_per_box = {}
+    last_bid_time_per_box = {}
+    next_bid_time_per_box = {}
+    
+    # Price targets based on tier
+    TIER_TARGETS = {
+        "bronze": 15.00,   # Bronze: Target €15
+        "silver": 25.00,   # Silver: Target €25
+        "gold": 40.00,     # Gold: Target €40
+        "diamond": 60.00   # Diamond: Target €60
+    }
+    
+    while bot_task_running:
+        try:
+            now = datetime.now(timezone.utc)
+            now_ts = now.timestamp()
+            
+            # Get all active mystery boxes
+            active_boxes = await db.mystery_boxes.find({
+                "status": "active"
+            }).to_list(50)
+            
+            if not active_boxes:
+                await asyncio.sleep(10)
+                continue
+            
+            # Get available bots
+            bots = await db.bots.find({}, {"_id": 0}).to_list(100)
+            if not bots:
+                await asyncio.sleep(10)
+                continue
+            
+            for box in active_boxes:
+                try:
+                    box_id = str(box.get("_id"))
+                    tier = box.get("tier", "bronze")
+                    target_price = TIER_TARGETS.get(tier, 15.00)
+                    current_price = float(box.get("current_price", 0))
+                    
+                    # Parse end time
+                    end_time_str = box.get("end_time")
+                    if not end_time_str:
+                        continue
+                    
+                    end_time = datetime.fromisoformat(end_time_str.replace("Z", "+00:00"))
+                    seconds_left = (end_time - now).total_seconds()
+                    
+                    if seconds_left <= 0:
+                        continue  # Auction ended
+                    
+                    # Decide if bot should bid
+                    should_bid = False
+                    
+                    # Check if it's time for next bid
+                    next_bid_time = next_bid_time_per_box.get(box_id, 0)
+                    if now_ts < next_bid_time:
+                        continue  # Not yet time for next bid
+                    
+                    # EMERGENCY: Very low time and low price
+                    if seconds_left < 30 and current_price < target_price:
+                        should_bid = True
+                        logger.warning(f"🎁🚨 MYSTERY EMERGENCY: {tier} Box at €{current_price:.2f} with only {seconds_left:.0f}s left!")
+                    
+                    # URGENT: Low time and price below target
+                    elif seconds_left < 120 and current_price < target_price * 0.5:
+                        should_bid = True
+                    
+                    # NORMAL: Price below target and random chance
+                    elif current_price < target_price and random.random() < 0.3:
+                        should_bid = True
+                    
+                    # Price already at target - only bid if urgent
+                    elif current_price >= target_price:
+                        if seconds_left < 60 and random.random() < 0.15:
+                            should_bid = True  # Small chance to continue bidding
+                    
+                    if should_bid:
+                        # Select bot (different from last one)
+                        last_bot_id = last_bot_per_box.get(box_id)
+                        available_bots = [b for b in bots if b["id"] != last_bot_id]
+                        if not available_bots:
+                            available_bots = bots
+                        
+                        bot = random.choice(available_bots)
+                        
+                        # Calculate new price
+                        bid_increment = 0.01
+                        new_price = round(current_price + bid_increment, 2)
+                        
+                        # Extend timer
+                        timer_extension = random.randint(10, 20)
+                        new_end_time = now + timedelta(seconds=seconds_left + timer_extension)
+                        
+                        # Update mystery box
+                        from bson import ObjectId
+                        await db.mystery_boxes.update_one(
+                            {"_id": ObjectId(box_id)},
+                            {
+                                "$set": {
+                                    "current_price": new_price,
+                                    "last_bidder": bot["name"],
+                                    "last_bidder_id": f"bot_{bot['id']}",
+                                    "end_time": new_end_time.isoformat(),
+                                    "last_bid_time": now.isoformat()
+                                },
+                                "$inc": {"total_bids": 1},
+                                "$push": {
+                                    "bids": {
+                                        "id": str(uuid.uuid4()),
+                                        "bidder_name": bot["name"],
+                                        "bidder_id": f"bot_{bot['id']}",
+                                        "price": new_price,
+                                        "created_at": now.isoformat()
+                                    }
+                                }
+                            }
+                        )
+                        
+                        # Track bot
+                        last_bot_per_box[box_id] = bot["id"]
+                        last_bid_time_per_box[box_id] = now_ts
+                        
+                        # Calculate next bid time
+                        if seconds_left < 60:
+                            next_interval = random.uniform(3, 10)  # Fast bidding
+                        elif seconds_left < 180:
+                            next_interval = random.uniform(10, 30)  # Medium pace
+                        else:
+                            next_interval = random.uniform(30, 90)  # Slow pace
+                        
+                        next_bid_time_per_box[box_id] = now_ts + next_interval
+                        
+                        logger.info(f"🎁 Bot '{bot['name']}' bid €{new_price:.2f} on {tier} Mystery Box (target: €{target_price:.2f}, {seconds_left:.0f}s left)")
+                
+                except Exception as e:
+                    logger.error(f"Mystery box bot error for {box.get('_id')}: {e}")
+            
+            # Sleep between cycles
+            await asyncio.sleep(5)
+            
+        except Exception as e:
+            logger.error(f"Mystery box bot bidder error: {e}")
+            await asyncio.sleep(10)
+    
+    logger.info("🎁 Mystery Box Bot bidder stopped")
+
+
 async def auction_auto_restart_processor():
     """Background task - automatically restart ALL ended auctions IMMEDIATELY (no delay)"""
     global bot_task_running
