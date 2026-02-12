@@ -294,7 +294,8 @@ const MysteryBoxSection = memo(() => {
     if (box.id?.startsWith('preview_')) {
       return;
     }
-    window.location.href = `/auctions/${box.auction_id || box.id}`;
+    // Mystery boxes use their own detail page
+    window.location.href = `/mystery-box/${box.auction_id || box.id}`;
   };
   
   if (loading) {
