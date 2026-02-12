@@ -366,48 +366,93 @@ export default function AdminRestaurantAuctions({ token, API }) {
           <div className="mb-6">
             <Label className="text-gray-700 text-sm flex items-center gap-1 mb-2">
               <Image className="w-3 h-3" />
-              Restaurant-Fotos (bis zu 5)
+              Restaurant-Fotos (bis zu 5) - Klicken zum Auswählen
             </Label>
             
-            {/* Existing Images */}
+            {/* Ausgewählte Bilder */}
             {newAuction.restaurant_images && newAuction.restaurant_images.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {newAuction.restaurant_images.map((img, idx) => (
-                  <div key={idx} className="relative group">
-                    <img 
-                      src={img} 
-                      alt={`Restaurant ${idx + 1}`}
-                      className="w-20 h-20 object-cover rounded-lg border border-gray-200"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeRestaurantImage(idx)}
-                      className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
+              <div className="mb-3">
+                <p className="text-xs text-green-600 mb-2">✓ {newAuction.restaurant_images.length} Bild(er) ausgewählt:</p>
+                <div className="flex flex-wrap gap-2">
+                  {newAuction.restaurant_images.map((img, idx) => (
+                    <div key={idx} className="relative group">
+                      <img 
+                        src={img} 
+                        alt={`Restaurant ${idx + 1}`}
+                        className="w-16 h-16 object-cover rounded-lg border-2 border-green-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeRestaurantImage(idx)}
+                        className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
             
-            {/* Add Image */}
+            {/* Vorauswahl-Grid */}
             {(!newAuction.restaurant_images || newAuction.restaurant_images.length < 5) && (
-              <div className="flex gap-2">
-                <Input 
-                  value={imageUrlInput}
-                  onChange={(e) => setImageUrlInput(e.target.value)}
-                  className="bg-white border-gray-200 flex-1"
-                  placeholder="Bild-URL einfügen (https://...)"
-                  type="url"
-                />
-                <Button
-                  type="button"
-                  onClick={addRestaurantImage}
-                  variant="outline"
-                  className="border-orange-300 text-orange-600"
-                >
-                  <Plus className="w-4 h-4" />
+              <div>
+                <p className="text-xs text-gray-500 mb-2">Bilder anklicken zum Hinzufügen:</p>
+                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                  {presetImages.map((img, idx) => {
+                    const isSelected = newAuction.restaurant_images?.includes(img.url);
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => !isSelected && addPresetImage(img.url)}
+                        className={`relative group overflow-hidden rounded-lg border-2 transition-all ${
+                          isSelected 
+                            ? 'border-green-500 opacity-50 cursor-not-allowed' 
+                            : 'border-gray-200 hover:border-orange-400 cursor-pointer'
+                        }`}
+                        disabled={isSelected}
+                      >
+                        <img 
+                          src={img.url} 
+                          alt={img.label}
+                          className="w-full h-14 object-cover"
+                        />
+                        <span className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[10px] py-0.5 text-center">
+                          {img.label}
+                        </span>
+                        {isSelected && (
+                          <div className="absolute inset-0 bg-green-500/30 flex items-center justify-center">
+                            <span className="text-green-700 font-bold">✓</span>
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
+            {/* Eigene URL (optional) */}
+            {(!newAuction.restaurant_images || newAuction.restaurant_images.length < 5) && (
+              <div className="mt-3">
+                <p className="text-xs text-gray-400 mb-1">Oder eigene Bild-URL einfügen:</p>
+                <div className="flex gap-2">
+                  <Input 
+                    value={imageUrlInput}
+                    onChange={(e) => setImageUrlInput(e.target.value)}
+                    className="bg-white border-gray-200 flex-1 text-sm"
+                    placeholder="https://..."
+                    type="url"
+                  />
+                  <Button
+                    type="button"
+                    onClick={addRestaurantImage}
+                    variant="outline"
+                    size="sm"
+                    className="border-orange-300 text-orange-600"
+                  >
+                    <Plus className="w-4 h-4" />
                 </Button>
               </div>
             )}
