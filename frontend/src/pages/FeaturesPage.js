@@ -87,6 +87,8 @@ const translations = {
     giftsDesc: 'Gift BidBlitz bids',
     alarm: 'Bid Alarm',
     alarmDesc: 'Notifications for auctions',
+    restaurantVouchers: 'Restaurant Vouchers',
+    restaurantVouchersDesc: 'Save at partner restaurants',
     dailyQuests: 'Daily Quests',
     dailyRewards: 'Daily Rewards',
     battlePass: 'Battle Pass',
