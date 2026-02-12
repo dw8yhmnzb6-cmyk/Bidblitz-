@@ -111,9 +111,9 @@ const AdminRestaurantApplications = () => {
 
   const getStatusBadge = (status) => {
     const badges = {
-      pending: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      approved: 'bg-green-500/20 text-green-400 border-green-500/30',
-      rejected: 'bg-red-500/20 text-red-400 border-red-500/30'
+      pending: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+      approved: 'bg-green-100 text-green-700 border-green-300',
+      rejected: 'bg-red-100 text-red-700 border-red-300'
     };
     const labels = {
       pending: 'Ausstehend',
@@ -132,11 +132,11 @@ const AdminRestaurantApplications = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
             <Building2 className="w-6 h-6 text-orange-500" />
             Restaurant-Partner Bewerbungen
           </h2>
-          <p className="text-gray-400 text-sm mt-1">
+          <p className="text-gray-500 text-sm mt-1">
             Verwalten Sie eingehende Partner-Anfragen
           </p>
         </div>
@@ -144,7 +144,7 @@ const AdminRestaurantApplications = () => {
           onClick={fetchApplications}
           variant="outline"
           size="sm"
-          className="border-gray-600 text-gray-300 hover:bg-gray-700"
+          className="border-orange-300 text-orange-600 hover:bg-orange-50"
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           Aktualisieren
@@ -153,21 +153,21 @@ const AdminRestaurantApplications = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700">
-          <p className="text-gray-400 text-sm">Gesamt</p>
-          <p className="text-2xl font-bold text-white">{stats.total}</p>
+        <div className="bg-gray-100 rounded-xl p-4 border border-gray-200">
+          <p className="text-gray-500 text-sm">Gesamt</p>
+          <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
         </div>
-        <div className="bg-yellow-500/10 rounded-xl p-4 border border-yellow-500/30">
-          <p className="text-yellow-400 text-sm">Ausstehend</p>
-          <p className="text-2xl font-bold text-yellow-400">{stats.pending}</p>
+        <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
+          <p className="text-yellow-600 text-sm">Ausstehend</p>
+          <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
         </div>
-        <div className="bg-green-500/10 rounded-xl p-4 border border-green-500/30">
-          <p className="text-green-400 text-sm">Genehmigt</p>
-          <p className="text-2xl font-bold text-green-400">{stats.approved}</p>
+        <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+          <p className="text-green-600 text-sm">Genehmigt</p>
+          <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
         </div>
-        <div className="bg-red-500/10 rounded-xl p-4 border border-red-500/30">
-          <p className="text-red-400 text-sm">Abgelehnt</p>
-          <p className="text-2xl font-bold text-red-400">{stats.rejected}</p>
+        <div className="bg-red-50 rounded-xl p-4 border border-red-200">
+          <p className="text-red-600 text-sm">Abgelehnt</p>
+          <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
         </div>
       </div>
 
