@@ -679,6 +679,14 @@ async def bot_last_second_bidder():
                     product = products_cache.get(product_id) if product_id else None
                     retail_price = product.get("retail_price", 0) if product else 0
                     
+                    # RESTAURANT-AUKTIONEN: Prüfe eingebettetes Produkt
+                    if not retail_price and auction.get("product"):
+                        embedded_product = auction.get("product", {})
+                        retail_price = embedded_product.get("retail_price", 0)
+                    
+                    # FALLBACK: Nutze bot_target_price wenn gesetzt
+                    explicit_target = auction.get("bot_target_price")
+                    
                     # Berechne Target basierend auf UVP
                     # Faustregel: ~3-8% des UVP als Mindest-Endpreis
                     if retail_price >= 2000:
