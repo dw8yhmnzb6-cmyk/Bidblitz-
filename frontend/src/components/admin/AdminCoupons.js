@@ -170,49 +170,49 @@ export default function AdminCoupons() {
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-              <Ticket className="w-5 h-5 text-purple-500" />
+      {/* Stats - Mobile optimized grid */}
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
+        <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+              <Ticket className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-800">{coupons.length}</p>
-              <p className="text-xs text-gray-500">Gesamt</p>
-            </div>
-          </div>
-        </div>
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-800">{activeCoupons.length}</p>
-              <p className="text-xs text-gray-500">Aktiv</p>
+            <div className="min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">{coupons.length}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 truncate">Gesamt</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-blue-500" />
+        <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+              <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-800">{totalRedemptions}</p>
-              <p className="text-xs text-gray-500">Einlösungen</p>
+            <div className="min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">{activeCoupons.length}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 truncate">Aktiv</p>
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-              <Gift className="w-5 h-5 text-amber-500" />
+        <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
             </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-800">{totalBidsGiven}</p>
-              <p className="text-xs text-gray-500">Gebote vergeben</p>
+            <div className="min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">{totalRedemptions}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 truncate">Einlösungen</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-xl p-3 sm:p-4 border border-gray-100 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-amber-100 flex items-center justify-center flex-shrink-0">
+              <Gift className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">{totalBidsGiven}</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 truncate">Gebote vergeben</p>
             </div>
           </div>
         </div>
