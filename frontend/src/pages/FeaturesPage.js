@@ -25,19 +25,20 @@ import {
 
 const translations = {
   de: {
-    title: 'Features & Extras',
+    title: 'Funktionen & Extras',
     subtitle: 'Entdecke alle BidBlitz Vorteile',
-    gamification: 'Gamification',
-    social: 'Social Features',
+    gamification: 'Spielfeatures',
+    social: 'Soziale Funktionen',
     rewards: 'Belohnungen',
     extras: 'Extras',
+    utilities: 'Nützliche Funktionen',
     duels: 'Duelle',
     duelsDesc: '1v1 gegen andere Bieter',
-    betting: 'Social Betting',
+    betting: 'Soziale Wetten',
     bettingDesc: 'Wette auf Auktionsgewinner',
     teams: 'Team-Bieten',
     teamsDesc: 'Bilde ein Team und gewinne zusammen',
-    battles: 'Freunde-Battles',
+    battles: 'Freunde-Kämpfe',
     battlesDesc: 'Kämpfe gegen deine Freunde',
     aiAdvisor: 'KI-Berater',
     aiAdvisorDesc: 'Intelligente Gebot-Empfehlungen',
@@ -49,15 +50,16 @@ const translations = {
     alarmDesc: 'Benachrichtigungen für Auktionen',
     dailyQuests: 'Tägliche Aufgaben',
     dailyRewards: 'Tägliche Belohnungen',
-    battlePass: 'Battle Pass',
+    battlePass: 'Saison-Pass',
     achievements: 'Erfolge',
     tournaments: 'Turniere',
-    dealRadar: 'Deal-Radar',
-    priceAlerts: 'Preis-Alerts',
+    dealRadar: 'Angebots-Radar',
+    priceAlerts: 'Preis-Benachrichtigungen',
     vipDashboard: 'VIP-Übersicht',
     goToAuctions: 'Zu den Auktionen',
     explore: 'Entdecken',
-    comingSoon: 'Demnächst'
+    comingSoon: 'Demnächst',
+    newBadge: 'NEU'
   },
   en: {
     title: 'Features & Extras',
@@ -66,6 +68,7 @@ const translations = {
     social: 'Social Features',
     rewards: 'Rewards',
     extras: 'Extras',
+    utilities: 'Utilities',
     duels: 'Duels',
     duelsDesc: '1v1 against other bidders',
     betting: 'Social Betting',
@@ -92,7 +95,8 @@ const translations = {
     vipDashboard: 'VIP Dashboard',
     goToAuctions: 'Go to Auctions',
     explore: 'Explore',
-    comingSoon: 'Coming Soon'
+    comingSoon: 'Coming Soon',
+    newBadge: 'NEW'
   },
   sq: {
     title: 'Veçoritë & Ekstra',
@@ -101,6 +105,7 @@ const translations = {
     social: 'Veçori Sociale',
     rewards: 'Shpërblimet',
     extras: 'Ekstra',
+    utilities: 'Veglat',
     duels: 'Duelet',
     duelsDesc: '1v1 kundër ofertuesve të tjerë',
     betting: 'Bastet Sociale',
@@ -119,7 +124,7 @@ const translations = {
     alarmDesc: 'Njoftime për ankande',
     dailyQuests: 'Detyrat Ditore',
     dailyRewards: 'Shpërblimet Ditore',
-    battlePass: 'Battle Pass',
+    battlePass: 'Pasaporta e Sezonit',
     achievements: 'Arritjet',
     tournaments: 'Turnetë',
     dealRadar: 'Radari i Ofertave',
@@ -127,7 +132,8 @@ const translations = {
     vipDashboard: 'Paneli VIP',
     goToAuctions: 'Shko te Ankandat',
     explore: 'Eksploro',
-    comingSoon: 'Së Shpejti'
+    comingSoon: 'Së Shpejti',
+    newBadge: 'E RE'
   }
 };
 
