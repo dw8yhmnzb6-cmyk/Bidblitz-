@@ -258,7 +258,7 @@ const FeaturesPage = () => {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {rewardFeatures.map((feature, idx) => (
-            <FeatureCard key={idx} {...feature} navigate={navigate} />
+            <FeatureCard key={idx} {...feature} navigate={navigate} newBadge={t.newBadge} />
           ))}
         </div>
       </div>
