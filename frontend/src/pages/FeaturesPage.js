@@ -20,7 +20,7 @@ import SustainabilitySection from '../components/SustainabilitySection';
 import { 
   Trophy, Gift, Zap, Target, Star, Users, 
   Swords, Brain, Ticket, Bell, Crown, TrendingUp,
-  Calendar, Award, Shield, Gamepad2, Coins
+  Calendar, Award, Shield, Gamepad2, Coins, Utensils
 } from 'lucide-react';
 
 const translations = {
