@@ -682,14 +682,16 @@ async def bot_last_second_bidder():
                     # SUPER URGENT: Wenn weniger als 15 Sekunden, SOFORT bieten!
                     if is_super_urgent:
                         should_bid = True
-                        target_price = FINAL_TARGET
+                        target_price = max(FINAL_TARGET, 25.0)  # Mindestens €25
+                        logger.warning(f"🚨 SUPER URGENT: Auction {auction_id[:8]} at €{current_price:.2f} with only {seconds_left:.0f}s left! BIDDING NOW!")
                     
-                    # URGENT: Wenn weniger als 60 Sekunden, schnell bieten!
+                    # URGENT: Wenn weniger als 60 Sekunden und Preis zu niedrig
                     elif is_urgent:
                         should_bid = True
-                        target_price = FINAL_TARGET
+                        target_price = max(FINAL_TARGET, 20.0)  # Mindestens €20
+                        logger.warning(f"🚨 URGENT: Auction {auction_id[:8]} at €{current_price:.2f} with {seconds_left:.0f}s left! BIDDING!")
                     
-                    # PHASE 1: Frühes Bieten bis €3-3,50
+                    # PHASE 1: Früh bieten bis €3-3,50
                     elif in_phase1 and not in_endspurt:
                         # Bots bieten langsam bis Phase 1 Target
                         target_price = PHASE1_TARGET
