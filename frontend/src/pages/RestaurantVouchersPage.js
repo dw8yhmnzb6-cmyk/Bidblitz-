@@ -4,7 +4,8 @@ import { useTheme } from '../context/ThemeContext';
 import { 
   Utensils, MapPin, ExternalLink, Tag, Clock, 
   Percent, Euro, Gift, ChevronRight, Search,
-  Star, Heart, Filter, Sparkles
+  Star, Heart, Filter, Sparkles, Send, Building2,
+  User, Mail, Phone, Globe, FileText, CheckCircle
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
@@ -34,6 +35,33 @@ const translations = {
     filterNearby: 'In der Nähe',
     filterHighValue: 'Hoher Wert',
     errorLoading: 'Fehler beim Laden der Gutscheine',
+    // Partner Application Form
+    becomePartner: 'Partner werden',
+    becomePartnerSubtitle: 'Bewerben Sie sich als Restaurant-Partner und erreichen Sie neue Kunden!',
+    benefitsTitle: 'Ihre Vorteile als Partner',
+    benefit1: 'Kostenlose Werbung auf unserer Plattform',
+    benefit2: 'Neue Kunden durch Gutschein-Aktionen',
+    benefit3: 'Einfache Verwaltung Ihrer Gutscheine',
+    benefit4: 'Erhöhte Sichtbarkeit in Ihrer Region',
+    formTitle: 'Jetzt bewerben',
+    restaurantName: 'Restaurant-Name',
+    contactName: 'Ansprechpartner',
+    email: 'E-Mail-Adresse',
+    phone: 'Telefon (optional)',
+    website: 'Website (optional)',
+    addressField: 'Straße & Hausnummer',
+    city: 'Stadt',
+    description: 'Was macht Ihr Restaurant besonders?',
+    voucherType: 'Gutschein-Art',
+    voucherTypeDiscount: 'Prozent-Rabatt',
+    voucherTypeEuro: 'Euro-Gutschein',
+    voucherValueLabel: 'Gutschein-Wert',
+    message: 'Zusätzliche Nachricht (optional)',
+    submitApplication: 'Bewerbung absenden',
+    submitting: 'Wird gesendet...',
+    applicationSuccess: 'Vielen Dank! Ihre Bewerbung wurde erfolgreich eingereicht.',
+    applicationError: 'Fehler beim Senden der Bewerbung',
+    requiredField: 'Pflichtfeld',
     categories: {
       restaurant: 'Restaurant',
       cafe: 'Café',
