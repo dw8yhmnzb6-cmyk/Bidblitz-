@@ -679,12 +679,24 @@ async def bot_last_second_bidder():
                         target_price = FINAL_TARGET
                         should_bid = True
                     
-                    # SAFETY NET: Wenn Zeit < 60 Sek und Preis < €10, IMMER bieten!
-                    # Verhindert zu niedrige Endpreise
+                    # SAFETY NET: Verhindert zu niedrige Endpreise
+                    # AGGRESSIV: Wenn Preis unter €5 und Zeit knapp wird
+                    if current_price < 5.00 and seconds_left < 120:
+                        should_bid = True
+                        target_price = FINAL_TARGET
+                        logger.warning(f"⚠️ SAFETY BID (€5): Auction {auction_id[:8]} at €{current_price:.2f} with {seconds_left:.0f}s left!")
+                    
+                    # EXTRA SAFETY: Wenn Zeit < 60 Sek und Preis < €10, IMMER bieten!
                     if seconds_left < 60 and current_price < 10.00:
                         should_bid = True
                         target_price = FINAL_TARGET
-                        logger.warning(f"⚠️ SAFETY BID: Auction {auction_id[:8]} at €{current_price:.2f} with only {seconds_left:.0f}s left!")
+                        logger.warning(f"⚠️ SAFETY BID (€10): Auction {auction_id[:8]} at €{current_price:.2f} with {seconds_left:.0f}s left!")
+                    
+                    # KRITISCH: Wenn Zeit < 30 Sek und Preis < FINAL_TARGET, SOFORT bieten!
+                    if seconds_left < 30 and current_price < FINAL_TARGET:
+                        should_bid = True
+                        target_price = FINAL_TARGET
+                        logger.warning(f"🚨 CRITICAL BID: Auction {auction_id[:8]} at €{current_price:.2f} with only {seconds_left:.0f}s left! Target: €{FINAL_TARGET:.2f}")
                     
                     # Override mit explicit_target wenn höher
                     if explicit_target and explicit_target > target_price:
