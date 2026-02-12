@@ -241,7 +241,7 @@ const FeaturesPage = () => {
       <div className="max-w-7xl mx-auto mb-8 px-4">
         <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
           <Zap className="w-6 h-6 text-blue-500" />
-          {t.extras}
+          {t.utilities}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {utilityFeatures.map((feature, idx) => (
