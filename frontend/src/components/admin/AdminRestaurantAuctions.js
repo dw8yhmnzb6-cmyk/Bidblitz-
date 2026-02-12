@@ -753,7 +753,7 @@ export default function AdminRestaurantAuctions({ token, API }) {
                         className="w-10 h-10 object-contain rounded-lg"
                       />
                     ) : (
-                      <Utensils className={`w-7 h-7 ${auction.status === 'active' ? 'text-orange-500' : 'text-gray-400'}`} />
+                      <Utensils className={`w-7 h-7 ${(auction.status === 'active' || auction.status === 'day_paused') ? 'text-orange-500' : 'text-gray-400'}`} />
                     )}
                   </div>
                   
@@ -764,11 +764,11 @@ export default function AdminRestaurantAuctions({ token, API }) {
                         {auction.restaurant_info?.name || 'Restaurant'}
                       </h3>
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        auction.status === 'active' 
+                        (auction.status === 'active' || auction.status === 'day_paused')
                           ? 'bg-green-100 text-green-700' 
                           : 'bg-gray-100 text-gray-600'
                       }`}>
-                        {auction.status === 'active' ? 'Aktiv' : 'Beendet'}
+                        {(auction.status === 'active' || auction.status === 'day_paused') ? 'Aktiv' : 'Beendet'}
                       </span>
                     </div>
                     
