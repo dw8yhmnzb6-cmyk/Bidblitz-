@@ -1209,6 +1209,7 @@ export default function Admin() {
     { id: 'users', label: at('users'), icon: <Users className="w-5 h-5" /> },
     { id: 'staff', label: language === 'en' ? 'Staff' : 'Mitarbeiter', icon: <UserPlus className="w-5 h-5" /> },
     { id: 'vouchers', label: at('vouchers'), icon: <Ticket className="w-5 h-5" /> },
+    { id: 'restaurant-vouchers', label: '🍽️ Restaurant-Gutscheine', icon: <Ticket className="w-5 h-5" />, highlight: true },
     { id: 'bots', label: at('bots'), icon: <Bot className="w-5 h-5" /> },
     { id: 'email', label: at('email'), icon: <Mail className="w-5 h-5" /> },
     { id: 'pages', label: at('pages'), icon: <FileText className="w-5 h-5" /> },
