@@ -1429,6 +1429,14 @@ export default function Admin() {
             />
           )}
 
+          {/* Restaurant Vouchers Tab */}
+          {activeTab === 'restaurant-vouchers' && (
+            <AdminRestaurantVouchers
+              token={token}
+              API={API}
+            />
+          )}
+
           {/* Bots Tab */}
           {activeTab === 'bots' && (
             <div className="space-y-8">
