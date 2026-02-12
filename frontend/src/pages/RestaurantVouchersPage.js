@@ -243,6 +243,59 @@ const RestaurantVouchersPage = () => {
     }
   };
 
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // Submit partner application
+  const handleSubmitApplication = async (e) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!formData.restaurant_name || !formData.contact_name || !formData.email || !formData.address || !formData.city || !formData.description) {
+      toast.error(t.requiredField);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/vouchers/restaurant-partner/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setApplicationSuccess(true);
+        toast.success(t.applicationSuccess);
+        // Reset form
+        setFormData({
+          restaurant_name: '',
+          contact_name: '',
+          email: '',
+          phone: '',
+          website: '',
+          address: '',
+          city: '',
+          description: '',
+          voucher_type: 'discount',
+          voucher_value: 10,
+          message: ''
+        });
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || t.applicationError);
+      }
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      toast.error(t.applicationError);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // Filter restaurants based on search term
   const filteredRestaurants = restaurants.filter(restaurant => {
     const matchesSearch = restaurant.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
