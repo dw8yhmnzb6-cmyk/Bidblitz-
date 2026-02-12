@@ -248,23 +248,33 @@ const DuelsPage = () => {
         </div>
 
         {/* Create Duel Button */}
-        <div className="mb-6">
-          <Button 
-            onClick={() => setShowCreate(!showCreate)}
-            className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-4 rounded-xl font-bold text-lg"
-          >
-            <Swords className="w-5 h-5 mr-2" />
-            {t.createDuel}
-          </Button>
-        </div>
+        {!showCreate && (
+          <div className="mb-6">
+            <Button 
+              onClick={() => setShowCreate(true)}
+              className="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white py-4 rounded-xl font-bold text-lg"
+            >
+              <Swords className="w-5 h-5 mr-2" />
+              {t.createDuel}
+            </Button>
+          </div>
+        )}
 
         {/* Create Duel Form */}
         {showCreate && (
           <div className="bg-gray-800/80 backdrop-blur rounded-xl p-6 mb-6 border border-red-500/30">
-            <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-              <Target className="w-5 h-5 text-red-500" />
-              {t.createDuel}
-            </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-bold flex items-center gap-2">
+                <Target className="w-5 h-5 text-red-500" />
+                {t.createDuel}
+              </h3>
+              <button 
+                onClick={() => setShowCreate(false)}
+                className="text-gray-400 hover:text-white p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
             
             <div className="space-y-4">
               {/* Bet Amount */}
