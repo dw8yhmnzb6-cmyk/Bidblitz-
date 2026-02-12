@@ -5,7 +5,7 @@ import {
   Utensils, MapPin, ExternalLink, Tag, Clock, 
   Percent, Euro, Gift, ChevronRight, Search,
   Star, Heart, Filter, Sparkles, Send, Building2,
-  User, Mail, Phone, Globe, FileText, CheckCircle
+  User, Mail, Phone, Globe, FileText, CheckCircle, Users
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
