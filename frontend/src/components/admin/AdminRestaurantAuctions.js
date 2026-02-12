@@ -54,6 +54,32 @@ export default function AdminRestaurantAuctions({ token, API }) {
     });
   };
 
+  // Vordefinierte Restaurant-Bilder zur Auswahl
+  const presetImages = [
+    { url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400", label: "Restaurant 1" },
+    { url: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400", label: "Restaurant 2" },
+    { url: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400", label: "Essen 1" },
+    { url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400", label: "Essen 2" },
+    { url: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400", label: "Pizza" },
+    { url: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400", label: "Salat" },
+    { url: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=400", label: "Außen 1" },
+    { url: "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=400", label: "Terrasse" },
+    { url: "https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=400", label: "Cafe" },
+    { url: "https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=400", label: "Eiscafe" },
+    { url: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400", label: "Tische" },
+    { url: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400", label: "Steak" }
+  ];
+
+  // Add preset image
+  const addPresetImage = (url) => {
+    if (newAuction.restaurant_images.length < 5 && !newAuction.restaurant_images.includes(url)) {
+      setNewAuction({
+        ...newAuction,
+        restaurant_images: [...newAuction.restaurant_images, url]
+      });
+    }
+  };
+
   // Fetch existing restaurant auctions
   const fetchAuctions = async () => {
     setLoading(true);
