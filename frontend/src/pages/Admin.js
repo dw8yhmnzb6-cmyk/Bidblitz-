@@ -1439,6 +1439,11 @@ export default function Admin() {
             />
           )}
 
+          {/* Restaurant Partner Applications Tab */}
+          {activeTab === 'restaurant-applications' && (
+            <AdminRestaurantApplications />
+          )}
+
           {/* Bots Tab */}
           {activeTab === 'bots' && (
             <div className="space-y-8">
