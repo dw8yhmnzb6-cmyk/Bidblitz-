@@ -797,26 +797,234 @@ export default function AdminRestaurantAuctions({ token, API }) {
               
               {/* Voucher Code */}
               {auction.voucher_code && (
-                <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between flex-wrap gap-2">
                   <span className="text-xs text-gray-500">
                     Gutschein-Code: <code className="bg-gray-100 px-2 py-0.5 rounded font-mono">{auction.voucher_code}</code>
                   </span>
                   
-                  {auction.restaurant_info?.url && (
-                    <a 
-                      href={auction.restaurant_info.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-orange-500 hover:text-orange-600 text-xs flex items-center gap-1"
+                  <div className="flex items-center gap-2">
+                    {auction.restaurant_info?.url && (
+                      <a 
+                        href={auction.restaurant_info.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-orange-500 hover:text-orange-600 text-xs flex items-center gap-1"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Website
+                      </a>
+                    )}
+                    
+                    {/* Bearbeiten Button */}
+                    <Button
+                      onClick={() => startEditing(auction)}
+                      variant="outline"
+                      size="sm"
+                      className="border-blue-300 text-blue-600 hover:bg-blue-50"
                     >
-                      <ExternalLink className="w-3 h-3" />
-                      Website
-                    </a>
-                  )}
+                      <Edit2 className="w-3 h-3 mr-1" />
+                      Bearbeiten
+                    </Button>
+                    
+                    {/* Löschen Button */}
+                    <Button
+                      onClick={() => handleDelete(auction.id)}
+                      variant="outline"
+                      size="sm"
+                      className="border-red-300 text-red-600 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* BEARBEITEN MODAL */}
+      {editingId && editData && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-blue-500" />
+                Restaurant-Auktion bearbeiten
+              </h3>
+              <button
+                onClick={cancelEdit}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Restaurant Name */}
+              <div>
+                <Label className="text-gray-700 text-sm">Restaurant-Name</Label>
+                <Input 
+                  value={editData.restaurant_name || ''}
+                  onChange={(e) => setEditData({...editData, restaurant_name: e.target.value})}
+                  className="bg-white border-gray-200"
+                />
+              </div>
+              
+              {/* Adresse */}
+              <div>
+                <Label className="text-gray-700 text-sm">Adresse</Label>
+                <Input 
+                  value={editData.restaurant_address || ''}
+                  onChange={(e) => setEditData({...editData, restaurant_address: e.target.value})}
+                  className="bg-white border-gray-200"
+                />
+              </div>
+              
+              {/* Website */}
+              <div>
+                <Label className="text-gray-700 text-sm">Website</Label>
+                <Input 
+                  value={editData.restaurant_url || ''}
+                  onChange={(e) => setEditData({...editData, restaurant_url: e.target.value})}
+                  className="bg-white border-gray-200"
+                  type="url"
+                />
+              </div>
+              
+              {/* Gutscheinwert */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-gray-700 text-sm">Gutscheinwert (€)</Label>
+                  <Input 
+                    type="number"
+                    value={editData.voucher_value || 25}
+                    onChange={(e) => setEditData({...editData, voucher_value: parseInt(e.target.value) || 25})}
+                    className="bg-white border-gray-200"
+                    min="5"
+                  />
+                </div>
+                <div>
+                  <Label className="text-gray-700 text-sm">Bot-Zielpreis (€)</Label>
+                  <Input 
+                    type="number"
+                    step="0.01"
+                    value={editData.bot_target_price || 8}
+                    onChange={(e) => setEditData({...editData, bot_target_price: parseFloat(e.target.value) || 8})}
+                    className="bg-white border-gray-200"
+                  />
+                </div>
+              </div>
+              
+              {/* Beschreibung */}
+              <div>
+                <Label className="text-gray-700 text-sm">Beschreibung</Label>
+                <Input 
+                  value={editData.description || ''}
+                  onChange={(e) => setEditData({...editData, description: e.target.value})}
+                  className="bg-white border-gray-200"
+                />
+              </div>
+              
+              {/* Bilder bearbeiten */}
+              <div>
+                <Label className="text-gray-700 text-sm mb-2 block">Restaurant-Fotos</Label>
+                
+                {/* Upload Button für Edit */}
+                {(!editData.restaurant_images || editData.restaurant_images.length < 5) && (
+                  <div className="mb-3">
+                    <input
+                      ref={editFileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={(e) => handleFileUpload(e, false, true)}
+                      className="hidden"
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => editFileInputRef.current?.click()}
+                      variant="outline"
+                      className="border-orange-300 text-orange-600 w-full"
+                      disabled={uploading}
+                    >
+                      {uploading ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4 mr-2" />
+                      )}
+                      Eigene Fotos hochladen
+                    </Button>
+                  </div>
+                )}
+                
+                {/* Vorhandene Bilder */}
+                {editData.restaurant_images && editData.restaurant_images.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {editData.restaurant_images.map((img, idx) => (
+                      <div key={idx} className="relative">
+                        <img 
+                          src={img} 
+                          alt={`Restaurant ${idx + 1}`}
+                          className="w-20 h-20 object-cover rounded-lg border border-gray-200"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeRestaurantImage(idx, true)}
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm font-bold"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {/* Preset Bilder hinzufügen */}
+                {(!editData.restaurant_images || editData.restaurant_images.length < 5) && (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-2">Oder vordefinierte Bilder:</p>
+                    <div className="grid grid-cols-6 gap-1">
+                      {presetImages.slice(0, 6).map((img, idx) => {
+                        const isSelected = editData.restaurant_images?.includes(img.url);
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => !isSelected && addPresetImage(img.url, true)}
+                            className={`relative overflow-hidden rounded border ${
+                              isSelected ? 'border-green-500 opacity-50' : 'border-gray-200 hover:border-orange-400'
+                            }`}
+                            disabled={isSelected}
+                          >
+                            <img src={img.url} alt={img.label} className="w-full h-10 object-cover" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Action Buttons */}
+            <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+              <Button
+                onClick={cancelEdit}
+                variant="outline"
+                className="flex-1"
+              >
+                Abbrechen
+              </Button>
+              <Button
+                onClick={saveEdit}
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Speichern
+              </Button>
+            </div>
+          </div>
         </div>
       )}
     </div>
