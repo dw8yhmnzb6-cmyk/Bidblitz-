@@ -502,15 +502,37 @@ async def bot_last_second_bidder():
                     # Each auction gets a random offset so bots don't bid simultaneously
                     auction_start_offset[aid] = random.uniform(0, 90)
             
-            # PRIORITIZE auctions ending soon (< 30 seconds) - process ALL of them
-            urgent_auctions = [a for a in active_auctions if (datetime.fromisoformat(a["end_time"].replace("Z", "+00:00")) - now).total_seconds() < 30]
+            # PRIORITIZE auctions ending soon - ALWAYS process these first!
+            # This is CRITICAL to prevent auctions ending at €0.02
+            urgent_auctions = []
+            super_urgent_auctions = []
+            
+            for a in active_auctions:
+                try:
+                    end_time = datetime.fromisoformat(a["end_time"].replace("Z", "+00:00"))
+                    seconds_left = (end_time - now).total_seconds()
+                    current_price = float(a.get("current_price", 0))
+                    
+                    # SUPER URGENT: < 15 seconds AND price < €25
+                    if seconds_left < 15 and current_price < 25:
+                        super_urgent_auctions.append(a)
+                        logger.warning(f"🚨🚨 SUPER URGENT AUCTION: {a.get('title', 'Unknown')[:30]} - €{current_price:.2f} - {seconds_left:.0f}s left!")
+                    # URGENT: < 60 seconds AND price < €20
+                    elif seconds_left < 60 and current_price < 20:
+                        urgent_auctions.append(a)
+                        logger.warning(f"🚨 URGENT AUCTION: {a.get('title', 'Unknown')[:30]} - €{current_price:.2f} - {seconds_left:.0f}s left!")
+                    # MODERATE URGENT: < 120 seconds AND price < €10
+                    elif seconds_left < 120 and current_price < 10:
+                        urgent_auctions.append(a)
+                except:
+                    pass
             
             # Then shuffle and take some non-urgent ones
-            non_urgent = [a for a in active_auctions if a not in urgent_auctions]
+            non_urgent = [a for a in active_auctions if a not in urgent_auctions and a not in super_urgent_auctions]
             random.shuffle(non_urgent)
             
-            # Process ALL urgent + up to 3 non-urgent per cycle (more staggered)
-            auctions_to_process = urgent_auctions + non_urgent[:3]
+            # Process ALL super-urgent FIRST, then urgent, then up to 5 non-urgent
+            auctions_to_process = super_urgent_auctions + urgent_auctions + non_urgent[:5]
             
             for auction in auctions_to_process:
                 try:
