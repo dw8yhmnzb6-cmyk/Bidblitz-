@@ -185,76 +185,77 @@ const AdminSustainability = () => {
       </div>
 
       {/* Stats Editor */}
-      <div className="bg-white rounded-xl border border-emerald-200 p-6 shadow-sm">
+      <div className="bg-white rounded-xl border border-emerald-200 p-4 sm:p-6 shadow-sm overflow-hidden">
         <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-emerald-600" />
           Impact-Statistiken bearbeiten
         </h3>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        {/* Mobile: Vertical Stack, Tablet+: 2 cols, Desktop: 4 cols */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
           {/* Trees */}
-          <div className="space-y-2">
+          <div className="space-y-2 bg-emerald-50/50 p-3 rounded-lg">
             <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-              <TreePine className="w-4 h-4 text-emerald-500" />
-              Bäume gepflanzt
+              <TreePine className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+              <span className="truncate">Bäume gepflanzt</span>
             </label>
             <input
               type="number"
               value={editedStats.trees_planted || 0}
               onChange={(e) => setEditedStats({...editedStats, trees_planted: parseInt(e.target.value) || 0})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-base"
             />
           </div>
           
           {/* Projects */}
-          <div className="space-y-2">
+          <div className="space-y-2 bg-rose-50/50 p-3 rounded-lg">
             <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-              <Heart className="w-4 h-4 text-rose-500" />
-              Projekte unterstützt
+              <Heart className="w-4 h-4 text-rose-500 flex-shrink-0" />
+              <span className="truncate">Projekte unterstützt</span>
             </label>
             <input
               type="number"
               value={editedStats.projects_supported || 0}
               onChange={(e) => setEditedStats({...editedStats, projects_supported: parseInt(e.target.value) || 0})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-base"
             />
           </div>
           
           {/* CO2 */}
-          <div className="space-y-2">
+          <div className="space-y-2 bg-teal-50/50 p-3 rounded-lg">
             <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-              <Globe className="w-4 h-4 text-teal-500" />
-              CO₂ kompensiert (kg)
+              <Globe className="w-4 h-4 text-teal-500 flex-shrink-0" />
+              <span className="truncate">CO₂ kompensiert (kg)</span>
             </label>
             <input
               type="number"
               value={editedStats.co2_offset_kg || 0}
               onChange={(e) => setEditedStats({...editedStats, co2_offset_kg: parseInt(e.target.value) || 0})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-base"
             />
           </div>
           
           {/* Donations */}
-          <div className="space-y-2">
+          <div className="space-y-2 bg-amber-50/50 p-3 rounded-lg">
             <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-              <Heart className="w-4 h-4 text-rose-500" />
-              Spenden gesamt (€)
+              <Heart className="w-4 h-4 text-rose-500 flex-shrink-0" />
+              <span className="truncate">Spenden gesamt (€)</span>
             </label>
             <input
               type="number"
               step="0.01"
               value={editedStats.donations_total || 0}
               onChange={(e) => setEditedStats({...editedStats, donations_total: parseFloat(e.target.value) || 0})}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-base"
             />
           </div>
         </div>
         
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs text-gray-500">
             Zuletzt aktualisiert: {stats.last_updated ? new Date(stats.last_updated).toLocaleString('de-DE') : 'Nie'}
           </p>
-          <Button onClick={handleSaveStats} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
+          <Button onClick={handleSaveStats} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700 w-full sm:w-auto">
             {saving ? <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
             Speichern
           </Button>
