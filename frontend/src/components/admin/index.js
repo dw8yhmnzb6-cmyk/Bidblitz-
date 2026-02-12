@@ -8,6 +8,7 @@ export { default as AdminBots } from './AdminBots';
 export { default as AdminVouchers } from './AdminVouchers';
 export { default as AdminRestaurantVouchers } from './AdminRestaurantVouchers';
 export { default as AdminRestaurantApplications } from './AdminRestaurantApplications';
+export { default as AdminRestaurantAuctions } from './AdminRestaurantAuctions';
 export { default as AdminPayments } from './AdminPayments';
 export { default as AdminLogs } from './AdminLogs';
 export { AdminAuctions } from './AdminAuctions';
