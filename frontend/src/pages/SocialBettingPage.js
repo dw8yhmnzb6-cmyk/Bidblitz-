@@ -13,7 +13,7 @@ const API = process.env.REACT_APP_BACKEND_URL;
 
 const translations = {
   de: {
-    title: 'Social Betting',
+    title: 'Soziale Wetten',
     subtitle: 'Wette auf Auktionsgewinner und verdiene BidCoins!',
     balance: 'Dein Guthaben',
     currency: 'BidCoins',
