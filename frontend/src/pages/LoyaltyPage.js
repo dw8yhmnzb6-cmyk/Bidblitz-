@@ -54,6 +54,23 @@ const LoyaltyPage = () => {
       nextReward: 'Next reward in',
       points: 'points',
       redeemSuccess: 'Successfully redeemed!'
+    },
+    sq: {
+      title: 'Pikët e Besnikërisë',
+      subtitle: 'Mblidh pikë dhe shpërblehu me çmime!',
+      availablePoints: 'Pikë të Disponueshme',
+      lifetimePoints: 'Pikët Totale',
+      level: 'Niveli',
+      redeem: 'Shpërnda',
+      notEnough: 'Pikë të pamjaftueshme',
+      rewards: 'Shpërblimet',
+      history: 'Historia e Pikëve',
+      howToEarn: 'Si të fitosh pikë',
+      perEuro: 'pikë për €1 blerje',
+      perWin: 'pikë bonus për fitore',
+      nextReward: 'Shpërblimi i ardhshëm në',
+      points: 'pikë',
+      redeemSuccess: 'U shpërblye me sukses!'
     }
   };
   const t = texts[langKey] || texts.de;
