@@ -11,23 +11,41 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 #### ÜBERSETZUNGEN VERVOLLSTÄNDIGT ✅ (Features & Extras Seiten)
 
-**Problem:** Benutzer wechselte die Sprache, aber die Feature-Seiten blieben auf Deutsch.
+**Problem:** Benutzer wechselte die Sprache (z.B. Kosovo), aber Feature-Seiten blieben auf Deutsch.
 
-| Änderung | Details |
-|----------|---------|
-| **FeaturesPage.js** | Deutsche Texte vollständig übersetzt: "Gamification" → "Spielfeatures", "Social Betting" → "Soziale Wetten", etc. |
-| **Alle Feature-Seiten** | Kosovo (xk) Übersetzungen hinzugefügt für: FeaturesPage, FriendBattlesPage, DuelsPage, SocialBettingPage, TeamBiddingPage, AIAdvisorPage, VoucherAuctionsPage, GiftCardsPage, BidAlarmPage |
-| **translations.js** | Kosovo (xk) → Albanian (sq) Mapping hinzugefügt für Fallback |
+**Lösung:** Kosovo (xk) → Albanian (sq) Mapping hinzugefügt + sq/xk Übersetzungen zu allen Feature-Seiten
 
-**Geänderte Dateien:**
-- `/app/frontend/src/pages/FeaturesPage.js`
-- `/app/frontend/src/pages/FriendBattlesPage.js`
-- `/app/frontend/src/pages/DuelsPage.js`
-- `/app/frontend/src/pages/SocialBettingPage.js`
-- `/app/frontend/src/pages/TeamBiddingPage.js`
-- `/app/frontend/src/pages/AIAdvisorPage.js`
-- `/app/frontend/src/pages/VoucherAuctionsPage.js`
-- `/app/frontend/src/pages/GiftCardsPage.js`
+| Geänderte Datei | Änderung |
+|-----------------|----------|
+| **FeaturesPage.js** | xk Übersetzungen + deutsche Texte korrigiert ("Gamification" → "Spielfeatures") |
+| **FriendBattlesPage.js** | xk Übersetzungen hinzugefügt |
+| **DuelsPage.js** | xk Übersetzungen hinzugefügt |
+| **SocialBettingPage.js** | xk Übersetzungen + Titel korrigiert ("Social Betting" → "Soziale Wetten") |
+| **TeamBiddingPage.js** | xk Übersetzungen hinzugefügt |
+| **AIAdvisorPage.js** | xk Übersetzungen hinzugefügt |
+| **VoucherAuctionsPage.js** | xk Übersetzungen hinzugefügt |
+| **GiftCardsPage.js** | xk Übersetzungen hinzugefügt |
+| **BidAlarmPage.js** | xk Übersetzungen hinzugefügt |
+| **AchievementsPage.js** | sq + xk Übersetzungen hinzugefügt |
+| **Achievements.js** | sq + xk Übersetzungen hinzugefügt |
+| **TeamAuctionsPage.js** | sq + xk Übersetzungen hinzugefügt |
+| **FlashSalesPage.js** | sq Übersetzungen hinzugefügt |
+| **WinnerGallery.js** | sq Übersetzungen hinzugefügt |
+| **WishlistPage.js** | sq Übersetzungen hinzugefügt |
+| **LoyaltyPage.js** | sq Übersetzungen hinzugefügt |
+| **featureTranslations.js** | xk → sq Mapping hinzugefügt |
+| **translations.js** | xk → sq Mapping hinzugefügt |
+
+#### NOCH FEHLENDE ÜBERSETZUNGEN (P2)
+Diese Seiten haben noch keine sq/xk Übersetzungen:
+- BidBuddyPage.js
+- SubscriptionPage.js
+- BirthdayBonusPage.js
+- StreakProtectionPage.js
+- MyStatsPage.js
+- UserStats.js
+- Profile.js (teilweise)
+- Login/Register Seiten (teilweise)
 - `/app/frontend/src/pages/BidAlarmPage.js`
 - `/app/frontend/src/i18n/translations.js`
 
