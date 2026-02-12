@@ -789,7 +789,7 @@ export default function AdminRestaurantAuctions({ token, API }) {
                 <div className="flex items-center gap-6 text-sm">
                   <div className="text-center">
                     <p className="text-gray-400 text-xs">Preis</p>
-                    <p className={`font-bold ${auction.status === 'active' ? 'text-green-600' : 'text-gray-600'}`}>
+                    <p className={`font-bold ${(auction.status === 'active' || auction.status === 'day_paused') ? 'text-green-600' : 'text-gray-600'}`}>
                       €{(auction.current_price || 0).toFixed(2)}
                     </p>
                   </div>
@@ -800,7 +800,7 @@ export default function AdminRestaurantAuctions({ token, API }) {
                   <div className="text-center">
                     <p className="text-gray-400 text-xs">Restzeit</p>
                     <p className={`font-semibold ${
-                      auction.status === 'active' ? 'text-orange-600' : 'text-gray-500'
+                      (auction.status === 'active' || auction.status === 'day_paused') ? 'text-orange-600' : 'text-gray-500'
                     }`}>
                       {getTimeLeft(auction.end_time)}
                     </p>
