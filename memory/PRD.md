@@ -5,7 +5,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 12, 2026)
 
-### ✅ Session Update - February 12, 2026 (Session 13) - UI BUG FIXES
+### ✅ Session Update - February 12, 2026 (Session 13) - UI & BOT BUG FIXES
 
 **Abgeschlossen in dieser Session:**
 
@@ -28,11 +28,19 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 **Datei geändert:** `/app/frontend/src/components/admin/AdminAuctions.js`
 
+#### BOT-LOGIK VERBESSERT ✅ (Auktionen endeten zu billig)
+| Problem | Lösung |
+|---------|--------|
+| Bots boten nicht genug bei kurzen Auktionen | ✅ Bei Auktionen <15 Min: Sofort aggressives Bieten (keine Pause-Phase) |
+| Safety Net zu spät | ✅ Erweitertes Safety Net: Bei €5 (<120s), €10 (<60s), und Target (<30s) |
+| Timer nicht zurückgesetzt | ✅ Kritisches Bieten bei <30 Sekunden mit sofortigem Timer-Reset |
+
+**Datei geändert:** `/app/backend/server.py` (bot_last_second_bidder Funktion)
+
 #### TECHNISCHE ÄNDERUNGEN
-- **Datei geändert:** `/app/frontend/src/pages/DuelsPage.js`
-  - Button wird nur gezeigt wenn `!showCreate`
-  - Form wird nur gezeigt wenn `showCreate`
-  - X-Button zum Schließen der Form hinzugefügt
+- **Frontend:** `/app/frontend/src/pages/DuelsPage.js` - Doppelter Button Fix
+- **Frontend:** `/app/frontend/src/components/admin/AdminAuctions.js` - Sekunden-Option + Hinweistext
+- **Backend:** `/app/backend/server.py` - Verbesserte Bot-Logik für kurze Auktionen
 
 #### TESTING AGENT ERGEBNIS: 100% SUCCESS RATE
 - Alle 5 Bug-Verifikationen bestanden
