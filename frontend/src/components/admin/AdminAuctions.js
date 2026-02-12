@@ -366,6 +366,7 @@ export function AdminAuctions({ token, t, auctions, products, fetchData }) {
                     <Select value={newAuction.duration_unit} onValueChange={(value) => setNewAuction({...newAuction, duration_unit: value})}>
                       <SelectTrigger className="bg-[#0F0F16] border-white/10 text-white flex-1"><SelectValue /></SelectTrigger>
                       <SelectContent className="bg-[#181824] border-white/10">
+                        <SelectItem value="seconds" className="text-white hover:bg-white/10">Sekunden</SelectItem>
                         <SelectItem value="minutes" className="text-white hover:bg-white/10">Minuten</SelectItem>
                         <SelectItem value="hours" className="text-white hover:bg-white/10">Stunden</SelectItem>
                         <SelectItem value="days" className="text-white hover:bg-white/10">Tage</SelectItem>
