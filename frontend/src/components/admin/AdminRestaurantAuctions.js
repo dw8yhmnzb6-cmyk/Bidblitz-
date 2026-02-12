@@ -526,8 +526,45 @@ export default function AdminRestaurantAuctions({ token, API }) {
           <div className="mb-6">
             <Label className="text-gray-700 text-sm flex items-center gap-1 mb-2">
               <Image className="w-3 h-3" />
-              Restaurant-Fotos (bis zu 5) - Klicken zum Auswählen
+              Restaurant-Fotos (bis zu 5)
             </Label>
+            
+            {/* UPLOAD BUTTON - NEU */}
+            {(!newAuction.restaurant_images || newAuction.restaurant_images.length < 5) && (
+              <div className="mb-4 p-4 border-2 border-dashed border-orange-300 rounded-xl bg-orange-50/50">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => handleFileUpload(e, false, false)}
+                  className="hidden"
+                />
+                <div className="text-center">
+                  <Upload className="w-8 h-8 mx-auto mb-2 text-orange-400" />
+                  <p className="text-sm font-medium text-gray-700 mb-2">Eigene Fotos hochladen</p>
+                  <Button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="bg-orange-500 hover:bg-orange-600 text-white"
+                  >
+                    {uploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Wird hochgeladen...
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="w-4 h-4 mr-2" />
+                        Vom Gerät auswählen
+                      </>
+                    )}
+                  </Button>
+                  <p className="text-xs text-gray-400 mt-2">JPG, PNG, WebP • Max. 5MB pro Bild</p>
+                </div>
+              </div>
+            )}
             
             {/* Ausgewählte Bilder */}
             {newAuction.restaurant_images && newAuction.restaurant_images.length > 0 && (
@@ -557,7 +594,7 @@ export default function AdminRestaurantAuctions({ token, API }) {
             {/* Vorauswahl-Grid */}
             {(!newAuction.restaurant_images || newAuction.restaurant_images.length < 5) && (
               <div>
-                <p className="text-xs text-gray-500 mb-2">Bilder anklicken zum Hinzufügen:</p>
+                <p className="text-xs text-gray-500 mb-2">Oder vordefinierte Bilder anklicken:</p>
                 <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                   {presetImages.map((img, idx) => {
                     const isSelected = newAuction.restaurant_images?.includes(img.url);
@@ -596,7 +633,7 @@ export default function AdminRestaurantAuctions({ token, API }) {
             {/* Eigene URL (optional) */}
             {(!newAuction.restaurant_images || newAuction.restaurant_images.length < 5) && (
               <div className="mt-3">
-                <p className="text-xs text-gray-400 mb-1">Oder eigene Bild-URL einfügen:</p>
+                <p className="text-xs text-gray-400 mb-1">Oder Bild-URL einfügen:</p>
                 <div className="flex gap-2">
                   <Input 
                     value={imageUrlInput}
