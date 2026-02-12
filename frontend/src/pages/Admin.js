@@ -2776,9 +2776,10 @@ export default function Admin() {
                 )}
               </div>
 
-              {/* Promo Codes List */}
-              <div className="glass-card rounded-xl overflow-hidden">
-                <table className="w-full">
+              {/* Promo Codes List - Desktop Table */}
+              <div className="glass-card rounded-xl overflow-hidden hidden md:block">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
                   <thead className="bg-white">
                     <tr>
                       <th className="text-left text-gray-500 font-medium p-4">Code</th>
