@@ -33,17 +33,19 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 #### ✏️ Manager Bearbeiten & Flexible Provision ✅
 - **Neues Feature:** Manager können jetzt im Admin Panel bearbeitet werden
 - **Bearbeiten-Modal:** Name, Städte, Provision %, Aktiv-Status
-- **Flexible Provision:** Der Prozentsatz ist nicht mehr hardcoded auf 15%
-  - Jeder Manager kann einen individuellen Prozentsatz haben (0-100%)
-  - Die Anzeige zeigt den tatsächlichen Prozentsatz in der Tabelle
-- **Backend:** Nutzt bestehenden `PUT /api/manager/admin/{id}` Endpoint
+- **ZWEI separate Provisions-Einstellungen:**
+  - **Von Influencer-Einnahmen (%)** - Prozentsatz von Influencer-Provisionen
+  - **Von BidBlitz/Firma (%)** - Zusätzlicher Prozentsatz direkt von der Firma
+- **Helle UI:** Modals haben jetzt hellen Hintergrund für bessere Lesbarkeit
+- **Backend:** `company_commission_percent` Feld zu ManagerCreate/ManagerUpdate hinzugefügt
 
 #### Geänderte Dateien:
 - `/app/backend/routers/maintenance.py` - Schedule-Endpoints hinzugefügt
 - `/app/backend/routers/auctions.py` - Wartungsmodus-Prüfung in `place_bid`
+- `/app/backend/routers/manager.py` - `company_commission_percent` Feld hinzugefügt
 - `/app/frontend/src/components/admin/AdminMaintenance.js` - Planungs-UI
 - `/app/frontend/src/pages/TeamBiddingPage.js` - API-Pfade korrigiert
-- `/app/frontend/src/pages/Admin.js` - Manager Edit Modal, dynamische Prozent-Anzeige
+- `/app/frontend/src/pages/Admin.js` - Manager Edit Modal, zwei Prozent-Felder, helle Modals
 
 ---
 
