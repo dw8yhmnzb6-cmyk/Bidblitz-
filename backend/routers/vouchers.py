@@ -765,7 +765,8 @@ async def create_restaurant_voucher_auction(
             "address": data.restaurant_address,
             "url": data.restaurant_url,
             "logo": data.restaurant_logo,
-            "images": images
+            "images": images,
+            "category": data.restaurant_category  # NEU: Kategorie speichern
         },
         "auto_restart": True  # Kann neu gestartet werden
     }
