@@ -223,10 +223,10 @@ const SustainabilitySection = () => {
             {text.impactTitle}
             <Sparkles className="w-5 h-5 text-emerald-500" />
           </h3>
-          <div className="grid grid-cols-3 gap-4 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8">
             {/* Trees */}
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-emerald-600 mb-1">
+              <div className="text-2xl sm:text-4xl font-bold text-emerald-600 mb-1">
                 {impactStats.trees.toLocaleString()}
               </div>
               <div className="text-xs sm:text-sm text-gray-600 flex items-center justify-center gap-1">
@@ -237,7 +237,7 @@ const SustainabilitySection = () => {
             
             {/* Projects */}
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-rose-600 mb-1">
+              <div className="text-2xl sm:text-4xl font-bold text-rose-600 mb-1">
                 {impactStats.projects}
               </div>
               <div className="text-xs sm:text-sm text-gray-600 flex items-center justify-center gap-1">
@@ -248,12 +248,23 @@ const SustainabilitySection = () => {
             
             {/* CO2 */}
             <div className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold text-teal-600 mb-1">
+              <div className="text-2xl sm:text-4xl font-bold text-teal-600 mb-1">
                 {impactStats.co2.toLocaleString()}
               </div>
               <div className="text-xs sm:text-sm text-gray-600 flex items-center justify-center gap-1">
                 <Globe className="w-4 h-4 text-teal-500" />
                 {text.co2Saved}
+              </div>
+            </div>
+            
+            {/* Donations Total */}
+            <div className="text-center">
+              <div className="text-2xl sm:text-4xl font-bold text-amber-600 mb-1">
+                €{impactStats.donations.toLocaleString()}
+              </div>
+              <div className="text-xs sm:text-sm text-gray-600 flex items-center justify-center gap-1">
+                <Heart className="w-4 h-4 text-amber-500" />
+                {text.donationsTotal}
               </div>
             </div>
           </div>
