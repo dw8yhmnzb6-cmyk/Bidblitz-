@@ -50,6 +50,31 @@ Das Übersetzungssystem hatte mehrere kritische Probleme, die dazu führten, das
 - ✅ German (de): Standard funktioniert
 - ✅ Fallback-Mechanismus: Griechisch (el) fällt auf Deutsch zurück
 
+### ✅ P2-Aufgaben abgeschlossen (Februar 13, 2026)
+
+**1. Admin.js Refactoring** ✅
+- **Promo-Codes-Sektion extrahiert** in neue Komponente `AdminPromoCodes.js`
+- Admin.js reduziert von 3266 auf 2933 Zeilen (-333 Zeilen / -10%)
+- Neue Komponente ist eigenständig mit eigenem State-Management
+- Verbesserte Mobile-Ansicht mit hellem Theme
+
+**2. langMapping Zentralisierung** ✅
+- Neue Utility-Datei erstellt: `/app/frontend/src/utils/languageUtils.js`
+- Enthält alle Language-Mappings an einem zentralen Ort
+- Export-Funktionen: `langMapping`, `getMappedLanguage`, `getLanguageKey`, `supportedLanguages`
+- `translations.js` importiert jetzt von der zentralen Utility
+
+#### Neue Dateien:
+- `/app/frontend/src/components/admin/AdminPromoCodes.js` (302 Zeilen)
+- `/app/frontend/src/utils/languageUtils.js` (82 Zeilen)
+
+#### Geänderte Dateien:
+- `/app/frontend/src/pages/Admin.js` (Promo-Codes-Sektion durch Komponente ersetzt)
+- `/app/frontend/src/components/admin/index.js` (neuer Export)
+- `/app/frontend/src/i18n/translations.js` (importiert zentrale langMapping)
+
+---
+
 ### ✅ P2-Aufgabe: Mobile Admin-Ansicht verbessert (Februar 13, 2026)
 
 **Problem:** Die mobile Ansicht des Admin-Panels war zu dunkel, hatte zu wenig Abstand zwischen den Karten, und VIP-Buttons wurden abgeschnitten.
