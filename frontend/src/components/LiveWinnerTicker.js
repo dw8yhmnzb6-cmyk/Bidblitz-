@@ -74,8 +74,9 @@ const demoProducts = [
 ];
 
 export default function LiveWinnerTicker() {
-  const { language } = useLanguage();
-  const t = tickerTexts[language] || tickerTexts.de;
+  const { language, mappedLanguage } = useLanguage();
+  const langKey = mappedLanguage || language;
+  const t = tickerTexts[langKey] || tickerTexts.de;
   const [winners, setWinners] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
