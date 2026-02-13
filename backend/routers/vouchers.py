@@ -650,11 +650,22 @@ class CreateRestaurantAuctionRequest(BaseModel):
     restaurant_logo: Optional[str] = None
     restaurant_address: str
     restaurant_images: Optional[list] = []  # Liste von Restaurant-Fotos
+    restaurant_category: str = "restaurant"  # NEU: restaurant, cafe, eiscafe, bar, pizzeria, fastfood
     voucher_value: int = 25  # Euro-Wert des Gutscheins (NUR Euro, keine Prozente)
     description: str = "Genießen Sie ein leckeres Essen!"
     duration_hours: int = 24
     start_price: float = 0.01
     bot_target_price: Optional[float] = None  # Min-Preis für Bots
+
+# Kategorie-Emojis
+CATEGORY_EMOJIS = {
+    "restaurant": "🍽️",
+    "cafe": "☕",
+    "eiscafe": "🍦",
+    "bar": "🍸",
+    "pizzeria": "🍕",
+    "fastfood": "🍔"
+}
 
 
 @router.post("/admin/restaurant-auctions/create")
