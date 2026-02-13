@@ -971,6 +971,7 @@ class RestaurantAuctionUpdate(BaseModel):
     restaurant_logo: Optional[str] = None
     restaurant_address: Optional[str] = None
     restaurant_images: Optional[List[str]] = None
+    restaurant_category: Optional[str] = None  # NEU: Kategorie
     voucher_value: Optional[int] = None
     description: Optional[str] = None
     bot_target_price: Optional[float] = None
