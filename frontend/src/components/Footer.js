@@ -26,7 +26,8 @@ const footerTexts = {
     privacy: 'Datenschutz',
     terms: 'AGB',
     contact: 'Kontakt',
-    allRights: 'Alle Rechte vorbehalten'
+    allRights: 'Alle Rechte vorbehalten',
+    leaderboard: 'Rangliste'
   },
   en: {
     description: 'The leading penny auction platform in Dubai. Bid on premium products and save up to 95%!',
@@ -50,7 +51,8 @@ const footerTexts = {
     privacy: 'Privacy Policy',
     terms: 'Terms & Conditions',
     contact: 'Contact',
-    allRights: 'All rights reserved'
+    allRights: 'All rights reserved',
+    leaderboard: 'Leaderboard'
   },
   sq: {
     description: 'Platforma kryesore e ankandeve penny në Dubai. Ofroni për produkte premium dhe kurseni deri në 95%!',
@@ -74,7 +76,8 @@ const footerTexts = {
     privacy: 'Privatësia',
     terms: 'Kushtet',
     contact: 'Kontakti',
-    allRights: 'Të gjitha të drejtat e rezervuara'
+    allRights: 'Të gjitha të drejtat e rezervuara',
+    leaderboard: 'Renditja'
   },
   xk: {
     description: 'Platforma kryesore e ankandeve penny në Dubai. Ofroni për produkte premium dhe kurseni deri në 95%!',
@@ -98,7 +101,8 @@ const footerTexts = {
     privacy: 'Privatësia',
     terms: 'Kushtet',
     contact: 'Kontakti',
-    allRights: 'Të gjitha të drejtat e rezervuara'
+    allRights: 'Të gjitha të drejtat e rezervuara',
+    leaderboard: 'Renditja'
   },
   tr: {
     description: 'Dubai\'nin önde gelen kuruş açık artırma platformu. Premium ürünlere teklif verin ve %95\'e kadar tasarruf edin!',
@@ -121,7 +125,8 @@ const footerTexts = {
     privacy: 'Gizlilik Politikası',
     terms: 'Şartlar ve Koşullar',
     contact: 'İletişim',
-    allRights: 'Tüm hakları saklıdır'
+    allRights: 'Tüm hakları saklıdır',
+    leaderboard: 'Sıralama'
   },
   fr: {
     description: 'La principale plateforme d\'enchères au centime à Dubaï. Enchérissez sur des produits premium et économisez jusqu\'à 95%!',
@@ -144,7 +149,33 @@ const footerTexts = {
     privacy: 'Politique de Confidentialité',
     terms: 'CGV',
     contact: 'Contact',
-    allRights: 'Tous droits réservés'
+    allRights: 'Tous droits réservés',
+    leaderboard: 'Classement'
+  },
+  ar: {
+    description: 'منصة المزادات الرائدة في دبي. قدم عروضك على المنتجات المميزة ووفر حتى 95%!',
+    quickLinks: 'روابط سريعة',
+    liveAuctions: 'مزادات مباشرة',
+    buyBids: 'شراء العروض',
+    register: 'التسجيل',
+    login: 'تسجيل الدخول',
+    extras: 'إضافات',
+    becomeInfluencer: 'كن مؤثرًا',
+    influencerLogin: 'دخول المؤثرين',
+    wholesale: 'البيع بالجملة (B2B)',
+    vipMembership: 'عضوية VIP',
+    investors: 'للمستثمرين',
+    winners: 'الفائزون',
+    features: 'المميزات',
+    dealRadar: 'رادار الصفقات',
+    aiRecommendations: 'توصيات الذكاء الاصطناعي',
+    legal: 'قانوني',
+    imprint: 'البصمة',
+    privacy: 'سياسة الخصوصية',
+    terms: 'الشروط والأحكام',
+    contact: 'اتصل بنا',
+    allRights: 'جميع الحقوق محفوظة',
+    leaderboard: 'قائمة المتصدرين'
   }
 };
 
