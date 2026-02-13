@@ -1197,7 +1197,7 @@ export const translations = {
     }
   },
   pt: {
-    nav: { auctions: "Leilões", buyBids: "Comprar lances", dashboard: "Painel", admin: "Admin", login: "Entrar", register: "Registrar", logout: "Sair", bids: "Lances", winners: "Vencedores", inviteFriends: "Convidar amigos", wishlist: "Lista de desejos", howItWorks: "Como funciona", vip: "Assinatura VIP", faq: "FAQ", contact: "Contato" },
+    nav: { auctions: "Leilões", buyBids: "Comprar lances", dashboard: "Painel", admin: "Admin", login: "Entrar", register: "Registrar", logout: "Sair", bids: "Lances", winners: "Vencedores", inviteFriends: "Convidar amigos", wishlist: "Lista de desejos", howItWorks: "Como funciona", vip: "Assinatura VIP", faq: "FAQ", contact: "Contato", language: "Idioma", giftCards: "Cartões Presente", vipAuctions: "Leilões VIP", leaderboard: "Classificação", luckyWheel: "Roda da Sorte" },
     home: {
       badge: "10 lances grátis no registro",
       heroTitle1: "Ganhe",
@@ -1249,7 +1249,7 @@ export const translations = {
     common: { loading: "Carregando...", error: "Erro", success: "Sucesso", save: "Salvar", cancel: "Cancelar" }
   },
   nl: {
-    nav: { auctions: "Veilingen", buyBids: "Biedingen kopen", dashboard: "Dashboard", admin: "Admin", login: "Inloggen", register: "Registreren", logout: "Uitloggen", bids: "Biedingen", winners: "Winnaars", inviteFriends: "Vrienden uitnodigen", wishlist: "Verlanglijst", howItWorks: "Hoe het werkt", vip: "VIP Lidmaatschap", faq: "FAQ", contact: "Contact" },
+    nav: { auctions: "Veilingen", buyBids: "Biedingen kopen", dashboard: "Dashboard", admin: "Admin", login: "Inloggen", register: "Registreren", logout: "Uitloggen", bids: "Biedingen", winners: "Winnaars", inviteFriends: "Vrienden uitnodigen", wishlist: "Verlanglijst", howItWorks: "Hoe het werkt", vip: "VIP Lidmaatschap", faq: "FAQ", contact: "Contact", language: "Taal", giftCards: "Cadeaukaarten", vipAuctions: "VIP Veilingen", leaderboard: "Ranglijst", luckyWheel: "Rad van Fortuin" },
     home: {
       badge: "10 gratis biedingen bij registratie",
       heroTitle1: "Win",
@@ -1301,7 +1301,7 @@ export const translations = {
     common: { loading: "Laden...", error: "Fout", success: "Succes", save: "Opslaan", cancel: "Annuleren" }
   },
   pl: {
-    nav: { auctions: "Aukcje", buyBids: "Kup licytacje", dashboard: "Panel", admin: "Admin", login: "Zaloguj", register: "Zarejestruj", logout: "Wyloguj", bids: "Licytacje", winners: "Zwycięzcy", inviteFriends: "Zaproś znajomych", wishlist: "Lista życzeń", howItWorks: "Jak to działa", vip: "Członkostwo VIP", faq: "FAQ", contact: "Kontakt" },
+    nav: { auctions: "Aukcje", buyBids: "Kup licytacje", dashboard: "Panel", admin: "Admin", login: "Zaloguj", register: "Zarejestruj", logout: "Wyloguj", bids: "Licytacje", winners: "Zwycięzcy", inviteFriends: "Zaproś znajomych", wishlist: "Lista życzeń", howItWorks: "Jak to działa", vip: "Członkostwo VIP", faq: "FAQ", contact: "Kontakt", language: "Język", giftCards: "Karty Podarunkowe", vipAuctions: "Aukcje VIP", leaderboard: "Ranking", luckyWheel: "Koło Fortuny" },
     home: {
       badge: "10 darmowych licytacji przy rejestracji",
       heroTitle1: "Wygrywaj",
