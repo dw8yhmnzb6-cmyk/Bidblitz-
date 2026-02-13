@@ -182,10 +182,10 @@ const TeamBiddingPage = () => {
 
     try {
       const [teamRes, leaderRes] = await Promise.all([
-        fetch(`${API}/api/team-bidding/my-team`, {
+        fetch(`${API}/api/teams/my-team`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
-        fetch(`${API}/api/team-bidding/leaderboard`)
+        fetch(`${API}/api/teams/leaderboard`)
       ]);
 
       if (teamRes.ok) {
@@ -195,7 +195,7 @@ const TeamBiddingPage = () => {
 
       if (leaderRes.ok) {
         const data = await leaderRes.json();
-        setLeaderboard(data.teams || []);
+        setLeaderboard(data.leaderboard || []);
       }
     } catch (err) {
       console.error('Error fetching team data:', err);
@@ -215,7 +215,7 @@ const TeamBiddingPage = () => {
     }
 
     try {
-      const res = await fetch(`${API}/api/team-bidding/create`, {
+      const res = await fetch(`${API}/api/teams/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ const TeamBiddingPage = () => {
     }
 
     try {
-      const res = await fetch(`${API}/api/team-bidding/join/${teamCode}`, {
+      const res = await fetch(`${API}/api/teams/join/${teamCode}`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -266,18 +266,21 @@ const TeamBiddingPage = () => {
 
   const handleLeaveTeam = async () => {
     try {
-      const res = await fetch(`${API}/api/team-bidding/leave`, {
+      const res = await fetch(`${API}/api/teams/leave`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
+      const data = await res.json();
       if (res.ok) {
-        toast.success('Team verlassen');
+        toast.success(data.message || 'Team verlassen');
         setMyTeam(null);
         fetchData();
+      } else {
+        toast.error(data.detail || 'Fehler beim Verlassen');
       }
     } catch (err) {
-      toast.error('Fehler');
+      toast.error('Netzwerkfehler');
     }
   };
 
