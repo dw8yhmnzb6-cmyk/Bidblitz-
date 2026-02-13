@@ -162,12 +162,14 @@ export default function Admin() {
     email: '',
     password: '',
     cities: '',
-    commission_percent: 15
+    commission_percent: 15,
+    company_commission_percent: 5
   });
   const [editManagerForm, setEditManagerForm] = useState({
     name: '',
     cities: '',
     commission_percent: 15,
+    company_commission_percent: 5,
     is_active: true
   });
 
