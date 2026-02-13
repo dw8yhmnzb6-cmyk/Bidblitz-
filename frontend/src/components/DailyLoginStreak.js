@@ -65,9 +65,10 @@ const getRewardForDay = (day) => {
 };
 
 export default function DailyLoginStreak({ onClose }) {
-  const { language } = useLanguage();
+  const { language, mappedLanguage } = useLanguage();
   const { token, user, refreshUser } = useAuth();
-  const t = streakTexts[language] || streakTexts.de;
+  const langKey = mappedLanguage || language;
+  const t = streakTexts[langKey] || streakTexts.de;
   
   const [streakData, setStreakData] = useState(null);
   const [loading, setLoading] = useState(true);
