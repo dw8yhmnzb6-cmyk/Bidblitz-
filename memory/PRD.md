@@ -37,10 +37,19 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
   - Dict: `auto_restart: {enabled: true, ...}` (für reguläre Auktionen)
 - **Restaurant-Auktionen:** Nutzen jetzt `auto_restart_duration` (in Stunden)
 
-#### 🌐 Albanische Übersetzungen verifiziert ✅
-- Übersetzungen für `sq` (Albanisch) und `xk` (Kosovo) funktionieren korrekt
-- CyberHero Komponente: Albanische/Kosovo Übersetzungen hinzugefügt
-- getTranslation mit korrektem lang-mapping `xk` → `sq`
+#### 🌐 Albanische Übersetzungen vollständig korrigiert ✅
+- **Problem:** Kosovo (xk) Sprache wurde nicht korrekt zu Albanisch (sq) gemappt
+- **Fix 1:** `xk` → `sq` Mapping zu allen langMapping-Objekten hinzugefügt:
+  - `/app/frontend/src/utils/productTranslation.js`
+  - `/app/frontend/src/i18n/adminTranslations.js`
+  - `/app/frontend/src/components/WinSurveyPopup.js`
+  - `/app/frontend/src/components/LeaderboardWidget.js`
+- **Fix 2:** `mappedLanguage` statt `language` in mehreren Komponenten:
+  - `/app/frontend/src/components/LiveWinnerTicker.js`
+  - `/app/frontend/src/components/DailyLoginStreak.js`
+  - `/app/frontend/src/components/LiveAuctionChat.js`
+  - `/app/frontend/src/pages/VIPDashboard.js`
+- **Fix 3:** Albanische Übersetzungen in CyberHero hinzugefügt
 
 #### Geänderte Dateien:
 - `/app/backend/routers/maintenance.py` - Schedule-Endpoints
