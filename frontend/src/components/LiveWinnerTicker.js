@@ -47,6 +47,20 @@ const tickerTexts = {
     congrats: 'Félicitations!',
     from: 'de',
     forOnly: 'pour seulement'
+  },
+  ar: {
+    justWon: 'فاز للتو!',
+    savings: 'وُفِّر',
+    congrats: 'تهانينا!',
+    from: 'من',
+    forOnly: 'بـ فقط'
+  },
+  ae: {
+    justWon: 'فاز للتو!',
+    savings: 'وُفِّر',
+    congrats: 'تهانينا!',
+    from: 'من',
+    forOnly: 'بـ فقط'
   }
 };
 
