@@ -10,7 +10,8 @@ const SustainabilitySection = () => {
   const [stats, setStats] = useState({
     trees_planted: 0,
     projects_supported: 0,
-    co2_offset_kg: 0
+    co2_offset_kg: 0,
+    donations_total: 0
   });
   
   useEffect(() => {
@@ -46,6 +47,7 @@ const SustainabilitySection = () => {
       treesPlanted: 'Bäume gepflanzt',
       projectsSupported: 'Projekte unterstützt',
       co2Saved: 'kg CO₂ kompensiert',
+      donationsTotal: 'Spenden gesamt',
       cta: 'Mehr erfahren',
       quote: 'Gemeinsam für eine nachhaltige Zukunft',
     },
@@ -65,6 +67,7 @@ const SustainabilitySection = () => {
       treesPlanted: 'Trees planted',
       projectsSupported: 'Projects supported',
       co2Saved: 'kg CO₂ offset',
+      donationsTotal: 'Total donations',
       cta: 'Learn more',
       quote: 'Together for a sustainable future',
     },
