@@ -50,6 +50,37 @@ Das Übersetzungssystem hatte mehrere kritische Probleme, die dazu führten, das
 - ✅ German (de): Standard funktioniert
 - ✅ Fallback-Mechanismus: Griechisch (el) fällt auf Deutsch zurück
 
+### ✅ P2-Aufgabe: Mobile Admin-Ansicht verbessert (Februar 13, 2026)
+
+**Problem:** Die mobile Ansicht des Admin-Panels war zu dunkel, hatte zu wenig Abstand zwischen den Karten, und VIP-Buttons wurden abgeschnitten.
+
+**Behobene Probleme in `AdminVIPAuctions.js`:**
+
+1. **Helles Theme implementiert:**
+   - Hintergrund von `bg-slate-800/50` zu `bg-white` geändert
+   - Stats Grid von `bg-slate-900/50` zu `bg-slate-50` geändert
+   - Text von `text-white` zu `text-slate-800` geändert
+
+2. **Besseres Spacing:**
+   - Card-Abstand von `space-y-3` zu `space-y-4` erhöht
+   - Padding hinzugefügt (`px-1`)
+   - Stats Grid mit größerem Padding (`p-2.5`)
+
+3. **Button-Verbesserungen:**
+   - VIP-Button Styling: `bg-amber-500 text-white font-bold px-3 py-1.5`
+   - Action Buttons von `variant="ghost"` zu `variant="outline"` geändert
+   - Bessere Border-Farben für Lesbarkeit
+
+4. **Layout-Verbesserungen:**
+   - 2-Spalten Grid für Stats statt 3 (bei "Add to VIP" Sektion)
+   - Produktname mit `leading-tight` für bessere Lesbarkeit
+   - Bessere Schatten und Rahmen (`shadow-sm border-slate-200`)
+
+#### Geänderte Dateien:
+- `/app/frontend/src/components/admin/AdminVIPAuctions.js` - Mobile Card Views (Zeilen 138-230, 358-395)
+
+---
+
 ### ✅ P1-Aufgaben Verifiziert (Februar 13, 2026)
 
 **1. Auktions-Variabilität** ✅
