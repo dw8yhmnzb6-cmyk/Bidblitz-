@@ -3,7 +3,40 @@
 ## Original Problem Statement
 Create a penny auction website modeled after `dealdash.com` and `snipster.de` with complete visual and functional features.
 
-## Current Status (February 12, 2026)
+## Current Status (February 13, 2026)
+
+### ✅ Session Update - February 13, 2026 (Session 16) - P0 COMPLETE
+
+**P0-Aufgaben abgeschlossen:**
+
+#### 🔧 Geplanter Wartungsmodus ✅
+- **Feature:** Admin kann jetzt Wartungsarbeiten für einen bestimmten Zeitraum planen
+- **Backend-Endpoints:**
+  - `POST /api/maintenance/schedule` - Wartung mit Start- und Endzeit planen
+  - `DELETE /api/maintenance/schedule` - Geplante Wartung abbrechen
+  - `GET /api/maintenance/status` - Enthält jetzt `scheduled` Objekt mit Zeitfenster
+- **Frontend-UI:** Neuer "Wartung planen" Bereich im Admin Panel
+  - Startdatum & -zeit, Enddatum & -zeit
+  - Eigene Nachricht für Benutzer
+  - Abbrechen-Button für geplante Wartung
+- **Bieten blockiert:** `place_bid` in `auctions.py` prüft jetzt sowohl manuellen als auch geplanten Wartungsmodus
+
+#### 🔴 "Team verlassen" Button repariert ✅
+- **Root Cause:** Frontend rief `/api/team-bidding/*` auf, aber Backend nutzt `/api/teams/*`
+- **Fix:** Alle API-Aufrufe in `TeamBiddingPage.js` korrigiert:
+  - `fetchData()`: `/api/teams/my-team` & `/api/teams/leaderboard`
+  - `handleCreateTeam()`: `/api/teams/create`
+  - `handleJoinTeam()`: `/api/teams/join/{code}`
+  - `handleLeaveTeam()`: `/api/teams/leave`
+- **Testing:** 19/19 Backend-Tests bestanden, UI verifiziert
+
+#### Geänderte Dateien:
+- `/app/backend/routers/maintenance.py` - Schedule-Endpoints hinzugefügt
+- `/app/backend/routers/auctions.py` - Wartungsmodus-Prüfung in `place_bid`
+- `/app/frontend/src/components/admin/AdminMaintenance.js` - Planungs-UI
+- `/app/frontend/src/pages/TeamBiddingPage.js` - API-Pfade korrigiert
+
+---
 
 ### ✅ Session Update - February 12, 2026 (Session 15) - P0/P1/P2 COMPLETE
 
