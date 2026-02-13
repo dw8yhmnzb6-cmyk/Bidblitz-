@@ -248,7 +248,7 @@ export const Footer = () => {
                 {ft.winners}
               </Link>
               <Link to="/leaderboard" className="text-gray-400 hover:text-acid transition-colors font-body text-sm">
-                {language === 'de' ? 'Rangliste' : language === 'sq' || language === 'xk' ? 'Renditja' : 'Leaderboard'}
+                {ft.leaderboard || t('nav.leaderboard')}
               </Link>
             </nav>
           </div>
