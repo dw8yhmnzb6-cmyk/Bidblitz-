@@ -770,7 +770,9 @@ async def create_restaurant_voucher_auction(
             "images": images,
             "category": data.restaurant_category  # NEU: Kategorie speichern
         },
-        "auto_restart": True  # Kann neu gestartet werden
+        "auto_restart": data.auto_restart,  # Auto-Wiederholen Einstellung
+        "auto_restart_duration": data.auto_restart_duration or data.duration_hours,  # Dauer für Wiederholung
+        "original_duration_hours": data.duration_hours  # Original-Dauer speichern
     }
     
     await db.auctions.insert_one(auction_doc)
