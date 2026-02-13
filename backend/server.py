@@ -879,9 +879,10 @@ async def bot_last_second_bidder():
                                 else:  # Langsamer/Vorsichtiger Bieter
                                     base_interval = random.uniform(60, 180)
                                 
-                                # Add per-auction variation für Realismus
-                                auction_variation = random.uniform(0.7, 1.4)
-                                next_interval = base_interval * auction_variation
+                                # Apply auction-specific speed factor for variability
+                                next_interval = base_interval * var['speed_factor']
+                                # Add additional randomness
+                                next_interval *= random.uniform(0.8, 1.3)
                             
                             next_bid_time_per_auction[auction_id] = now_ts + next_interval
                             
@@ -894,8 +895,8 @@ async def bot_last_second_bidder():
                                 # FIXED END: Endzeit bleibt unverändert
                                 new_end_time = end_time
                             else:
-                                # Normal: Timer reset to 10-15 seconds
-                                timer_ext = random.randint(10, 15)
+                                # Normal: Timer reset with VARIABLE extension (8-18 seconds)
+                                timer_ext = random.randint(var['time_ext_min'], var['time_ext_max'])
                                 new_end_time = datetime.now(timezone.utc) + timedelta(seconds=timer_ext)
                             
                             bid_entry = {
