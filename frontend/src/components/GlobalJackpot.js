@@ -83,6 +83,20 @@ const translations = {
     value: "価値",
     everyBid: "入札ごとに +1 ジャックポット",
     lastWinner: "前回の当選者"
+  },
+  ar: {
+    jackpot: "الجائزة الكبرى",
+    bids: "عروض",
+    value: "القيمة",
+    everyBid: "كل عرض = +1 للجائزة",
+    lastWinner: "آخر فائز"
+  },
+  ae: {
+    jackpot: "الجائزة الكبرى",
+    bids: "عروض",
+    value: "القيمة",
+    everyBid: "كل عرض = +1 للجائزة",
+    lastWinner: "آخر فائز"
   }
 };
 
