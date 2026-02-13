@@ -34,6 +34,7 @@ export default function AdminRestaurantAuctions({ token, API }) {
     restaurant_logo: '',
     restaurant_address: '',
     restaurant_images: [], // Array für mehrere Restaurant-Fotos
+    restaurant_category: 'restaurant', // NEU: Kategorie
     voucher_value: 25,  // Standard: Euro-Wert (nicht Prozent)
     discount_percent: 0,  // Prozent-Rabatt nur optional
     description: 'Genießen Sie ein leckeres Essen bei uns!',
@@ -41,6 +42,50 @@ export default function AdminRestaurantAuctions({ token, API }) {
     start_price: 0.01,
     bot_target_price: 8
   });
+
+  // Restaurant Kategorien mit passenden Beschreibungen
+  const restaurantCategories = {
+    restaurant: {
+      label: '🍽️ Restaurant',
+      defaultDescription: 'Genießen Sie ein leckeres Essen bei uns!',
+      emoji: '🍽️'
+    },
+    cafe: {
+      label: '☕ Café',
+      defaultDescription: 'Genießen Sie leckeren Kaffee und Kuchen bei uns!',
+      emoji: '☕'
+    },
+    eiscafe: {
+      label: '🍦 Eiscafé',
+      defaultDescription: 'Genießen Sie leckeres Eis bei uns!',
+      emoji: '🍦'
+    },
+    bar: {
+      label: '🍸 Bar',
+      defaultDescription: 'Genießen Sie erfrischende Getränke bei uns!',
+      emoji: '🍸'
+    },
+    pizzeria: {
+      label: '🍕 Pizzeria',
+      defaultDescription: 'Genießen Sie köstliche Pizza bei uns!',
+      emoji: '🍕'
+    },
+    fastfood: {
+      label: '🍔 Fast Food',
+      defaultDescription: 'Genießen Sie schnelles und leckeres Essen bei uns!',
+      emoji: '🍔'
+    }
+  };
+
+  // Handle category change - update description automatically
+  const handleCategoryChange = (category) => {
+    const categoryData = restaurantCategories[category];
+    setNewAuction({
+      ...newAuction,
+      restaurant_category: category,
+      description: categoryData?.defaultDescription || newAuction.description
+    });
+  };
 
   // Image URL input state
   const [imageUrlInput, setImageUrlInput] = useState('');
