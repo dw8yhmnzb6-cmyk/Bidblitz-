@@ -1380,6 +1380,7 @@ export const translations = {
       uvp: "PSFM",
       lastBidder: "Son Teklif Veren",
       noAuctionsInCategory: "Bu kategoride müzayede yok",
+      discoverFeatures: "Tüm Özellikleri & Ekstraları Keşfet",
       filters: {
         live: "Canlı",
         beginner: "Başlangıç",
