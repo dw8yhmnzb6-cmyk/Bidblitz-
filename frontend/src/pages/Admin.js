@@ -1849,7 +1849,7 @@ export default function Admin() {
                         <th className="text-left text-slate-600 py-3 px-4 text-sm font-medium">{language === 'en' ? 'Cities' : 'Städte'}</th>
                         <th className="text-right text-slate-600 py-3 px-4 text-sm font-medium">Influencer</th>
                         <th className="text-right text-slate-600 py-3 px-4 text-sm font-medium">{language === 'en' ? 'Inf. Commission' : 'Inf. Provision'}</th>
-                        <th className="text-right text-slate-600 py-3 px-4 text-sm font-medium">{language === 'en' ? 'Manager 15%' : 'Manager 15%'}</th>
+                        <th className="text-right text-slate-600 py-3 px-4 text-sm font-medium">{language === 'en' ? 'Manager %' : 'Manager %'}</th>
                         <th className="text-center text-slate-600 py-3 px-4 text-sm font-medium">Status</th>
                         <th className="text-right text-slate-600 py-3 px-4 text-sm font-medium">Aktionen</th>
                       </tr>
@@ -1870,7 +1870,10 @@ export default function Admin() {
                           </td>
                           <td className="py-3 px-4 text-slate-800 text-right">{mgr.influencer_count || 0}</td>
                           <td className="py-3 px-4 text-amber-600 text-right font-medium">€{(mgr.total_influencer_commission || 0).toFixed(2)}</td>
-                          <td className="py-3 px-4 text-emerald-600 text-right font-bold">€{(mgr.manager_commission || 0).toFixed(2)}</td>
+                          <td className="py-3 px-4 text-right">
+                            <span className="text-emerald-600 font-bold">€{(mgr.manager_commission || 0).toFixed(2)}</span>
+                            <span className="text-slate-400 text-xs ml-1">({mgr.commission_percent || 15}%)</span>
+                          </td>
                           <td className="py-3 px-4 text-center">
                             {mgr.is_active ? (
                               <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold">Aktiv</span>
