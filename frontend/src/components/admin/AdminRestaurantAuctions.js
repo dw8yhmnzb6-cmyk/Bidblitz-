@@ -246,7 +246,18 @@ export default function AdminRestaurantAuctions({ token, API }) {
       restaurant_images: auction.restaurant_info?.images || [],
       voucher_value: auction.restaurant_info?.voucher_value || 25,
       description: auction.description || '',
-      bot_target_price: auction.bot_target_price || 8
+      bot_target_price: auction.bot_target_price || 8,
+      restaurant_category: auction.restaurant_info?.category || 'restaurant'
+    });
+  };
+
+  // Handle category change in edit mode
+  const handleEditCategoryChange = (category) => {
+    const categoryData = restaurantCategories[category];
+    setEditData({
+      ...editData,
+      restaurant_category: category,
+      description: categoryData?.defaultDescription || editData.description
     });
   };
 
