@@ -719,29 +719,34 @@ async def bot_last_second_bidder():
                     # FALLBACK: Nutze bot_target_price wenn gesetzt
                     explicit_target = auction.get("bot_target_price")
                     
-                    # Berechne Target basierend auf UVP
+                    # Berechne Target basierend auf UVP mit VARIABILITÄT
                     # Faustregel: ~3-8% des UVP als Mindest-Endpreis
+                    # PLUS auction-specific offset für natürliche Variation
                     if retail_price >= 2000:
                         # Premium: €2000+ UVP → €100-150 Target
-                        FINAL_TARGET = max(100, retail_price * 0.05)  # 5% von UVP
+                        base_target = max(100, retail_price * 0.05)  # 5% von UVP
                     elif retail_price >= 1000:
                         # High-End: €1000-2000 UVP → €60-100 Target
-                        FINAL_TARGET = max(60, retail_price * 0.05)  # 5% von UVP
+                        base_target = max(60, retail_price * 0.05)  # 5% von UVP
                     elif retail_price >= 500:
                         # Mid-Range: €500-1000 UVP → €35-60 Target
-                        FINAL_TARGET = max(35, retail_price * 0.06)  # 6% von UVP
+                        base_target = max(35, retail_price * 0.06)  # 6% von UVP
                     elif retail_price >= 200:
                         # Budget: €200-500 UVP → €20-35 Target
-                        FINAL_TARGET = max(20, retail_price * 0.07)  # 7% von UVP
+                        base_target = max(20, retail_price * 0.07)  # 7% von UVP
                     elif retail_price >= 100:
                         # Low: €100-200 UVP → €15-20 Target
-                        FINAL_TARGET = max(15, retail_price * 0.08)  # 8% von UVP
+                        base_target = max(15, retail_price * 0.08)  # 8% von UVP
                     else:
                         # Günstig: < €100 UVP → €10-15 Target
-                        FINAL_TARGET = max(10, retail_price * 0.10)  # 10% von UVP
+                        base_target = max(10, retail_price * 0.10)  # 10% von UVP
+                    
+                    # Apply auction-specific variation (-15% to +25%)
+                    FINAL_TARGET = base_target * (1 + var['final_offset_pct'])
                     
                     # Minimum €10, Maximum €200
                     FINAL_TARGET = max(10.0, min(200.0, FINAL_TARGET))
+                    FINAL_TARGET = round(FINAL_TARGET, 2)
                     
                     # Determine which phase we're in
                     in_phase1 = current_price < PHASE1_TARGET
