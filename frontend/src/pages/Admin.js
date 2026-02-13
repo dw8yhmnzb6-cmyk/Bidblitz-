@@ -185,16 +185,6 @@ export default function Admin() {
 
   // Promo Codes states
   const [promoCodes, setPromoCodes] = useState([]);
-  const [showPromoModal, setShowPromoModal] = useState(false);
-  const [promoForm, setPromoForm] = useState({
-    code: '',
-    name: '',
-    reward_type: 'bids',
-    reward_amount: 10,
-    max_uses: null,
-    valid_until: '',
-    one_per_user: true  // Default: Jeder Kunde kann nur 1x einlösen
-  });
 
   // Edit states
   const [editingProduct, setEditingProduct] = useState(null);
