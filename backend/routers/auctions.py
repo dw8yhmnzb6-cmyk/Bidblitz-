@@ -422,6 +422,30 @@ async def get_auction(auction_id: str):
 async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
     """Place a bid on an auction"""
     
+    # CHECK MAINTENANCE MODE - No bidding during maintenance
+    maintenance_settings = await db.settings.find_one({"type": "maintenance"})
+    if maintenance_settings:
+        now = datetime.now(timezone.utc)
+        
+        # Check manual maintenance mode
+        if maintenance_settings.get("enabled"):
+            raise HTTPException(
+                status_code=503, 
+                detail="Wartungsmodus aktiv. Bieten ist vorübergehend pausiert."
+            )
+        
+        # Check scheduled maintenance
+        scheduled = maintenance_settings.get("scheduled")
+        if scheduled and scheduled.get("start_time") and scheduled.get("end_time"):
+            start_time = datetime.fromisoformat(scheduled["start_time"].replace('Z', '+00:00'))
+            end_time = datetime.fromisoformat(scheduled["end_time"].replace('Z', '+00:00'))
+            
+            if start_time <= now <= end_time:
+                raise HTTPException(
+                    status_code=503, 
+                    detail=scheduled.get("message", "Geplante Wartung aktiv. Bieten ist vorübergehend pausiert.")
+                )
+    
     # CHECK BUSINESS HOURS - No bidding outside 9:00-24:00 Berlin time
     if not is_within_business_hours():
         next_opening = get_next_business_opening()
