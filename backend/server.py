@@ -475,9 +475,42 @@ async def bot_last_second_bidder():
     DEFAULT_MAX_PRICE = 35.00
     
     # REALISTIC timing - vary between auctions
-    MIN_BID_INTERVAL = 20.0   # Minimum 20 seconds between bids
-    MAX_BID_INTERVAL = 120.0  # Maximum 2 minutes between bids
-    PAUSE_CHANCE = 0.20       # 20% chance of longer pause (2-4 minutes)
+    MIN_BID_INTERVAL = 15.0   # Minimum 15 seconds between bids
+    MAX_BID_INTERVAL = 90.0   # Maximum 1.5 minutes between bids
+    PAUSE_CHANCE = 0.15       # 15% chance of longer pause (2-4 minutes)
+    
+    # VARIABILITY FACTORS - make each auction unique
+    auction_variability = {}  # auction_id -> {phase1_target, final_target_offset, bid_speed}
+    
+    def get_auction_variability(auction_id, retail_price):
+        """Generate unique variability for each auction to avoid predictable patterns"""
+        if auction_id not in auction_variability:
+            # Use auction_id hash for consistent but unique values
+            hash_val = hash(auction_id)
+            
+            # Phase 1 target: varies between €2.50 - €4.50 (not always €3.00)
+            phase1_base = 3.00
+            phase1_offset = ((hash_val % 200) - 100) / 100.0  # -1.00 to +1.00
+            phase1_target = max(2.50, min(4.50, phase1_base + phase1_offset))
+            
+            # Final target offset: -15% to +25% variation
+            final_offset_pct = ((hash_val % 40) - 15) / 100.0  # -0.15 to +0.25
+            
+            # Bid speed factor: 0.7x to 1.5x (some auctions are faster)
+            speed_factor = 0.7 + ((hash_val % 80) / 100.0)  # 0.7 to 1.5
+            
+            # Time extension variation: 8-18 seconds (not always 10-15)
+            time_ext_min = 8 + (hash_val % 5)  # 8-12
+            time_ext_max = 13 + (hash_val % 6)  # 13-18
+            
+            auction_variability[auction_id] = {
+                'phase1_target': round(phase1_target, 2),
+                'final_offset_pct': final_offset_pct,
+                'speed_factor': speed_factor,
+                'time_ext_min': time_ext_min,
+                'time_ext_max': time_ext_max
+            }
+        return auction_variability[auction_id]
     
     while bot_task_running:
         try:
