@@ -1105,6 +1105,23 @@ async def auction_auto_restart_processor():
             
             for auction in ended_auctions:
                 try:
+                    # Check if auto_restart is enabled
+                    auto_restart_raw = auction.get("auto_restart")
+                    
+                    # Handle different formats: bool, dict, or None
+                    auto_restart_enabled = False
+                    if isinstance(auto_restart_raw, bool):
+                        auto_restart_enabled = auto_restart_raw
+                    elif isinstance(auto_restart_raw, dict):
+                        auto_restart_enabled = auto_restart_raw.get("enabled", True)
+                    else:
+                        # Default: regular auctions always restart
+                        auto_restart_enabled = True
+                    
+                    # Skip if auto_restart is explicitly disabled
+                    if auto_restart_enabled is False:
+                        continue
+                    
                     # Check if auction has been ended for at least 3 seconds
                     ended_at = auction.get("ended_at")
                     if ended_at:
@@ -1118,15 +1135,18 @@ async def auction_auto_restart_processor():
                         except:
                             pass  # If we can't parse ended_at, restart anyway
                     
-                    # Get original duration from the auto_restart config
-                    # Handle case where auto_restart might be a bool instead of dict
-                    auto_restart_raw = auction.get("auto_restart")
+                    # Get original duration from the auto_restart config or restaurant auction settings
                     if isinstance(auto_restart_raw, dict):
                         auto_restart = auto_restart_raw
                     else:
-                        auto_restart = {}  # Default to empty dict if bool or None
+                        auto_restart = {}
                     
-                    duration_minutes = auto_restart.get("duration_minutes")
+                    # For restaurant auctions, use auto_restart_duration (in hours)
+                    duration_hours = auction.get("auto_restart_duration") or auction.get("original_duration_hours")
+                    if duration_hours:
+                        duration_minutes = duration_hours * 60
+                    else:
+                        duration_minutes = auto_restart.get("duration_minutes")
                     
                     # MINIMUM 10 HOURS (600 minutes) for auto-restart
                     MIN_DURATION_MINUTES = 600  # 10 hours
