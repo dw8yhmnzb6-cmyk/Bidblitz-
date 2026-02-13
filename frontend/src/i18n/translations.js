@@ -2601,17 +2601,29 @@ export const getTranslation = (lang, key) => {
   const mappedLang = getMappedLanguage(lang);
   
   const keys = key.split('.');
-  // First try the original language, then the mapped language, then fallback to German
-  let value = translations[lang] || translations[mappedLang] || translations.de;
-  for (const k of keys) {
-    value = value?.[k];
-  }
-  // Fallback to German if translation not found
-  if (!value && lang !== 'de') {
-    value = translations.de;
-    for (const k of keys) {
-      value = value?.[k];
+  
+  // Helper function to get nested value
+  const getNestedValue = (obj, keyParts) => {
+    let val = obj;
+    for (const k of keyParts) {
+      val = val?.[k];
+      if (val === undefined) return undefined;
     }
+    return val;
+  };
+  
+  // Try original language first
+  let value = getNestedValue(translations[lang], keys);
+  
+  // If not found and there's a mapped language, try that
+  if (value === undefined && mappedLang !== lang && translations[mappedLang]) {
+    value = getNestedValue(translations[mappedLang], keys);
   }
+  
+  // Fallback to German if still not found
+  if (value === undefined && lang !== 'de') {
+    value = getNestedValue(translations.de, keys);
+  }
+  
   return value || key;
 };
