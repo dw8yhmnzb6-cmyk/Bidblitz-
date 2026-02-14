@@ -135,6 +135,7 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
           const endTime = new Date(auction.end_time).getTime();
           const timeLeftSec = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
           const product = auction.product || {};
+          const productName = getProductName(product, effectiveLang);
           
           return (
             <div 
@@ -153,7 +154,7 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
               
               {/* Product name */}
               <p className="text-white text-xs font-medium truncate">
-                {product.name || 'Auktion'}
+                {productName || 'Auktion'}
               </p>
               
               {/* Price */}
