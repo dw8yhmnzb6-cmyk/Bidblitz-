@@ -12,6 +12,7 @@ import { ScrollToTopOnNavigate } from "./components/ScrollToTopOnNavigate";
 import { Toaster } from "./components/ui/sonner";
 import HappyHourBanner from "./components/HappyHourBanner";
 import PWAInstallBanner from "./components/PWAInstallBanner";
+import TawkChat from "./components/TawkChat";
 
 // Pages
 import Home from "./pages/Home";
