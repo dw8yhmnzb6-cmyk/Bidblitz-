@@ -93,6 +93,8 @@ import PhoneVerification from "./pages/PhoneVerification";
 import DealRadarPage from "./pages/DealRadarPage";
 import UserStatsPage from "./pages/UserStatsPage";
 import LiveWinnerPopup from "./components/LiveWinnerPopup";
+import WelcomeBonusBanner from "./components/WelcomeBonusBanner";
+import AbandonedCartReminder from "./components/AbandonedCartReminder";
 import AIBidRecommendationsPage from "./pages/AIBidRecommendationsPage";
 import CryptoPaymentPage from "./pages/CryptoPaymentPage";
 import MaintenancePage from "./pages/MaintenancePage";
