@@ -331,34 +331,39 @@ export const Navbar = () => {
               </div>
             )}
             
-            {/* Mobile Language Selector - at the top with current language highlighted */}
-            <div className="pb-3 border-b border-gray-200">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-gray-700 text-sm font-semibold flex items-center gap-2">
-                  <Globe className="w-4 h-4" />
+            {/* Mobile Language Selector - improved layout */}
+            <div className="pb-4 border-b border-gray-200">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-gray-800 font-bold flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-amber-500" />
                   {t('nav.language') || 'Sprache'}
                 </p>
-                <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
-                  {languageList[language]?.flag} {languageList[language]?.name}
-                </span>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-100 rounded-full">
+                  <span className="text-lg">{languageList[language]?.flag}</span>
+                  <span className="text-sm font-bold text-amber-700">{languageList[language]?.name}</span>
+                </div>
               </div>
-              <div className="grid grid-cols-4 gap-1.5 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
+              
+              {/* Language Grid - 3 columns for better touch targets */}
+              <div className="grid grid-cols-3 gap-2">
                 {Object.entries(languageList).map(([code, { flag, name }]) => (
                   <button
                     key={code}
                     onClick={() => {
                       localStorage.setItem('language', code);
+                      changeLanguage(code);
                       setMobileMenuOpen(false);
-                      setTimeout(() => window.location.href = window.location.pathname, 100);
+                      // Force reload for full translation update
+                      window.location.reload();
                     }}
-                    className={`flex flex-col items-center justify-center p-2 rounded-lg text-xs font-medium transition-all ${
+                    className={`flex items-center gap-2 p-3 rounded-xl text-sm font-medium transition-all ${
                       language === code 
-                        ? 'bg-amber-500 text-white border-2 border-amber-600' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200'
+                        ? 'bg-amber-500 text-white shadow-lg ring-2 ring-amber-300' 
+                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
                     }`}
                   >
-                    <span className="text-lg">{flag}</span>
-                    <span className="truncate w-full text-center">{code.toUpperCase()}</span>
+                    <span className="text-xl">{flag}</span>
+                    <span className="truncate">{name}</span>
                   </button>
                 ))}
               </div>
