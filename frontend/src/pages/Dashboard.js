@@ -11,6 +11,7 @@ import WeeklyChallenges from '../components/WeeklyChallenges';
 import WinSurveyPopup from '../components/WinSurveyPopup';
 import AIRecommendations from '../components/AIRecommendations';
 import PushNotificationSettings from '../components/PushNotificationSettings';
+import WhatsAppSettings from '../components/WhatsAppSettings';
 import { 
   Zap, Trophy, Target, TrendingUp, ArrowRight, User, Mail, 
   Ticket, Bot, Trash2, Power, Clock, Package, CreditCard,
