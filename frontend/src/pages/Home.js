@@ -209,14 +209,14 @@ const LivePrice = memo(({ price, bidderName, language = 'de' }) => {
 });
 
 // Premium Featured Auction - Snipster Style
-const PremiumAuction = memo(({ auction, product, onBid, onRefresh, language = 'de' }) => {
+const PremiumAuction = memo(({ auction, product, onBid, onRefresh, language = 'de', langKey = 'de' }) => {
   const navigate = useNavigate();
   const ht = homeTexts[language] || homeTexts.de;
   
   if (!auction || !product) return null;
   
-  // Get translated product name
-  const productName = product.name_translations?.[langKey] || product.name;
+  // Get translated product name - use langKey prop
+  const productName = product.name_translations?.[langKey] || product.name_translations?.de || product.name;
   
   return (
     <div 
@@ -296,14 +296,14 @@ const PremiumAuction = memo(({ auction, product, onBid, onRefresh, language = 'd
 });
 
 // Small Auction Card - Snipster Style
-const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de', isAuthenticated = false, isVip = false }) => {
+const AuctionCard = memo(({ auction, product, onBid, onRefresh, language = 'de', langKey = 'de', isAuthenticated = false, isVip = false }) => {
   const navigate = useNavigate();
   const ht = homeTexts[language] || homeTexts.de;
   
   if (!auction || !product) return null;
   
-  // Get translated product name
-  const productName = product.name_translations?.[langKey] || product.name;
+  // Get translated product name - use langKey prop
+  const productName = product.name_translations?.[langKey] || product.name_translations?.de || product.name;
   
   // Check if this is a VIP-only auction
   const isVipAuction = auction.is_vip_only;
