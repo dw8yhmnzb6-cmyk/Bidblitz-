@@ -193,6 +193,9 @@ function AppContent() {
       {/* Welcome Bonus Banner - Shows for new users */}
       <WelcomeBonusBanner language={mappedLanguage || language} />
       
+      {/* Countdown Deal Banner - Time-limited offers */}
+      <CountdownDealBanner language={mappedLanguage || language} />
+      
       {/* Abandoned Cart Reminder - Floating widget */}
       <AbandonedCartReminder language={mappedLanguage || language} />
       
