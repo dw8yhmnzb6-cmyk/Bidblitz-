@@ -749,6 +749,9 @@ function AppContent() {
       
       {/* PWA Install Banner */}
       <PWAInstallBanner />
+      
+      {/* Tawk.to Live Chat Widget */}
+      <TawkChat />
     </div>
   );
 }
