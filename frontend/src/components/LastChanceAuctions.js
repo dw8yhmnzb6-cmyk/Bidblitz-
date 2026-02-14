@@ -6,6 +6,8 @@ import { useState, useEffect, memo } from 'react';
 import { Clock, AlertTriangle, Flame, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useLanguage } from '../context/LanguageContext';
+import { getProductName } from '../utils/productTranslation';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
