@@ -177,10 +177,12 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
 // Full section component
 const LastChanceSection = memo(({ language = 'de' }) => {
   const navigate = useNavigate();
+  const { language: contextLanguage } = useLanguage();
+  const effectiveLang = language || contextLanguage || 'de';
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const t = translations[language] || translations.de;
+  const t = translations[effectiveLang] || translations.de;
   
   useEffect(() => {
     const fetchEndingSoon = async () => {
