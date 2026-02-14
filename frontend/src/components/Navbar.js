@@ -331,12 +331,17 @@ export const Navbar = () => {
               </div>
             )}
             
-            {/* Mobile Language Selector - at the top */}
+            {/* Mobile Language Selector - at the top with current language highlighted */}
             <div className="pb-3 border-b border-gray-200">
-              <p className="text-gray-700 text-sm font-semibold mb-2 flex items-center gap-2">
-                <Globe className="w-4 h-4" />
-                {t('nav.language') || 'Sprache'}
-              </p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-gray-700 text-sm font-semibold flex items-center gap-2">
+                  <Globe className="w-4 h-4" />
+                  {t('nav.language') || 'Sprache'}
+                </p>
+                <span className="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-medium">
+                  {languageList[language]?.flag} {languageList[language]?.name}
+                </span>
+              </div>
               <div className="grid grid-cols-4 gap-1.5 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300">
                 {Object.entries(languageList).map(([code, { flag, name }]) => (
                   <button
