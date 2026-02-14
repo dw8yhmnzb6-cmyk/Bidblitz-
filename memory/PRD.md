@@ -50,6 +50,35 @@ Das Übersetzungssystem hatte mehrere kritische Probleme, die dazu führten, das
 - ✅ German (de): Standard funktioniert
 - ✅ Fallback-Mechanismus: Griechisch (el) fällt auf Deutsch zurück
 
+### ✅ Tawk.to Live-Chat Integration (Februar 13, 2026)
+
+**Feature:** Kostenloser Live-Chat für Kundenservice
+
+**Implementiert:**
+- Neue Komponente: `/app/frontend/src/components/TawkChat.js`
+- Integration in `App.js` - erscheint auf allen Seiten
+- Automatische Übergabe von User-Daten (Name, E-Mail, VIP-Status, Guthaben) an Support-Agenten
+- Umgebungsvariablen vorbereitet in `.env`
+
+**Setup-Anleitung für Tawk.to:**
+1. Konto erstellen auf https://tawk.to (kostenlos)
+2. Property erstellen und Widget konfigurieren
+3. Property ID und Widget ID kopieren aus: Dashboard → Administration → Chat Widget
+4. In `.env` einfügen:
+   ```
+   REACT_APP_TAWK_PROPERTY_ID=deine_property_id
+   REACT_APP_TAWK_WIDGET_ID=dein_widget_id
+   ```
+5. Frontend neu starten
+
+**Vorteile:**
+- Kostenlos & unbegrenzte Chats
+- Mobil-App für Support-Agenten
+- Automatische Nutzer-Identifikation
+- Chat-Historie für wiederkehrende Kunden
+
+---
+
 ### ✅ P2-Aufgaben abgeschlossen (Februar 13, 2026)
 
 **1. Admin.js Refactoring** ✅
