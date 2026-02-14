@@ -195,6 +195,9 @@ function AppContent() {
       {/* Abandoned Cart Reminder - Floating widget */}
       <AbandonedCartReminder language={mappedLanguage || language} />
       
+      {/* Language Hint Banner - Shows when not German */}
+      <LanguageHintBanner />
+      
       <Navbar />
       
       {/* Happy Hour Banner - After Navbar */}
