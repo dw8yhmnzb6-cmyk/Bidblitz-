@@ -93,6 +93,7 @@ from routers.insurance import insurance_router
 from routers.wishlist import wishlist_router as product_wishlist_router
 from routers.phone_verification import router as phone_verification_router
 from routers.deal_radar import router as deal_radar_router
+from routers.top_bidder import top_bidder_router
 from routers.streak_protection import streak_protection_router
 from routers.weekly_winners import weekly_winners_router
 from routers.excitement import router as excitement_router
