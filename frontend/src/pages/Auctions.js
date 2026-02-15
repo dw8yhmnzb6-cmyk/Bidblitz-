@@ -1201,7 +1201,7 @@ export default function Auctions() {
   const auctionCounts = {
     live: publicAuctions.filter(a => a.status === 'active').length,
     anfaenger: publicAuctions.filter(a => (a.is_beginner_only || a.is_beginner_auction) && a.status === 'active').length,
-    gratis: publicAuctions.filter(a => isVoucherProduct(a.product_id) && a.status === 'active').length,
+    gratis: publicAuctions.filter(a => isVoucherAuction(a) && a.status === 'active').length,
     restaurant: publicAuctions.filter(a => isRestaurantAuction(a) && a.status === 'active').length,
     nacht: publicAuctions.filter(a => a.is_night_auction).length,
     ende: endedAuctions.length, // Use endedAuctions from auction_history
