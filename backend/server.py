@@ -127,6 +127,7 @@ from routers.team_bidding import router as team_bidding_router
 from routers.ai_advisor import router as ai_advisor_router
 from routers.duel import router as duel_router
 from routers.mystery_box import router as mystery_box_router
+from routers.auto_translate import auto_translate_router
 
 # NEW: 9 additional features
 from routers.bid_alarm import bid_alarm_router
