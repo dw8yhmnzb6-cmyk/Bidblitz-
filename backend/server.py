@@ -540,6 +540,7 @@ async def bot_last_second_bidder():
             
             # PRIORITIZE auctions ending soon - ALWAYS process these first!
             # This is CRITICAL to prevent auctions ending at €0.02
+            # NOTE: Only consider auctions ending within 10 minutes
             urgent_auctions = []
             super_urgent_auctions = []
             
@@ -548,6 +549,10 @@ async def bot_last_second_bidder():
                     end_time = datetime.fromisoformat(a["end_time"].replace("Z", "+00:00"))
                     seconds_left = (end_time - now).total_seconds()
                     current_price = float(a.get("current_price", 0))
+                    
+                    # Skip auctions that are more than 10 minutes away
+                    if seconds_left > 600:
+                        continue
                     
                     # SUPER URGENT: < 15 seconds AND price < €25
                     if seconds_left < 15 and current_price < 25:
