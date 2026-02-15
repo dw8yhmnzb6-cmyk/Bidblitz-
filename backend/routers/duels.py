@@ -25,13 +25,17 @@ async def create_duel(duel: DuelCreate, user: dict = Depends(get_current_user)):
     user_id = user["id"]
     now = datetime.now(timezone.utc)
     
-    # Check if user has enough bids
-    user_data = await db.users.find_one({"id": user_id}, {"bids": 1})
-    if not user_data or user_data.get("bids", 0) < duel.bet_bids:
+    # Check if user has enough bids (support both 'bids' and 'bids_balance' fields)
+    user_data = await db.users.find_one({"id": user_id}, {"bids": 1, "bids_balance": 1})
+    user_bids = user_data.get("bids", 0) or user_data.get("bids_balance", 0) if user_data else 0
+    if user_bids < duel.bet_bids:
         raise HTTPException(status_code=400, detail="Nicht genug Gebote")
     
-    # Reserve bids
-    await db.users.update_one({"id": user_id}, {"$inc": {"bids": -duel.bet_bids}})
+    # Reserve bids (update both fields for consistency)
+    await db.users.update_one(
+        {"id": user_id}, 
+        {"$inc": {"bids": -duel.bet_bids, "bids_balance": -duel.bet_bids}}
+    )
     
     duel_doc = {
         "id": str(uuid.uuid4()),
