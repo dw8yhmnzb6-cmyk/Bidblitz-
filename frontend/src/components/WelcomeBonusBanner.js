@@ -93,9 +93,9 @@ const WelcomeBonusBanner = memo(({ language = 'de' }) => {
       data-testid="welcome-bonus-banner"
     >
       {/* Animated background sparkles */}
-      <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-4 -left-4 w-24 h-24 bg-white/10 rounded-full blur-xl animate-pulse" />
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-yellow-400/20 rounded-full blur-lg animate-bounce" style={{ animationDuration: '3s' }} />
+        <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-yellow-400/20 rounded-full blur-lg" />
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
       </div>
       
