@@ -1068,7 +1068,7 @@ export default function Auctions() {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cyan-200 to-cyan-300 p-2 pt-16 sm:pt-20 overflow-x-hidden" data-testid="auctions-page">
+    <div className="min-h-screen bg-gradient-to-b from-cyan-200 to-cyan-300 p-2 pt-4 overflow-x-hidden" data-testid="auctions-page">
       
       {/* Exit Intent Popup for new visitors */}
       <ExitIntentPopup />
