@@ -63,7 +63,8 @@ export function LuckyBidCounter({ className = '' }) {
       }
     };
     fetchStatus();
-    const interval = setInterval(fetchStatus, 3000);
+    // Reduced from 3s to 10s to minimize UI churn
+    const interval = setInterval(fetchStatus, 10000);
     return () => clearInterval(interval);
   }, []);
 
