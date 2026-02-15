@@ -1364,8 +1364,8 @@ export default function Auctions() {
             <PremiumCard auction={premiumAuction} product={products[premiumAuction.product_id]} onBid={handleBid} t={t} language={language} langKey={langKey} />
           )}
           
-          {/* Ad Banner - Only on live filter */}
-          {activeFilter === 'live' && <AdBanner />}
+          {/* Ad Banner DISABLED - could cause layout shifts */}
+          {/* {activeFilter === 'live' && <AdBanner />} */}
           
           <h2 className="text-sm font-bold text-gray-800 mt-3 mb-2">
             {activeFilter === 'live' && t('auctionPage.liveAuctions')}
