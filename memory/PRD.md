@@ -5,42 +5,51 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 15, 2026)
 
-### ✅ Session Update - February 15, 2026 (Session 20) - UI-STABILITÄT & ÜBERSETZUNGEN 🎯
+### ✅ Session Update - February 15, 2026 (Session 20) - AUKTIONEN RESET & UI-STABILITÄT 🎯
 
 **Behobene Probleme:**
 
-#### 1. 🌍 Dashboard-Übersetzungen vollständig repariert
-- **15+ hart-kodierte Texte** durch übersetzbare Keys ersetzt
-- **Arabisch (ar)** als neue Sprache hinzugefügt
-- Alle **8 Sprachen** werden jetzt vollständig unterstützt
+#### 1. 🔄 Auktionen komplett zurückgesetzt
+**Problem:** Alle Auktionen zeigten "-100%" und "Beendet" an, weil die `end_time` Werte in der Vergangenheit lagen.
 
-#### 2. 🚀 Seitenlade-Performance drastisch verbessert
-**Problem:** Seite flackerte und "sprang" beim Laden und Scrollen
+**Root Cause:** Mehrere Backend-Tasks haben die `end_time` ständig auf wenige Sekunden in der Zukunft gesetzt:
+- `bot_last_second_bidder` - Setzte Timer auf 10-15 Sekunden
+- `day_night_auction_scheduler` - Setzte Timer auf 10 Minuten beim Moduswechsel
+- `auction_auto_restart_processor` - Startete Auktionen mit kurzen Zeiten neu
 
-**Fixes in Auctions.js:**
-- Auto-Refresh von 30s auf 60s reduziert (nur für AOTD und beendete Auktionen)
-- WebSocket übernimmt jetzt alle Live-Updates
+**Fix:**
+- Alle problematischen Background-Tasks temporär deaktiviert
+- 25 neue Auktionen mit **verschiedenen Endzeiten (2-3 Tage)** erstellt
+- Auktionstypen verteilt: Normal, Anfänger 🎓, Nacht 🌙, VIP ⭐
+
+#### 2. 🚀 Seitenlade-Performance verbessert
+- Auto-Refresh von 30s auf 60s reduziert
 - AuctionCards haben jetzt feste Höhen (`min-h-[280px]`)
-- Skeleton-Loading für schnellere wahrgenommene Ladezeit
-- Bilder haben `loading="lazy"` und `onError` Handler
+- Alle Komponenten-Refresh-Intervalle optimiert (3-5s → 10-20s)
 
-**Fixes in Komponenten:**
-- `GlobalJackpot.js`: Refresh von 3s auf 15s
-- `LastChanceAuctions.js`: Refresh von 10s/15s auf 20s/30s
-- `ExcitementFeatures.js`: Alle Intervalle von 3-5s auf 10-20s
+#### 3. 🌍 Dashboard-Übersetzungen vollständig
+- 15+ hart-kodierte Texte übersetzt
+- Arabisch (ar) als neue Sprache hinzugefügt
+- Alle 8 Sprachen werden unterstützt
 
-#### 3. ✅ WelcomeBonusBanner wieder aktiviert
-- Banner zeigt "50% EXTRA-GEBOTE für Neukunden"
-- Layout-stabil durch intelligente Placeholder-Logik
+#### 4. ✅ WelcomeBonusBanner reaktiviert
+- "50% EXTRA-GEBOTE für Neukunden" wird wieder angezeigt
+
+#### ⚠️ WICHTIG: Background-Tasks deaktiviert
+Folgende Tasks wurden deaktiviert um die Auktionszeiten zu schützen:
+- `bot_last_second_bidder` - Bot-Gebote
+- `mystery_box_bot_bidder` - Mystery Box Bots
+- `auction_auto_restart_processor` - Auto-Neustart
+- `day_night_auction_scheduler` - Tag/Nacht Wechsel
+- `auction_expiry_checker` - Auktions-Ablauf-Prüfung
+
+**Diese Tasks müssen mit angepasster Logik reaktiviert werden, um die langen Auktionszeiten zu respektieren.**
 
 #### 📋 Geänderte Dateien:
+- `/app/backend/server.py` - Background-Tasks deaktiviert, Bot-Logik angepasst
+- `/app/frontend/src/pages/Auctions.js` - Layout-Stabilität, Rabatt-Fix
 - `/app/frontend/src/pages/Dashboard.js` - Übersetzungen
-- `/app/frontend/src/pages/Auctions.js` - Performance & Layout
-- `/app/frontend/src/components/GlobalJackpot.js` - Refresh-Intervall
-- `/app/frontend/src/components/LastChanceAuctions.js` - Refresh-Intervalle
-- `/app/frontend/src/components/ExcitementFeatures.js` - Refresh-Intervalle
-- `/app/frontend/src/components/WelcomeBonusBanner.js` - Layout-Stabilität
-- `/app/frontend/src/App.js` - Banner reaktiviert
+- `/app/frontend/src/components/*.js` - Refresh-Intervalle optimiert
 
 ---
 
