@@ -316,6 +316,13 @@ export default function BuyBids() {
           </div>
         </div>
 
+        {/* Flash Sales Banner - Shows time-limited special offers */}
+        <div className="mb-8">
+          <FlashSalesBanner onPurchase={(data) => {
+            toast.success(langKey === 'de' ? 'Weiterleitung zur Zahlung...' : 'Redirecting to payment...');
+          }} />
+        </div>
+
         {/* Packages Grid */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
