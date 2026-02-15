@@ -481,9 +481,9 @@ const LiveTimer = memo(({ endTime, isPaused }) => {
       
       const pad = (n) => String(n).padStart(2, '0');
       
-      // Show days if more than 0 days remaining
+      // Show days if more than 0 days remaining - compact format for mobile
       if (days > 0) {
-        setDisplay(`${days}T ${pad(h)}:${pad(m)}:${pad(s)}`);
+        setDisplay(`${days}d ${pad(h)}:${pad(m)}`);
         setIsLong(true);
         setIsLow(false);
       } else if (h > 0) {
