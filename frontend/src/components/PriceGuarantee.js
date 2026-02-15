@@ -50,6 +50,17 @@ const translations = {
     ],
     badge: 'I VERIFIKUAR'
   },
+  xk: {
+    title: 'Garancia e Çmimit',
+    subtitle: 'Nën çmimin e tregut',
+    description: 'Ose paratë kthehen!',
+    features: [
+      'Të paktën 50% nën çmimin',
+      '14 ditë kthim',
+      'Pagesë e sigurt'
+    ],
+    badge: 'I VERIFIKUAR'
+  },
   fr: {
     title: 'Garantie Prix',
     subtitle: 'Garanti sous le marché',
