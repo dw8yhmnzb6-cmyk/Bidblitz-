@@ -1283,8 +1283,8 @@ export default function Auctions() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-cyan-200 to-cyan-300 p-2 pt-4 overflow-x-hidden" data-testid="auctions-page">
       
-      {/* Exit Intent Popup for new visitors */}
-      <ExitIntentPopup />
+      {/* Exit Intent Popup DISABLED - was causing layout jitter */}
+      {/* <ExitIntentPopup /> */}
       
       {/* Features-Link Banner */}
       <div className="max-w-7xl mx-auto mb-3 px-2">
