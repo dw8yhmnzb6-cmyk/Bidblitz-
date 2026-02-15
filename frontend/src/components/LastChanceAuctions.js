@@ -130,7 +130,7 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-yellow-300 animate-pulse" />
+          <AlertTriangle className="w-5 h-5 text-yellow-300" />
           <span className="font-black text-white">{t.title}</span>
           <Flame className="w-5 h-5 text-yellow-300 animate-bounce" />
         </div>
@@ -163,7 +163,7 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
               {/* Timer */}
               <div className="flex items-center gap-1 mb-2">
                 <Clock className="w-3 h-3 text-yellow-300" />
-                <span className="text-yellow-300 font-mono font-bold text-sm animate-pulse">
+                <span className="text-yellow-300 font-mono font-bold text-sm">
                   {formatTime(timeLeftSec)}
                 </span>
               </div>
@@ -300,7 +300,7 @@ const LastChanceSection = memo(({ language = 'de' }) => {
               {/* Urgent timer */}
               <div className="flex items-center justify-center gap-1 mb-2 py-1 bg-black/20 rounded-lg">
                 <Clock className="w-4 h-4 text-yellow-300" />
-                <span className="text-yellow-300 font-mono font-bold animate-pulse">
+                <span className="text-yellow-300 font-mono font-bold">
                   {formatTime(timeLeftSec)}
                 </span>
               </div>
