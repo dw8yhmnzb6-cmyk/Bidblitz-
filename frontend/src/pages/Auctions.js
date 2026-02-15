@@ -439,8 +439,15 @@ const LiveTimer = memo(({ endTime, isPaused }) => {
   const [display, setDisplay] = useState('--:--:--');
   const [isLow, setIsLow] = useState(false);
   const [isLong, setIsLong] = useState(false); // For auctions > 1 hour
+  const intervalRef = useRef(null);
   
   useEffect(() => {
+    // Clear previous interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    
     // If paused, show pause indicator
     if (isPaused) {
       setDisplay('⏸️');
@@ -493,8 +500,14 @@ const LiveTimer = memo(({ endTime, isPaused }) => {
     };
     
     updateTimer(); // Initial update
-    const interval = setInterval(updateTimer, 1000);
-    return () => clearInterval(interval);
+    intervalRef.current = setInterval(updateTimer, 1000);
+    
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [endTime, isPaused]);
   
   return (
