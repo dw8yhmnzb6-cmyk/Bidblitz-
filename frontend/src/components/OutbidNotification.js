@@ -61,70 +61,49 @@ const OutbidNotification = () => {
   const t = translations[language] || translations.de;
   
   const [notifications, setNotifications] = useState([]);
-  const [ws, setWs] = useState(null);
 
-  // Connect to WebSocket for real-time outbid notifications
+  // Poll for outbid notifications (simpler than WebSocket, more reliable)
   useEffect(() => {
     if (!isAuthenticated || !token || !user?.id) return;
 
-    const wsUrl = API.replace('https://', 'wss://').replace('http://', 'ws://');
-    const socket = new WebSocket(`${wsUrl}/api/ws/user/${user.id}`);
-    
-    socket.onopen = () => {
-      console.log('OutbidNotification WebSocket connected');
-    };
-    
-    socket.onmessage = (event) => {
+    const checkOutbids = async () => {
       try {
-        const data = JSON.parse(event.data);
-        if (data.type === 'outbid') {
-          // Add notification
-          setNotifications(prev => [...prev, {
-            id: Date.now(),
-            auctionId: data.auction_id,
-            auctionName: data.auction_name,
-            productImage: data.product_image,
-            currentPrice: data.current_price,
-            outbidder: data.outbidder_name,
-            timestamp: new Date()
-          }]);
-          
-          // Play sound
-          try {
-            const audio = new Audio('/sounds/outbid.mp3');
-            audio.volume = 0.5;
-            audio.play().catch(() => {});
-          } catch (e) {}
-          
-          // Browser notification if permission granted
-          if (Notification.permission === 'granted') {
-            new Notification(t.outbid, {
-              body: `${data.auction_name} - ${t.currentPrice}: €${data.current_price?.toFixed(2)}`,
-              icon: data.product_image || '/logo192.png',
-              tag: `outbid-${data.auction_id}`
+        const response = await fetch(`${API}/api/notifications/outbids`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.outbids && data.outbids.length > 0) {
+            // Add new notifications
+            const newNotifs = data.outbids.map(outbid => ({
+              id: outbid.id || Date.now(),
+              auctionId: outbid.auction_id,
+              auctionName: outbid.auction_name,
+              productImage: outbid.product_image,
+              currentPrice: outbid.current_price,
+              outbidder: outbid.outbidder_name,
+              timestamp: new Date()
+            }));
+            
+            setNotifications(prev => {
+              // Only add if not already shown
+              const existingIds = new Set(prev.map(n => n.auctionId));
+              const toAdd = newNotifs.filter(n => !existingIds.has(n.auctionId));
+              return [...prev, ...toAdd];
             });
           }
         }
-      } catch (e) {
-        console.error('WebSocket message error:', e);
+      } catch (err) {
+        // Silent fail - don't show network error for background polling
+        console.log('Outbid check skipped');
       }
     };
+
+    // Check every 30 seconds
+    const interval = setInterval(checkOutbids, 30000);
     
-    socket.onerror = (error) => {
-      console.error('OutbidNotification WebSocket error:', error);
-    };
-    
-    socket.onclose = () => {
-      console.log('OutbidNotification WebSocket closed');
-    };
-    
-    setWs(socket);
-    
-    return () => {
-      if (socket.readyState === WebSocket.OPEN) {
-        socket.close();
-      }
-    };
+    return () => clearInterval(interval);
   }, [isAuthenticated, token, user?.id]);
 
   const dismissNotification = (id) => {
