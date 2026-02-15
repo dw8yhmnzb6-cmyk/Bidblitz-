@@ -638,7 +638,7 @@ async def send_localized_email_campaign(
             
             # Get localized template
             template = get_email_template(template_id, user_lang, **params)
-            html_content = generate_email_html(template, "https://bidblitz.de/auctions")
+            html_content = generate_email_html(template, "https://bidblitz.ae/auctions")
             
             # Send email
             resend.Emails.send({
@@ -717,7 +717,7 @@ async def preview_email_template(
     }
     
     template = get_email_template(template_id, language, **preview_params)
-    html_content = generate_email_html(template, "https://bidblitz.de/auctions")
+    html_content = generate_email_html(template, "https://bidblitz.ae/auctions")
     
     return {
         "template_id": template_id,

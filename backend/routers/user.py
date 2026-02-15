@@ -341,7 +341,7 @@ async def checkout_won_auction(auction_id: str, user: dict = Depends(get_current
         product_name = won_auction.get("product_name", "Gewonnene Auktion")
     
     # Create Stripe checkout session
-    frontend_url = os.environ.get("FRONTEND_URL", "https://bidblitz.de")
+    frontend_url = os.environ.get("FRONTEND_URL", "https://bidblitz.ae")
     
     try:
         session = stripe.checkout.Session.create(
@@ -453,7 +453,7 @@ async def get_referral_stats(user: dict = Depends(get_current_user)):
         "total_referrals": referrals,
         "successful_referrals": successful,
         "rewards_earned": rewards_earned,
-        "share_url": f"https://bidblitz.de/?ref={referral_code}"
+        "share_url": f"https://bidblitz.ae/?ref={referral_code}"
     }
 
 

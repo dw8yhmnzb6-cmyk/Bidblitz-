@@ -189,7 +189,7 @@ async def check_and_send_countdown_emails():
             product = await db.products.find_one({"id": auction.get("product_id")}, {"_id": 0, "name": 1})
             product_name = product.get("name", "Produkt") if product else "Produkt"
             
-            base_url = "https://bidblitz.de"  # Replace with actual URL
+            base_url = "https://bidblitz.ae"  # Replace with actual URL
             
             params = {
                 "user_name": sub.get("user_name", "Nutzer"),

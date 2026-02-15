@@ -201,7 +201,7 @@ async def trigger_price_alert(alert: dict, auction_id: str, current_price: float
                 "product_name": product_name,
                 "target_price": alert["target_price"],
                 "current_price": current_price,
-                "url": f"https://bidblitz.de/auctions/{auction_id}"
+                "url": f"https://bidblitz.ae/auctions/{auction_id}"
             })
         except Exception as e:
             logger.error(f"Telegram alert error: {e}")

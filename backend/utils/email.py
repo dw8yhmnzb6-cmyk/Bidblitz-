@@ -174,7 +174,7 @@ async def send_influencer_new_sale_notification(
                     </div>
                     
                     <div style="text-align:center; margin-top:30px;">
-                        <a href="https://bidblitz.de/influencer-dashboard" 
+                        <a href="https://bidblitz.ae/influencer-dashboard" 
                            style="display:inline-block; background:#FFD700; color:#111; padding:15px 30px; 
                                   text-decoration:none; border-radius:8px; font-weight:bold; font-size:16px;">
                             Zum Dashboard →
@@ -235,7 +235,7 @@ async def send_influencer_new_signup_notification(
                     </p>
                     
                     <div style="text-align:center; margin-top:30px;">
-                        <a href="https://bidblitz.de/influencer-dashboard" 
+                        <a href="https://bidblitz.ae/influencer-dashboard" 
                            style="display:inline-block; background:#7C3AED; color:#fff; padding:15px 30px; 
                                   text-decoration:none; border-radius:8px; font-weight:bold; font-size:16px;">
                             Dashboard ansehen →
@@ -388,7 +388,7 @@ async def send_admin_payout_notification(
                     </div>
                     
                     <div style="text-align:center; margin-top:30px;">
-                        <a href="https://bidblitz.de/admin-panel" style="display:inline-block; background:#7C3AED; color:#fff; padding:15px 30px; text-decoration:none; border-radius:10px; font-weight:bold;">
+                        <a href="https://bidblitz.ae/admin-panel" style="display:inline-block; background:#7C3AED; color:#fff; padding:15px 30px; text-decoration:none; border-radius:10px; font-weight:bold;">
                             Zum Admin-Panel →
                         </a>
                     </div>
@@ -438,7 +438,7 @@ async def send_wholesale_welcome_email(
             <p style="color:#E0F2FE; margin:0 0 20px 0; font-size:14px;">
                 Erstellen Sie Ihr Konto, um sofort von Ihren Großkundenvorteilen zu profitieren.
             </p>
-            <a href="https://bidblitz.de/register" style="display:inline-block; background:#fff; color:#0891B2; padding:15px 40px; text-decoration:none; border-radius:10px; font-weight:bold; font-size:16px;">
+            <a href="https://bidblitz.ae/register" style="display:inline-block; background:#fff; color:#0891B2; padding:15px 40px; text-decoration:none; border-radius:10px; font-weight:bold; font-size:16px;">
                 Kostenlos registrieren →
             </a>
         </div>

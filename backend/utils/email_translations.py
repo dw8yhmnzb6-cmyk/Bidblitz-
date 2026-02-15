@@ -283,7 +283,7 @@ def get_email_template(template_id: str, language: str, **kwargs) -> dict:
     return result
 
 
-def generate_email_html(template: dict, cta_url: str = "https://bidblitz.de") -> str:
+def generate_email_html(template: dict, cta_url: str = "https://bidblitz.ae") -> str:
     """Generate HTML email from template"""
     return f"""
     <!DOCTYPE html>

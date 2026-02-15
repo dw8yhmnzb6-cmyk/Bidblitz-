@@ -59,7 +59,7 @@ export default function ShareAndWin({ onClose, compact = false }) {
   const [sharing, setSharing] = useState(false);
 
   const referralCode = user?.id?.substring(0, 8).toUpperCase() || 'BIDBLITZ';
-  const shareUrl = `https://bidblitz.de/register?ref=${referralCode}`;
+  const shareUrl = `https://bidblitz.ae/register?ref=${referralCode}`;
   const shareMessage = `${t.shareMessage} ${shareUrl}`;
 
   const trackShare = async (platform) => {

@@ -223,7 +223,7 @@ export default function InviteFriends() {
   };
 
   const copyLink = async () => {
-    const link = referralData?.referral_link || `https://bidblitz.de/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`;
+    const link = referralData?.referral_link || `https://bidblitz.ae/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`;
     const success = await safeCopyToClipboard(link);
     if (success) {
       setCopied(true);
@@ -233,7 +233,7 @@ export default function InviteFriends() {
   };
 
   const shareLink = async () => {
-    const link = referralData?.referral_link || `https://bidblitz.de/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`;
+    const link = referralData?.referral_link || `https://bidblitz.ae/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`;
     if (navigator.share) {
       try {
         await navigator.share({
@@ -304,7 +304,7 @@ export default function InviteFriends() {
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex-1 p-3 rounded-lg bg-white border border-gray-200 overflow-hidden">
               <code className="text-[#06B6D4] text-sm truncate block">
-                {referralData?.referral_link || `https://bidblitz.de/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`}
+                {referralData?.referral_link || `https://bidblitz.ae/register?ref=${user?.id?.substring(0, 8).toUpperCase()}`}
               </code>
             </div>
             <Button onClick={copyLink} className="btn-primary whitespace-nowrap">

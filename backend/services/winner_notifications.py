@@ -92,7 +92,7 @@ async def send_winner_email(winner_id: str, auction_data: dict, product_data: di
                     </ol>
                     
                     <p style="text-align: center;">
-                        <a href="https://bidblitz.de/dashboard" class="cta-button">
+                        <a href="https://bidblitz.ae/dashboard" class="cta-button">
                             💳 Jetzt bezahlen & abholen
                         </a>
                     </p>

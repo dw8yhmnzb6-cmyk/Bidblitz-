@@ -197,14 +197,14 @@ async def send_outbid_email(user_id: str, auction_id: str, current_price: float,
                     </div>
                 </div>
                 <p style="text-align: center;">
-                    <a href="https://bidblitz.de/auctions/{auction_id}" class="btn">🔥 Jetzt zurückbieten!</a>
+                    <a href="https://bidblitz.ae/auctions/{auction_id}" class="btn">🔥 Jetzt zurückbieten!</a>
                 </p>
                 <p style="color: #94A3B8; font-size: 14px;">
                     💡 <strong>Tipp:</strong> Aktiviere den Autobidder und wir bieten automatisch für dich!
                 </p>
                 <div class="footer">
                     <p>bidblitz.ae - Deutschlands beste Penny-Auktionen</p>
-                    <p><a href="https://bidblitz.de/profile" style="color: #666;">E-Mail Einstellungen ändern</a></p>
+                    <p><a href="https://bidblitz.ae/profile" style="color: #666;">E-Mail Einstellungen ändern</a></p>
                 </div>
             </div>
         </body>
@@ -659,7 +659,7 @@ async def place_bid(auction_id: str, user: dict = Depends(get_current_user)):
                 "product_name": product.get("name", "Auktion") if product else "Auktion",
                 "current_price": new_price,
                 "new_bidder": user["name"],
-                "url": f"https://bidblitz.de/auctions/{auction_id}"
+                "url": f"https://bidblitz.ae/auctions/{auction_id}"
             })
         except Exception as e:
             logger.error(f"Error sending Telegram outbid alert: {e}")

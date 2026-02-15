@@ -1062,7 +1062,7 @@ export default function Admin() {
 <tr><td style="padding:30px;">
 <p style="font-size:18px;color:#333;">Hallo <strong>{name}</strong>,</p>
 <p style="color:#555;line-height:1.6;">Vielen Dank für Ihre Registrierung! Als Willkommensgeschenk haben wir Ihnen <strong>10 kostenlose Gebote</strong> gutgeschrieben.</p>
-<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/auctions" style="background:#7C3AED;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt mitbieten</a></p>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.ae/auctions" style="background:#7C3AED;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt mitbieten</a></p>
 <p style="color:#888;font-size:14px;">Viel Erfolg beim Bieten!<br>Ihr bidblitz.ae Team</p>
 </td></tr>
 </table>
@@ -1080,7 +1080,7 @@ export default function Admin() {
 <tr><td style="padding:30px;">
 <p style="font-size:18px;color:#333;">Hallo <strong>{name}</strong>,</p>
 <p style="color:#555;line-height:1.6;">Eine neue spannende Auktion wurde soeben gestartet! Verpassen Sie nicht Ihre Chance auf ein tolles Schnäppchen.</p>
-<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/auctions" style="background:#FFD700;color:#111;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Zur Auktion</a></p>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.ae/auctions" style="background:#FFD700;color:#111;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Zur Auktion</a></p>
 <p style="color:#888;font-size:14px;">Viel Erfolg beim Bieten!<br>Ihr bidblitz.ae Team</p>
 </td></tr>
 </table>
@@ -1102,7 +1102,7 @@ export default function Admin() {
 <p style="margin:0;font-size:24px;color:#10B981;font-weight:bold;">100 Gebote + 50 GRATIS</p>
 <p style="margin:10px 0 0;color:#888;">Nur €29,99 statt €44,99</p>
 </div>
-<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/buy-bids" style="background:#10B981;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt sichern</a></p>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.ae/buy-bids" style="background:#10B981;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt sichern</a></p>
 </td></tr>
 </table>
 </body>
@@ -1120,7 +1120,7 @@ export default function Admin() {
 <p style="font-size:18px;color:#333;">Hallo <strong>{name}</strong>,</p>
 <p style="color:#555;line-height:1.6;">Es ist schon eine Weile her, seit Sie das letzte Mal bei uns waren. Kommen Sie zurück und sichern Sie sich tolle Schnäppchen!</p>
 <p style="color:#555;line-height:1.6;">Als kleines Willkommensgeschenk haben wir Ihnen <strong>5 kostenlose Gebote</strong> gutgeschrieben.</p>
-<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.de/auctions" style="background:#F59E0B;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt zurückkommen</a></p>
+<p style="text-align:center;margin:30px 0;"><a href="https://bidblitz.ae/auctions" style="background:#F59E0B;color:#fff;padding:15px 30px;text-decoration:none;border-radius:8px;font-weight:bold;">Jetzt zurückkommen</a></p>
 </td></tr>
 </table>
 </body>

@@ -2389,7 +2389,7 @@ async def get_user_referrals(user: dict = Depends(get_current_user)):
     
     return {
         "referral_code": referral_code,
-        "referral_link": f"https://bidblitz.de/register?ref={referral_code}",
+        "referral_link": f"https://bidblitz.ae/register?ref={referral_code}",
         "invited_friends": invited_count,
         "qualified_friends": qualified_count,
         "bids_earned": bids_earned,
@@ -2520,7 +2520,7 @@ async def register_affiliate(data: AffiliateRegister, user: dict = Depends(get_c
     return {
         "message": "Erfolgreich als Affiliate registriert",
         "referral_code": referral_code,
-        "referral_link": f"https://bidblitz.de/register?ref={referral_code}",
+        "referral_link": f"https://bidblitz.ae/register?ref={referral_code}",
         "affiliate": affiliate
     }
 

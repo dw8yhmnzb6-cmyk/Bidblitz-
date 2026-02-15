@@ -290,7 +290,7 @@ export default function Affiliate() {
   };
 
   const copyLink = async () => {
-    const link = `https://bidblitz.de/register?ref=${affiliateData?.affiliate?.referral_code}`;
+    const link = `https://bidblitz.ae/register?ref=${affiliateData?.affiliate?.referral_code}`;
     const success = await safeCopyToClipboard(link);
     if (success) {
       setCopied(true);
@@ -437,7 +437,7 @@ export default function Affiliate() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 p-4 rounded-lg bg-white border border-gray-200">
                   <code className="text-[#06B6D4] text-sm break-all">
-                    https://bidblitz.de/register?ref={affiliateData.affiliate.referral_code}
+                    https://bidblitz.ae/register?ref={affiliateData.affiliate.referral_code}
                   </code>
                 </div>
                 <Button onClick={copyLink} className="btn-primary whitespace-nowrap">

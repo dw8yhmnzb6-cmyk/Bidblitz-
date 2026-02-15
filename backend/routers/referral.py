@@ -62,7 +62,7 @@ async def get_my_referral_code(user: dict = Depends(get_current_user)):
     
     return {
         "referral_code": referral_code,
-        "referral_link": f"https://bidblitz.de/register?ref={referral_code}",
+        "referral_link": f"https://bidblitz.ae/register?ref={referral_code}",
         "stats": {
             "total_referrals": total_referrals,
             "successful_referrals": successful_referrals,

@@ -2645,7 +2645,7 @@ async def get_user_referrals(user: dict = Depends(get_current_user)):
     
     return {
         "referral_code": referral_code,
-        "referral_link": f"https://bidblitz.de/register?ref={referral_code}",
+        "referral_link": f"https://bidblitz.ae/register?ref={referral_code}",
         "invited_friends": invited_count,
         "qualified_friends": qualified_count,
         "bids_earned": bids_earned,
@@ -2776,7 +2776,7 @@ async def register_affiliate(data: AffiliateRegister, user: dict = Depends(get_c
     return {
         "message": "Erfolgreich als Affiliate registriert",
         "referral_code": referral_code,
-        "referral_link": f"https://bidblitz.de/register?ref={referral_code}",
+        "referral_link": f"https://bidblitz.ae/register?ref={referral_code}",
         "affiliate": affiliate
     }
 
@@ -3921,7 +3921,7 @@ def generate_invoice_pdf(purchase: dict, user: dict) -> io.BytesIO:
     <font size="9" color="grey">
     bidblitz.ae GmbH • Musterstraße 123 • 10115 Berlin<br/>
     USt-IdNr.: DE123456789 • Handelsregister: HRB 12345<br/>
-    support@bidblitz.ae • www.bidblitz.de
+    support@bidblitz.ae • www.bidblitz.ae
     </font>
     </para>
     """

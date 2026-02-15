@@ -147,8 +147,8 @@ async def create_subscription(data: SubscriptionRequest, user: dict = Depends(ge
                 'quantity': 1,
             }],
             mode='subscription',
-            success_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.de')}/subscription/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.de')}/subscription",
+            success_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.ae')}/subscription/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.ae')}/subscription",
             customer_email=user_data.get("email") if user_data else None,
             metadata={
                 'user_id': user_id,

@@ -208,8 +208,8 @@ async def purchase_buy_it_now(data: BuyItNowRequest, user: dict = Depends(get_cu
                 'quantity': 1,
             }],
             mode='payment',
-            success_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.de')}/buy-it-now/success?session_id={{CHECKOUT_SESSION_ID}}",
-            cancel_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.de')}/buy-it-now/offers",
+            success_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.ae')}/buy-it-now/success?session_id={{CHECKOUT_SESSION_ID}}",
+            cancel_url=f"{os.environ.get('FRONTEND_URL', 'https://bidblitz.ae')}/buy-it-now/offers",
             customer_email=user_data.get("email") if user_data else None,
             metadata={
                 'user_id': user_id,

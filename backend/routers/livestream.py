@@ -183,8 +183,8 @@ async def start_stream(
         "viewer_count": 0,
         "started_at": datetime.now(timezone.utc).isoformat(),
         # Placeholder for actual stream URL - would need video streaming service
-        "stream_url": f"https://stream.bidblitz.de/{stream_id}",
-        "embed_code": f'<iframe src="https://stream.bidblitz.de/embed/{stream_id}" width="100%" height="400"></iframe>'
+        "stream_url": f"https://stream.bidblitz.ae/{stream_id}",
+        "embed_code": f'<iframe src="https://stream.bidblitz.ae/embed/{stream_id}" width="100%" height="400"></iframe>'
     }
     
     await db.livestreams.insert_one(stream)

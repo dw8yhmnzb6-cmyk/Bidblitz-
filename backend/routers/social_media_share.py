@@ -34,7 +34,7 @@ class ShareTemplateRequest(BaseModel):
 
 def generate_share_urls(content: dict, platform: str, user_code: str) -> dict:
     """Generate share URLs for different platforms"""
-    base_url = f"https://bidblitz.de?ref={user_code}"
+    base_url = f"https://bidblitz.ae?ref={user_code}"
     
     # Prepare share text
     text = content.get("share_text", "Schau dir bidblitz.ae an!")
@@ -119,7 +119,7 @@ async def get_shareable_content(user: dict = Depends(get_current_user)):
     return {
         "shareable": shareable,
         "referral_code": ref_code,
-        "referral_link": f"https://bidblitz.de?ref={ref_code}"
+        "referral_link": f"https://bidblitz.ae?ref={ref_code}"
     }
 
 @router.post("/share")
@@ -187,13 +187,13 @@ async def record_share(share: ShareRequest, user: dict = Depends(get_current_use
                 savings = round((1 - auction.get("current_price", 0) / product.get("retail_price", 1)) * 100)
                 content = {
                     "share_text": f"Ich habe gerade {product['name']} für nur €{auction.get('current_price', 0):.2f} gewonnen ({savings}% gespart)! Probier es auch:",
-                    "url": f"https://bidblitz.de?ref={ref_code}"
+                    "url": f"https://bidblitz.ae?ref={ref_code}"
                 }
     
     if not content:
         content = {
             "share_text": "Ich spare bis zu 90% bei bidblitz.ae Auktionen! Probier es auch:",
-            "url": f"https://bidblitz.de?ref={ref_code}"
+            "url": f"https://bidblitz.ae?ref={ref_code}"
         }
     
     share_urls = generate_share_urls(content, share.platform, ref_code)

@@ -58,7 +58,7 @@ async def get_my_referral_code(user: dict = Depends(get_current_user)):
         "id": str(uuid.uuid4()),
         "user_id": user_id,
         "code": code,
-        "link": f"https://bidblitz.de/register?ref={code}",
+        "link": f"https://bidblitz.ae/register?ref={code}",
         "created_at": now.isoformat(),
         "expires_at": (now + timedelta(days=365)).isoformat(),  # 1 year
         "uses": 0,

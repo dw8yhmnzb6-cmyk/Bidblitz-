@@ -105,7 +105,7 @@ async def get_affiliate_dashboard(user: dict = Depends(get_current_user)):
     return {
         "is_affiliate": True,
         "affiliate_code": affiliate.get("code"),
-        "affiliate_link": f"https://bidblitz.de?ref={affiliate.get('code')}",
+        "affiliate_link": f"https://bidblitz.ae?ref={affiliate.get('code')}",
         "stats": {
             "total_clicks": total_referrals,
             "total_conversions": conversions,
@@ -244,7 +244,7 @@ async def get_marketing_materials(user: dict = Depends(get_current_user)):
                 "text": "Habe gerade 90% gespart bei @bidblitz.ae! Probier es aus:"
             }
         ],
-        "affiliate_link": f"https://bidblitz.de?ref={affiliate['code']}"
+        "affiliate_link": f"https://bidblitz.ae?ref={affiliate['code']}"
     }
 
 # ==================== ADMIN ENDPOINTS ====================

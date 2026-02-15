@@ -44,7 +44,7 @@ async def get_app_status():
         "web_app": {
             "status": "available",
             "pwa_installable": True,
-            "url": "https://bidblitz.de"
+            "url": "https://bidblitz.ae"
         },
         "features_planned": [
             "Push-Benachrichtigungen",
