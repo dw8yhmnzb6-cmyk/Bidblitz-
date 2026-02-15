@@ -184,7 +184,8 @@ const FlashSalesBanner = ({ onPurchase }) => {
         toast.error(data.detail || 'Error');
       }
     } catch (err) {
-      toast.error('Network error');
+      // Silent fail - don't show network error for background requests
+      console.error('Purchase error:', err);
     }
   };
 
