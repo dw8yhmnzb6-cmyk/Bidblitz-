@@ -198,6 +198,33 @@ const LastChanceSection = memo(({ language = 'de' }) => {
           .sort((a, b) => new Date(a.end_time) - new Date(b.end_time));
         setAuctions(endingSoon);
       } catch (err) {
+        console.error('Error fetching ending soon:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchEndingSoon();
+    // Refresh every 10 seconds to get new ending-soon auctions
+    const refreshInterval = setInterval(fetchEndingSoon, 10000);
+    return () => clearInterval(refreshInterval);
+  }, []);
+  
+  // Auto-remove expired auctions from display
+  useEffect(() => {
+    if (auctions.length === 0) return;
+    
+    const checkExpired = () => {
+      const now = Date.now();
+      setAuctions(prev => prev.filter(a => {
+        const endTime = new Date(a.end_time).getTime();
+        return endTime > now;
+      }));
+    };
+    
+    const timer = setInterval(checkExpired, 1000);
+    return () => clearInterval(timer);
+  }, [auctions.length]);
         setAuctions([]);
       } finally {
         setLoading(false);
