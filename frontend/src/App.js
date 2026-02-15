@@ -197,10 +197,10 @@ function AppContent() {
       
       {/* Main content wrapper - Offset for fixed navbar */}
       <div className="pt-16">
-        {/* Promotional Banners - Show above main content */}
-        <WelcomeBonusBanner language={mappedLanguage || language} />
-        <CountdownDealBanner language={mappedLanguage || language} />
-        <HappyHourBanner />
+        {/* Promotional Banners DISABLED - causing layout jitter on mobile */}
+        {/* <WelcomeBonusBanner language={mappedLanguage || language} /> */}
+        {/* <CountdownDealBanner language={mappedLanguage || language} /> */}
+        {/* <HappyHourBanner /> */}
       </div>
       
       <main className="flex-grow">
