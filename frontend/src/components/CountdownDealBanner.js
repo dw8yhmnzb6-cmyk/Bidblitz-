@@ -139,7 +139,7 @@ const CountdownDealBanner = memo(({ language = 'de' }) => {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           {/* Left: Deal info */}
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex p-2 bg-white/20 rounded-full animate-bounce">
+            <div className="hidden sm:flex p-2 bg-white/20 rounded-full">
               <Zap className="w-6 h-6 text-yellow-300" />
             </div>
             
