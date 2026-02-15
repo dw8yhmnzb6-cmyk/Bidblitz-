@@ -190,9 +190,9 @@ function AppContent() {
       {/* Navbar - Fixed at top */}
       <Navbar />
       
-      {/* Floating popups - ALL DISABLED to prevent layout jumping */}
+      {/* Floating popups - Enabled for user engagement */}
+      <AbandonedCartReminder language={mappedLanguage || language} />
       {/* <LiveWinnerPopup language={mappedLanguage || language} /> */}
-      {/* <AbandonedCartReminder language={mappedLanguage || language} /> */}
       {/* <LanguageHintBanner /> */}
       
       {/* Main content wrapper - Offset for fixed navbar */}
