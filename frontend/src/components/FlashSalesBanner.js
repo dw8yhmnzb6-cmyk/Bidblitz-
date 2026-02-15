@@ -157,14 +157,15 @@ const FlashSalesBanner = ({ onPurchase }) => {
   }, []);
 
   // Handle purchase
-  const handlePurchase = async (bundleId) => {
+  const handlePurchase = async (sale) => {
     if (!isAuthenticated) {
       toast.error(language === 'de' ? 'Bitte melde dich an' : 'Please log in');
+      window.location.href = '/login?redirect=/buy-bids';
       return;
     }
 
     try {
-      const response = await fetch(`${API}/api/bid-bundles/purchase/${bundleId}`, {
+      const response = await fetch(`${API}/api/bid-bundles/purchase/${sale.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,18 +175,19 @@ const FlashSalesBanner = ({ onPurchase }) => {
 
       const data = await response.json();
       
-      if (response.ok) {
-        if (onPurchase) {
-          onPurchase(data);
-        }
-        // Navigate to checkout
-        window.location.href = data.checkout_url || '/buy-bids';
+      if (response.ok && data.checkout_url) {
+        // Redirect to checkout
+        window.location.href = data.checkout_url;
+      } else if (response.ok) {
+        // Fallback - redirect to buy-bids with package selected
+        window.location.href = `/buy-bids?package=${sale.id}`;
       } else {
-        toast.error(data.detail || 'Error');
+        toast.error(data.detail || 'Fehler beim Kauf');
       }
     } catch (err) {
-      // Silent fail - don't show network error for background requests
+      // Fallback - just go to buy-bids page
       console.error('Purchase error:', err);
+      window.location.href = `/buy-bids?package=${sale.id}`;
     }
   };
 
