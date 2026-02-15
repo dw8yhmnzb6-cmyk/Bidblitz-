@@ -456,7 +456,7 @@ export default function Dashboard() {
                 </div>
               ))}
               {(!achievements?.earned || achievements.earned.length === 0) && (
-                <p className="text-gray-500 text-sm">Noch keine Achievements - starte jetzt!</p>
+                <p className="text-gray-500 text-sm">{dt.noAchievementsYet}</p>
               )}
             </div>
           </div>
@@ -859,7 +859,7 @@ export default function Dashboard() {
               <h2 className="text-lg font-bold text-gray-800 mb-4">Schnellzugriff</h2>
               <div className="space-y-2">
                 <Link to="/achievements" className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-[#FFD700]/10 to-[#FF4D4D]/10 border border-[#FFD700]/30 hover:bg-[#FFD700]/20 transition-colors">
-                  <span className="flex items-center gap-2 text-[#FFD700]"><Trophy className="w-4 h-4" />Achievements & Belohnungen</span>
+                  <span className="flex items-center gap-2 text-[#FFD700]"><Trophy className="w-4 h-4" />{dt.achievementsAndRewards}</span>
                   <ChevronRight className="w-4 h-4 text-[#FFD700]" />
                 </Link>
                 <Link to="/profile" className="flex items-center justify-between p-3 rounded-lg bg-white hover:bg-white/5 transition-colors">
