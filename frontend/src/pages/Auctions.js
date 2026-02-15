@@ -98,7 +98,7 @@ const QuickRegisterSection = memo(({ language = 'de', navigate }) => {
     setLoading(true);
     try {
       const response = await axios.post(`${API}/auth/register`, {
-        username: formData.name,
+        name: formData.name,
         email: formData.email,
         password: formData.password
       });
@@ -108,7 +108,14 @@ const QuickRegisterSection = memo(({ language = 'de', navigate }) => {
         navigate('/login');
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Registrierung fehlgeschlagen');
+      const errorMsg = error.response?.data?.detail;
+      if (typeof errorMsg === 'string') {
+        toast.error(errorMsg);
+      } else if (Array.isArray(errorMsg)) {
+        toast.error(errorMsg[0]?.msg || 'Registrierung fehlgeschlagen');
+      } else {
+        toast.error('Registrierung fehlgeschlagen');
+      }
     } finally {
       setLoading(false);
     }
