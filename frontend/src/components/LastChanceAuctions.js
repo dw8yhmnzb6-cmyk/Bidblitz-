@@ -97,13 +97,6 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
     return () => clearInterval(interval);
   }, [maxItems]);
   
-  // Update time remaining
-  const [, forceUpdate] = useState(0);
-  useEffect(() => {
-    const timer = setInterval(() => forceUpdate(n => n + 1), 1000);
-    return () => clearInterval(timer);
-  }, []);
-  
   if (loading || auctions.length === 0) return null;
   
   return (
