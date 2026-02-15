@@ -100,7 +100,8 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
     };
     
     fetchEndingSoon();
-    const interval = setInterval(fetchEndingSoon, 10000);
+    // Refresh every 20 seconds (reduced from 10s to minimize UI churn)
+    const interval = setInterval(fetchEndingSoon, 20000);
     return () => clearInterval(interval);
   }, [maxItems]);
   
