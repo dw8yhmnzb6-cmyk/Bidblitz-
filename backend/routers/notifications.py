@@ -214,6 +214,35 @@ async def update_notification_preferences(
     return {"message": "Einstellungen aktualisiert", "preferences": updates}
 
 
+# ==================== OUTBID NOTIFICATIONS ====================
+
+@router.get("/outbids")
+async def get_outbid_notifications(user: dict = Depends(get_current_user)):
+    """Get recent outbid notifications for the user"""
+    user_id = user["id"]
+    
+    # Get outbids from last 5 minutes that haven't been acknowledged
+    cutoff = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+    
+    outbids = await db.outbid_notifications.find({
+        "user_id": user_id,
+        "created_at": {"$gte": cutoff},
+        "acknowledged": {"$ne": True}
+    }, {"_id": 0}).sort("created_at", -1).to_list(10)
+    
+    return {"outbids": outbids}
+
+
+@router.post("/outbids/{notification_id}/acknowledge")
+async def acknowledge_outbid(notification_id: str, user: dict = Depends(get_current_user)):
+    """Mark an outbid notification as acknowledged"""
+    await db.outbid_notifications.update_one(
+        {"id": notification_id, "user_id": user["id"]},
+        {"$set": {"acknowledged": True}}
+    )
+    return {"message": "OK"}
+
+
 # ==================== ADMIN: SEND NOTIFICATIONS ====================
 
 @router.post("/admin/send")
