@@ -10,9 +10,203 @@ import { PriceGuaranteeSection } from '../components/PriceGuarantee';
 import { LastChanceSection } from '../components/LastChanceAuctions';
 import { TopBidderBadge } from '../components/TopBidderLeaderboard';
 import ExitIntentPopup from '../components/ExitIntentPopup';
+import { 
+  Timer, Flame, TrendingUp, Users, Zap, Award, Gift, Shield, Star, Crown, Clock, 
+  ChevronRight, CheckCircle, Eye, Gavel, ArrowRight, Sparkles, UserPlus, Mail, Lock
+} from 'lucide-react';
 // Note: LiveTimer, LivePrice, ProductInfo, ActivityIndex, TrustBadges are defined locally for this page
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+
+// Quick Registration translations
+const quickRegisterTexts = {
+  de: {
+    title: 'Jetzt kostenlos registrieren',
+    subtitle: '50 Gratis Gebote sichern!',
+    namePlaceholder: 'Vollständiger Name',
+    emailPlaceholder: 'E-Mail Adresse',
+    passwordPlaceholder: 'Passwort wählen',
+    submitBtn: 'Kostenlos starten',
+    terms: 'Mit der Registrierung akzeptierst du unsere AGB',
+    benefits: ['50 Gratis Gebote', 'Keine Kreditkarte nötig', 'Sofort loslegen']
+  },
+  en: {
+    title: 'Register for free now',
+    subtitle: 'Get 50 Free Bids!',
+    namePlaceholder: 'Full name',
+    emailPlaceholder: 'Email address',
+    passwordPlaceholder: 'Choose password',
+    submitBtn: 'Start for free',
+    terms: 'By registering you accept our Terms & Conditions',
+    benefits: ['50 Free Bids', 'No credit card needed', 'Start immediately']
+  },
+  sq: {
+    title: 'Regjistrohu falas tani',
+    subtitle: 'Merr 50 Oferta Falas!',
+    namePlaceholder: 'Emri i plotë',
+    emailPlaceholder: 'Adresa e emailit',
+    passwordPlaceholder: 'Zgjidhni fjalëkalimin',
+    submitBtn: 'Fillo falas',
+    terms: 'Duke u regjistruar pranoni Kushtet tona',
+    benefits: ['50 Oferta Falas', 'Pa kartë krediti', 'Fillo menjëherë']
+  },
+  xk: {
+    title: 'Regjistrohu falas tani',
+    subtitle: 'Merr 50 Oferta Falas!',
+    namePlaceholder: 'Emri i plotë',
+    emailPlaceholder: 'Adresa e emailit',
+    passwordPlaceholder: 'Zgjidhni fjalëkalimin',
+    submitBtn: 'Fillo falas',
+    terms: 'Duke u regjistruar pranoni Kushtet tona',
+    benefits: ['50 Oferta Falas', 'Pa kartë krediti', 'Fillo menjëherë']
+  },
+  tr: {
+    title: 'Şimdi ücretsiz kayıt ol',
+    subtitle: '50 Ücretsiz Teklif Al!',
+    namePlaceholder: 'Ad Soyad',
+    emailPlaceholder: 'E-posta adresi',
+    passwordPlaceholder: 'Şifre seçin',
+    submitBtn: 'Ücretsiz başla',
+    terms: 'Kayıt olarak Şartlarımızı kabul etmiş olursunuz',
+    benefits: ['50 Ücretsiz Teklif', 'Kredi kartı gerekmez', 'Hemen başla']
+  },
+  fr: {
+    title: 'Inscrivez-vous gratuitement',
+    subtitle: 'Obtenez 50 enchères gratuites!',
+    namePlaceholder: 'Nom complet',
+    emailPlaceholder: 'Adresse email',
+    passwordPlaceholder: 'Choisir mot de passe',
+    submitBtn: 'Commencer gratuitement',
+    terms: "En vous inscrivant, vous acceptez nos conditions",
+    benefits: ['50 Enchères gratuites', 'Pas de carte de crédit', 'Commencer immédiatement']
+  }
+};
+
+// Quick Register Section Component
+const QuickRegisterSection = memo(({ language = 'de', navigate }) => {
+  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const t = quickRegisterTexts[language] || quickRegisterTexts.de;
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.password) {
+      toast.error('Bitte alle Felder ausfüllen');
+      return;
+    }
+    
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API}/auth/register`, {
+        username: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      if (response.data) {
+        toast.success('Registrierung erfolgreich! Bitte einloggen.');
+        navigate('/login');
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Registrierung fehlgeschlagen');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <div className="bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 rounded-3xl p-6 sm:p-8 shadow-2xl text-white"
+      data-testid="quick-register-section"
+    >
+      {/* Header */}
+      <div className="text-center mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/20 rounded-full mb-4">
+          <Gift className="w-5 h-5 text-yellow-300" />
+          <span className="font-bold">{t.subtitle}</span>
+          <Sparkles className="w-4 h-4 text-yellow-300" />
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-black">{t.title}</h2>
+      </div>
+      
+      {/* Benefits */}
+      <div className="flex flex-wrap justify-center gap-3 mb-6">
+        {t.benefits.map((benefit, i) => (
+          <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/10 rounded-full text-sm">
+            <CheckCircle className="w-4 h-4 text-green-300" />
+            <span>{benefit}</span>
+          </div>
+        ))}
+      </div>
+      
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="relative">
+          <UserPlus className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            placeholder={t.namePlaceholder}
+            className="w-full pl-12 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 
+              focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/20 transition-all"
+            data-testid="quick-register-name"
+          />
+        </div>
+        
+        <div className="relative">
+          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            placeholder={t.emailPlaceholder}
+            className="w-full pl-12 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 
+              focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/20 transition-all"
+            data-testid="quick-register-email"
+          />
+        </div>
+        
+        <div className="relative">
+          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+          <input
+            type="password"
+            value={formData.password}
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            placeholder={t.passwordPlaceholder}
+            className="w-full pl-12 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 
+              focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/20 transition-all"
+            data-testid="quick-register-password"
+          />
+        </div>
+        
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 py-4 bg-white text-purple-600 font-black text-lg rounded-xl
+            hover:bg-yellow-300 transition-all transform hover:scale-[1.02] shadow-lg disabled:opacity-50
+            active:scale-95 touch-manipulation"
+          data-testid="quick-register-submit"
+        >
+          {loading ? (
+            <div className="w-6 h-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <>
+              {t.submitBtn}
+              <ArrowRight className="w-5 h-5" />
+            </>
+          )}
+        </button>
+      </form>
+      
+      {/* Terms */}
+      <p className="text-center text-xs text-white/60 mt-4">
+        {t.terms}
+      </p>
+    </div>
+  );
+});
+
+QuickRegisterSection.displayName = 'QuickRegisterSection';
 
 // Auction of the Day Component - Special highlight
 const AuctionOfTheDay = memo(({ auction, product, onBid, t, language, langKey, isAuthenticated = false, isVip = false, navigate }) => {
