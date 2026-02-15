@@ -22,7 +22,8 @@ export function JackpotDisplay({ auctionId, className = '' }) {
       }
     };
     fetchJackpot();
-    const interval = setInterval(fetchJackpot, 5000);
+    // Reduced from 5s to 20s to minimize UI churn
+    const interval = setInterval(fetchJackpot, 20000);
     return () => clearInterval(interval);
   }, [auctionId]);
 
