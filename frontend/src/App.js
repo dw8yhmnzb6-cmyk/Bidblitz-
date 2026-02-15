@@ -190,10 +190,10 @@ function AppContent() {
       {/* Navbar - Fixed at top */}
       <Navbar />
       
-      {/* Floating popups and widgets - DISABLED to prevent layout jitter */}
+      {/* Floating popups and widgets - ALL DISABLED to prevent layout jitter */}
       {/* <LiveWinnerPopup language={mappedLanguage || language} /> */}
       {/* <AbandonedCartReminder language={mappedLanguage || language} /> */}
-      <LanguageHintBanner />
+      {/* <LanguageHintBanner /> */}
       
       {/* Main content wrapper - Offset for fixed navbar */}
       <div className="pt-16">
