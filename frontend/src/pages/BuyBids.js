@@ -7,6 +7,7 @@ import { usePageTranslations } from '../i18n/pageTranslations';
 import { Button } from '../components/ui/button';
 import { Zap, Check, Sparkles, CreditCard, Bitcoin, X } from 'lucide-react';
 import { toast } from 'sonner';
+import FlashSalesBanner from '../components/FlashSalesBanner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
