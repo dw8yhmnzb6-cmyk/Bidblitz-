@@ -130,6 +130,24 @@ async def get_my_duels(user: dict = Depends(get_current_user)):
     
     return {"duels": duels}
 
+@router.get("/challenges")
+async def get_challenges(user: dict = Depends(get_current_user)):
+    """Get pending duel challenges for the user"""
+    user_id = user["id"]
+    
+    # Find duels where user is the opponent and status is pending
+    challenges = await db.duels.find({
+        "opponent_id": user_id,
+        "status": "pending"
+    }, {"_id": 0}).sort("created_at", -1).to_list(50)
+    
+    # Enrich with challenger usernames
+    for challenge in challenges:
+        challenger = await db.users.find_one({"id": challenge["challenger_id"]}, {"username": 1})
+        challenge["challenger_name"] = challenger.get("username", "Spieler") if challenger else "Spieler"
+    
+    return {"challenges": challenges}
+
 @router.get("/matchmaking")
 async def find_match(user: dict = Depends(get_current_user)):
     """Find an available duel to join"""
