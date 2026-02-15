@@ -210,7 +210,7 @@ const LastChanceSection = memo(({ language = 'de' }) => {
           .filter(a => {
             const endTime = new Date(a.end_time).getTime();
             const timeLeft = (endTime - now) / 1000;
-            return timeLeft > 0 && timeLeft < 300; // Less than 5 minutes
+            return timeLeft > 5 && timeLeft < 300; // More than 5 seconds, less than 5 minutes
           })
           .sort((a, b) => new Date(a.end_time) - new Date(b.end_time));
         setAuctions(endingSoon);
@@ -223,10 +223,26 @@ const LastChanceSection = memo(({ language = 'de' }) => {
     };
     
     fetchEndingSoon();
-    // Refresh every 10 seconds to get new ending-soon auctions
-    const refreshInterval = setInterval(fetchEndingSoon, 10000);
+    // Refresh every 15 seconds to get new ending-soon auctions
+    const refreshInterval = setInterval(fetchEndingSoon, 15000);
     return () => clearInterval(refreshInterval);
   }, []);
+  
+  // Auto-remove expired auctions every second
+  useEffect(() => {
+    if (auctions.length === 0) return;
+    
+    const removeExpired = () => {
+      const now = Date.now();
+      setAuctions(prev => prev.filter(a => {
+        const endTime = new Date(a.end_time).getTime();
+        return endTime > now + 1000; // Remove if less than 1 second left
+      }));
+    };
+    
+    const timer = setInterval(removeExpired, 1000);
+    return () => clearInterval(timer);
+  }, [auctions.length > 0]);
   
   // Auto-remove expired auctions from display every second
   useEffect(() => {
