@@ -612,10 +612,11 @@ const AuctionCard = memo(({ auction, product, onBid, t, language, langKey, isAut
   const badges = [];
   
   // Discount badge - only show if discount is positive and reasonable
+  // Cap at 99% to avoid showing "100%" which looks odd
   if (discount > 0 && discount <= 100) {
     badges.push(
       <span key="discount" className="bg-red-500 text-white px-1.5 py-0.5 rounded text-[10px] font-bold whitespace-nowrap">
-        -{discount}%
+        -{Math.min(99, discount)}%
       </span>
     );
   }
