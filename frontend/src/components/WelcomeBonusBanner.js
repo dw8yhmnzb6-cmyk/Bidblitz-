@@ -74,9 +74,10 @@ const WelcomeBonusBanner = memo(({ language = 'de' }) => {
     }
   }, [isAuthenticated, user]);
   
-  // Don't show if authenticated user has already purchased or dismissed
-  // Return empty placeholder to maintain layout stability
+  // Return a fixed-height placeholder when banner should not be shown
+  // This prevents layout shift when banner state changes
   if (dismissed || (isAuthenticated && hasClaimedBonus)) {
+    // Return empty div with no height to prevent layout shift on initial load
     return null;
   }
   
