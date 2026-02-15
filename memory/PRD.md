@@ -5,6 +5,52 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 15, 2026)
 
+### ✅ Session Update - February 15, 2026 (Session 21) - MAJOR FEATURE UPDATE 🚀
+
+**Implementierte Features:**
+
+#### 1. 🔔 Push-Benachrichtigungen & "Du wurdest überboten"
+- **OutbidNotification Component** erstellt
+- Echtzeit-Benachrichtigung wenn Benutzer überboten wird
+- E-Mail-Benachrichtigung mit Produkt-Details und "Jetzt bieten" Link
+- Browser Push-Notifications (falls erlaubt)
+
+#### 2. 🛒 Abandoned Cart E-Mails
+- **AbandonedCartReminder** aktiviert
+- Popup wenn Benutzer Gebote im Warenkorb hat
+- Automatische E-Mail nach 24h mit Rabatt-Angebot
+
+#### 3. 🏆 Gewinner-Galerie / Social Proof
+- **WinnerGalleryHome** auf Startseite integriert
+- Zeigt echte Gewinner mit Fotos und Testimonials
+- "Thomas R. aus Frankfurt hat MacBook für 24€ gewonnen"
+- Ersparnisse prominent angezeigt (€1431, €1274 gespart!)
+
+#### 4. 🎓 Onboarding-Tour für Neukunden
+- **OnboardingTour Component** erstellt
+- 4-Schritte Tutorial: Wie es funktioniert → Wie man gewinnt → Strategie → Start
+- Erscheint automatisch für neue Benutzer
+- Kann übersprungen werden
+- Mehrsprachig (DE, EN, TR, SQ, FR)
+
+#### 5. ⭐ Wunschliste mit Preis-Alarm
+- Bereits implementiert unter `/product-wishlist`
+- Benutzer können Produkte speichern
+- Benachrichtigung wenn Preis unter Wunschpreis fällt
+
+#### 6. 🏅 Achievements / Gamification
+- Bereits implementiert unter `/achievements`
+- Badges: "Erster Gewinn", "Nacht-Eule", "VIP-Bieter"
+- Ranglisten und Punkte-System
+
+#### 📋 Geänderte/Neue Dateien:
+- `/app/frontend/src/components/OnboardingTour.js` - NEU
+- `/app/frontend/src/components/OutbidNotification.js` - NEU
+- `/app/frontend/src/App.js` - Komponenten integriert
+- `/app/frontend/src/pages/Auctions.js` - WinnerGalleryHome hinzugefügt
+
+---
+
 ### ✅ Session Update - February 15, 2026 (Session 21) - 1v1 DUELLE BUGFIX + AUTOBIDDER UI 🔧🤖
 
 **Bug Fix: "Network Error" auf der 1v1 Duelle Seite behoben**
