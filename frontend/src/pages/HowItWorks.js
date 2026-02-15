@@ -33,7 +33,7 @@ const howItWorksTranslations = {
     timeBonusDesc: "Der Timer wird um 10-15 Sekunden verlängert",
     savings: "Ersparnis",
     savingsDesc: "Sparen Sie bis zu 99% auf Top-Marken",
-    whybidblitz.ae: "Warum bidblitz.ae?",
+    whyBidblitz: "Warum bidblitz.ae?",
     fairAuctions: "Faire Auktionen",
     fairAuctionsDesc: "Jeder hat die gleiche Chance zu gewinnen. Kein Glücksspiel, nur Strategie.",
     realTimeUpdates: "Echtzeit-Updates",
