@@ -279,7 +279,8 @@ export function DuelModeDisplay({ auctionId, className = '' }) {
       }
     };
     checkDuel();
-    const interval = setInterval(checkDuel, 3000);
+    // Reduced from 3s to 15s to minimize UI churn
+    const interval = setInterval(checkDuel, 15000);
     return () => clearInterval(interval);
   }, [auctionId]);
 
