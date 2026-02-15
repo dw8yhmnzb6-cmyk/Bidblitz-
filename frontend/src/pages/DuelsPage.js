@@ -212,10 +212,12 @@ const DuelsPage = () => {
         setBetAmount(10);
         fetchDuels();
       } else {
-        toast.error(data.detail || 'Error');
+        // Show the actual error message from the API
+        toast.error(data.detail || data.message || 'Fehler beim Erstellen');
       }
     } catch (err) {
-      toast.error('Network error');
+      console.error('Create duel error:', err);
+      toast.error('Verbindungsfehler - bitte erneut versuchen');
     }
   };
 
