@@ -35,15 +35,20 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 #### 4. ✅ WelcomeBonusBanner reaktiviert
 - "50% EXTRA-GEBOTE für Neukunden" wird wieder angezeigt
 
-#### ⚠️ WICHTIG: Background-Tasks deaktiviert
-Folgende Tasks wurden deaktiviert um die Auktionszeiten zu schützen:
-- `bot_last_second_bidder` - Bot-Gebote
-- `mystery_box_bot_bidder` - Mystery Box Bots
-- `auction_auto_restart_processor` - Auto-Neustart
-- `day_night_auction_scheduler` - Tag/Nacht Wechsel
-- `auction_expiry_checker` - Auktions-Ablauf-Prüfung
+#### 5. 📱 Mobile-Ansicht verbessert
+- Timer-Format kompakter: "2d 04:53" statt "2T 04:53:34"
+- Badges kleiner (text-[10px]) damit sie nicht überlappen
+- Header-Bereich optimiert für Mobile (gap-0.5, max-w-[45%])
+- Rabatt auf max 99% begrenzt (statt 100% anzuzeigen)
 
-**Diese Tasks müssen mit angepasster Logik reaktiviert werden, um die langen Auktionszeiten zu respektieren.**
+#### ⚠️ WICHTIG: Background-Tasks Status
+Aktiviert:
+- `bot_last_second_bidder` - Bietet nur wenn < 10 Minuten verbleiben
+- `auction_expiry_checker` - Endet Auktionen korrekt
+- `day_night_auction_scheduler` - Tag/Nacht Modus
+
+Deaktiviert:
+- `auction_auto_restart_processor` - Würde Auktionszeiten ändern
 
 #### 📋 Geänderte Dateien:
 - `/app/backend/server.py` - Background-Tasks deaktiviert, Bot-Logik angepasst
