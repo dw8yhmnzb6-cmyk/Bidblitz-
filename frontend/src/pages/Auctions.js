@@ -1116,7 +1116,7 @@ export default function Auctions() {
         }
       };
       silentFetch();
-    }, 5000); // Every 5 seconds (WebSocket handles real-time updates)
+    }, 30000); // Every 30 seconds (WebSocket handles real-time updates)
     
     return () => clearInterval(refreshInterval);
   }, []);  // Empty dependency - only run once on mount
