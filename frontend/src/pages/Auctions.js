@@ -1299,7 +1299,7 @@ export default function Auctions() {
       
       {/* Price Guarantee Section */}
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <PriceGuaranteeSection language={language} />
+        <PriceGuaranteeSection language={langKey} />
       </div>
     </div>
   );
