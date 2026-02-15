@@ -63,12 +63,12 @@ export default function AGB() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 1 Geltungsbereich</h2>
                 <p>
-                  Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle über die Plattform BidBlitz 
-                  (betrieben von BidBlitz FZCO, Dubai Silicon Oasis, VAE) geschlossenen Verträge zwischen 
+                  Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle über die Plattform bidblitz.ae 
+                  (betrieben von bidblitz.ae FZCO, Dubai Silicon Oasis, VAE) geschlossenen Verträge zwischen 
                   dem Anbieter und dem Kunden. Der Anbieter ist:
                 </p>
                 <div className="bg-white/5 rounded-lg p-4 mt-2">
-                  <p className="font-semibold text-white">BidBlitz FZCO</p>
+                  <p className="font-semibold text-white">bidblitz.ae FZCO</p>
                   <p>Dubai Silicon Oasis, DDP Building A1</p>
                   <p>Dubai, Vereinigte Arabische Emirate</p>
                   <p>CEO: Afrim Krasniqi</p>
@@ -78,7 +78,7 @@ export default function AGB() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 2 Vertragsgegenstand</h2>
                 <p>
-                  BidBlitz betreibt eine Penny-Auktion-Plattform, bei der registrierte Nutzer auf Produkte 
+                  bidblitz.ae betreibt eine Penny-Auktion-Plattform, bei der registrierte Nutzer auf Produkte 
                   bieten können. Jedes Gebot erhöht den Preis um einen Cent (0,01 €) und verlängert die 
                   Auktionszeit. Der letzte Bieter bei Ablauf der Zeit gewinnt das Produkt.
                 </p>
