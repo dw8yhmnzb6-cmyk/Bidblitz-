@@ -149,7 +149,7 @@ const DuelsPage = () => {
   const [selectedOpponent, setSelectedOpponent] = useState(null);
 
   const fetchDuels = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated || !token) return;
     
     try {
       const [activeRes, challengesRes] = await Promise.all([
@@ -172,6 +172,7 @@ const DuelsPage = () => {
       }
     } catch (err) {
       console.error('Error fetching duels:', err);
+      // Silent fail for background fetches - don't show toast
     } finally {
       setLoading(false);
     }
