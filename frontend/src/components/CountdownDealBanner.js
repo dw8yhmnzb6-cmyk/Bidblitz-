@@ -118,7 +118,13 @@ const CountdownDealBanner = memo(({ language = 'de' }) => {
   
   const handleClaim = () => {
     if (!isAuthenticated) {
-      navigate('/register');
+      // Scroll to registration section or navigate if not on home page
+      const registerSection = document.getElementById('quick-register');
+      if (registerSection) {
+        registerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        navigate('/register');
+      }
     } else {
       navigate('/buy-bids');
     }
