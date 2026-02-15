@@ -190,16 +190,16 @@ function AppContent() {
       {/* Navbar - Fixed at top */}
       <Navbar />
       
-      {/* Floating popups and widgets - ALL DISABLED to prevent layout jitter */}
-      {/* <LiveWinnerPopup language={mappedLanguage || language} /> */}
+      {/* Floating popups and widgets */}
+      <LiveWinnerPopup language={mappedLanguage || language} />
       {/* <AbandonedCartReminder language={mappedLanguage || language} /> */}
       {/* <LanguageHintBanner /> */}
       
       {/* Main content wrapper - Offset for fixed navbar */}
       <div className="pt-16">
-        {/* Promotional Banners DISABLED - causing layout jitter on mobile */}
-        {/* <WelcomeBonusBanner language={mappedLanguage || language} /> */}
-        {/* <CountdownDealBanner language={mappedLanguage || language} /> */}
+        {/* Promotional Banners */}
+        <WelcomeBonusBanner language={mappedLanguage || language} />
+        <CountdownDealBanner language={mappedLanguage || language} />
         {/* <HappyHourBanner /> */}
       </div>
       
