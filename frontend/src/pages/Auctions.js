@@ -1175,8 +1175,16 @@ export default function Auctions() {
     const product = products[productId];
     if (!product) return false;
     const category = (product.category || '').toLowerCase();
-    // Only bidblitz.ae's own vouchers (Gratis-Gebote, VIP Monat, etc.)
-    return category === 'bidblitz gutscheine';
+    // Show all voucher categories (bidblitz vouchers + external vouchers)
+    return category === 'bidblitz gutscheine' || 
+           category === 'gutscheine' || 
+           category.includes('voucher') ||
+           category.includes('gutschein');
+  };
+
+  // Helper to check voucher auctions by flag
+  const isVoucherAuction = (auction) => {
+    return auction.is_voucher === true || isVoucherProduct(auction.product_id);
   };
 
   // Helper function to check if it's a restaurant voucher auction
