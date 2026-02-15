@@ -378,6 +378,7 @@ app.include_router(fraud_detection_router, prefix="/api")
 app.include_router(winback_router, prefix="/api")
 app.include_router(abandoned_cart_router, prefix="/api")
 app.include_router(sustainability_router)
+app.include_router(auto_translate_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
