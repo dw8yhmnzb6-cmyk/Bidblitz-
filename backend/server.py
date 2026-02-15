@@ -1,5 +1,5 @@
 """
-BidBlitz Auction Platform - Main Server
+bidblitz.ae Auction Platform - Main Server
 Refactored modular architecture with routers
 """
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException, Request
@@ -198,13 +198,13 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(auction_auto_restart_processor())
     asyncio.create_task(auction_expiry_checker())
     asyncio.create_task(day_night_auction_scheduler())
-    logger.info("BidBlitz server started - Bot bidder, Mystery Box Bot, Reminder, Auto-restart & Expiry checker tasks running")
+    logger.info("bidblitz.ae server started - Bot bidder, Mystery Box Bot, Reminder, Auto-restart & Expiry checker tasks running")
     
     yield
     
     # Shutdown
     bot_task_running = False
-    logger.info("BidBlitz server shutting down")
+    logger.info("bidblitz.ae server shutting down")
 
 # ==================== APP CREATION ====================
 
@@ -212,7 +212,7 @@ async def lifespan(app: FastAPI):
 limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(
-    title="BidBlitz Auction API",
+    title="bidblitz.ae Auction API",
     description="Penny Auction Platform",
     version="2.0.0",
     lifespan=lifespan
@@ -381,7 +381,7 @@ app.include_router(sustainability_router)
 
 @app.get("/")
 async def root():
-    return {"status": "BidBlitz API v2.0 - Refactored"}
+    return {"status": "bidblitz.ae API v2.0 - Refactored"}
 
 @app.get("/api/health")
 async def health():
@@ -1600,7 +1600,7 @@ async def download_invoice(transaction_id: str, user: dict = Depends(get_current
     elements = []
     
     # Header
-    elements.append(Paragraph("BidBlitz", title_style))
+    elements.append(Paragraph("bidblitz.ae", title_style))
     elements.append(Paragraph("Rechnung", ParagraphStyle('Subtitle', alignment=TA_CENTER, fontSize=16, spaceAfter=20)))
     elements.append(Spacer(1, 20))
     

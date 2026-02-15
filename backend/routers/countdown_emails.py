@@ -26,7 +26,7 @@ Verpasse nicht deine Chance!
 👉 Jetzt bieten: {auction_url}
 
 Viel Erfolg! 🍀
-Dein BidBlitz Team
+Dein bidblitz.ae Team
         """
     },
     "auction_ending_30m": {
@@ -44,7 +44,7 @@ Letzte Chance! Biete jetzt!
 
 👉 {auction_url}
 
-BidBlitz Team
+bidblitz.ae Team
         """
     },
     "outbid_alert": {
@@ -62,7 +62,7 @@ Hole dir den Sieg zurück!
 
 👉 Jetzt bieten: {auction_url}
 
-BidBlitz Team
+bidblitz.ae Team
         """
     }
 }

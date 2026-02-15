@@ -162,7 +162,7 @@ async def start_stream(
     auction_id: str,
     title: str,
     description: str = "",
-    moderator_name: str = "BidBlitz Team",
+    moderator_name: str = "bidblitz.ae Team",
     admin: dict = Depends(get_admin_user)
 ):
     """Start a new live stream for an auction"""

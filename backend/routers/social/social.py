@@ -206,11 +206,11 @@ async def get_share_data(auction_id: str):
     return {
         "auction_id": auction_id,
         "share_url": f"https://bidblitz.ae/a/{auction_id}",
-        "share_text": "Schau dir diese Auktion bei BidBlitz an! 🎯",
+        "share_text": "Schau dir diese Auktion bei bidblitz.ae an! 🎯",
         "platforms": {
             "whatsapp": f"https://wa.me/?text=Schau%20dir%20diese%20Auktion%20an%3A%20https%3A%2F%2Fbidblitz.ae%2Fa%2F{auction_id}",
             "telegram": f"https://t.me/share/url?url=https://bidblitz.ae/a/{auction_id}&text=Tolle%20Auktion!",
-            "twitter": f"https://twitter.com/intent/tweet?url=https://bidblitz.ae/a/{auction_id}&text=Biete%20mit%20bei%20BidBlitz!",
+            "twitter": f"https://twitter.com/intent/tweet?url=https://bidblitz.ae/a/{auction_id}&text=Biete%20mit%20bei%20bidblitz.ae!",
             "facebook": f"https://www.facebook.com/sharer/sharer.php?u=https://bidblitz.ae/a/{auction_id}",
             "email": f"mailto:?subject=Tolle%20Auktion&body=Schau%20dir%20das%20an%3A%20https%3A%2F%2Fbidblitz.ae%2Fa%2F{auction_id}"
         },
@@ -245,7 +245,7 @@ async def get_winner_gallery(page: int = 1, limit: int = 20):
             "date": (datetime.utcnow() - timedelta(days=random.randint(0, 30))).strftime("%d.%m.%Y"),
             "testimonial": random.choice([
                 "Unglaublich! So viel gespart! 🎉",
-                "BidBlitz ist der Hammer!",
+                "bidblitz.ae ist der Hammer!",
                 "Mein erster Gewinn - bin begeistert!",
                 "Kann es kaum glauben!",
                 None

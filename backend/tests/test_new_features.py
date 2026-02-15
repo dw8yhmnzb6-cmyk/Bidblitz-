@@ -1,5 +1,5 @@
 """
-Test suite for BidBlitz new features:
+Test suite for bidblitz.ae new features:
 - BIETEN button fix (correct API endpoint)
 - Auction of the Day (AOTD)
 - User Statistics

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Script to add 100 new diverse auctions to BidBlitz"""
+"""Script to add 100 new diverse auctions to bidblitz.ae"""
 import asyncio
 import uuid
 from datetime import datetime, timezone, timedelta

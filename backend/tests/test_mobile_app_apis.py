@@ -1,5 +1,5 @@
 """
-Mobile App API Tests - BidBlitz React Native/Expo App
+Mobile App API Tests - bidblitz.ae React Native/Expo App
 Tests the backend APIs used by the mobile app:
 - Auth: Login, Register, Profile
 - Auctions: List, Details

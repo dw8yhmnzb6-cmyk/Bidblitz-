@@ -113,7 +113,7 @@ async def send_verification_code(data: PhoneVerificationRequest, user: dict = De
     await db.phone_verification.insert_one(verification)
     
     # Send SMS
-    message = f"Ihr BidBlitz Verifizierungscode: {code}\n\nDieser Code ist 10 Minuten gültig."
+    message = f"Ihr bidblitz.ae Verifizierungscode: {code}\n\nDieser Code ist 10 Minuten gültig."
     sent = await send_sms(phone, message)
     
     if not sent:

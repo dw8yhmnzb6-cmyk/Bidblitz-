@@ -15,17 +15,17 @@ router = APIRouter(prefix="/email-marketing", tags=["Email Marketing"])
 EMAIL_TEMPLATES = {
     "welcome": {
         "subject": {
-            "de": "🎉 Willkommen bei BidBlitz - Deine Gratis-Gebote warten!",
-            "en": "🎉 Welcome to BidBlitz - Your free bids are waiting!",
-            "xk": "🎉 Mirë se vini në BidBlitz - Ofertat tuaja falas ju presin!"
+            "de": "🎉 Willkommen bei bidblitz.ae - Deine Gratis-Gebote warten!",
+            "en": "🎉 Welcome to bidblitz.ae - Your free bids are waiting!",
+            "xk": "🎉 Mirë se vini në bidblitz.ae - Ofertat tuaja falas ju presin!"
         },
         "delay_hours": 0
     },
     "welcome_day2": {
         "subject": {
-            "de": "💡 So gewinnst du bei BidBlitz - Tipps vom Profi",
-            "en": "💡 How to win at BidBlitz - Pro tips",
-            "xk": "💡 Si të fitoni në BidBlitz - Këshilla profesionale"
+            "de": "💡 So gewinnst du bei bidblitz.ae - Tipps vom Profi",
+            "en": "💡 How to win at bidblitz.ae - Pro tips",
+            "xk": "💡 Si të fitoni në bidblitz.ae - Këshilla profesionale"
         },
         "delay_hours": 48
     },
@@ -79,9 +79,9 @@ EMAIL_TEMPLATES = {
     },
     "weekly_digest": {
         "subject": {
-            "de": "📊 Dein Wochen-Rückblick bei BidBlitz",
-            "en": "📊 Your weekly BidBlitz recap",
-            "xk": "📊 Përmbledhja juaj javore në BidBlitz"
+            "de": "📊 Dein Wochen-Rückblick bei bidblitz.ae",
+            "en": "📊 Your weekly bidblitz.ae recap",
+            "xk": "📊 Përmbledhja juaj javore në bidblitz.ae"
         },
         "delay_hours": 168
     }

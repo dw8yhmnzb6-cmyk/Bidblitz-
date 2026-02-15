@@ -119,7 +119,7 @@ async def purchase_giftcard(data: GiftCardPurchase, user: dict = Depends(get_cur
                     "currency": "eur",
                     "unit_amount": int(data.amount * 100),
                     "product_data": {
-                        "name": f"BidBlitz Geschenkkarte €{data.amount:.0f}",
+                        "name": f"bidblitz.ae Geschenkkarte €{data.amount:.0f}",
                         "description": f"Geschenkkarte im Wert von {bids_value} Geboten" + (f" für {data.recipient_name}" if data.recipient_name else "")
                     }
                 },
@@ -346,7 +346,7 @@ async def send_giftcard_email(giftcard: dict):
                 </a>
                 
                 <p style="color: #999; font-size: 12px; margin-top: 30px;">
-                    Lösen Sie Ihre Geschenkkarte auf BidBlitz ein und starten Sie mit dem Bieten!
+                    Lösen Sie Ihre Geschenkkarte auf bidblitz.ae ein und starten Sie mit dem Bieten!
                 </p>
             </div>
         </div>
@@ -354,7 +354,7 @@ async def send_giftcard_email(giftcard: dict):
         
         await send_email(
             to_email=giftcard["recipient_email"],
-            subject=f"🎁 {giftcard.get('sender_name', 'Jemand')} hat Ihnen eine BidBlitz Geschenkkarte geschenkt!",
+            subject=f"🎁 {giftcard.get('sender_name', 'Jemand')} hat Ihnen eine bidblitz.ae Geschenkkarte geschenkt!",
             html_content=html_content
         )
         

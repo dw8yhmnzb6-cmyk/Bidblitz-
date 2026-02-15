@@ -88,7 +88,7 @@ def verify_totp(secret: str, code: str) -> bool:
 def generate_totp_qr_code(secret: str, email: str) -> str:
     """Generate QR code for TOTP setup"""
     totp = pyotp.TOTP(secret)
-    uri = totp.provisioning_uri(name=email, issuer_name="BidBlitz")
+    uri = totp.provisioning_uri(name=email, issuer_name="bidblitz.ae")
     
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(uri)

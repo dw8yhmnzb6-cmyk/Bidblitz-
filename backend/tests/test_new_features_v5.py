@@ -1,5 +1,5 @@
 """
-Test Suite for BidBlitz New Features v5
+Test Suite for bidblitz.ae New Features v5
 Tests: Live Winner Popups, Beginner Guarantee, WhatsApp Notifications, 
        Countdown Emails, User Stats Dashboard, Team Auctions, Auction Replay
 """

@@ -185,7 +185,7 @@ async def send_influencer_new_sale_notification(
             <tr>
                 <td style="background:#f5f5f5; padding:20px; text-align:center;">
                     <p style="margin:0; font-size:12px; color:#888;">
-                        Vielen Dank, dass Sie Teil des BidBlitz Influencer-Programms sind!
+                        Vielen Dank, dass Sie Teil des bidblitz.ae Influencer-Programms sind!
                     </p>
                 </td>
             </tr>
@@ -457,7 +457,7 @@ async def send_wholesale_welcome_email(
             <tr>
                 <td style="background:linear-gradient(135deg,#1E293B,#334155); padding:40px 30px; text-align:center;">
                     <h1 style="color:#fff; margin:0; font-size:28px;">🏢 Willkommen als Großkunde!</h1>
-                    <p style="color:#94A3B8; margin:10px 0 0; font-size:14px;">Ihre B2B-Partnerschaft mit BidBlitz</p>
+                    <p style="color:#94A3B8; margin:10px 0 0; font-size:14px;">Ihre B2B-Partnerschaft mit bidblitz.ae</p>
                 </td>
             </tr>
             
@@ -466,7 +466,7 @@ async def send_wholesale_welcome_email(
                 <td style="padding:30px;">
                     <p style="font-size:18px; color:#1E293B;">Hallo <strong>{contact_name}</strong>,</p>
                     <p style="font-size:15px; color:#475569; line-height:1.6;">
-                        Herzlich willkommen bei BidBlitz! Wir freuen uns, <strong>{company_name}</strong> als Großkunden begrüßen zu dürfen. 
+                        Herzlich willkommen bei bidblitz.ae! Wir freuen uns, <strong>{company_name}</strong> als Großkunden begrüßen zu dürfen. 
                         Ihre Bewerbung wurde genehmigt und Sie können ab sofort von exklusiven B2B-Vorteilen profitieren.
                     </p>
                     
@@ -548,7 +548,7 @@ async def send_wholesale_welcome_email(
             <tr>
                 <td style="background:#F8FAFC; padding:20px 30px; text-align:center; border-top:1px solid #E2E8F0;">
                     <p style="margin:0; color:#64748B; font-size:12px;">
-                        © 2026 BidBlitz GmbH | Ihr Partner für Penny-Auktionen
+                        © 2026 bidblitz.ae GmbH | Ihr Partner für Penny-Auktionen
                     </p>
                 </td>
             </tr>
@@ -559,6 +559,6 @@ async def send_wholesale_welcome_email(
     
     return await send_email(
         to_email=to_email,
-        subject=f"🏢 Willkommen bei BidBlitz, {company_name}! Ihre Großkundenvorteile sind aktiviert",
+        subject=f"🏢 Willkommen bei bidblitz.ae, {company_name}! Ihre Großkundenvorteile sind aktiviert",
         html_content=html_content
     )

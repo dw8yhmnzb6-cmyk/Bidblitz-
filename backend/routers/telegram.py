@@ -34,7 +34,7 @@ async def get_telegram_link_code(user: dict = Depends(get_current_user)):
                     return {
                         "code": existing["code"],
                         "expires_in": 600 - int((datetime.now(timezone.utc) - created).total_seconds()),
-                        "bot_username": "BidBlitzBot"  # Replace with your bot username
+                        "bot_username": "bidblitz.aeBot"  # Replace with your bot username
                     }
             except:
                 pass
@@ -60,9 +60,9 @@ async def get_telegram_link_code(user: dict = Depends(get_current_user)):
     return {
         "code": code,
         "expires_in": 600,
-        "bot_username": "BidBlitzBot",
+        "bot_username": "bidblitz.aeBot",
         "instructions": [
-            "1. Öffne Telegram und suche nach @BidBlitzBot",
+            "1. Öffne Telegram und suche nach @bidblitz.aeBot",
             "2. Starte den Bot mit /start",
             f"3. Sende den Code: /link {code}",
             "4. Fertig! Du erhältst nun Auktions-Benachrichtigungen."

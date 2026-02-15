@@ -129,7 +129,7 @@ async def purchase_flash_package(package_id: str, user: dict = Depends(get_curre
                 "price_data": {
                     "currency": "eur",
                     "product_data": {
-                        "name": f"BidBlitz Gebote-Paket",
+                        "name": f"bidblitz.ae Gebote-Paket",
                         "description": description,
                     },
                     "unit_amount": int(package["price"] * 100),

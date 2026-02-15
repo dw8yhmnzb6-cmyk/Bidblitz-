@@ -1,5 +1,5 @@
 """
-Test Suite for 9 New BidBlitz Features
+Test Suite for 9 New bidblitz.ae Features
 - Bid Alarm API
 - Welcome Bonus API
 - Activity Feed API

@@ -62,7 +62,7 @@ if COINBASE_COMMERCE_API_KEY:
     coinbase_client = CoinbaseClient(api_key=COINBASE_COMMERCE_API_KEY)
 
 # Create the main app
-app = FastAPI(title="BidBlitz Auction API")
+app = FastAPI(title="bidblitz.ae Auction API")
 api_router = APIRouter(prefix="/api")
 
 # Configure logging
@@ -414,7 +414,7 @@ def generate_2fa_secret() -> str:
 def generate_2fa_qr_code(email: str, secret: str) -> str:
     """Generate QR code for 2FA setup"""
     totp = pyotp.TOTP(secret)
-    provisioning_uri = totp.provisioning_uri(email, issuer_name="BidBlitz")
+    provisioning_uri = totp.provisioning_uri(email, issuer_name="bidblitz.ae")
     
     # Generate QR code
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -576,7 +576,7 @@ async def send_winner_notification(winner_email: str, winner_name: str, product_
             <tr>
                 <td style="background:#111; padding:20px; text-align:center;">
                     <p style="color:#888; font-size:12px; margin:0;">
-                        © 2026 BidBlitz GmbH • Alle Rechte vorbehalten
+                        © 2026 bidblitz.ae GmbH • Alle Rechte vorbehalten
                     </p>
                     <p style="color:#666; font-size:11px; margin:10px 0 0;">
                         Auktions-ID: {auction_id}
@@ -1795,8 +1795,8 @@ async def create_crypto_checkout(
     try:
         # Create charge with Coinbase Commerce
         charge_data = {
-            "name": f"BidBlitz - {data.bids} Gebote",
-            "description": f"Gebotspaket mit {data.bids} Geboten für BidBlitz Auktionen",
+            "name": f"bidblitz.ae - {data.bids} Gebote",
+            "description": f"Gebotspaket mit {data.bids} Geboten für bidblitz.ae Auktionen",
             "pricing_type": "fixed_price",
             "local_price": {
                 "amount": str(data.price),
@@ -3844,7 +3844,7 @@ def generate_invoice_pdf(purchase: dict, user: dict) -> io.BytesIO:
     elements = []
     
     # Header
-    elements.append(Paragraph("BidBlitz", title_style))
+    elements.append(Paragraph("bidblitz.ae", title_style))
     elements.append(Spacer(1, 0.5*cm))
     elements.append(Paragraph("RECHNUNG / INVOICE", ParagraphStyle('Subtitle', fontSize=14, textColor=colors.grey, alignment=TA_CENTER)))
     elements.append(Spacer(1, 1*cm))
@@ -3919,7 +3919,7 @@ def generate_invoice_pdf(purchase: dict, user: dict) -> io.BytesIO:
     footer_text = """
     <para align="center">
     <font size="9" color="grey">
-    BidBlitz GmbH • Musterstraße 123 • 10115 Berlin<br/>
+    bidblitz.ae GmbH • Musterstraße 123 • 10115 Berlin<br/>
     USt-IdNr.: DE123456789 • Handelsregister: HRB 12345<br/>
     support@bidblitz.ae • www.bidblitz.de
     </font>
@@ -3942,7 +3942,7 @@ async def download_invoice(purchase_id: str, user: dict = Depends(get_current_us
     pdf_buffer = generate_invoice_pdf(purchase, user)
     
     invoice_date = datetime.fromisoformat(purchase.get("created_at", datetime.now(timezone.utc).isoformat()).replace("Z", "+00:00"))
-    filename = f"BidBlitz_Rechnung_{invoice_date.strftime('%Y%m%d')}_{purchase_id[:8]}.pdf"
+    filename = f"bidblitz.ae_Rechnung_{invoice_date.strftime('%Y%m%d')}_{purchase_id[:8]}.pdf"
     
     return StreamingResponse(
         pdf_buffer,
@@ -4268,7 +4268,7 @@ async def get_categories():
 # Root endpoint
 @api_router.get("/")
 async def root():
-    return {"message": "BidBlitz Auction API", "version": "2.2.0"}
+    return {"message": "bidblitz.ae Auction API", "version": "2.2.0"}
 
 # Include the router
 app.include_router(api_router)
@@ -4403,7 +4403,7 @@ async def get_email_templates(current_user: dict = Depends(get_admin_user)):
         {
             "id": "welcome",
             "name": "Willkommens-E-Mail",
-            "subject": "Willkommen bei BidBlitz! 🎉",
+            "subject": "Willkommen bei bidblitz.ae! 🎉",
             "preview": "Begrüßen Sie neue Benutzer..."
         },
         {

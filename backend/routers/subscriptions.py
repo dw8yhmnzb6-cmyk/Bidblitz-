@@ -158,7 +158,7 @@ async def create_subscription(plan_id: str, user: dict = Depends(get_current_use
                     "unit_amount": int(plan["price"] * 100),
                     "recurring": {"interval": "month"},
                     "product_data": {
-                        "name": f"BidBlitz {plan['name']} Abo",
+                        "name": f"bidblitz.ae {plan['name']} Abo",
                         "description": f"{plan['bids_per_month']} Gebote/Monat"
                     }
                 },

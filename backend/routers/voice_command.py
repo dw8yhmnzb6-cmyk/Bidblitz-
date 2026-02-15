@@ -45,7 +45,7 @@ async def parse_command(text: str) -> dict:
     if not api_key:
         raise HTTPException(status_code=500, detail="API Key nicht konfiguriert")
     
-    system_prompt = """Du bist ein Admin-Assistent für eine Penny-Auction-Plattform (BidBlitz).
+    system_prompt = """Du bist ein Admin-Assistent für eine Penny-Auction-Plattform (bidblitz.ae).
 Analysiere den Befehl und gib eine strukturierte JSON-Antwort zurück.
 
 WICHTIG: Bei kombinierten Befehlen (z.B. "Lösche alle Auktionen und erstelle 50 neue") verwende die "batch" Aktion!
@@ -187,8 +187,8 @@ Antworte NUR mit einem JSON-Objekt im folgenden Format:
 }
 
 BEISPIELE FÜR CHAT (SEHR WICHTIG):
-- "Was empfiehlst du mir?" -> {"action": "chat", "parameters": {"response": "Als KI-Assistent für BidBlitz empfehle ich folgende Verbesserungen: 1) Mehr Produkte hinzufügen, 2) Influencer-Marketing verstärken, 3) Nachtauktionen ausbauen..."}, "confirmation_message": "Hier sind meine Empfehlungen", "needs_confirmation": false}
-- "Wie funktioniert das System?" -> {"action": "chat", "parameters": {"response": "BidBlitz ist eine Penny-Auktions-Plattform..."}, "confirmation_message": "Hier ist die Erklärung", "needs_confirmation": false}
+- "Was empfiehlst du mir?" -> {"action": "chat", "parameters": {"response": "Als KI-Assistent für bidblitz.ae empfehle ich folgende Verbesserungen: 1) Mehr Produkte hinzufügen, 2) Influencer-Marketing verstärken, 3) Nachtauktionen ausbauen..."}, "confirmation_message": "Hier sind meine Empfehlungen", "needs_confirmation": false}
+- "Wie funktioniert das System?" -> {"action": "chat", "parameters": {"response": "bidblitz.ae ist eine Penny-Auktions-Plattform..."}, "confirmation_message": "Hier ist die Erklärung", "needs_confirmation": false}
 - "Was sind die besten Features?" -> {"action": "chat", "parameters": {"response": "Die besten Features sind..."}, "confirmation_message": "Hier sind die Features", "needs_confirmation": false}
 
 BEISPIELE FÜR BOT-BEFEHLE (SEHR WICHTIG):
@@ -750,7 +750,7 @@ async def execute_command(action: str, parameters: dict, admin: dict) -> dict:
         try:
             await send_email(
                 to_email=email,
-                subject="🧪 BidBlitz Test-E-Mail",
+                subject="🧪 bidblitz.ae Test-E-Mail",
                 html_content=f"""
                 <h1>Test-E-Mail</h1>
                 <p>Diese E-Mail wurde von {admin['name']} über Sprachbefehl gesendet.</p>
@@ -1184,7 +1184,7 @@ async def analyze_image_command(
             action_response = f"✅ **Aktion ausgeführt: {detected_action}**\n\n{action_result.get('message', 'Aktion erfolgreich')}\n\n"
             
             # Now also analyze the image if present
-            system_prompt_with_action = f"""Du bist ein hilfreicher Admin-Assistent für die BidBlitz Penny-Auktions-Plattform.
+            system_prompt_with_action = f"""Du bist ein hilfreicher Admin-Assistent für die bidblitz.ae Penny-Auktions-Plattform.
 
 Der Administrator hat gerade die Aktion '{detected_action}' ausgeführt.
 Ergebnis: {action_result.get('message', 'Erfolgreich')}
@@ -1241,7 +1241,7 @@ Bitte analysiere das hochgeladene {media_type_text} im Kontext der ausgeführten
         
         # No action detected, just analyze the image
         # Create chat with GPT-4o for vision
-        system_prompt = """Du bist ein hilfreicher Admin-Assistent für die BidBlitz Penny-Auktions-Plattform.
+        system_prompt = """Du bist ein hilfreicher Admin-Assistent für die bidblitz.ae Penny-Auktions-Plattform.
         
 Wenn dir ein Screenshot oder Video gezeigt wird:
 1. Beschreibe was du siehst

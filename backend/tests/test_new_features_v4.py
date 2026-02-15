@@ -1,5 +1,5 @@
 """
-Test Suite for BidBlitz New Features (Iteration 22)
+Test Suite for bidblitz.ae New Features (Iteration 22)
 - Challenges API
 - Events API  
 - Winner Gallery API

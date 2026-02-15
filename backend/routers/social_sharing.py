@@ -1,6 +1,6 @@
 """
 Social Sharing Rewards Router
-Rewards users for sharing BidBlitz on social media
+Rewards users for sharing bidblitz.ae on social media
 """
 from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime, timezone, timedelta

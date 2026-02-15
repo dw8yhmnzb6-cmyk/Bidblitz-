@@ -1,5 +1,5 @@
 """
-Sustainability Stats Router - BidBlitz Corporate Social Responsibility
+Sustainability Stats Router - bidblitz.ae Corporate Social Responsibility
 """
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel

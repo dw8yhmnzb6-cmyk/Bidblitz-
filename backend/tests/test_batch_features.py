@@ -220,14 +220,14 @@ class TestPWAManifest:
         assert "icons" in data
     
     def test_manifest_bidblitz_values(self):
-        """Verify manifest has correct BidBlitz values"""
+        """Verify manifest has correct bidblitz.ae values"""
         response = requests.get(f"{BASE_URL}/manifest.json")
         assert response.status_code == 200
         
         data = response.json()
         
-        assert data["name"] == "BidBlitz"
-        assert data["short_name"] == "BidBlitz"
+        assert data["name"] == "bidblitz.ae"
+        assert data["short_name"] == "bidblitz.ae"
         assert data["display"] == "standalone"
         assert data["lang"] == "de"
     

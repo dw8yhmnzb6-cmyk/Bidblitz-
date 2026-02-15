@@ -86,7 +86,7 @@ async def create_checkout_session(request: CheckoutRequest, user: dict = Depends
         })
         
         # Create product description
-        product_desc = f"BidBlitz Gebotspaket mit {package['bids']} Geboten"
+        product_desc = f"bidblitz.ae Gebotspaket mit {package['bids']} Geboten"
         if package.get('bonus'):
             product_desc += f" + {package.get('bonus', 0)} Bonus"
         if happy_hour_active:
@@ -237,7 +237,7 @@ async def create_crypto_charge(
         
         # Create Coinbase charge
         charge = coinbase_client.charge.create(
-            name=f"{total_bids} Gebote - BidBlitz",
+            name=f"{total_bids} Gebote - bidblitz.ae",
             description=f"Gebotspaket für {user['email']}",
             pricing_type="fixed_price",
             local_price={

@@ -47,7 +47,7 @@ if RESEND_API_KEY:
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY')
 
 # Create the main app
-app = FastAPI(title="BidBlitz Auction API")
+app = FastAPI(title="bidblitz.ae Auction API")
 api_router = APIRouter(prefix="/api")
 
 # Configure logging
@@ -382,7 +382,7 @@ def generate_2fa_secret() -> str:
 def generate_2fa_qr_code(email: str, secret: str) -> str:
     """Generate QR code for 2FA setup"""
     totp = pyotp.TOTP(secret)
-    provisioning_uri = totp.provisioning_uri(email, issuer_name="BidBlitz")
+    provisioning_uri = totp.provisioning_uri(email, issuer_name="bidblitz.ae")
     
     # Generate QR code
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -544,7 +544,7 @@ async def send_winner_notification(winner_email: str, winner_name: str, product_
             <tr>
                 <td style="background:#111; padding:20px; text-align:center;">
                     <p style="color:#888; font-size:12px; margin:0;">
-                        © 2026 BidBlitz GmbH • Alle Rechte vorbehalten
+                        © 2026 bidblitz.ae GmbH • Alle Rechte vorbehalten
                     </p>
                     <p style="color:#666; font-size:11px; margin:10px 0 0;">
                         Auktions-ID: {auction_id}
@@ -3847,7 +3847,7 @@ async def get_categories():
 # Root endpoint
 @api_router.get("/")
 async def root():
-    return {"message": "BidBlitz Auction API", "version": "2.2.0"}
+    return {"message": "bidblitz.ae Auction API", "version": "2.2.0"}
 
 # Include the router
 app.include_router(api_router)

@@ -176,7 +176,7 @@ async def analyze_error(transcription: str, language: str = 'de') -> DebugReport
         llm = LlmChat(api_key=api_key)
         
         # System prompt for error analysis
-        system_prompt = """Du bist ein erfahrener Entwickler und Debug-Assistent für eine Penny-Auction-Webseite (BidBlitz).
+        system_prompt = """Du bist ein erfahrener Entwickler und Debug-Assistent für eine Penny-Auction-Webseite (bidblitz.ae).
 Die Webseite verwendet:
 - Frontend: React, Tailwind CSS, Shadcn/UI
 - Backend: FastAPI, Python

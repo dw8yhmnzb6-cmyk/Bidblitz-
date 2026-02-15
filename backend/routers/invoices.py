@@ -57,7 +57,7 @@ def generate_invoice_pdf(invoice_data: dict) -> io.BytesIO:
     elements = []
     
     # Header
-    elements.append(Paragraph("⚡ BidBlitz", styles['CompanyName']))
+    elements.append(Paragraph("⚡ bidblitz.ae", styles['CompanyName']))
     elements.append(Paragraph("Penny Auction Platform", styles['Normal']))
     elements.append(Spacer(1, 10*mm))
     
@@ -140,9 +140,9 @@ def generate_invoice_pdf(invoice_data: dict) -> io.BytesIO:
     
     # Footer
     footer_text = """
-    Vielen Dank für Ihren Einkauf bei BidBlitz!<br/><br/>
+    Vielen Dank für Ihren Einkauf bei bidblitz.ae!<br/><br/>
     Bei Fragen wenden Sie sich bitte an: support@bidblitz.ae<br/>
-    BidBlitz GmbH • Musterstraße 123 • 12345 Musterstadt<br/>
+    bidblitz.ae GmbH • Musterstraße 123 • 12345 Musterstadt<br/>
     USt-IdNr.: DE123456789
     """
     elements.append(Paragraph(footer_text, styles['Normal']))
@@ -364,7 +364,7 @@ async def download_auction_win_invoice(auction_id: str, user: dict = Depends(get
             "address": ""
         },
         "company": {
-            "name": "BidBlitz GmbH",
+            "name": "bidblitz.ae GmbH",
             "address": "Musterstraße 123, 10115 Berlin, Deutschland",
             "email": "support@bidblitz.ae",
             "phone": "+49 30 123456789",
@@ -389,7 +389,7 @@ async def download_auction_win_invoice(auction_id: str, user: dict = Depends(get
         "tax_amount": (payment.get("total_amount", 0)) * 0.19 / 1.19,
         "total": payment.get("total_amount", 0),
         "payment_method": "Stripe",
-        "notes": "Vielen Dank für Ihren Auktionsgewinn bei BidBlitz!"
+        "notes": "Vielen Dank für Ihren Auktionsgewinn bei bidblitz.ae!"
     }
     
     # Add shipping address if available

@@ -128,7 +128,7 @@ async def get_pending_surveys(user: dict = Depends(get_current_user)):
     if not last_nps or (now - datetime.fromisoformat(last_nps["created_at"].replace("Z", "+00:00"))).days >= 30:
         pending.append({
             "type": "nps",
-            "title": "Wie wahrscheinlich empfiehlst du BidBlitz?",
+            "title": "Wie wahrscheinlich empfiehlst du bidblitz.ae?",
             "description": "Deine Meinung hilft uns, besser zu werden!",
             "reward": "+15 XP"
         })
@@ -280,7 +280,7 @@ async def get_survey_questions(survey_type: str):
                 {
                     "id": "score",
                     "type": "scale",
-                    "text": "Wie wahrscheinlich ist es, dass du BidBlitz einem Freund empfiehlst?",
+                    "text": "Wie wahrscheinlich ist es, dass du bidblitz.ae einem Freund empfiehlst?",
                     "min": 0,
                     "max": 10,
                     "labels": {"0": "Sehr unwahrscheinlich", "10": "Sehr wahrscheinlich"}

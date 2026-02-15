@@ -207,7 +207,7 @@ async def create_influencer(
         "avatar_url": avatar_url,
         "bio": bio,
         "followers": followers,
-        "follower_count": 0,  # BidBlitz followers
+        "follower_count": 0,  # bidblitz.ae followers
         "is_featured": False,
         "is_verified": True,
         "total_auctions": 0,

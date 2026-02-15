@@ -99,7 +99,7 @@ async def get_share_links(auction_id: str, user: dict = Depends(get_current_user
     product_name = product.get("name", "Produkt") if product else "Produkt"
     savings = won_auction.get("retail_price", 0) - won_auction.get("final_price", 0)
     
-    share_text = f"🎉 Ich habe gerade {product_name} bei BidBlitz für nur €{won_auction.get('final_price', 0):.2f} gewonnen und €{savings:.2f} gespart! 🔥"
+    share_text = f"🎉 Ich habe gerade {product_name} bei bidblitz.ae für nur €{won_auction.get('final_price', 0):.2f} gewonnen und €{savings:.2f} gespart! 🔥"
     share_url = "https://bidblitz.de"
     
     # Check if already shared

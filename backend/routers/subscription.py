@@ -135,7 +135,7 @@ async def create_subscription(data: SubscriptionRequest, user: dict = Depends(ge
                 'price_data': {
                     'currency': 'eur',
                     'product_data': {
-                        'name': f"BidBlitz {plan['name']} Abo",
+                        'name': f"bidblitz.ae {plan['name']} Abo",
                         'description': f"{plan['bids_per_month'] + plan['bonus_bids']} Gebote pro Monat",
                     },
                     'unit_amount': int(plan['price'] * 100),

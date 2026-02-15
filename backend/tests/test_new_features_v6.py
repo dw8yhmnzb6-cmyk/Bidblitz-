@@ -1,5 +1,5 @@
 """
-Test suite for BidBlitz new features:
+Test suite for bidblitz.ae new features:
 - Achievements API (GET /api/achievements/all, GET /api/achievements/my-achievements)
 - Winner Gallery API (GET /api/winner-gallery/feed)
 - Auth API (POST /api/auth/login)

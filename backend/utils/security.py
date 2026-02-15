@@ -96,7 +96,7 @@ def generate_2fa_secret() -> str:
 def generate_2fa_qr_code(email: str, secret: str) -> str:
     """Generate QR code for 2FA setup"""
     totp = pyotp.TOTP(secret)
-    provisioning_uri = totp.provisioning_uri(email, issuer_name="BidBlitz")
+    provisioning_uri = totp.provisioning_uri(email, issuer_name="bidblitz.ae")
     
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(provisioning_uri)

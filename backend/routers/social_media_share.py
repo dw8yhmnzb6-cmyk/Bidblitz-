@@ -37,7 +37,7 @@ def generate_share_urls(content: dict, platform: str, user_code: str) -> dict:
     base_url = f"https://bidblitz.de?ref={user_code}"
     
     # Prepare share text
-    text = content.get("share_text", "Schau dir BidBlitz an!")
+    text = content.get("share_text", "Schau dir bidblitz.ae an!")
     url = content.get("url", base_url)
     
     encoded_text = urllib.parse.quote(text)
@@ -49,7 +49,7 @@ def generate_share_urls(content: dict, platform: str, user_code: str) -> dict:
         "whatsapp": f"https://wa.me/?text={encoded_text}%20{encoded_url}",
         "telegram": f"https://t.me/share/url?url={encoded_url}&text={encoded_text}",
         "linkedin": f"https://www.linkedin.com/sharing/share-offsite/?url={encoded_url}",
-        "email": f"mailto:?subject=BidBlitz%20Empfehlung&body={encoded_text}%20{encoded_url}",
+        "email": f"mailto:?subject=bidblitz.ae%20Empfehlung&body={encoded_text}%20{encoded_url}",
         "copy": url
     }
     
@@ -192,7 +192,7 @@ async def record_share(share: ShareRequest, user: dict = Depends(get_current_use
     
     if not content:
         content = {
-            "share_text": "Ich spare bis zu 90% bei BidBlitz Auktionen! Probier es auch:",
+            "share_text": "Ich spare bis zu 90% bei bidblitz.ae Auktionen! Probier es auch:",
             "url": f"https://bidblitz.de?ref={ref_code}"
         }
     
@@ -236,28 +236,28 @@ async def get_share_templates(language: str = "de"):
     templates = {
         "de": {
             "win": [
-                "Gerade {product} für nur €{price} gewonnen! {savings}% gespart bei @BidBlitz",
-                "Unglaublich! {product} für €{price} statt €{retail}. Danke @BidBlitz!",
-                "Wieder gewonnen bei BidBlitz! {product} zum Schnäppchenpreis von €{price}"
+                "Gerade {product} für nur €{price} gewonnen! {savings}% gespart bei @bidblitz.ae",
+                "Unglaublich! {product} für €{price} statt €{retail}. Danke @bidblitz.ae!",
+                "Wieder gewonnen bei bidblitz.ae! {product} zum Schnäppchenpreis von €{price}"
             ],
             "general": [
-                "Spare bis zu 90% bei Auktionen auf BidBlitz!",
-                "Die spannendste Art zu sparen - probier BidBlitz!",
+                "Spare bis zu 90% bei Auktionen auf bidblitz.ae!",
+                "Die spannendste Art zu sparen - probier bidblitz.ae!",
                 "Penny Auktionen mit echten Gewinnen. Ich bin dabei!"
             ],
             "achievement": [
-                "Neues Achievement bei BidBlitz: {achievement}!",
-                "Level Up bei BidBlitz! Habe gerade {achievement} freigeschaltet"
+                "Neues Achievement bei bidblitz.ae: {achievement}!",
+                "Level Up bei bidblitz.ae! Habe gerade {achievement} freigeschaltet"
             ]
         },
         "en": {
             "win": [
-                "Just won {product} for only €{price}! Saved {savings}% at @BidBlitz",
-                "Amazing! {product} for €{price} instead of €{retail}. Thanks @BidBlitz!"
+                "Just won {product} for only €{price}! Saved {savings}% at @bidblitz.ae",
+                "Amazing! {product} for €{price} instead of €{retail}. Thanks @bidblitz.ae!"
             ],
             "general": [
-                "Save up to 90% at BidBlitz auctions!",
-                "The most exciting way to save - try BidBlitz!"
+                "Save up to 90% at bidblitz.ae auctions!",
+                "The most exciting way to save - try bidblitz.ae!"
             ]
         }
     }

@@ -182,7 +182,7 @@ async def send_outbid_email(user_id: str, auction_id: str, current_price: float,
         <body>
             <div class="container">
                 <div class="header">
-                    <div class="logo">BidBlitz</div>
+                    <div class="logo">bidblitz.ae</div>
                 </div>
                 <div class="alert">
                     <h2>⚡ Du wurdest überboten!</h2>
@@ -203,7 +203,7 @@ async def send_outbid_email(user_id: str, auction_id: str, current_price: float,
                     💡 <strong>Tipp:</strong> Aktiviere den Autobidder und wir bieten automatisch für dich!
                 </p>
                 <div class="footer">
-                    <p>BidBlitz - Deutschlands beste Penny-Auktionen</p>
+                    <p>bidblitz.ae - Deutschlands beste Penny-Auktionen</p>
                     <p><a href="https://bidblitz.de/profile" style="color: #666;">E-Mail Einstellungen ändern</a></p>
                 </div>
             </div>

@@ -104,7 +104,7 @@ async def send_winner_email(winner_id: str, auction_data: dict, product_data: di
                 </div>
                 
                 <div class="footer">
-                    <p>BidBlitz FZCO | Dubai Silicon Oasis, DDP Building A1</p>
+                    <p>bidblitz.ae FZCO | Dubai Silicon Oasis, DDP Building A1</p>
                     <p>Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht direkt.</p>
                 </div>
             </div>

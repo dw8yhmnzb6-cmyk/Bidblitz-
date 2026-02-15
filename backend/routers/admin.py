@@ -467,7 +467,7 @@ async def get_email_templates(admin: dict = Depends(get_admin_user)):
         {
             "id": "welcome_back",
             "name": "Willkommen zurück",
-            "subject": "Wir vermissen dich bei BidBlitz! 🎁",
+            "subject": "Wir vermissen dich bei bidblitz.ae! 🎁",
             "preview": "Komm zurück und sichere dir 5 Gratis-Gebote..."
         },
         {
@@ -644,7 +644,7 @@ async def send_localized_email_campaign(
             resend.Emails.send({
                 "from": SENDER_EMAIL,
                 "to": [user["email"]],
-                "subject": template.get("subject", "BidBlitz Update"),
+                "subject": template.get("subject", "bidblitz.ae Update"),
                 "html": html_content
             })
             

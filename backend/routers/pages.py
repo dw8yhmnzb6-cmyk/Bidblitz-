@@ -14,7 +14,7 @@ class PageContentUpdate(BaseModel):
     title: Optional[str] = None
     lang: Optional[str] = "de"
 
-# Default content for pages - Dubai/UAE - BidBlitz FZCO - CEO: Afrim Krasniqi
+# Default content for pages - Dubai/UAE - bidblitz.ae FZCO - CEO: Afrim Krasniqi
 # Multi-language support: de (German), en (English), and fallback
 DEFAULT_PAGES = {
     "impressum": {
@@ -22,7 +22,7 @@ DEFAULT_PAGES = {
             "title": "Impressum",
             "content": """
 <h2>Anbieter</h2>
-<p><strong>BidBlitz FZCO</strong><br/>
+<p><strong>bidblitz.ae FZCO</strong><br/>
 Dubai Silicon Oasis<br/>
 DDP, Building A1<br/>
 Dubai, Vereinigte Arabische Emirate</p>
@@ -47,7 +47,7 @@ Lizenz-Nr.: DSO-FZCO-12345</p>
 
 <h3>Verantwortlich für den Inhalt</h3>
 <p><strong>Afrim Krasniqi</strong><br/>
-BidBlitz FZCO<br/>
+bidblitz.ae FZCO<br/>
 Dubai Silicon Oasis, DDP Building A1<br/>
 Dubai, VAE</p>
 
@@ -63,7 +63,7 @@ Dubai, VAE</p>
             "title": "Legal Notice",
             "content": """
 <h2>Company Information</h2>
-<p><strong>BidBlitz FZCO</strong><br/>
+<p><strong>bidblitz.ae FZCO</strong><br/>
 Dubai Silicon Oasis<br/>
 DDP, Building A1<br/>
 Dubai, United Arab Emirates</p>
@@ -88,7 +88,7 @@ License No.: DSO-FZCO-12345</p>
 
 <h3>Responsible for Content</h3>
 <p><strong>Afrim Krasniqi</strong><br/>
-BidBlitz FZCO<br/>
+bidblitz.ae FZCO<br/>
 Dubai Silicon Oasis, DDP Building A1<br/>
 Dubai, UAE</p>
 
@@ -107,7 +107,7 @@ Dubai, UAE</p>
             "content": """
 <h2>1. Verantwortlicher</h2>
 <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
-<p><strong>BidBlitz FZCO</strong><br/>
+<p><strong>bidblitz.ae FZCO</strong><br/>
 Dubai Silicon Oasis, DDP Building A1<br/>
 Dubai, Vereinigte Arabische Emirate<br/>
 CEO: Afrim Krasniqi<br/>
@@ -118,7 +118,7 @@ E-Mail: datenschutz@bidblitz.ae</p>
 
 <h3>Datenerfassung auf dieser Website</h3>
 <p><strong>Wer ist verantwortlich?</strong><br/>
-Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber BidBlitz FZCO, vertreten durch Geschäftsführer Afrim Krasniqi.</p>
+Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber bidblitz.ae FZCO, vertreten durch Geschäftsführer Afrim Krasniqi.</p>
 
 <h3>Wie erfassen wir Ihre Daten?</h3>
 <ul>
@@ -150,7 +150,7 @@ Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber BidB
 <h2>5. Datensicherheit</h2>
 <p>Wir verwenden SSL/TLS-Verschlüsselung für die sichere Datenübertragung. Ihre Daten werden auf geschützten Servern gespeichert.</p>
 
-<p><em>Stand: Januar 2026 | BidBlitz FZCO, Dubai, VAE | CEO: Afrim Krasniqi</em></p>
+<p><em>Stand: Januar 2026 | bidblitz.ae FZCO, Dubai, VAE | CEO: Afrim Krasniqi</em></p>
 """
         },
         "en": {
@@ -158,7 +158,7 @@ Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber BidB
             "content": """
 <h2>1. Data Controller</h2>
 <p>The data controller responsible for data processing on this website is:</p>
-<p><strong>BidBlitz FZCO</strong><br/>
+<p><strong>bidblitz.ae FZCO</strong><br/>
 Dubai Silicon Oasis, DDP Building A1<br/>
 Dubai, United Arab Emirates<br/>
 CEO: Afrim Krasniqi<br/>
@@ -169,7 +169,7 @@ Email: privacy@bidblitz.ae</p>
 
 <h3>Data Collection on this Website</h3>
 <p><strong>Who is responsible?</strong><br/>
-Data processing on this website is carried out by the website operator BidBlitz FZCO, represented by CEO Afrim Krasniqi.</p>
+Data processing on this website is carried out by the website operator bidblitz.ae FZCO, represented by CEO Afrim Krasniqi.</p>
 
 <h3>How do we collect your data?</h3>
 <ul>
@@ -201,7 +201,7 @@ Data processing on this website is carried out by the website operator BidBlitz 
 <h2>5. Data Security</h2>
 <p>We use SSL/TLS encryption for secure data transmission. Your data is stored on protected servers.</p>
 
-<p><em>Last updated: January 2026 | BidBlitz FZCO, Dubai, UAE | CEO: Afrim Krasniqi</em></p>
+<p><em>Last updated: January 2026 | bidblitz.ae FZCO, Dubai, UAE | CEO: Afrim Krasniqi</em></p>
 """
         }
     },
@@ -210,15 +210,15 @@ Data processing on this website is carried out by the website operator BidBlitz 
             "title": "Allgemeine Geschäftsbedingungen (AGB)",
             "content": """
 <h2>§ 1 Geltungsbereich</h2>
-<p>Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle über die Plattform BidBlitz geschlossenen Verträge zwischen dem Anbieter und dem Kunden.</p>
+<p>Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle über die Plattform bidblitz.ae geschlossenen Verträge zwischen dem Anbieter und dem Kunden.</p>
 <p><strong>Anbieter:</strong><br/>
-BidBlitz FZCO<br/>
+bidblitz.ae FZCO<br/>
 Dubai Silicon Oasis, DDP Building A1<br/>
 Dubai, Vereinigte Arabische Emirate<br/>
 CEO: Afrim Krasniqi</p>
 
 <h2>§ 2 Vertragsgegenstand</h2>
-<p>BidBlitz betreibt eine Penny-Auktion-Plattform, bei der registrierte Nutzer auf Produkte bieten können. Jedes Gebot erhöht den Preis um einen Cent (0,01 €) und verlängert die Auktionszeit.</p>
+<p>bidblitz.ae betreibt eine Penny-Auktion-Plattform, bei der registrierte Nutzer auf Produkte bieten können. Jedes Gebot erhöht den Preis um einen Cent (0,01 €) und verlängert die Auktionszeit.</p>
 
 <h2>§ 3 Registrierung und Nutzerkonto</h2>
 <ul>
@@ -251,22 +251,22 @@ CEO: Afrim Krasniqi</p>
 <h2>§ 7 Anwendbares Recht</h2>
 <p>Es gilt das Recht der Vereinigten Arabischen Emirate. Gerichtsstand ist Dubai, VAE.</p>
 
-<p><em>Stand: Januar 2026 | BidBlitz FZCO, Dubai, VAE | CEO: Afrim Krasniqi</em></p>
+<p><em>Stand: Januar 2026 | bidblitz.ae FZCO, Dubai, VAE | CEO: Afrim Krasniqi</em></p>
 """
         },
         "en": {
             "title": "Terms and Conditions",
             "content": """
 <h2>§ 1 Scope</h2>
-<p>These Terms and Conditions apply to all contracts concluded between the provider and the customer via the BidBlitz platform.</p>
+<p>These Terms and Conditions apply to all contracts concluded between the provider and the customer via the bidblitz.ae platform.</p>
 <p><strong>Provider:</strong><br/>
-BidBlitz FZCO<br/>
+bidblitz.ae FZCO<br/>
 Dubai Silicon Oasis, DDP Building A1<br/>
 Dubai, United Arab Emirates<br/>
 CEO: Afrim Krasniqi</p>
 
 <h2>§ 2 Subject of Contract</h2>
-<p>BidBlitz operates a penny auction platform where registered users can bid on products. Each bid increases the price by one cent (€0.01) and extends the auction time.</p>
+<p>bidblitz.ae operates a penny auction platform where registered users can bid on products. Each bid increases the price by one cent (€0.01) and extends the auction time.</p>
 
 <h2>§ 3 Registration and User Account</h2>
 <ul>
@@ -299,7 +299,7 @@ CEO: Afrim Krasniqi</p>
 <h2>§ 7 Applicable Law</h2>
 <p>The laws of the United Arab Emirates apply. Place of jurisdiction is Dubai, UAE.</p>
 
-<p><em>Last updated: January 2026 | BidBlitz FZCO, Dubai, UAE | CEO: Afrim Krasniqi</em></p>
+<p><em>Last updated: January 2026 | bidblitz.ae FZCO, Dubai, UAE | CEO: Afrim Krasniqi</em></p>
 """
         }
     },

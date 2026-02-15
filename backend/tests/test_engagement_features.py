@@ -1,5 +1,5 @@
 """
-Test Suite for BidBlitz Engagement Features (Batch 2)
+Test Suite for bidblitz.ae Engagement Features (Batch 2)
 Tests 10 new customer engagement features:
 1. Favorites with Smart Alerts
 2. Team Auctions (Group Bidding)

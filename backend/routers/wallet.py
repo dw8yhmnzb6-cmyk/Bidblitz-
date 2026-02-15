@@ -157,9 +157,9 @@ async def get_apple_wallet_pass(pass_id: str, user: dict = Depends(get_current_u
         "passTypeIdentifier": "pass.de.bidblitz.winner",
         "serialNumber": pass_id,
         "teamIdentifier": "BIDBLITZ",
-        "organizationName": "BidBlitz",
+        "organizationName": "bidblitz.ae",
         "description": f"Gewonnen: {pass_data['product_name']}",
-        "logoText": "BidBlitz",
+        "logoText": "bidblitz.ae",
         "foregroundColor": "rgb(255, 255, 255)",
         "backgroundColor": "rgb(139, 92, 246)",
         "generic": {

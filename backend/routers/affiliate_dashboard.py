@@ -230,9 +230,9 @@ async def get_marketing_materials(user: dict = Depends(get_current_user)):
             {"size": "160x600", "url": "/assets/affiliate/banner-160x600.png"}
         ],
         "text_links": [
-            "Spare bis zu 90% bei BidBlitz Auktionen!",
+            "Spare bis zu 90% bei bidblitz.ae Auktionen!",
             "Gewinne Produkte für nur wenige Cent!",
-            "Die spannendste Art zu sparen - BidBlitz"
+            "Die spannendste Art zu sparen - bidblitz.ae"
         ],
         "social_posts": [
             {
@@ -241,7 +241,7 @@ async def get_marketing_materials(user: dict = Depends(get_current_user)):
             },
             {
                 "platform": "twitter",
-                "text": "Habe gerade 90% gespart bei @BidBlitz! Probier es aus:"
+                "text": "Habe gerade 90% gespart bei @bidblitz.ae! Probier es aus:"
             }
         ],
         "affiliate_link": f"https://bidblitz.de?ref={affiliate['code']}"

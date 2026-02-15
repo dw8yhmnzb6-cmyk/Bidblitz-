@@ -1,5 +1,5 @@
 """
-BidBlitz Penny Auction API Tests
+bidblitz.ae Penny Auction API Tests
 Tests for auctions, products, auth, and bidding functionality
 """
 import pytest
