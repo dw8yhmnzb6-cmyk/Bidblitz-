@@ -1360,6 +1360,13 @@ async def auction_expiry_checker():
                     product_name = product.get("name") if product else auction_id[:8]
                     logger.info(f"⏱️ Expired auction ended: {product_name} | Winner: {winner_name or 'None'} | Final: €{final_price}")
                     
+                    # Broadcast auction ended via WebSocket
+                    try:
+                        from services.websocket import broadcast_auction_ended
+                        await broadcast_auction_ended(auction_id, winner_name or "Kein Gewinner", final_price)
+                    except Exception as ws_error:
+                        logger.error(f"Failed to broadcast auction ended: {ws_error}")
+                    
                 except Exception as e:
                     logger.error(f"Error ending expired auction {auction.get('id')}: {e}")
             
