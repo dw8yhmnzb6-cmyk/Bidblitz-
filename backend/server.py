@@ -192,13 +192,15 @@ async def lifespan(app: FastAPI):
     
     # Startup
     bot_task_running = True
-    asyncio.create_task(bot_last_second_bidder())
-    asyncio.create_task(mystery_box_bot_bidder())  # NEW: Bots for Mystery Boxes
+    # TEMPORARILY DISABLED - These tasks were modifying auction end_times
+    # Re-enable once auctions are properly configured
+    # asyncio.create_task(bot_last_second_bidder())
+    # asyncio.create_task(mystery_box_bot_bidder())
     asyncio.create_task(auction_reminder_processor())
-    asyncio.create_task(auction_auto_restart_processor())
+    # asyncio.create_task(auction_auto_restart_processor())
     asyncio.create_task(auction_expiry_checker())
-    asyncio.create_task(day_night_auction_scheduler())
-    logger.info("bidblitz.ae server started - Bot bidder, Mystery Box Bot, Reminder, Auto-restart & Expiry checker tasks running")
+    # asyncio.create_task(day_night_auction_scheduler())
+    logger.info("bidblitz.ae server started - Reminder & Expiry checker tasks running (Bots disabled)")
     
     yield
     
