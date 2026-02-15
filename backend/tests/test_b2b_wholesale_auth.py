@@ -17,7 +17,7 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 # Test credentials
 TEST_B2B_EMAIL = "hans@testb2b.de"
 TEST_B2B_PASSWORD = "TestPass123!"
-ADMIN_EMAIL = "admin@bidblitz.de"
+ADMIN_EMAIL = "admin@bidblitz.ae"
 ADMIN_PASSWORD = "Admin123!"
 
 

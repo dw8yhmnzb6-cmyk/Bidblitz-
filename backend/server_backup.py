@@ -3542,7 +3542,7 @@ async def admin_reply_chat(user_id: str, message: str, admin: dict = Depends(get
         "id": str(uuid.uuid4()),
         "user_id": user_id,
         "user_name": "Support",
-        "user_email": "support@bidblitz.de",
+        "user_email": "support@bidblitz.ae",
         "message": message,
         "is_admin": True,
         "read": False,

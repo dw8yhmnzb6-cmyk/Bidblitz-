@@ -945,7 +945,7 @@ export default function WholesaleDashboard() {
             
             <div className="mt-6 pt-6 border-t border-slate-700">
               <p className="text-slate-400 text-sm mb-2">Für Änderungen an Ihrem Profil kontaktieren Sie bitte:</p>
-              <p className="text-cyan-400">b2b@bidblitz.de</p>
+              <p className="text-cyan-400">b2b@bidblitz.ae</p>
             </div>
           </div>
         )}

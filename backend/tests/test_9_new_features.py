@@ -17,7 +17,7 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-ADMIN_EMAIL = "admin@bidblitz.de"
+ADMIN_EMAIL = "admin@bidblitz.ae"
 ADMIN_PASSWORD = "Admin123!"
 
 

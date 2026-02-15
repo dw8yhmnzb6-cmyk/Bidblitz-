@@ -19,7 +19,7 @@ class TestPersonalizedHomepage:
         
         # Login to get token
         login_response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         

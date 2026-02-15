@@ -287,7 +287,7 @@ export default function ManagerDashboard() {
                     value={loginForm.email}
                     onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                     className="bg-gradient-to-b from-cyan-50 to-cyan-100 border-gray-200 text-gray-800"
-                    placeholder="manager@bidblitz.de"
+                    placeholder="manager@bidblitz.ae"
                     required
                     data-testid="manager-email-input"
                   />

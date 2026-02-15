@@ -141,7 +141,7 @@ def generate_invoice_pdf(invoice_data: dict) -> io.BytesIO:
     # Footer
     footer_text = """
     Vielen Dank für Ihren Einkauf bei BidBlitz!<br/><br/>
-    Bei Fragen wenden Sie sich bitte an: support@bidblitz.de<br/>
+    Bei Fragen wenden Sie sich bitte an: support@bidblitz.ae<br/>
     BidBlitz GmbH • Musterstraße 123 • 12345 Musterstadt<br/>
     USt-IdNr.: DE123456789
     """
@@ -366,7 +366,7 @@ async def download_auction_win_invoice(auction_id: str, user: dict = Depends(get
         "company": {
             "name": "BidBlitz GmbH",
             "address": "Musterstraße 123, 10115 Berlin, Deutschland",
-            "email": "support@bidblitz.de",
+            "email": "support@bidblitz.ae",
             "phone": "+49 30 123456789",
             "tax_id": "DE123456789"
         },

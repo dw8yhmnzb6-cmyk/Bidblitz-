@@ -198,7 +198,7 @@ async def get_apple_wallet_pass(pass_id: str, user: dict = Depends(get_current_u
                 {
                     "key": "support",
                     "label": "Support",
-                    "value": "support@bidblitz.de"
+                    "value": "support@bidblitz.ae"
                 }
             ]
         },

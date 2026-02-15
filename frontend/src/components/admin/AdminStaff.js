@@ -77,7 +77,7 @@ export default function AdminStaff({ token, staff, roles, permissions, fetchData
               onChange={(e) => setNewStaff({...newStaff, email: e.target.value})} 
               required 
               className="bg-white border-gray-200 text-gray-800" 
-              placeholder="mitarbeiter@bidblitz.de" 
+              placeholder="mitarbeiter@bidblitz.ae" 
             />
           </div>
           <div className="space-y-2">

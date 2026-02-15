@@ -3819,7 +3819,7 @@ async def admin_reply_chat(user_id: str, message: str, admin: dict = Depends(get
         "id": str(uuid.uuid4()),
         "user_id": user_id,
         "user_name": "Support",
-        "user_email": "support@bidblitz.de",
+        "user_email": "support@bidblitz.ae",
         "message": message,
         "is_admin": True,
         "read": False,
@@ -3921,7 +3921,7 @@ def generate_invoice_pdf(purchase: dict, user: dict) -> io.BytesIO:
     <font size="9" color="grey">
     BidBlitz GmbH • Musterstraße 123 • 10115 Berlin<br/>
     USt-IdNr.: DE123456789 • Handelsregister: HRB 12345<br/>
-    support@bidblitz.de • www.bidblitz.de
+    support@bidblitz.ae • www.bidblitz.de
     </font>
     </para>
     """

@@ -327,7 +327,7 @@ async def send_admin_payout_notification(
     request_type: str = "influencer"  # "influencer" or "manager"
 ):
     """Send payout request notification to admin."""
-    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@bidblitz.de')
+    ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@bidblitz.ae')
     
     type_label = "Influencer" if request_type == "influencer" else "Manager"
     
@@ -538,7 +538,7 @@ async def send_wholesale_welcome_email(
                     <div style="background:#EFF6FF; border-radius:10px; padding:20px; margin-top:25px; text-align:center;">
                         <p style="margin:0; color:#1E40AF; font-size:14px;">
                             <strong>Fragen?</strong> Unser B2B-Team steht Ihnen gerne zur Verfügung:<br>
-                            📧 b2b@bidblitz.de | 📞 +49 123 456 7890
+                            📧 b2b@bidblitz.ae | 📞 +49 123 456 7890
                         </p>
                     </div>
                 </td>

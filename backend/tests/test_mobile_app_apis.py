@@ -12,7 +12,7 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://bidblitz-preview-1.preview.emergentagent.com')
 
 # Test credentials
-ADMIN_EMAIL = "admin@bidblitz.de"
+ADMIN_EMAIL = "admin@bidblitz.ae"
 ADMIN_PASSWORD = "Admin123!"
 
 

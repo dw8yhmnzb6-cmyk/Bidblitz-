@@ -16,7 +16,7 @@ class TestMaintenanceAPI:
     @pytest.fixture(autouse=True)
     def setup(self):
         """Setup test fixtures"""
-        self.admin_email = "admin@bidblitz.de"
+        self.admin_email = "admin@bidblitz.ae"
         self.admin_password = "Admin123!"
         self.token = None
         
@@ -153,7 +153,7 @@ class TestReferralAPI:
     @pytest.fixture(autouse=True)
     def setup(self):
         """Setup test fixtures"""
-        self.admin_email = "admin@bidblitz.de"
+        self.admin_email = "admin@bidblitz.ae"
         self.admin_password = "Admin123!"
         self.token = None
         
@@ -206,7 +206,7 @@ class TestInfluencerAPI:
     @pytest.fixture(autouse=True)
     def setup(self):
         """Setup test fixtures"""
-        self.admin_email = "admin@bidblitz.de"
+        self.admin_email = "admin@bidblitz.ae"
         self.admin_password = "Admin123!"
         self.token = None
         

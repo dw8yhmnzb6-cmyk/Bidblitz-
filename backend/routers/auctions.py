@@ -133,7 +133,7 @@ async def send_outbid_email(user_id: str, auction_id: str, current_price: float,
         import httpx
         
         RESEND_API_KEY = os.environ.get("RESEND_API_KEY")
-        SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "noreply@bidblitz.de")
+        SENDER_EMAIL = os.environ.get("SENDER_EMAIL", "noreply@bidblitz.ae")
         
         if not RESEND_API_KEY:
             return

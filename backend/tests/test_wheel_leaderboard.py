@@ -8,9 +8,9 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-TEST_USER_EMAIL = "kunde@bidblitz.de"
+TEST_USER_EMAIL = "kunde@bidblitz.ae"
 TEST_USER_PASSWORD = "Kunde123!"
-ADMIN_EMAIL = "admin@bidblitz.de"
+ADMIN_EMAIL = "admin@bidblitz.ae"
 ADMIN_PASSWORD = "Admin123!"
 
 

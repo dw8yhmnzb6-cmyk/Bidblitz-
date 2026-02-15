@@ -167,7 +167,7 @@ class TestAuthenticatedEndpoints:
     def auth_token(self):
         """Get auth token for customer user"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "kunde@bidblitz.de",
+            "email": "kunde@bidblitz.ae",
             "password": "Kunde123!"
         })
         if response.status_code == 200:

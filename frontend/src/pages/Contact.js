@@ -59,7 +59,7 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      value: "support@bidblitz.de",
+      value: "support@bidblitz.ae",
       description: "Response within 24h"
     },
     {
@@ -78,7 +78,7 @@ export default function Contact() {
     {
       icon: Mail,
       title: "Email",
-      value: "support@bidblitz.de",
+      value: "support@bidblitz.ae",
       description: "Përgjigje brenda 24 orëve"
     },
     {
@@ -97,7 +97,7 @@ export default function Contact() {
     {
       icon: Mail,
       title: "E-Mail",
-      value: "support@bidblitz.de",
+      value: "support@bidblitz.ae",
       description: "Antwort innerhalb von 24h"
     },
     {

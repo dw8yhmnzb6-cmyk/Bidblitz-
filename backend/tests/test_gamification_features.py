@@ -14,12 +14,12 @@ BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
 TEST_USER = {
-    "email": "kunde@bidblitz.de",
+    "email": "kunde@bidblitz.ae",
     "password": "Kunde123!"
 }
 
 ADMIN_USER = {
-    "email": "admin@bidblitz.de",
+    "email": "admin@bidblitz.ae",
     "password": "Admin123!"
 }
 

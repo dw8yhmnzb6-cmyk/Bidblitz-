@@ -9,9 +9,9 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://bidblitz-preview-1.preview.emergentagent.com').rstrip('/')
 
 # Test credentials
-ADMIN_EMAIL = "admin@bidblitz.de"
+ADMIN_EMAIL = "admin@bidblitz.ae"
 ADMIN_PASSWORD = "Admin123!"
-MANAGER_EMAIL = "manager.berlin@bidblitz.de"
+MANAGER_EMAIL = "manager.berlin@bidblitz.ae"
 MANAGER_PASSWORD = "Manager123!"
 
 
@@ -51,7 +51,7 @@ class TestManagerLogin:
     def test_manager_login_invalid_credentials(self):
         """Test manager login with invalid credentials"""
         response = requests.post(f"{BASE_URL}/api/manager/login", json={
-            "email": "invalid@bidblitz.de",
+            "email": "invalid@bidblitz.ae",
             "password": "WrongPassword123!"
         })
         
@@ -141,7 +141,7 @@ class TestAdminManagerCreate:
     def test_create_manager_success(self, admin_token):
         """Test creating a new manager (admin only)"""
         import uuid
-        test_email = f"test.manager.{uuid.uuid4().hex[:8]}@bidblitz.de"
+        test_email = f"test.manager.{uuid.uuid4().hex[:8]}@bidblitz.ae"
         
         response = requests.post(
             f"{BASE_URL}/api/manager/admin/create",
@@ -193,7 +193,7 @@ class TestAdminManagerCreate:
             f"{BASE_URL}/api/manager/admin/create",
             json={
                 "name": "Unauthorized Manager",
-                "email": "unauth@bidblitz.de",
+                "email": "unauth@bidblitz.ae",
                 "password": "Test123!",
                 "cities": ["Berlin"]
             }

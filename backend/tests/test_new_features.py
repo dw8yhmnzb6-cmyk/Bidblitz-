@@ -89,7 +89,7 @@ class TestAuthentication:
     def test_customer_login(self):
         """Test customer login"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "kunde@bidblitz.de",
+            "email": "kunde@bidblitz.ae",
             "password": "Kunde123!"
         })
         assert response.status_code == 200
@@ -102,7 +102,7 @@ class TestAuthentication:
     def test_admin_login(self):
         """Test admin login"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         assert response.status_code == 200
@@ -121,7 +121,7 @@ class TestAuthenticatedFeatures:
     def customer_session(self):
         """Get authenticated customer session"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "kunde@bidblitz.de",
+            "email": "kunde@bidblitz.ae",
             "password": "Kunde123!"
         })
         if response.status_code == 200:
@@ -135,7 +135,7 @@ class TestAuthenticatedFeatures:
     def admin_session(self):
         """Get authenticated admin session"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         if response.status_code == 200:

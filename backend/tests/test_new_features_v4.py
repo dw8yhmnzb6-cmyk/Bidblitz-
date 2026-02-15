@@ -12,8 +12,8 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://bidblitz-preview-1.preview.emergentagent.com')
 
 # Test credentials
-TEST_USER = {"email": "kunde@bidblitz.de", "password": "Kunde123!"}
-ADMIN_USER = {"email": "admin@bidblitz.de", "password": "Admin123!"}
+TEST_USER = {"email": "kunde@bidblitz.ae", "password": "Kunde123!"}
+ADMIN_USER = {"email": "admin@bidblitz.ae", "password": "Admin123!"}
 
 
 @pytest.fixture(scope="module")

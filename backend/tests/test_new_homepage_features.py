@@ -51,7 +51,7 @@ class TestDailyQuestsAPI:
     def auth_token(self):
         """Get authentication token"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         if response.status_code == 200:
@@ -128,7 +128,7 @@ class TestUserVIPStatus:
     def auth_token(self):
         """Get authentication token"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         if response.status_code == 200:

@@ -70,7 +70,7 @@ class TestAuthenticatedEndpoints:
         """Login and get auth token"""
         login_response = requests.post(
             f"{BASE_URL}/api/auth/login",
-            json={"email": "admin@bidblitz.de", "password": "Admin123!"}
+            json={"email": "admin@bidblitz.ae", "password": "Admin123!"}
         )
         if login_response.status_code == 200:
             self.token = login_response.json().get("token")

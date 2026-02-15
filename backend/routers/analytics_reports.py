@@ -268,7 +268,7 @@ async def send_analytics_email(recipient: str, html_content: str, subject: str):
     
     try:
         resend.Emails.send({
-            "from": "BidBlitz Analytics <analytics@bidblitz.de>",
+            "from": "BidBlitz Analytics <analytics@bidblitz.ae>",
             "to": [recipient],
             "subject": subject,
             "html": html_content

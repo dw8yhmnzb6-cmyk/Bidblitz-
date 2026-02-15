@@ -21,7 +21,7 @@ const pageTexts = {
     invoicesAppear: 'Ihre Rechnungen erscheinen hier nach dem Kauf',
     auctionWin: 'Gewinn',
     purchase: 'Kauf',
-    vatInfo: 'Alle Rechnungen enthalten die gesetzlich vorgeschriebene Mehrwertsteuer (19%). Bei Fragen wenden Sie sich an support@bidblitz.de'
+    vatInfo: 'Alle Rechnungen enthalten die gesetzlich vorgeschriebene Mehrwertsteuer (19%). Bei Fragen wenden Sie sich an support@bidblitz.ae'
   },
   sq: {
     pageTitle: 'Faturat e mia',
@@ -35,7 +35,7 @@ const pageTexts = {
     invoicesAppear: 'Faturat tuaja do të shfaqen këtu pas blerjes',
     auctionWin: 'Fitim',
     purchase: 'Blerje',
-    vatInfo: 'Të gjitha faturat përfshijnë TVSH-në e detyrueshme ligjore (19%). Për pyetje kontaktoni support@bidblitz.de'
+    vatInfo: 'Të gjitha faturat përfshijnë TVSH-në e detyrueshme ligjore (19%). Për pyetje kontaktoni support@bidblitz.ae'
   }
 };
 

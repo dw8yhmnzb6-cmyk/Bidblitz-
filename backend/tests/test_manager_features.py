@@ -12,9 +12,9 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-ADMIN_EMAIL = "admin@bidblitz.de"
+ADMIN_EMAIL = "admin@bidblitz.ae"
 ADMIN_PASSWORD = "Admin123!"
-MANAGER_EMAIL = "manager.prishtina@bidblitz.de"
+MANAGER_EMAIL = "manager.prishtina@bidblitz.ae"
 MANAGER_PASSWORD = "Prishtina2024!"
 MANAGER_ID = "b8bb850e-ad00-4bbc-84c7-2ef162347712"
 
@@ -43,7 +43,7 @@ class TestManagerLogin:
     def test_manager_login_invalid_credentials(self):
         """Test manager login with invalid credentials"""
         response = requests.post(f"{BASE_URL}/api/manager/login", json={
-            "email": "invalid@bidblitz.de",
+            "email": "invalid@bidblitz.ae",
             "password": "wrongpassword"
         })
         assert response.status_code == 401

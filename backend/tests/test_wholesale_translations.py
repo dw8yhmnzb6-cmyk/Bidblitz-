@@ -19,7 +19,7 @@ class TestWholesaleAPI:
         """Setup test fixtures"""
         # Login as admin to get token
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         assert response.status_code == 200, f"Admin login failed: {response.text}"
@@ -109,7 +109,7 @@ class TestMaintenanceAPI:
     def setup(self):
         """Setup test fixtures"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         assert response.status_code == 200

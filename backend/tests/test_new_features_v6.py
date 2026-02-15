@@ -27,14 +27,14 @@ class TestAuthAPI:
     def test_login_success(self):
         """Test successful login with admin credentials"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         assert response.status_code == 200
         data = response.json()
         assert "token" in data
         assert "user" in data
-        assert data["user"]["email"] == "admin@bidblitz.de"
+        assert data["user"]["email"] == "admin@bidblitz.ae"
         assert data["user"]["is_admin"] == True
         assert isinstance(data["token"], str)
         assert len(data["token"]) > 0
@@ -50,7 +50,7 @@ class TestAuthAPI:
     def test_login_missing_fields(self):
         """Test login with missing fields"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de"
+            "email": "admin@bidblitz.ae"
         })
         assert response.status_code in [400, 422]
 
@@ -99,7 +99,7 @@ class TestAchievementsAPI:
         """Test GET /api/achievements/my-achievements with auth"""
         # First login
         login_response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         assert login_response.status_code == 200
@@ -189,7 +189,7 @@ class TestUserAPI:
         """Test GET /api/user/bids with auth"""
         # First login
         login_response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         assert login_response.status_code == 200

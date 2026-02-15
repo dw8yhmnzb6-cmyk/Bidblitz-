@@ -17,7 +17,7 @@ class TestVoiceCommandTranslation:
     def auth_token(self):
         """Get authentication token"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@bidblitz.de",
+            "email": "admin@bidblitz.ae",
             "password": "Admin123!"
         })
         assert response.status_code == 200, f"Login failed: {response.text}"
