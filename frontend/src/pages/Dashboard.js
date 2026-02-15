@@ -346,9 +346,9 @@ export default function Dashboard() {
                 <Target className="w-6 h-6 text-[#7C3AED]" />
               </div>
               <div>
-                <p className="text-gray-500 text-sm">Aktive Gebote</p>
+                <p className="text-gray-500 text-sm">{dt.activeBids}</p>
                 <p className="text-2xl font-bold text-gray-800">{myBidAuctions.length}</p>
-                <p className="text-[#7C3AED] text-xs">Auktionen</p>
+                <p className="text-[#7C3AED] text-xs">{dt.auctions}</p>
               </div>
             </div>
           </div>
@@ -359,9 +359,9 @@ export default function Dashboard() {
                 <Bot className="w-6 h-6 text-[#06B6D4]" />
               </div>
               <div>
-                <p className="text-gray-500 text-sm">Autobidder</p>
+                <p className="text-gray-500 text-sm">{dt.autobidder}</p>
                 <p className="text-2xl font-bold text-gray-800">{(autobidders || []).filter(a => a.is_active).length}</p>
-                <p className="text-[#06B6D4] text-xs">Aktiv</p>
+                <p className="text-[#06B6D4] text-xs">{dt.active}</p>
               </div>
             </div>
           </div>
@@ -403,7 +403,7 @@ export default function Dashboard() {
               <div className="text-center py-3 px-4 rounded-lg bg-white">
                 <CheckCircle className="w-6 h-6 text-[#10B981] mx-auto mb-2" />
                 <p className="text-[#10B981] font-medium">{dt.alreadyClaimed}</p>
-                <p className="text-gray-500 text-xs mt-1">Komm morgen wieder!</p>
+                <p className="text-gray-500 text-xs mt-1">{dt.comeBackTomorrow}</p>
               </div>
             )}
             
@@ -421,7 +421,7 @@ export default function Dashboard() {
                 />
               ))}
             </div>
-            <p className="text-gray-500 text-xs text-center mt-2">7 Tage = +10 Bonus-Gebote!</p>
+            <p className="text-gray-500 text-xs text-center mt-2">{dt.sevenDaysBonus}</p>
           </div>
 
           {/* Achievements Card */}
