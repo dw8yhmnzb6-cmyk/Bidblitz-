@@ -66,11 +66,18 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
   
   const t = translations[effectiveLang] || translations.de;
   
+  // Fetch ending soon auctions
   useEffect(() => {
     const fetchEndingSoon = async () => {
       try {
         const res = await axios.get(`${API}/auctions/ending-soon?minutes=5&limit=${maxItems}`);
-        setAuctions(res.data.auctions || res.data || []);
+        const now = Date.now();
+        // Filter out expired auctions
+        const validAuctions = (res.data.auctions || res.data || []).filter(a => {
+          const endTime = new Date(a.end_time).getTime();
+          return endTime > now;
+        });
+        setAuctions(validAuctions);
       } catch (err) {
         // Fallback - get active auctions and filter
         try {
@@ -80,7 +87,7 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
             .filter(a => {
               const endTime = new Date(a.end_time).getTime();
               const timeLeft = (endTime - now) / 1000;
-              return timeLeft > 0 && timeLeft < 300; // Less than 5 minutes
+              return timeLeft > 5 && timeLeft < 300; // More than 5 seconds, less than 5 minutes
             })
             .slice(0, maxItems);
           setAuctions(endingSoon);
@@ -96,6 +103,22 @@ export const LastChanceWidget = memo(({ language = 'de', maxItems = 5 }) => {
     const interval = setInterval(fetchEndingSoon, 10000);
     return () => clearInterval(interval);
   }, [maxItems]);
+  
+  // Auto-remove expired auctions every second
+  useEffect(() => {
+    if (auctions.length === 0) return;
+    
+    const removeExpired = () => {
+      const now = Date.now();
+      setAuctions(prev => prev.filter(a => {
+        const endTime = new Date(a.end_time).getTime();
+        return endTime > now + 1000; // Remove if less than 1 second left
+      }));
+    };
+    
+    const timer = setInterval(removeExpired, 1000);
+    return () => clearInterval(timer);
+  }, [auctions.length > 0]);
   
   if (loading || auctions.length === 0) return null;
   
