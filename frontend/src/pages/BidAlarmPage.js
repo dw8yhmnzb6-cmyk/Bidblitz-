@@ -218,7 +218,7 @@ const BidAlarmPage = () => {
         toast.error(data.detail || 'Error');
       }
     } catch (err) {
-      toast.error('Network error');
+      console.error('Network error:', err);
     }
   };
 

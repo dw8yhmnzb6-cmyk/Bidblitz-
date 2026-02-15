@@ -290,7 +290,7 @@ const SocialBettingPage = () => {
         toast.error(data.detail || 'Error placing bet');
       }
     } catch (err) {
-      toast.error('Network error');
+      console.error('Network error:', err);
     }
   };
 
