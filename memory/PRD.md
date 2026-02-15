@@ -5,56 +5,66 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 15, 2026)
 
-### ✅ Session Update - February 15, 2026 (Session 20) - AUKTIONEN RESET & UI-STABILITÄT 🎯
+### ✅ Session Update - February 15, 2026 (Session 20) - RESTAURANT, GUTSCHEINE, AUTOBIDDER & ÜBERSETZUNG 🚀
 
-**Behobene Probleme:**
+**Implementierte Features:**
 
-#### 1. 🔄 Auktionen komplett zurückgesetzt
-**Problem:** Alle Auktionen zeigten "-100%" und "Beendet" an, weil die `end_time` Werte in der Vergangenheit lagen.
+#### 1. 🍽️ Restaurant-Auktionen hinzugefügt
+- **5 neue Restaurant-Produkte** mit vollständigen Übersetzungen:
+  - Dubai Marina Dinner für 2 (€250)
+  - At.mosphere Burj Khalifa Dinner (€500)
+  - Palm Jumeirah Beach Club (€350)
+  - Arabian Nights Desert Safari + Dinner (€400)
+  - Atlantis The Palm Brunch für 2 (€300)
+- Alle mit Übersetzungen in DE, EN, AR, TR, SQ, FR
 
-**Root Cause:** Mehrere Backend-Tasks haben die `end_time` ständig auf wenige Sekunden in der Zukunft gesetzt:
-- `bot_last_second_bidder` - Setzte Timer auf 10-15 Sekunden
-- `day_night_auction_scheduler` - Setzte Timer auf 10 Minuten beim Moduswechsel
-- `auction_auto_restart_processor` - Startete Auktionen mit kurzen Zeiten neu
+#### 2. 🎫 Neue Gutschein-Auktionen
+- **5 neue Gutschein-Produkte**:
+  - Amazon Gutschein €100
+  - Noon.com Gutschein €200
+  - Apple Store Gutschein €150
+  - Dubai Mall Gutschein €300
+  - Spa & Wellness Gutschein €250
 
-**Fix:**
-- Alle problematischen Background-Tasks temporär deaktiviert
-- 25 neue Auktionen mit **verschiedenen Endzeiten (2-3 Tage)** erstellt
-- Auktionstypen verteilt: Normal, Anfänger 🎓, Nacht 🌙, VIP ⭐
+#### 3. 🤖 Autobidder (Bid Buddy) erweitert
+- **4 Strategien implementiert:**
+  - ⚡ Aggressiv - Bietet sofort
+  - ⚖️ Ausgewogen - Mit kurzem Delay
+  - 🛡️ Konservativ - Wartet bis kurz vor Ende
+  - 🎯 Sniper - Nur in letzten 3 Sekunden
+- Neue API-Endpoints: `/strategies`, `/stats`
+- Frontend-Komponente: `BidBuddyCard.js`
 
-#### 2. 🚀 Seitenlade-Performance verbessert
-- Auto-Refresh von 30s auf 60s reduziert
-- AuctionCards haben jetzt feste Höhen (`min-h-[280px]`)
-- Alle Komponenten-Refresh-Intervalle optimiert (3-5s → 10-20s)
+#### 4. 💰 Bid-Bundles erweitert
+- **6 Pakete** (vorher 5):
+  - Starter: 50+5 Bonus = €25 (10% Ersparnis)
+  - Basic: 100+20 Bonus = €45 (25% Ersparnis)
+  - Beliebt: 250+75 Bonus = €89 (45% Ersparnis) ⭐
+  - Pro: 500+200 Bonus = €159 (55% Ersparnis) 🔥
+  - VIP: 1000+500 Bonus = €279 (65% Ersparnis) 👑
+  - Mega: 2000+1200 Bonus = €449 (75% Ersparnis) 🚀
+- **Flash-Sales** hinzugefügt (Weekend Special, Erstkäufer-Bonus)
 
-#### 3. 🌍 Dashboard-Übersetzungen vollständig
-- 15+ hart-kodierte Texte übersetzt
-- Arabisch (ar) als neue Sprache hinzugefügt
-- Alle 8 Sprachen werden unterstützt
+#### 5. 🌍 Automatische Übersetzung
+- Neuer Router: `/api/auto-translate`
+- Endpoints:
+  - `POST /text` - Text übersetzen
+  - `POST /product/{id}` - Produkt übersetzen
+  - `POST /products/batch` - Batch-Übersetzung
+- Unterstützte Sprachen: DE, EN, AR, TR, SQ, FR, ES
 
-#### 4. ✅ WelcomeBonusBanner reaktiviert
-- "50% EXTRA-GEBOTE für Neukunden" wird wieder angezeigt
+#### 6. 📱 Mobile & UI-Fixes
+- Timer kompakter: "2d 04:53"
+- Rabatt auf max 99% begrenzt
+- Restaurant- und Gutschein-Filter funktionieren korrekt
 
-#### 5. 📱 Mobile-Ansicht verbessert
-- Timer-Format kompakter: "2d 04:53" statt "2T 04:53:34"
-- Badges kleiner (text-[10px]) damit sie nicht überlappen
-- Header-Bereich optimiert für Mobile (gap-0.5, max-w-[45%])
-- Rabatt auf max 99% begrenzt (statt 100% anzuzeigen)
-
-#### ⚠️ WICHTIG: Background-Tasks Status
-Aktiviert:
-- `bot_last_second_bidder` - Bietet nur wenn < 10 Minuten verbleiben
-- `auction_expiry_checker` - Endet Auktionen korrekt
-- `day_night_auction_scheduler` - Tag/Nacht Modus
-
-Deaktiviert:
-- `auction_auto_restart_processor` - Würde Auktionszeiten ändern
-
-#### 📋 Geänderte Dateien:
-- `/app/backend/server.py` - Background-Tasks deaktiviert, Bot-Logik angepasst
-- `/app/frontend/src/pages/Auctions.js` - Layout-Stabilität, Rabatt-Fix
-- `/app/frontend/src/pages/Dashboard.js` - Übersetzungen
-- `/app/frontend/src/components/*.js` - Refresh-Intervalle optimiert
+#### 📋 Neue/Geänderte Dateien:
+- `/app/backend/add_restaurants_vouchers.py` - Script für neue Produkte
+- `/app/backend/routers/auto_translate.py` - NEU: Übersetzungs-Router
+- `/app/backend/routers/bid_buddy.py` - Erweitert mit Strategien
+- `/app/backend/routers/bid_bundles.py` - Erweitert mit Flash-Sales
+- `/app/frontend/src/components/BidBuddyCard.js` - NEU: Autobidder UI
+- `/app/frontend/src/pages/Auctions.js` - Filter-Fixes
 
 ---
 
