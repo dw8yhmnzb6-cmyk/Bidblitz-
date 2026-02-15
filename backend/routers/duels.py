@@ -75,13 +75,17 @@ async def respond_to_duel(duel_id: str, action: DuelAction, user: dict = Depends
     now = datetime.now(timezone.utc)
     
     if action.action == "accept":
-        # Check bids
-        user_data = await db.users.find_one({"id": user_id}, {"bids": 1})
-        if not user_data or user_data.get("bids", 0) < duel["bet_bids"]:
+        # Check bids (support both 'bids' and 'bids_balance' fields)
+        user_data = await db.users.find_one({"id": user_id}, {"bids": 1, "bids_balance": 1})
+        user_bids = user_data.get("bids", 0) or user_data.get("bids_balance", 0) if user_data else 0
+        if user_bids < duel["bet_bids"]:
             raise HTTPException(status_code=400, detail="Nicht genug Gebote")
         
-        # Reserve bids
-        await db.users.update_one({"id": user_id}, {"$inc": {"bids": -duel["bet_bids"]}})
+        # Reserve bids (update both fields)
+        await db.users.update_one(
+            {"id": user_id}, 
+            {"$inc": {"bids": -duel["bet_bids"], "bids_balance": -duel["bet_bids"]}}
+        )
         
         # Start duel
         await db.duels.update_one(
@@ -96,10 +100,10 @@ async def respond_to_duel(duel_id: str, action: DuelAction, user: dict = Depends
         return {"success": True, "message": "Duell gestartet!", "status": "active"}
     
     elif action.action == "decline":
-        # Refund challenger
+        # Refund challenger (update both fields)
         await db.users.update_one(
             {"id": duel["challenger_id"]},
-            {"$inc": {"bids": duel["bet_bids"]}}
+            {"$inc": {"bids": duel["bet_bids"], "bids_balance": duel["bet_bids"]}}
         )
         
         await db.duels.update_one(
