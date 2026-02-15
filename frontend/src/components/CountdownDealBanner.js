@@ -4,8 +4,9 @@
  */
 import { useState, useEffect, memo } from 'react';
 import { Clock, Zap, Gift, ArrowRight, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'sonner';
 
 const translations = {
   de: {
