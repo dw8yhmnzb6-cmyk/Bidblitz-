@@ -68,6 +68,7 @@ const DEALS = [
 
 const CountdownDealBanner = memo(({ language = 'de' }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useAuth();
   const [dismissed, setDismissed] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ hours: 2, mins: 0, secs: 0 });
