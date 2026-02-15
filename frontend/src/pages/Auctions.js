@@ -1072,51 +1072,43 @@ export default function Auctions() {
   useEffect(() => {
     fetchData();
     
-    // Auto-refresh auctions every 5 seconds (reduced frequency to minimize UI churn)
-    // The WebSocket handles real-time bid updates, this is just for status sync
-    const refreshInterval = setInterval(() => {
-      const silentFetch = async () => {
-        try {
-          const [auctionsRes, productsRes, aotdRes, endedRes] = await Promise.all([
-            axios.get(`${API}/auctions`),
-            axios.get(`${API}/products`),
-            axios.get(`${API}/auction-of-the-day`).catch(() => ({ data: null })),
-            axios.get(`${API}/auctions/ended`).catch(() => ({ data: [] }))
-          ]);
-          
-          // Only update if we have valid data
-          if (auctionsRes.data && Array.isArray(auctionsRes.data)) {
-            setAuctions(auctionsRes.data);
-          }
-          
-          if (endedRes.data && Array.isArray(endedRes.data)) {
-            setEndedAuctions(endedRes.data);
-          }
-          
-          if (productsRes.data && Array.isArray(productsRes.data)) {
-            const prodMap = {};
-            productsRes.data.forEach(p => { prodMap[p.id] = p; });
-            setProducts(prodMap);
-          }
-          
-          // Update AOTD - ensure it has valid end_time
-          if (aotdRes.data && aotdRes.data.id) {
-            const aotdEndTime = new Date(aotdRes.data.end_time).getTime();
-            // Only set AOTD if it's not expired
-            if (aotdEndTime > Date.now()) {
-              setAuctionOfTheDay(aotdRes.data);
-            } else {
-              // AOTD expired - clear it so system picks a new one on next fetch
-              setAuctionOfTheDay(null);
-            }
-          }
-        } catch (error) {
-          // Silent fail - don't show errors for background refresh
-          console.log('Background refresh failed:', error.message);
+    // DISABLED: Auto-refresh removed - WebSocket handles ALL real-time updates
+    // The constant setAuctions() calls were causing UI re-renders and "jumping" cards
+    // If status sync is needed, implement a more surgical update that only changes
+    // specific auction properties rather than replacing the entire array
+    
+    // Minimal background sync - ONLY for ended auctions and AOTD (every 60 seconds)
+    const refreshInterval = setInterval(async () => {
+      try {
+        // Only fetch ended auctions and AOTD - NOT active auctions (WebSocket handles those)
+        const [aotdRes, endedRes] = await Promise.all([
+          axios.get(`${API}/auction-of-the-day`).catch(() => ({ data: null })),
+          axios.get(`${API}/auctions/ended`).catch(() => ({ data: [] }))
+        ]);
+        
+        if (endedRes.data && Array.isArray(endedRes.data)) {
+          setEndedAuctions(endedRes.data);
         }
-      };
-      silentFetch();
-    }, 30000); // Every 30 seconds (WebSocket handles real-time updates)
+        
+        // Update AOTD - ensure it has valid end_time
+        if (aotdRes.data && aotdRes.data.id) {
+          const aotdEndTime = new Date(aotdRes.data.end_time).getTime();
+          if (aotdEndTime > Date.now()) {
+            setAuctionOfTheDay(prev => {
+              // Only update if ID changed or null
+              if (!prev || prev.id !== aotdRes.data.id) {
+                return aotdRes.data;
+              }
+              return prev;
+            });
+          } else {
+            setAuctionOfTheDay(null);
+          }
+        }
+      } catch (error) {
+        console.log('Background refresh failed:', error.message);
+      }
+    }, 60000); // Every 60 seconds for minimal sync
     
     return () => clearInterval(refreshInterval);
   }, []);  // Empty dependency - only run once on mount
