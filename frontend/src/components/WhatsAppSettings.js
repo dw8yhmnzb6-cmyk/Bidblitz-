@@ -172,8 +172,25 @@ const WhatsAppSettings = memo(({ language = 'de' }) => {
     setSettings(prev => ({ ...prev, [key]: newValue }));
     
     try {
-      await axios.put(`${API}/whatsapp/settings`, 
-        { notifications: { ...settings, [key]: newValue } },
+      // Map frontend keys to backend keys
+      const backendSettings = {
+        outbid: settings.outbid,
+        auction_won: settings.won,
+        auction_ending: settings.ending,
+        deals: settings.newAuction,
+        daily_digest: settings.promo
+      };
+      
+      // Update the specific setting
+      if (key === 'outbid') backendSettings.outbid = newValue;
+      if (key === 'won') backendSettings.auction_won = newValue;
+      if (key === 'ending') backendSettings.auction_ending = newValue;
+      if (key === 'newAuction') backendSettings.deals = newValue;
+      if (key === 'promo') backendSettings.daily_digest = newValue;
+      
+      await axios.put(
+        `${API}/whatsapp/preferences?auction_ending=${backendSettings.auction_ending}&auction_won=${backendSettings.auction_won}&outbid=${backendSettings.outbid}&deals=${backendSettings.deals}&daily_digest=${backendSettings.daily_digest}`, 
+        {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
     } catch (err) {
