@@ -511,7 +511,7 @@ const LiveTimer = memo(({ endTime, isPaused }) => {
   }, [endTime, isPaused]);
   
   return (
-    <span className={`font-mono text-xs font-bold px-1.5 py-0.5 rounded transition-colors duration-300 ${
+    <span className={`font-mono text-[10px] sm:text-xs font-bold px-1 py-0.5 rounded transition-colors duration-300 whitespace-nowrap ${
       isPaused ? 'bg-indigo-600 text-white' :
       isLow ? 'bg-red-500 text-white ' : 
       isLong ? 'bg-green-600 text-white' : 
