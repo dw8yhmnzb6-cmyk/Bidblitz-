@@ -122,6 +122,7 @@ from routers.restaurant_portal import restaurant_portal_router
 from routers.restaurant_reviews import restaurant_reviews_router
 from routers.restaurant_discovery import restaurant_discovery_router
 from routers.loyalty_program import loyalty_router
+from routers.partner_portal import partner_portal_router
 from routers.surveys import router as surveys_router
 from routers.maintenance import router as maintenance_router
 from routers.push_notifications import router as push_notifications_router
