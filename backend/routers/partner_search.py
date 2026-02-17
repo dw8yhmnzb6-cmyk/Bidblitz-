@@ -227,7 +227,7 @@ async def get_business_types():
 @router.put("/update-location")
 async def update_partner_location(token: str, latitude: float, longitude: float):
     """Update partner's location coordinates"""
-    partner = await db.partner_accounts.find_one({"token": token}, {"_id": 0})
+    partner = await db.partner_accounts.find_one({"auth_token": token}, {"_id": 0})
     if not partner:
         raise HTTPException(status_code=401, detail="Ungültiger Token")
     

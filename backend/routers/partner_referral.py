@@ -46,7 +46,7 @@ def generate_partner_referral_code(name: str) -> str:
 async def get_partner_referral_code(token: str):
     """Get or create partner's referral code"""
     # Verify partner
-    partner = await db.partner_accounts.find_one({"token": token}, {"_id": 0})
+    partner = await db.partner_accounts.find_one({"auth_token": token}, {"_id": 0})
     if not partner:
         raise HTTPException(status_code=401, detail="Ungültiger Token")
     
@@ -91,7 +91,7 @@ async def get_partner_referral_code(token: str):
 @router.get("/stats")
 async def get_referral_stats(token: str):
     """Get detailed referral statistics for partner"""
-    partner = await db.partner_accounts.find_one({"token": token}, {"_id": 0})
+    partner = await db.partner_accounts.find_one({"auth_token": token}, {"_id": 0})
     if not partner:
         raise HTTPException(status_code=401, detail="Ungültiger Token")
     
