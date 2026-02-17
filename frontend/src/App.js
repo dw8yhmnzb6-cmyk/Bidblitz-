@@ -198,6 +198,7 @@ function AppContent() {
       <AbandonedCartReminder language={mappedLanguage || language} />
       <OutbidNotification />
       <OnboardingTour />
+      <HowItWorks />
       {/* <LiveWinnerPopup language={mappedLanguage || language} /> */}
       {/* <LanguageHintBanner /> */}
       
