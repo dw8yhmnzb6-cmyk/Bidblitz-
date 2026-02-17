@@ -233,6 +233,7 @@ function AppContent() {
           } />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/admin" element={
             <ProtectedRoute requireAdmin>
               <Admin />
