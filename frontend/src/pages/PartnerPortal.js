@@ -2426,22 +2426,15 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate }) {
 
   const handleQRScanned = async (qrData) => {
     try {
-      const response = await fetch(
+      const response = await axios.get(
         `${API}/api/bidblitz-pay/scan-customer?qr_data=${encodeURIComponent(qrData)}&token=${token}`
       );
       
-      const data = await response.json();
-      
-      if (!response.ok) {
-        toast.error(data.detail || "Ungültiger QR-Code");
-        return;
-      }
-      
-      setCustomerData(data);
-      toast.success(`Kunde gefunden: ${data.customer.name}`);
+      setCustomerData(response.data);
+      toast.success(`Kunde gefunden: ${response.data.customer.name}`);
     } catch (error) {
       console.error("Scan error:", error);
-      toast.error("Fehler beim Scannen");
+      toast.error(error.response?.data?.detail || "Ungültiger QR-Code");
     }
   };
 
