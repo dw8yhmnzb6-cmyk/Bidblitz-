@@ -5,7 +5,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
-### ✅ Session Update - February 17, 2026 (Session 24) - PARTNER PORTAL VOLLSTÄNDIG ✅
+### ✅ Session Update - February 17, 2026 (Session 24) - PARTNER PORTAL + VERKAUFSBENACHRICHTIGUNG ✅
 
 **Alle Features implementiert und getestet (100% Erfolgsrate):**
 
@@ -27,6 +27,13 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - Mindestbetrag: €50
 - Auszahlungsverlauf mit Stripe Transfer IDs
 - Status-Anzeige (verbunden/nicht verbunden, payouts_enabled)
+
+#### 4. Partner Verkaufsbenachrichtigung ✅ NEU (Session 24b)
+- E-Mail an Partner wenn echter Kunde Gutschein gewinnt
+- **NICHT** bei Bot-Gewinnen (is_bot Check)
+- Zeigt: Produktname, Verkaufspreis, Provision, Gutschrift
+- Automatisch nach Auktionsende
+- Implementiert in: `/app/backend/services/winner_notifications.py`
 
 #### 4. Partner-Verifizierung mit Dokumenten ✅ NEU
 - 6 Dokumenttypen: Gewerbeanmeldung, Handelsregisterauszug, Steuerbescheinigung, Personalausweis, Adressnachweis, Kontoauszug
