@@ -2555,43 +2555,50 @@ export default function PartnerPortal() {
             </div>
           )}
 
-          {/* Payouts View with Stripe Connect */}
+          {/* Payouts View with Wise Bank Transfer */}
           {view === 'payouts' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="font-bold text-gray-800 text-xl flex items-center gap-2">
                   <Euro className="w-6 h-6 text-green-500" />
-                  Auszahlungen
+                  {t('payouts')}
                 </h2>
                 <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">
-                  €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)} verfügbar
+                  €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)} {t('available')}
                 </div>
               </div>
               
-              {/* Stripe Connect Status */}
+              {/* Bank Account Setup / Status */}
               <div className="bg-white rounded-xl p-6 shadow-sm">
                 <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-purple-500" />
-                  Stripe Connect
+                  <CreditCard className="w-5 h-5 text-teal-500" />
+                  Banküberweisung
                 </h3>
                 
-                {stripeStatus?.connected ? (
+                {wiseStatus?.connected ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
                       <CheckCircle className="w-6 h-6 text-green-500" />
-                      <div>
-                        <p className="font-medium text-green-700">Stripe-Konto verbunden</p>
+                      <div className="flex-1">
+                        <p className="font-medium text-green-700">Bankkonto verbunden</p>
                         <p className="text-sm text-green-600">
-                          {stripeStatus.payouts_enabled ? 'Auszahlungen aktiviert' : 'Onboarding abschließen'}
+                          {wiseStatus.account_holder} • ****{wiseStatus.iban_last4}
                         </p>
                       </div>
+                      <button 
+                        onClick={disconnectWise}
+                        className="text-gray-400 hover:text-red-500 transition-colors"
+                        title="Bankkonto trennen"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
                     </div>
                     
-                    {stripeStatus.payouts_enabled && (dashboardData?.stats?.pending_payout || 0) >= 50 && (
+                    {(dashboardData?.stats?.pending_payout || 0) >= 10 && (
                       <Button 
-                        onClick={requestStripePayout}
+                        onClick={requestWisePayout}
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                        className="w-full bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600"
                       >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                           <>
@@ -2602,39 +2609,83 @@ export default function PartnerPortal() {
                       </Button>
                     )}
                     
-                    {!stripeStatus.payouts_enabled && (
-                      <Button onClick={connectStripe} variant="outline" className="w-full">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        Onboarding abschließen
-                      </Button>
+                    {(dashboardData?.stats?.pending_payout || 0) < 10 && (
+                      <p className="text-sm text-gray-500 text-center">
+                        Mindestbetrag für Auszahlung: €10
+                      </p>
                     )}
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <p className="text-gray-600">
-                      Verbinden Sie Ihr Stripe-Konto für automatische Auszahlungen direkt auf Ihr Bankkonto.
-                    </p>
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                      <h4 className="font-medium text-purple-800 mb-2">Vorteile von Stripe Connect:</h4>
-                      <ul className="text-sm text-purple-700 space-y-1">
-                        <li>✓ Sofortige Auszahlungen</li>
-                        <li>✓ Sichere Bankverbindung</li>
-                        <li>✓ Transparente Gebühren</li>
-                        <li>✓ Detaillierte Berichte</li>
-                      </ul>
-                    </div>
-                    <Button 
-                      onClick={connectStripe}
-                      disabled={loading}
-                      className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
-                    >
-                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
-                        <>
+                    {!showWiseSetup ? (
+                      <>
+                        <p className="text-gray-600">
+                          Verbinden Sie Ihr Bankkonto für automatische Auszahlungen per SEPA-Überweisung.
+                        </p>
+                        <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+                          <h4 className="font-medium text-teal-800 mb-2">Vorteile:</h4>
+                          <ul className="text-sm text-teal-700 space-y-1">
+                            <li>✓ Schnelle Überweisungen (1-2 Werktage)</li>
+                            <li>✓ Keine Gebühren für EUR-Überweisungen</li>
+                            <li>✓ Sichere IBAN-Verifizierung</li>
+                            <li>✓ Mindestbetrag nur €10</li>
+                          </ul>
+                        </div>
+                        <Button 
+                          onClick={() => setShowWiseSetup(true)}
+                          className="w-full bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600"
+                        >
                           <CreditCard className="w-5 h-5 mr-2" />
-                          Mit Stripe verbinden
-                        </>
-                      )}
-                    </Button>
+                          Bankkonto verbinden
+                        </Button>
+                      </>
+                    ) : (
+                      <div className="space-y-4">
+                        <h4 className="font-medium text-gray-800">Bankdaten eingeben</h4>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Kontoinhaber
+                          </label>
+                          <Input
+                            placeholder="Max Mustermann"
+                            value={wiseSetupForm.account_holder_name}
+                            onChange={(e) => setWiseSetupForm({...wiseSetupForm, account_holder_name: e.target.value})}
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            IBAN
+                          </label>
+                          <Input
+                            placeholder="DE89 3704 0044 0532 0130 00"
+                            value={wiseSetupForm.iban}
+                            onChange={(e) => setWiseSetupForm({...wiseSetupForm, iban: e.target.value.toUpperCase()})}
+                          />
+                          <p className="text-xs text-gray-500 mt-1">
+                            Ihre IBAN finden Sie auf Ihrer Bankkarte oder im Online-Banking
+                          </p>
+                        </div>
+                        
+                        <div className="flex gap-3">
+                          <Button 
+                            variant="outline"
+                            onClick={() => setShowWiseSetup(false)}
+                            className="flex-1"
+                          >
+                            Abbrechen
+                          </Button>
+                          <Button 
+                            onClick={setupWiseAccount}
+                            disabled={loading || !wiseSetupForm.account_holder_name || !wiseSetupForm.iban}
+                            className="flex-1 bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600"
+                          >
+                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verbinden'}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -2642,7 +2693,7 @@ export default function PartnerPortal() {
               {/* Payout History */}
               <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div className="p-4 border-b flex items-center justify-between">
-                  <h3 className="font-bold text-gray-800">Auszahlungsverlauf</h3>
+                  <h3 className="font-bold text-gray-800">{t('payoutHistory')}</h3>
                   <History className="w-5 h-5 text-gray-400" />
                 </div>
                 {payoutHistory.length > 0 ? (
@@ -2653,18 +2704,20 @@ export default function PartnerPortal() {
                           <p className="font-medium text-gray-800">{p.id}</p>
                           <p className="text-xs text-gray-500">
                             {new Date(p.requested_at).toLocaleDateString('de-DE')}
-                            {p.stripe_transfer_id && ` • ${p.stripe_transfer_id}`}
+                            {p.wise_transfer_id && ` • Transfer #${p.wise_transfer_id}`}
                           </p>
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-green-600">€{p.amount?.toFixed(2)}</p>
                           <span className={`text-xs px-2 py-1 rounded-full ${
-                            p.status === 'completed' ? 'bg-green-100 text-green-700' :
-                            p.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            p.status === 'completed' || p.status === 'outgoing_payment_sent' ? 'bg-green-100 text-green-700' :
+                            p.status === 'processing' ? 'bg-blue-100 text-blue-700' :
+                            p.status === 'pending' || p.status === 'pending_funding' ? 'bg-yellow-100 text-yellow-700' :
                             'bg-gray-100 text-gray-600'
                           }`}>
-                            {p.status === 'completed' ? 'Abgeschlossen' : 
-                             p.status === 'pending' ? 'Ausstehend' : p.status}
+                            {p.status === 'completed' || p.status === 'outgoing_payment_sent' ? 'Abgeschlossen' : 
+                             p.status === 'processing' ? 'In Bearbeitung' :
+                             p.status === 'pending' || p.status === 'pending_funding' ? 'Ausstehend' : p.status}
                           </span>
                         </div>
                       </div>
@@ -2673,7 +2726,7 @@ export default function PartnerPortal() {
                 ) : (
                   <div className="p-8 text-center text-gray-400">
                     <History className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                    <p>Noch keine Auszahlungen</p>
+                    <p>{t('noPayouts')}</p>
                   </div>
                 )}
               </div>
