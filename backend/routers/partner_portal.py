@@ -693,7 +693,16 @@ async def approve_application(partner_id: str):
     
     logger.info(f"Partner application {partner_id} approved")
     
-    # TODO: Send approval email
+    # Send approval email
+    try:
+        await send_partner_approved(
+            to_email=partner["email"],
+            business_name=partner["business_name"],
+            business_type=partner.get("business_type", "other"),
+            commission_rate=partner.get("commission_rate", 10)
+        )
+    except Exception as e:
+        logger.error(f"Failed to send approval email: {e}")
     
     return {
         "success": True,
