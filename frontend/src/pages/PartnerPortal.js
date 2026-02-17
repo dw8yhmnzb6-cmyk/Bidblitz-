@@ -2182,14 +2182,10 @@ export default function PartnerPortal() {
                       const iban = document.getElementById('profile-iban')?.value;
                       const taxId = document.getElementById('profile-tax')?.value;
                       try {
-                        const res = await fetch(`${API}/api/partner-portal/update-iban?token=${token}&iban=${encodeURIComponent(iban)}&tax_id=${encodeURIComponent(taxId || '')}`, {
-                          method: 'PUT'
-                        });
-                        const data = await res.json();
-                        if (!res.ok) throw new Error(data.detail);
-                        toast.success(data.message);
+                        const res = await axios.put(`${API}/api/partner-portal/update-iban?token=${token}&iban=${encodeURIComponent(iban)}&tax_id=${encodeURIComponent(taxId || '')}`);
+                        toast.success(res.data.message);
                       } catch (err) {
-                        toast.error(err.message);
+                        toast.error(err.response?.data?.detail || 'Fehler beim Speichern');
                       }
                     }}
                     className="bg-amber-500 hover:bg-amber-600"
