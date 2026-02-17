@@ -797,9 +797,12 @@ function App() {
         <ThemeProvider>
           <AuthProvider>
             <Routes>
-              {/* Restaurant Portal - Completely separate from main app */}
+              {/* Partner Portal - Completely separate from main app (NEW - supports all business types) */}
+              <Route path="/partner-portal/*" element={<PartnerPortalStandalone />} />
+              <Route path="/partner/*" element={<PartnerPortalStandalone />} />
+              
+              {/* Legacy Restaurant Portal - redirect to Partner Portal */}
               <Route path="/restaurant-portal/*" element={<RestaurantPortalStandalone />} />
-              <Route path="/partner/*" element={<RestaurantPortalStandalone />} />
               
               {/* Main App with Navbar/Footer */}
               <Route path="/*" element={<AppContent />} />
