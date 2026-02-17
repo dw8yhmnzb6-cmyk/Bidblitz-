@@ -26,7 +26,7 @@ import {
 const translations = {
   de: {
     title: 'Funktionen & Extras',
-    subtitle: 'Entdecke alle bidblitz.ae Vorteile',
+    subtitle: 'Entdecke alle BidBlitz.ae Vorteile',
     gamification: 'Spielfeatures',
     social: 'Soziale Funktionen',
     rewards: 'Belohnungen',
@@ -45,7 +45,7 @@ const translations = {
     vouchers: 'Gutschein-Auktionen',
     vouchersDesc: 'Ersteigere Gutscheine',
     gifts: 'Geschenkkarten',
-    giftsDesc: 'Verschenke bidblitz.ae Gebote',
+    giftsDesc: 'Verschenke BidBlitz.ae Gebote',
     alarm: 'Gebot-Alarm',
     alarmDesc: 'Benachrichtigungen für Auktionen',
     restaurantVouchers: 'Restaurant-Gutscheine',
@@ -65,7 +65,7 @@ const translations = {
   },
   en: {
     title: 'Features & Extras',
-    subtitle: 'Discover all bidblitz.ae benefits',
+    subtitle: 'Discover all BidBlitz.ae benefits',
     gamification: 'Gamification',
     social: 'Social Features',
     rewards: 'Rewards',
@@ -84,7 +84,7 @@ const translations = {
     vouchers: 'Voucher Auctions',
     vouchersDesc: 'Bid on vouchers',
     gifts: 'Gift Cards',
-    giftsDesc: 'Gift bidblitz.ae bids',
+    giftsDesc: 'Gift BidBlitz.ae bids',
     alarm: 'Bid Alarm',
     alarmDesc: 'Notifications for auctions',
     restaurantVouchers: 'Restaurant Vouchers',
@@ -104,7 +104,7 @@ const translations = {
   },
   sq: {
     title: 'Veçoritë & Ekstra',
-    subtitle: 'Zbulo të gjitha përfitimet e bidblitz.ae',
+    subtitle: 'Zbulo të gjitha përfitimet e BidBlitz.ae',
     gamification: 'Lojëzimi',
     social: 'Veçori Sociale',
     rewards: 'Shpërblimet',
@@ -123,7 +123,7 @@ const translations = {
     vouchers: 'Ankandet e Kuponave',
     vouchersDesc: 'Oferto për kupona',
     gifts: 'Kartat e Dhuratave',
-    giftsDesc: 'Dhuro ofertat bidblitz.ae',
+    giftsDesc: 'Dhuro ofertat BidBlitz.ae',
     alarm: 'Alarmi i Ofertave',
     alarmDesc: 'Njoftime për ankande',
     restaurantVouchers: 'Kuponat e Restoranteve',
@@ -144,7 +144,7 @@ const translations = {
   // Kosovo uses same as Albanian
   xk: {
     title: 'Veçoritë & Ekstra',
-    subtitle: 'Zbulo të gjitha përfitimet e bidblitz.ae',
+    subtitle: 'Zbulo të gjitha përfitimet e BidBlitz.ae',
     gamification: 'Lojëzimi',
     social: 'Veçori Sociale',
     rewards: 'Shpërblimet',
@@ -163,7 +163,7 @@ const translations = {
     vouchers: 'Ankandet e Kuponave',
     vouchersDesc: 'Oferto për kupona',
     gifts: 'Kartat e Dhuratave',
-    giftsDesc: 'Dhuro ofertat bidblitz.ae',
+    giftsDesc: 'Dhuro ofertat BidBlitz.ae',
     alarm: 'Alarmi i Ofertave',
     alarmDesc: 'Njoftime për ankande',
     restaurantVouchers: 'Kuponat e Restoranteve',
@@ -184,7 +184,7 @@ const translations = {
   // Arabic
   ar: {
     title: 'المميزات والإضافات',
-    subtitle: 'اكتشف جميع مزايا bidblitz.ae',
+    subtitle: 'اكتشف جميع مزايا BidBlitz.ae',
     gamification: 'ميزات اللعب',
     social: 'الميزات الاجتماعية',
     rewards: 'المكافآت',
@@ -203,7 +203,7 @@ const translations = {
     vouchers: 'مزادات القسائم',
     vouchersDesc: 'زايد على القسائم',
     gifts: 'بطاقات الهدايا',
-    giftsDesc: 'أهدِ عروض bidblitz.ae',
+    giftsDesc: 'أهدِ عروض BidBlitz.ae',
     alarm: 'تنبيه المزايدة',
     alarmDesc: 'إشعارات المزادات',
     restaurantVouchers: 'قسائم المطاعم',
@@ -224,7 +224,7 @@ const translations = {
   // Turkish
   tr: {
     title: 'Özellikler & Ekstralar',
-    subtitle: 'Tüm bidblitz.ae avantajlarını keşfet',
+    subtitle: 'Tüm BidBlitz.ae avantajlarını keşfet',
     gamification: 'Oyun Özellikleri',
     social: 'Sosyal Özellikler',
     rewards: 'Ödüller',
@@ -243,7 +243,7 @@ const translations = {
     vouchers: 'Kupon Müzayedeleri',
     vouchersDesc: 'Kuponlar için teklif ver',
     gifts: 'Hediye Kartları',
-    giftsDesc: 'bidblitz.ae teklifleri hediye et',
+    giftsDesc: 'BidBlitz.ae teklifleri hediye et',
     alarm: 'Teklif Alarmı',
     alarmDesc: 'Müzayede bildirimleri',
     restaurantVouchers: 'Restoran Kuponları',
@@ -264,7 +264,7 @@ const translations = {
   // French
   fr: {
     title: 'Fonctionnalités & Extras',
-    subtitle: 'Découvrez tous les avantages bidblitz.ae',
+    subtitle: 'Découvrez tous les avantages BidBlitz.ae',
     gamification: 'Fonctionnalités de Jeu',
     social: 'Fonctionnalités Sociales',
     rewards: 'Récompenses',
@@ -283,7 +283,7 @@ const translations = {
     vouchers: 'Enchères de Coupons',
     vouchersDesc: 'Enchérissez sur des coupons',
     gifts: 'Cartes Cadeaux',
-    giftsDesc: 'Offrez des enchères bidblitz.ae',
+    giftsDesc: 'Offrez des enchères BidBlitz.ae',
     alarm: 'Alarme d\'Enchère',
     alarmDesc: 'Notifications d\'enchères',
     restaurantVouchers: 'Coupons Restaurant',

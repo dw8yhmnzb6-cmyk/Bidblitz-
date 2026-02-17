@@ -63,12 +63,12 @@ export default function AGB() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 1 Geltungsbereich</h2>
                 <p>
-                  Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle über die Plattform bidblitz.ae 
-                  (betrieben von bidblitz.ae FZCO, Dubai Silicon Oasis, VAE) geschlossenen Verträge zwischen 
+                  Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle über die Plattform BidBlitz.ae 
+                  (betrieben von BidBlitz.ae FZCO, Dubai Silicon Oasis, VAE) geschlossenen Verträge zwischen 
                   dem Anbieter und dem Kunden. Der Anbieter ist:
                 </p>
                 <div className="bg-white/5 rounded-lg p-4 mt-2">
-                  <p className="font-semibold text-white">bidblitz.ae FZCO</p>
+                  <p className="font-semibold text-white">BidBlitz.ae FZCO</p>
                   <p>Dubai Silicon Oasis, DDP Building A1</p>
                   <p>Dubai, Vereinigte Arabische Emirate</p>
                   <p>CEO: Afrim Krasniqi</p>
@@ -78,7 +78,7 @@ export default function AGB() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 2 Vertragsgegenstand</h2>
                 <p>
-                  bidblitz.ae betreibt eine Penny-Auktion-Plattform, bei der registrierte Nutzer auf Produkte 
+                  BidBlitz.ae betreibt eine Penny-Auktion-Plattform, bei der registrierte Nutzer auf Produkte 
                   bieten können. Jedes Gebot erhöht den Preis um einen Cent (0,01 €) und verlängert die 
                   Auktionszeit. Der letzte Bieter bei Ablauf der Zeit gewinnt das Produkt.
                 </p>
@@ -150,7 +150,7 @@ export default function AGB() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 9 Haftung</h2>
                 <p>
-                  bidblitz.ae haftet nur für Schäden, die auf vorsätzlichem oder grob fahrlässigem Verhalten 
+                  BidBlitz.ae haftet nur für Schäden, die auf vorsätzlichem oder grob fahrlässigem Verhalten 
                   beruhen. Die Haftung für leichte Fahrlässigkeit ist ausgeschlossen, soweit gesetzlich zulässig.
                 </p>
               </section>
@@ -158,7 +158,7 @@ export default function AGB() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">§ 10 Sperrung und Kündigung</h2>
                 <p>
-                  bidblitz.ae behält sich das Recht vor, Nutzerkonten bei Verstoß gegen diese AGB oder bei 
+                  BidBlitz.ae behält sich das Recht vor, Nutzerkonten bei Verstoß gegen diese AGB oder bei 
                   Verdacht auf Betrug oder Manipulation zu sperren oder zu löschen.
                 </p>
               </section>
@@ -175,18 +175,18 @@ export default function AGB() {
                 <h2 className="text-xl font-bold text-white">§ 12 Schlussbestimmungen</h2>
                 <p>
                   Sollten einzelne Bestimmungen dieser AGB unwirksam sein, bleibt die Wirksamkeit der 
-                  übrigen Bestimmungen unberührt. bidblitz.ae behält sich das Recht vor, diese AGB jederzeit 
+                  übrigen Bestimmungen unberührt. BidBlitz.ae behält sich das Recht vor, diese AGB jederzeit 
                   zu ändern. Änderungen werden den Nutzern per E-Mail oder bei der nächsten Anmeldung mitgeteilt.
                 </p>
               </section>
 
               <div className="mt-8 p-4 bg-white/5 rounded-lg">
                 <p className="text-sm">
-                  <strong className="text-white">bidblitz.ae FZCO</strong><br />
+                  <strong className="text-white">BidBlitz.ae FZCO</strong><br />
                   Dubai Silicon Oasis, DDP Building A1<br />
                   Dubai, Vereinigte Arabische Emirate<br />
                   CEO: Afrim Krasniqi<br />
-                  E-Mail: legal@bidblitz.ae
+                  E-Mail: legal@BidBlitz.ae
                 </p>
               </div>
             </div>
