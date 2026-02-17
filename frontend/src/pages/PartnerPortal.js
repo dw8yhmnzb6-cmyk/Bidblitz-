@@ -1604,10 +1604,17 @@ export default function PartnerPortal() {
     }
   };
 
-  const requestWisePayout = async () => {
-    const amount = dashboardData?.stats?.pending_payout || 0;
-    if (amount < 10) {
+  const requestWisePayout = async (customAmount = null) => {
+    const maxAmount = dashboardData?.stats?.pending_payout || 0;
+    const amount = customAmount !== null ? parseFloat(customAmount) : maxAmount;
+    
+    if (isNaN(amount) || amount < 10) {
       toast.error('Mindestbetrag für Auszahlung: €10');
+      return;
+    }
+    
+    if (amount > maxAmount) {
+      toast.error(`Maximaler Betrag: €${maxAmount.toFixed(2)}`);
       return;
     }
     
@@ -1616,10 +1623,12 @@ export default function PartnerPortal() {
     try {
       setLoading(true);
       const response = await axios.post(`${API}/api/wise-payouts/request-payout?token=${token}`, {
+        amount: amount,
         reference: `BidBlitz Auszahlung - ${partner?.business_name || 'Partner'}`
       });
       
       toast.success(response.data.message || 'Auszahlung wird verarbeitet');
+      setPayoutAmount(''); // Reset input
       fetchDashboard();
       fetchWisePayoutHistory();
     } catch (err) {
