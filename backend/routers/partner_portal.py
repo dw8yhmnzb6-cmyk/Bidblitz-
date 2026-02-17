@@ -73,6 +73,12 @@ class VoucherCreate(BaseModel):
 
 class VoucherRedeemRequest(BaseModel):
     voucher_code: str
+
+class StaffAccountCreate(BaseModel):
+    name: str
+    email: str
+    password: str
+    role: str = "counter"  # "counter" (Theke) or "admin"
     
 # ==================== HELPER FUNCTIONS ====================
 
