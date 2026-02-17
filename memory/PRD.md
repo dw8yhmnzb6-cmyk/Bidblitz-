@@ -5,98 +5,85 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
-### ✅ Session Update - February 17, 2026 (Session 23) - PARTNER PORTAL KOMPLETT 🏪
+### ✅ Session Update - February 17, 2026 (Session 24) - PARTNER PORTAL VOLLSTÄNDIG ✅
 
-**Alle Features implementiert:**
+**Alle Features implementiert und getestet (100% Erfolgsrate):**
 
-#### 1. Partner Portal mit 14 Geschäftstypen
+#### 1. Partner Portal mit 14 Geschäftstypen ✅
 - Restaurant, Bar, Café, Tankstelle, Kino, Einzelhandel, Wellness, Fitness, Friseur, Hotel, Unterhaltung, Supermarkt, Apotheke, Sonstiges
 - 3-Schritte Bewerbungsformular
 - Admin-Genehmigung erforderlich
 
-#### 2. E-Mail-Benachrichtigungen ✅ NEU
-- Bestätigung bei Bewerbungseingang
-- E-Mail bei Genehmigung mit Partner Portal Link
-- E-Mail bei Ablehnung mit Grund
-- Auszahlungsbestätigung mit Betrag und ID
+#### 2. Statistik-Dashboard mit Grafiken ✅ NEU
+- Übersicht: Erstellt, Verkauft, Eingelöst mit Conversion/Redemption Rate
+- Finanzübersicht: Gesamtumsatz, Provision, Ausstehend, Ausgezahlt
+- SVG-Kreisdiagramm für Gutschein-Status (Verfügbar/Verkauft/Eingelöst)
+- Balkendiagramm für Einlösungen (letzte 30 Tage)
+- Top-Gutscheine Ranking
 
-#### 3. Auszahlungssystem ✅ NEU
+#### 3. Stripe Connect Automatische Auszahlungen ✅ NEU
+- "Mit Stripe verbinden" Button für Express Connect Onboarding
+- Automatische Auszahlung bei verbundenem Konto
 - Mindestbetrag: €50
-- Bearbeitungszeit: 3-5 Werktage
-- Auszahlungsverlauf einsehbar
-- IBAN-Verwaltung im Profil
+- Auszahlungsverlauf mit Stripe Transfer IDs
+- Status-Anzeige (verbunden/nicht verbunden, payouts_enabled)
 
-#### 4. Partner-Statistiken ✅ NEU
-- Übersicht: Erstellt, Verkauft, Eingelöst
-- Finanzübersicht: Gesamtumsatz, Ausstehend
-- Conversion Rate, Redemption Rate
+#### 4. Partner-Verifizierung mit Dokumenten ✅ NEU
+- 6 Dokumenttypen: Gewerbeanmeldung, Handelsregisterauszug, Steuerbescheinigung, Personalausweis, Adressnachweis, Kontoauszug
+- 2 erforderlich: Gewerbeanmeldung + Personalausweis
+- Upload-Status: Ausstehend → In Prüfung → Genehmigt/Abgelehnt
+- Admin kann Dokumente prüfen und genehmigen/ablehnen
 
-#### 5. Profil & Logo-Upload ✅ NEU
-- Logo hochladen (max. 2MB)
+#### 5. Profil mit Logo-Upload ✅
+- Logo hochladen (max. 2MB, JPG/PNG/WebP)
 - IBAN und Steuernummer aktualisieren
 - Kontoinformationen einsehen
 
-#### 6. Admin-Panel erweitert ✅
-- "🏪 Partner Portal" Tab im Admin
-- Bewerbungen genehmigen/ablehnen
-- Alle Partner in Übersichtstabelle
-
-#### 7. Footer-Link ✅
-- "🏪 Partner Portal" unter EXTRAS
+#### 6. E-Mail-Benachrichtigungen ✅
+- Bestätigung bei Bewerbungseingang
+- E-Mail bei Genehmigung mit Partner Portal Link
+- E-Mail bei Ablehnung mit Grund
+- Auszahlungsbestätigung
 
 **Backend APIs:**
-- `POST /api/partner-portal/apply` - Bewerbung + E-Mail
-- `POST /api/partner-portal/admin/approve/{id}` - Genehmigung + E-Mail
-- `POST /api/partner-portal/admin/reject/{id}` - Ablehnung + E-Mail
-- `POST /api/partner-portal/request-payout` - Auszahlung + E-Mail
-- `GET /api/partner-portal/payout-history` - Auszahlungsverlauf
-- `GET /api/partner-portal/statistics` - Statistiken
+- `POST /api/partner-portal/apply` - Bewerbung
+- `POST /api/partner-portal/login` - Partner-Login
+- `GET /api/partner-portal/dashboard` - Dashboard-Daten
+- `GET /api/partner-portal/statistics` - Statistiken mit Charts
+- `POST /api/partner-stripe/create-connect-account` - Stripe Connect
+- `GET /api/partner-stripe/account-status` - Stripe Status
+- `POST /api/partner-stripe/request-payout` - Auszahlung
+- `GET /api/partner-stripe/payout-history` - Auszahlungsverlauf
+- `GET /api/partner-verification/document-types` - Dokumenttypen
+- `POST /api/partner-verification/upload-document` - Dokument hochladen
+- `GET /api/partner-verification/my-documents` - Eigene Dokumente
+- `GET /api/partner-verification/verification-status` - Verifizierungsstatus
 - `POST /api/partner-portal/upload-logo` - Logo hochladen
 - `PUT /api/partner-portal/update-iban` - Bankdaten aktualisieren
 
-**Frontend Views:**
-- Dashboard, Scanner, Gutscheine, Statistiken, Auszahlungen, Profil
+**Frontend Views (7 Tabs):**
+- Dashboard (Stats + Letzte Einlösungen)
+- Scanner (QR-Code für Gutschein-Validierung)
+- Gutscheine (Liste + Erstellen)
+- Statistiken (Grafiken + Finanzübersicht)
+- Auszahlungen (Stripe Connect + Historie)
+- Verifizierung (Dokumenten-Upload)
+- Profil (Logo + Bankdaten)
+
+**Test-Ergebnisse (Testing Agent Session 59):**
+- ✅ Backend API Tests: 16/16 bestanden (100%)
+- ✅ Frontend Tests: 9/9 bestanden (100%)
+- ✅ Alle 7 Navigation Tabs funktionsfähig
+
+**Bugfixes in dieser Session:**
+- ✅ ModuleNotFoundError für partner_emails.py behoben (Inline-Emails)
+- ✅ Korrupter/doppelter Code in PartnerPortal.js entfernt
+- ✅ "Invalid Date" im Dashboard behoben (verwendet jetzt 'date' Feld)
+- ✅ Fehlende payout_amount berechnet (value * 0.9)
 
 ---
 
 ### ✅ Session Update - February 17, 2026 (Session 23) - RESTAURANT FEATURES VOLLSTÄNDIG VERIFIZIERT ✅
-
-**Alle Restaurant-Features getestet und funktionsfähig:**
-
-#### 1. ✅ Restaurant Portal als eigenständige Seite
-- **URL:** `/restaurant-portal` (standalone, ohne BidBlitz Navbar/Footer)
-- Restaurant-Login & Registrierung
-- QR-Code-Scanner für Gutschein-Validierung
-- Dashboard für Auszahlungen
-
-#### 2. ✅ Restaurant Detail-Seite (NEU)
-- **URL:** `/restaurant/:id`
-- Tabs: Info, Gutscheine, Bewertungen
-- Sternebewertungen, Kategorien, Features angezeigt
-- Share-Funktion
-
-#### 3. ✅ Bewertungsschreiben-Seite (NEU)
-- **URL:** `/write-review/:id` (geschützte Route)
-- 5-Sterne-Bewertung mit Hover-Labels
-- Food/Service/Ambiance Einzelbewertungen
-- Foto-Upload für Bonus-Gebote
-- "Würde empfehlen" Toggle
-
-#### 4. ✅ Restaurant Discovery
-- **URL:** `/discover-restaurants`
-- 16 Kategorien mit Icons
-- Premium-Restaurants Featured
-- Such- und Filterfunktionen
-
-#### 5. ✅ Loyalty-Programm (Route-Fix)
-- **URL:** `/restaurant-loyalty` oder `/stempelkarte`
-- 5 Level: Starter → Stammgast → VIP → Gold → Platin
-- 8 Challenges, Streak-Belohnungen, Leaderboard
-
-**Test-Ergebnisse (Testing Agent):**
-- ✅ Backend API Tests: 18/18 bestanden (100%)
-- ✅ Frontend Tests: 5/5 bestanden (100%)
-- ⚠️ 1 Issue behoben: Doppelte /loyalty Route korrigiert
 
 ---
 
