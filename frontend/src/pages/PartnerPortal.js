@@ -1409,9 +1409,42 @@ export default function PartnerPortal() {
                 <p className="text-xs text-gray-500">{businessTypeInfo.name}</p>
               </div>
             </div>
-            <button onClick={handleLogout} className="text-gray-500 hover:text-red-500">
-              <LogOut className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-3">
+              {/* Language Selector in Dashboard */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                  className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 px-2 py-1 rounded-lg hover:bg-gray-100"
+                >
+                  <span>{languages.find(l => l.code === language)?.flag}</span>
+                  <Languages className="w-4 h-4" />
+                </button>
+                
+                {showLanguageMenu && (
+                  <div className="absolute top-full right-0 mt-1 bg-white border rounded-lg shadow-lg py-1 z-50 min-w-[140px]">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setShowLanguageMenu(false);
+                          localStorage.setItem('partner_language', lang.code);
+                        }}
+                        className={`w-full px-3 py-2 text-left text-sm hover:bg-amber-50 flex items-center gap-2 ${
+                          language === lang.code ? 'bg-amber-50 text-amber-700' : 'text-gray-700'
+                        }`}
+                      >
+                        <span>{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button onClick={handleLogout} className="text-gray-500 hover:text-red-500">
+                <LogOut className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </header>
         
