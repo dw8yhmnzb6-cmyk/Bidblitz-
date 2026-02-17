@@ -262,6 +262,9 @@ export const Footer = () => {
                 <Crown className="w-3 h-3" />
                 {ft.vipMembership}
               </Link>
+              <a href="/partner-portal" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300 transition-colors font-body text-sm flex items-center gap-1">
+                🏪 {ft.partnerPortal || 'Partner Portal'}
+              </a>
             </nav>
           </div>
 
