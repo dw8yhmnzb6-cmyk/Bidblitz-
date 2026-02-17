@@ -114,7 +114,14 @@ const translations = {
     login: 'Connexion',
     pleaseLogin: 'Veuillez vous connecter pour continuer',
     credit: 'Crédit',
-    payment: 'Paiement'
+    payment: 'Paiement',
+    topUp: 'Recharger',
+    mainAccount: 'Compte principal',
+    transferToWallet: 'Transférer vers BidBlitz Pay',
+    enterAmount: 'Entrer le montant',
+    transfer: 'Transférer',
+    availableOnMain: 'Disponible sur le compte principal',
+    successTransfer: 'Transféré avec succès'
   },
   es: {
     wallet: 'Cartera',
