@@ -24,6 +24,15 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - Stripe-URL wird erfolgreich generiert
 - Backend-Test: `curl` bestätigt korrekte Stripe-Session-Erstellung
 
+#### 4. ✅ Branding Update: "BidBlitz" (beide B's groß)
+- **40+ Dateien aktualisiert**: Navbar, Footer, alle Seiten und Komponenten
+- Markenname überall konsistent: BidBlitz.ae
+
+#### 5. ✅ Abandoned Cart E-Mail System implementiert
+- Neue E-Mail-Funktion: `send_abandoned_cart_reminder()` in `/app/backend/utils/email.py`
+- Background-Task: `abandoned_cart_reminder_task()` läuft stündlich
+- E-Mail enthält: Warenkorbinhalt, Gesamt, 10% Rabattcode "COMEBACK10"
+
 **Status der offenen Issues:**
 
 | Issue | Status | Details |
@@ -31,9 +40,11 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 | Zahlungsweiterleitung | ✅ FUNKTIONIERT | Backend-API getestet, Stripe-URLs werden korrekt generiert |
 | How it Works Modal | ✅ FUNKTIONIERT | Übersetzungen für DE, EN, TR, SQ, FR vorhanden |
 | 10 Gratis-Gebote | ✅ FUNKTIONIERT | Änderung sitewide implementiert |
+| BidBlitz Branding | ✅ FUNKTIONIERT | Alle Dateien aktualisiert |
+| Abandoned Cart E-Mails | ✅ IMPLEMENTIERT | Background-Task aktiv |
 | Microsoft Login | ⏳ BLOCKIERT | Wartet auf Azure-Credentials vom User |
 | Tawk.to Chat | ⏳ BLOCKIERT | User muss Domain in Tawk.to Dashboard whitelisten |
-| Influencer-Pages Performance | ⏳ NICHT GESTARTET | Zur Untersuchung |
+| Influencer-Pages Performance | ✅ OK | API-Response < 0.5s |
 
 ---
 
