@@ -1103,6 +1103,11 @@ export default function PartnerPortal() {
               </div>
             </div>
           )}
+
+          {/* BidBlitz Pay View - Payment Scanner for Customer QR Codes */}
+          {view === 'bidblitz-pay' && (
+            <BidBlitzPayPartner token={token} partnerId={partner?.id} partnerName={partner?.name} commissionRate={partner?.commission_rate || 10} />
+          )}
           
           {/* Vouchers View */}
           {view === 'vouchers' && (
