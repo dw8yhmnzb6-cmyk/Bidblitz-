@@ -1013,7 +1013,15 @@ export default function PartnerPortal() {
         counter: 'カウンター', admin: '管理者', name: '名前', role: '役割', active: 'アクティブ',
         inactive: '非アクティブ', delete: '削除', save: '保存', cancel: 'キャンセル',
         welcome: 'ようこそ', notPartner: 'パートナーではありませんか？', applyNow: '今すぐ申請',
-        rememberMe: 'ログイン状態を保持', recentRedemptions: '最近の利用', noRedemptions: 'まだ利用なし', value: '値'
+        rememberMe: 'ログイン状態を保持', recentRedemptions: '最近の利用', noRedemptions: 'まだ利用なし', value: '値',
+        bankTransfer: '銀行振込', enterBankDetails: '銀行情報を入力', accountHolder: '口座名義人',
+        connectBank: '銀行口座を接続', bankConnected: '銀行口座接続済み', disconnectBank: '口座を切断',
+        connect: '接続', minPayout: '最低支払い金額', bankAdvantages: 'メリット:',
+        fastTransfer: '高速送金（1-2営業日）', noFees: 'EUR送金手数料無料',
+        secureIban: '安全なIBAN認証', minAmount: '最低金額€10のみ',
+        ibanHint: 'IBANはキャッシュカードまたはネットバンキングで確認できます', payNow: '今すぐ支払う',
+        completed: '完了', processing: '処理中', pendingStatus: '保留中',
+        payoutHistory: '支払い履歴', noPayouts: 'まだ支払いなし', iban: 'IBAN'
       },
       ko: {
         login: '로그인', register: '등록', email: '이메일', password: '비밀번호',
@@ -1025,7 +1033,15 @@ export default function PartnerPortal() {
         counter: '카운터', admin: '관리자', name: '이름', role: '역할', active: '활성',
         inactive: '비활성', delete: '삭제', save: '저장', cancel: '취소',
         welcome: '환영합니다', notPartner: '파트너가 아니신가요?', applyNow: '지금 신청',
-        rememberMe: '로그인 상태 유지', recentRedemptions: '최근 사용', noRedemptions: '사용 내역 없음', value: '가치'
+        rememberMe: '로그인 상태 유지', recentRedemptions: '최근 사용', noRedemptions: '사용 내역 없음', value: '가치',
+        bankTransfer: '은행 송금', enterBankDetails: '은행 정보 입력', accountHolder: '예금주',
+        connectBank: '은행 계좌 연결', bankConnected: '은행 계좌 연결됨', disconnectBank: '계좌 연결 해제',
+        connect: '연결', minPayout: '최소 지급 금액', bankAdvantages: '장점:',
+        fastTransfer: '빠른 송금 (1-2영업일)', noFees: 'EUR 송금 수수료 없음',
+        secureIban: '안전한 IBAN 인증', minAmount: '최소 금액 €10만',
+        ibanHint: 'IBAN은 은행 카드 또는 인터넷 뱅킹에서 확인할 수 있습니다', payNow: '지금 지급',
+        completed: '완료됨', processing: '처리 중', pendingStatus: '대기 중',
+        payoutHistory: '지급 내역', noPayouts: '아직 지급 내역 없음', iban: 'IBAN'
       },
       el: {
         login: 'Σύνδεση', register: 'Εγγραφή', email: 'Email', password: 'Κωδικός',
@@ -1037,7 +1053,15 @@ export default function PartnerPortal() {
         counter: 'Ταμείο', admin: 'Διαχειριστής', name: 'Όνομα', role: 'Ρόλος', active: 'Ενεργός',
         inactive: 'Ανενεργός', delete: 'Διαγραφή', save: 'Αποθήκευση', cancel: 'Ακύρωση',
         welcome: 'Καλώς ήρθατε', notPartner: 'Δεν είστε συνεργάτης;', applyNow: 'Υποβάλετε αίτηση',
-        rememberMe: 'Να με θυμάσαι', recentRedemptions: 'Πρόσφατες εξαργυρώσεις', noRedemptions: 'Δεν υπάρχουν εξαργυρώσεις', value: 'Αξία'
+        rememberMe: 'Να με θυμάσαι', recentRedemptions: 'Πρόσφατες εξαργυρώσεις', noRedemptions: 'Δεν υπάρχουν εξαργυρώσεις', value: 'Αξία',
+        bankTransfer: 'Τραπεζικό έμβασμα', enterBankDetails: 'Εισάγετε τραπεζικά στοιχεία', accountHolder: 'Κάτοχος λογαριασμού',
+        connectBank: 'Σύνδεση τραπεζικού λογαριασμού', bankConnected: 'Τραπεζικός λογαριασμός συνδεδεμένος', disconnectBank: 'Αποσύνδεση λογαριασμού',
+        connect: 'Σύνδεση', minPayout: 'Ελάχιστο ποσό πληρωμής', bankAdvantages: 'Πλεονεκτήματα:',
+        fastTransfer: 'Γρήγορες μεταφορές (1-2 εργάσιμες ημέρες)', noFees: 'Χωρίς χρεώσεις για μεταφορές EUR',
+        secureIban: 'Ασφαλής επαλήθευση IBAN', minAmount: 'Ελάχιστο ποσό μόνο €10',
+        ibanHint: 'Μπορείτε να βρείτε το IBAN σας στην τραπεζική κάρτα ή στο e-banking', payNow: 'Πληρωμή τώρα',
+        completed: 'Ολοκληρώθηκε', processing: 'Επεξεργασία', pendingStatus: 'Σε αναμονή',
+        payoutHistory: 'Ιστορικό πληρωμών', noPayouts: 'Δεν υπάρχουν πληρωμές ακόμα', iban: 'IBAN'
       },
       sq: {
         login: 'Hyr', register: 'Regjistrohu', email: 'Email', password: 'Fjalëkalimi',
