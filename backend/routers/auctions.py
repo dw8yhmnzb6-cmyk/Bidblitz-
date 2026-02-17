@@ -6,6 +6,7 @@ import uuid
 import random
 import os
 import asyncio
+import time
 
 from config import db, logger
 from dependencies import get_current_user, get_admin_user
@@ -13,6 +14,61 @@ from schemas import AuctionCreate, AuctionUpdate, AutobidderCreate
 from services.websocket import broadcast_bid_update, broadcast_auction_ended
 
 router = APIRouter(tags=["Auctions"])
+
+# ==================== SIMPLE IN-MEMORY CACHE ====================
+
+_auctions_cache = {"data": None, "timestamp": 0, "ttl": 3}  # 3 second TTL
+
+async def get_cached_auctions():
+    """Get auctions with simple caching"""
+    now = time.time()
+    
+    # Return cached data if still valid
+    if _auctions_cache["data"] and (now - _auctions_cache["timestamp"]) < _auctions_cache["ttl"]:
+        return _auctions_cache["data"]
+    
+    # Fetch fresh data
+    auctions = await db.auctions.find(
+        {"status": {"$in": ["active", "day_paused", "night_paused", "ended", "scheduled"]}},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(500)
+    
+    # Fetch all products at once
+    product_ids = list(set(a.get("product_id") for a in auctions if a.get("product_id")))
+    products_list = await db.products.find(
+        {"id": {"$in": product_ids}},
+        {"_id": 0}
+    ).to_list(len(product_ids))
+    products_map = {p["id"]: p for p in products_list}
+    
+    # Check if currently night time (Berlin Time)
+    now_berlin = datetime.now(timezone.utc) + timedelta(hours=1)
+    current_hour = now_berlin.hour + now_berlin.minute / 60
+    is_night_time = current_hour >= 23.5 or current_hour < 6
+    
+    # Attach product info
+    for auction in auctions:
+        product = products_map.get(auction.get("product_id"))
+        if product:
+            auction["product"] = product
+        
+        if auction.get("status") == "day_paused":
+            auction["is_paused"] = True
+            auction["pause_message"] = "☀️ Aktiv ab 06:00 Uhr"
+            auction["pause_type"] = "night_only"
+        elif auction.get("status") == "night_paused":
+            auction["is_paused"] = True
+            auction["pause_message"] = "🌙 Aktiv ab 23:30 Uhr"
+            auction["pause_type"] = "day_only"
+        elif auction.get("is_night_auction") and not is_night_time:
+            auction["is_night_paused"] = True
+            auction["night_message"] = "🌙 Nur 23:30-06:00 Uhr"
+    
+    # Update cache
+    _auctions_cache["data"] = auctions
+    _auctions_cache["timestamp"] = now
+    
+    return auctions
 
 # ==================== AUTOBIDDER HELPER FUNCTIONS ====================
 
