@@ -447,18 +447,8 @@ export default function PartnerPortal() {
         ? `${API}/api/partner-portal/staff/login`
         : `${API}/api/partner-portal/login`;
         
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      
-      // Read response as JSON directly - handle both success and error cases
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.detail || (language === 'en' ? 'Invalid credentials' : 'Ungültige Anmeldedaten'));
-      }
+      const response = await axios.post(endpoint, { email, password });
+      const data = response.data;
       
       setToken(data.token);
       setPartner(data.partner);
@@ -488,8 +478,9 @@ export default function PartnerPortal() {
         fetchDashboard(data.token);
       }
     } catch (err) {
-      // Handle both network errors and API error responses
-      const errorMessage = err.message || (language === 'en' ? 'Login failed' : 'Anmeldung fehlgeschlagen');
+      // Handle axios error response
+      const errorMessage = err.response?.data?.detail || 
+        (language === 'en' ? 'Invalid credentials' : 'Ungültige Anmeldedaten');
       toast.error(errorMessage);
     } finally {
       setLoading(false);
