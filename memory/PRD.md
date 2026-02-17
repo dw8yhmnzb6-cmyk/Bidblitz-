@@ -5,35 +5,32 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
-### ✅ Session Update - February 17, 2026 (Session 25) - WISE PAYOUT INTEGRATION ✅
+### ✅ Session Update - February 17, 2026 (Session 25) - WISE PAYOUT & ÜBERSETZUNGEN ✅
 
-#### 1. Wise (TransferWise) Auszahlungssystem implementiert ✅
+#### 1. Wise Auszahlungssystem implementiert & korrigiert ✅
 - **Ersetzt das nicht funktionierende Stripe Connect System**
-- Neuer Backend-Router: `/app/backend/routers/wise_payouts.py`
-- Partner können IBAN/Bankkonto für automatische Auszahlungen hinterlegen
+- Backend-Router: `/app/backend/routers/wise_payouts.py`
+- **Fallback-Modus:** Bankdaten werden lokal gespeichert, auch wenn Wise API nicht verfügbar
+- Auszahlungen werden als "pending_manual" markiert und manuell bearbeitet
 - Endpoints:
-  - `POST /api/wise-payouts/setup-bank-account` - Bankkonto einrichten
+  - `POST /api/wise-payouts/setup-bank-account` - Bankkonto einrichten (funktioniert immer)
   - `GET /api/wise-payouts/account-status` - Verbindungsstatus
   - `POST /api/wise-payouts/request-payout` - Auszahlung anfordern
   - `GET /api/wise-payouts/payout-history` - Auszahlungsverlauf
-  - `DELETE /api/wise-payouts/disconnect` - Bankkonto trennen
 
-#### 2. Frontend Payouts-View aktualisiert ✅
-- Neue grüne/teal-farbene Banküberweisung-UI
-- IBAN-Eingabeformular mit Validierung
-- Vorteile-Liste für Partner
-- Auszahlungsverlauf mit Status-Badges
-- Mindestbetrag: €10 (statt €50 bei Stripe)
+#### 2. Vollständige Übersetzungen für Payouts-Seite ✅
+- Alle 19 Sprachen unterstützen jetzt die Bank-Transfer-Sektion
+- Getestet auf Deutsch und Albanisch (Shqip)
+- Übersetzungsschlüssel: `bankTransfer`, `enterBankDetails`, `accountHolder`, `connectBank`, `bankConnected`, `disconnectBank`, `connect`, `cancel`, `minPayout`, `bankAdvantages`, `fastTransfer`, `noFees`, `secureIban`, `minAmount`, `ibanHint`, `payNow`, `completed`, `processing`, `pendingStatus`, `payoutHistory`, `noPayouts`, `iban`
 
 #### 3. Hinweis zum Wise API Key ⚠️
-- Der vom Benutzer bereitgestellte API-Key hat "Eingeschränkte Berechtigungen"
-- Für vollständige Auszahlungen muss der Benutzer im Wise-Dashboard:
-  - Einen neuen API-Token mit vollen Berechtigungen erstellen ODER
-  - Die Berechtigungen des existierenden Tokens erweitern
+- Der API-Key hat "Eingeschränkte Berechtigungen"
+- Auszahlungen werden aktuell **MANUELL** bearbeitet (1-3 Werktage)
+- Für automatische Auszahlungen: Wise Dashboard → API-Tokens → Neuen Token mit vollen Berechtigungen erstellen
 
 **Test-Account:**
 - Partner: `wise-test@partner.com` / `Test123!`
-- €150.00 Auszahlungsguthaben vorhanden
+- Bankkonto: Afrim Krasniqi ****9093 (verbunden)
 
 ---
 
