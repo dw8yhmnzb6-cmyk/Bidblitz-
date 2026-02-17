@@ -100,7 +100,7 @@ import LanguageHintBanner from "./components/LanguageHintBanner";
 import CountdownDealBanner from "./components/CountdownDealBanner";
 import OnboardingTour from "./components/OnboardingTour";
 import OutbidNotification from "./components/OutbidNotification";
-import HowItWorks from "./components/HowItWorks";
+import HowItWorksFloatingButton from "./components/HowItWorksFloatingButton";
 import AIBidRecommendationsPage from "./pages/AIBidRecommendationsPage";
 import CryptoPaymentPage from "./pages/CryptoPaymentPage";
 import MaintenancePage from "./pages/MaintenancePage";
