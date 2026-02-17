@@ -362,9 +362,78 @@ export default function PartnerPortal() {
     setPartner(null);
     setIsLoggedIn(false);
     setView('login');
+    setUserRole('admin');
+    setIsStaff(false);
     localStorage.removeItem('partner_token');
     localStorage.removeItem('partner_data');
-    toast.success('Abgemeldet');
+    localStorage.removeItem('partner_role');
+    localStorage.removeItem('partner_is_staff');
+    toast.success(language === 'en' ? 'Logged out' : 'Abgemeldet');
+  };
+  
+  // Staff management state
+  const [staffList, setStaffList] = useState([]);
+  const [newStaff, setNewStaff] = useState({ name: '', email: '', password: '', role: 'counter' });
+  const [loadingStaff, setLoadingStaff] = useState(false);
+  
+  const fetchStaff = async () => {
+    if (!token) return;
+    setLoadingStaff(true);
+    try {
+      const response = await fetch(`${API}/api/partner-portal/staff?token=${token}`);
+      if (response.ok) {
+        const data = await response.json();
+        setStaffList(data.staff || []);
+      }
+    } catch (error) {
+      console.error('Error fetching staff:', error);
+    } finally {
+      setLoadingStaff(false);
+    }
+  };
+  
+  const createStaff = async (e) => {
+    e.preventDefault();
+    if (!newStaff.name || !newStaff.email || !newStaff.password) {
+      toast.error(language === 'en' ? 'Please fill all fields' : 'Bitte alle Felder ausfüllen');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/api/partner-portal/staff/create?token=${token}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStaff)
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Error creating staff');
+      }
+      
+      toast.success(language === 'en' ? 'Staff account created' : 'Mitarbeiter-Konto erstellt');
+      setNewStaff({ name: '', email: '', password: '', role: 'counter' });
+      fetchStaff();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  
+  const deleteStaff = async (staffId) => {
+    if (!confirm(language === 'en' ? 'Delete this staff account?' : 'Mitarbeiter-Konto löschen?')) return;
+    
+    try {
+      const response = await fetch(`${API}/api/partner-portal/staff/${staffId}?token=${token}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        toast.success(language === 'en' ? 'Staff deleted' : 'Mitarbeiter gelöscht');
+        fetchStaff();
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
   // ==================== SCANNER ====================
