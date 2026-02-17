@@ -110,7 +110,13 @@ const steps = [
 // Floating Button Component
 export const HowItWorksButton = ({ onClick }) => {
   const { language } = useLanguage();
-  const t = translations[language] || translations.de;
+  // Map language codes to available translations
+  const langMap = {
+    'de': 'de', 'en': 'en', 'tr': 'tr', 'sq': 'sq', 'fr': 'fr',
+    'xk': 'sq', 'al': 'sq', 'at': 'de', 'ch': 'de'
+  };
+  const mappedLang = langMap[language] || 'de';
+  const t = translations[mappedLang] || translations.de;
   
   return (
     <button
