@@ -698,6 +698,7 @@ async def approve_application(partner_id: str):
     # Send approval email
     try:
         await send_partner_approved(
+            send_email,
             to_email=partner["email"],
             business_name=partner["business_name"],
             business_type=partner.get("business_type", "other"),
