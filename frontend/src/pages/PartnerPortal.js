@@ -47,15 +47,34 @@ export default function PartnerPortal() {
   const [language, setLanguage] = useState(() => localStorage.getItem('partner_language') || 'de');
   const [rememberMe, setRememberMe] = useState(() => localStorage.getItem('partner_remember') === 'true');
   
-  // Available languages
+  // Available languages - 19 languages
   const languages = [
+    { code: 'ae', name: 'الإمارات', flag: '🇦🇪' },
     { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
     { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'sq', name: 'Shqip', flag: '🇦🇱' },
+    { code: 'xk', name: 'Kosovë', flag: '🇽🇰' },
+    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
     { code: 'fr', name: 'Français', flag: '🇫🇷' },
     { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'us', name: 'English (US)', flag: '🇺🇸' },
+    { code: 'pt', name: 'Português', flag: '🇵🇹' },
+    { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
+    { code: 'pl', name: 'Polski', flag: '🇵🇱' },
+    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
     { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
+    { code: 'el', name: 'Ελληνικά', flag: '🇬🇷' },
   ];
+  
+  // Map language codes to translation keys
+  const getLangKey = (code) => {
+    const map = { ae: 'ar', us: 'en', xk: 'sq' };
+    return map[code] || code;
+  };
   
   // Translations
   const t = (key) => {
