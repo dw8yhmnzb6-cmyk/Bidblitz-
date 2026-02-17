@@ -387,6 +387,9 @@ app.include_router(sustainability_router)
 app.include_router(auto_translate_router, prefix="/api")
 app.include_router(microsoft_auth_router, prefix="/api")
 app.include_router(restaurant_portal_router, prefix="/api")
+app.include_router(restaurant_reviews_router, prefix="/api")
+app.include_router(restaurant_discovery_router, prefix="/api")
+app.include_router(loyalty_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
