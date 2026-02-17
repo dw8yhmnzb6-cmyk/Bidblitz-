@@ -77,7 +77,14 @@ const translations = {
     login: 'Login',
     pleaseLogin: 'Please login to continue',
     credit: 'Credit',
-    payment: 'Payment'
+    payment: 'Payment',
+    topUp: 'Top Up',
+    mainAccount: 'Main Account',
+    transferToWallet: 'Transfer to BidBlitz Pay',
+    enterAmount: 'Enter amount',
+    transfer: 'Transfer',
+    availableOnMain: 'Available on main account',
+    successTransfer: 'Successfully transferred'
   },
   fr: {
     wallet: 'Portefeuille',
