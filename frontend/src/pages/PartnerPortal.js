@@ -1096,6 +1096,245 @@ export default function PartnerPortal() {
               </form>
             </div>
           )}
+
+          {/* Statistics View */}
+          {view === 'statistics' && (
+            <div className="space-y-6">
+              <h2 className="font-bold text-gray-800 text-xl">Statistiken & Berichte</h2>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-blue-500">
+                  <p className="text-gray-500 text-sm">Erstellt</p>
+                  <p className="text-2xl font-bold text-gray-800">{dashboardData?.vouchers?.total || 0}</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-green-500">
+                  <p className="text-gray-500 text-sm">Verkauft</p>
+                  <p className="text-2xl font-bold text-green-600">{dashboardData?.vouchers?.sold || 0}</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-amber-500">
+                  <p className="text-gray-500 text-sm">Eingelöst</p>
+                  <p className="text-2xl font-bold text-amber-600">{dashboardData?.vouchers?.redeemed || 0}</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 shadow-sm border-l-4 border-purple-500">
+                  <p className="text-gray-500 text-sm">Provision</p>
+                  <p className="text-2xl font-bold text-purple-600">{partner?.commission_rate || 10}%</p>
+                </div>
+              </div>
+              
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-gray-800 mb-4">Finanzübersicht</h3>
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <p className="text-gray-500 text-sm">Gesamtumsatz</p>
+                    <p className="text-3xl font-bold text-gray-800">€{(dashboardData?.stats?.total_sales || 0).toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-sm">Ausstehende Auszahlung</p>
+                    <p className="text-3xl font-bold text-green-600">€{(dashboardData?.stats?.pending_payout || 0).toFixed(2)}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                <p className="text-amber-800 text-sm">
+                  <strong>Tipp:</strong> Erstellen Sie mehr Gutscheine mit attraktiven Rabatten, um Ihren Umsatz zu steigern!
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Payouts View */}
+          {view === 'payouts' && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-bold text-gray-800 text-xl">Auszahlungen</h2>
+                <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg">
+                  Verfügbar: €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)}
+                </div>
+              </div>
+              
+              {/* Request Payout */}
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <Euro className="w-5 h-5 text-green-500" />
+                  Auszahlung beantragen
+                </h3>
+                
+                {(dashboardData?.stats?.pending_payout || 0) >= 50 ? (
+                  <div className="space-y-4">
+                    <p className="text-gray-600 text-sm">
+                      Mindestbetrag: €50.00 | Bearbeitungszeit: 3-5 Werktage
+                    </p>
+                    <Button 
+                      onClick={async () => {
+                        if (!confirm(`Möchten Sie €${(dashboardData?.stats?.pending_payout || 0).toFixed(2)} auszahlen lassen?`)) return;
+                        try {
+                          const res = await fetch(`${API}/api/partner-portal/request-payout?token=${token}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({})
+                          });
+                          const data = await res.json();
+                          if (!res.ok) throw new Error(data.detail);
+                          toast.success(data.message);
+                          fetchDashboard();
+                        } catch (err) {
+                          toast.error(err.message);
+                        }
+                      }}
+                      className="w-full bg-green-500 hover:bg-green-600"
+                    >
+                      Gesamten Betrag auszahlen (€{(dashboardData?.stats?.pending_payout || 0).toFixed(2)})
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="bg-gray-100 rounded-lg p-4 text-center text-gray-500">
+                    <p>Mindestbetrag von €50.00 noch nicht erreicht</p>
+                    <p className="text-sm mt-1">Aktuell verfügbar: €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)}</p>
+                  </div>
+                )}
+              </div>
+              
+              {/* Payout History */}
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h3 className="font-bold text-gray-800">Auszahlungsverlauf</h3>
+                  <History className="w-5 h-5 text-gray-400" />
+                </div>
+                <div className="p-8 text-center text-gray-400">
+                  <History className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>Noch keine Auszahlungen</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Profile View */}
+          {view === 'profile' && (
+            <div className="space-y-6">
+              <h2 className="font-bold text-gray-800 text-xl">Profil & Einstellungen</h2>
+              
+              {/* Logo Upload */}
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <Upload className="w-5 h-5 text-amber-500" />
+                  Logo
+                </h3>
+                <div className="flex items-center gap-4">
+                  <div className="w-20 h-20 bg-gray-100 rounded-xl flex items-center justify-center overflow-hidden">
+                    {partner?.logo_url ? (
+                      <img src={partner.logo_url} alt="Logo" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-3xl">{BUSINESS_TYPES.find(bt => bt.id === partner?.business_type)?.icon || '🏪'}</span>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      type="file"
+                      id="logo-upload"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const formData = new FormData();
+                        formData.append('logo', file);
+                        try {
+                          const res = await fetch(`${API}/api/partner-portal/upload-logo?token=${token}`, {
+                            method: 'POST',
+                            body: formData
+                          });
+                          const data = await res.json();
+                          if (!res.ok) throw new Error(data.detail);
+                          toast.success(data.message);
+                          setPartner({ ...partner, logo_url: data.logo_url });
+                          localStorage.setItem('partner_data', JSON.stringify({ ...partner, logo_url: data.logo_url }));
+                        } catch (err) {
+                          toast.error(err.message);
+                        }
+                      }}
+                    />
+                    <label htmlFor="logo-upload" className="cursor-pointer">
+                      <Button type="button" variant="outline" size="sm" asChild>
+                        <span>Logo hochladen</span>
+                      </Button>
+                    </label>
+                    <p className="text-xs text-gray-400 mt-1">Max. 2MB (JPG, PNG, WebP)</p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Banking Info */}
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-amber-500" />
+                  Bankdaten
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">IBAN</label>
+                    <Input
+                      id="profile-iban"
+                      defaultValue={partner?.iban || ''}
+                      placeholder="DE89 3704 0044 0532 0130 00"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Steuernummer</label>
+                    <Input
+                      id="profile-tax"
+                      defaultValue={partner?.tax_id || ''}
+                      placeholder="DE123456789"
+                    />
+                  </div>
+                  <Button 
+                    onClick={async () => {
+                      const iban = document.getElementById('profile-iban')?.value;
+                      const taxId = document.getElementById('profile-tax')?.value;
+                      try {
+                        const res = await fetch(`${API}/api/partner-portal/update-iban?token=${token}&iban=${encodeURIComponent(iban)}&tax_id=${encodeURIComponent(taxId || '')}`, {
+                          method: 'PUT'
+                        });
+                        const data = await res.json();
+                        if (!res.ok) throw new Error(data.detail);
+                        toast.success(data.message);
+                      } catch (err) {
+                        toast.error(err.message);
+                      }
+                    }}
+                    className="bg-amber-500 hover:bg-amber-600"
+                  >
+                    Bankdaten speichern
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Account Info */}
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-gray-800 mb-4">Kontoinformationen</h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Firmenname:</span>
+                    <span className="font-medium text-gray-800">{partner?.name}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">E-Mail:</span>
+                    <span className="font-medium text-gray-800">{partner?.email}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Geschäftstyp:</span>
+                    <span className="font-medium text-gray-800">
+                      {BUSINESS_TYPES.find(bt => bt.id === partner?.business_type)?.name || 'Unbekannt'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Provision:</span>
+                    <span className="font-medium text-gray-800">{partner?.commission_rate || 10}%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
     );
