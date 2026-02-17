@@ -762,9 +762,130 @@ export default function PartnerPortal() {
         next: 'التالي',
         back: 'رجوع',
         submit: 'إرسال'
+      },
+      it: {
+        login: 'Accedi', register: 'Registrati', email: 'Email', password: 'Password',
+        dashboard: 'Pannello', scanner: 'Scanner', pay: 'Paga', vouchers: 'Buoni',
+        statistics: 'Statistiche', payouts: 'Pagamenti', verification: 'Verifica',
+        profile: 'Profilo', staff: 'Personale', logout: 'Esci', available: 'Disponibile',
+        pending: 'In attesa', redeemed: 'Riscattato', sold: 'Venduto', commission: 'Commissione',
+        staffLogin: 'Accesso Personale', adminLogin: 'Accesso Admin', createStaff: 'Crea dipendente',
+        counter: 'Cassa', admin: 'Admin', name: 'Nome', role: 'Ruolo', active: 'Attivo',
+        inactive: 'Inattivo', delete: 'Elimina', save: 'Salva', cancel: 'Annulla',
+        welcome: 'Benvenuto', notPartner: 'Non sei ancora partner?', applyNow: 'Candidati ora',
+        rememberMe: 'Ricordami', recentRedemptions: 'Riscatti recenti', noRedemptions: 'Nessun riscatto', value: 'Valore'
+      },
+      pt: {
+        login: 'Entrar', register: 'Registrar', email: 'Email', password: 'Senha',
+        dashboard: 'Painel', scanner: 'Scanner', pay: 'Pagar', vouchers: 'Vouchers',
+        statistics: 'Estatísticas', payouts: 'Pagamentos', verification: 'Verificação',
+        profile: 'Perfil', staff: 'Funcionários', logout: 'Sair', available: 'Disponível',
+        pending: 'Pendente', redeemed: 'Resgatado', sold: 'Vendido', commission: 'Comissão',
+        staffLogin: 'Login Funcionário', adminLogin: 'Login Admin', createStaff: 'Criar funcionário',
+        counter: 'Balcão', admin: 'Admin', name: 'Nome', role: 'Função', active: 'Ativo',
+        inactive: 'Inativo', delete: 'Excluir', save: 'Salvar', cancel: 'Cancelar',
+        welcome: 'Bem-vindo', notPartner: 'Ainda não é parceiro?', applyNow: 'Candidate-se agora',
+        rememberMe: 'Lembrar-me', recentRedemptions: 'Resgates recentes', noRedemptions: 'Nenhum resgate', value: 'Valor'
+      },
+      nl: {
+        login: 'Inloggen', register: 'Registreren', email: 'E-mail', password: 'Wachtwoord',
+        dashboard: 'Dashboard', scanner: 'Scanner', pay: 'Betalen', vouchers: 'Vouchers',
+        statistics: 'Statistieken', payouts: 'Uitbetalingen', verification: 'Verificatie',
+        profile: 'Profiel', staff: 'Personeel', logout: 'Uitloggen', available: 'Beschikbaar',
+        pending: 'In afwachting', redeemed: 'Ingewisseld', sold: 'Verkocht', commission: 'Commissie',
+        staffLogin: 'Personeel Login', adminLogin: 'Admin Login', createStaff: 'Medewerker maken',
+        counter: 'Balie', admin: 'Admin', name: 'Naam', role: 'Rol', active: 'Actief',
+        inactive: 'Inactief', delete: 'Verwijderen', save: 'Opslaan', cancel: 'Annuleren',
+        welcome: 'Welkom', notPartner: 'Nog geen partner?', applyNow: 'Nu aanmelden',
+        rememberMe: 'Onthoud mij', recentRedemptions: 'Recente inwisselingen', noRedemptions: 'Geen inwisselingen', value: 'Waarde'
+      },
+      pl: {
+        login: 'Zaloguj się', register: 'Zarejestruj się', email: 'Email', password: 'Hasło',
+        dashboard: 'Panel', scanner: 'Skaner', pay: 'Zapłać', vouchers: 'Vouchery',
+        statistics: 'Statystyki', payouts: 'Wypłaty', verification: 'Weryfikacja',
+        profile: 'Profil', staff: 'Personel', logout: 'Wyloguj', available: 'Dostępne',
+        pending: 'Oczekujące', redeemed: 'Zrealizowane', sold: 'Sprzedane', commission: 'Prowizja',
+        staffLogin: 'Login Personelu', adminLogin: 'Login Admina', createStaff: 'Dodaj pracownika',
+        counter: 'Kasa', admin: 'Admin', name: 'Imię', role: 'Rola', active: 'Aktywny',
+        inactive: 'Nieaktywny', delete: 'Usuń', save: 'Zapisz', cancel: 'Anuluj',
+        welcome: 'Witamy', notPartner: 'Nie jesteś partnerem?', applyNow: 'Aplikuj teraz',
+        rememberMe: 'Zapamiętaj mnie', recentRedemptions: 'Ostatnie realizacje', noRedemptions: 'Brak realizacji', value: 'Wartość'
+      },
+      ru: {
+        login: 'Войти', register: 'Регистрация', email: 'Email', password: 'Пароль',
+        dashboard: 'Панель', scanner: 'Сканер', pay: 'Оплата', vouchers: 'Ваучеры',
+        statistics: 'Статистика', payouts: 'Выплаты', verification: 'Верификация',
+        profile: 'Профиль', staff: 'Персонал', logout: 'Выйти', available: 'Доступно',
+        pending: 'В ожидании', redeemed: 'Использовано', sold: 'Продано', commission: 'Комиссия',
+        staffLogin: 'Вход персонала', adminLogin: 'Вход админа', createStaff: 'Создать сотрудника',
+        counter: 'Касса', admin: 'Админ', name: 'Имя', role: 'Роль', active: 'Активен',
+        inactive: 'Неактивен', delete: 'Удалить', save: 'Сохранить', cancel: 'Отмена',
+        welcome: 'Добро пожаловать', notPartner: 'Еще не партнер?', applyNow: 'Подать заявку',
+        rememberMe: 'Запомнить меня', recentRedemptions: 'Последние использования', noRedemptions: 'Нет использований', value: 'Значение'
+      },
+      zh: {
+        login: '登录', register: '注册', email: '邮箱', password: '密码',
+        dashboard: '仪表板', scanner: '扫描器', pay: '支付', vouchers: '代金券',
+        statistics: '统计', payouts: '支出', verification: '验证',
+        profile: '个人资料', staff: '员工', logout: '退出', available: '可用',
+        pending: '待处理', redeemed: '已兑换', sold: '已售', commission: '佣金',
+        staffLogin: '员工登录', adminLogin: '管理员登录', createStaff: '创建员工',
+        counter: '柜台', admin: '管理员', name: '姓名', role: '角色', active: '活跃',
+        inactive: '非活跃', delete: '删除', save: '保存', cancel: '取消',
+        welcome: '欢迎', notPartner: '还不是合作伙伴？', applyNow: '立即申请',
+        rememberMe: '记住我', recentRedemptions: '最近兑换', noRedemptions: '暂无兑换', value: '价值'
+      },
+      ja: {
+        login: 'ログイン', register: '登録', email: 'メール', password: 'パスワード',
+        dashboard: 'ダッシュボード', scanner: 'スキャナー', pay: '支払い', vouchers: 'バウチャー',
+        statistics: '統計', payouts: '支払い', verification: '確認',
+        profile: 'プロフィール', staff: 'スタッフ', logout: 'ログアウト', available: '利用可能',
+        pending: '保留中', redeemed: '利用済み', sold: '販売済み', commission: '手数料',
+        staffLogin: 'スタッフログイン', adminLogin: '管理者ログイン', createStaff: 'スタッフ作成',
+        counter: 'カウンター', admin: '管理者', name: '名前', role: '役割', active: 'アクティブ',
+        inactive: '非アクティブ', delete: '削除', save: '保存', cancel: 'キャンセル',
+        welcome: 'ようこそ', notPartner: 'パートナーではありませんか？', applyNow: '今すぐ申請',
+        rememberMe: 'ログイン状態を保持', recentRedemptions: '最近の利用', noRedemptions: 'まだ利用なし', value: '値'
+      },
+      ko: {
+        login: '로그인', register: '등록', email: '이메일', password: '비밀번호',
+        dashboard: '대시보드', scanner: '스캐너', pay: '결제', vouchers: '바우처',
+        statistics: '통계', payouts: '지급', verification: '인증',
+        profile: '프로필', staff: '직원', logout: '로그아웃', available: '사용 가능',
+        pending: '대기 중', redeemed: '사용됨', sold: '판매됨', commission: '수수료',
+        staffLogin: '직원 로그인', adminLogin: '관리자 로그인', createStaff: '직원 생성',
+        counter: '카운터', admin: '관리자', name: '이름', role: '역할', active: '활성',
+        inactive: '비활성', delete: '삭제', save: '저장', cancel: '취소',
+        welcome: '환영합니다', notPartner: '파트너가 아니신가요?', applyNow: '지금 신청',
+        rememberMe: '로그인 상태 유지', recentRedemptions: '최근 사용', noRedemptions: '사용 내역 없음', value: '가치'
+      },
+      el: {
+        login: 'Σύνδεση', register: 'Εγγραφή', email: 'Email', password: 'Κωδικός',
+        dashboard: 'Πίνακας ελέγχου', scanner: 'Σαρωτής', pay: 'Πληρωμή', vouchers: 'Κουπόνια',
+        statistics: 'Στατιστικά', payouts: 'Πληρωμές', verification: 'Επαλήθευση',
+        profile: 'Προφίλ', staff: 'Προσωπικό', logout: 'Αποσύνδεση', available: 'Διαθέσιμο',
+        pending: 'Σε αναμονή', redeemed: 'Εξαργυρώθηκε', sold: 'Πωλήθηκε', commission: 'Προμήθεια',
+        staffLogin: 'Σύνδεση Προσωπικού', adminLogin: 'Σύνδεση Διαχειριστή', createStaff: 'Δημιουργία υπαλλήλου',
+        counter: 'Ταμείο', admin: 'Διαχειριστής', name: 'Όνομα', role: 'Ρόλος', active: 'Ενεργός',
+        inactive: 'Ανενεργός', delete: 'Διαγραφή', save: 'Αποθήκευση', cancel: 'Ακύρωση',
+        welcome: 'Καλώς ήρθατε', notPartner: 'Δεν είστε συνεργάτης;', applyNow: 'Υποβάλετε αίτηση',
+        rememberMe: 'Να με θυμάσαι', recentRedemptions: 'Πρόσφατες εξαργυρώσεις', noRedemptions: 'Δεν υπάρχουν εξαργυρώσεις', value: 'Αξία'
+      },
+      sq: {
+        login: 'Hyr', register: 'Regjistrohu', email: 'Email', password: 'Fjalëkalimi',
+        dashboard: 'Paneli', scanner: 'Skaneri', pay: 'Paguaj', vouchers: 'Kuponë',
+        statistics: 'Statistikat', payouts: 'Pagesat', verification: 'Verifikimi',
+        profile: 'Profili', staff: 'Stafi', logout: 'Dil', available: 'E disponueshme',
+        pending: 'Në pritje', redeemed: 'I përdorur', sold: 'Shitur', commission: 'Komisioni',
+        staffLogin: 'Hyrja e Stafit', adminLogin: 'Hyrja e Adminit', createStaff: 'Krijo punonjës',
+        counter: 'Sporteli', admin: 'Admin', name: 'Emri', role: 'Roli', active: 'Aktiv',
+        inactive: 'Joaktiv', delete: 'Fshi', save: 'Ruaj', cancel: 'Anulo',
+        welcome: 'Mirësevini', notPartner: 'Nuk jeni partner?', applyNow: 'Apliko tani',
+        rememberMe: 'Më mbaj mend', recentRedemptions: 'Përdorimet e fundit', noRedemptions: 'Pa përdorime', value: 'Vlera'
       }
     };
-    return translations[language]?.[key] || translations.de[key] || key;
+    const langKey = getLangKey(language);
+    return translations[langKey]?.[key] || translations.de[key] || key;
   };
   // Login state
   const [email, setEmail] = useState(() => localStorage.getItem('partner_saved_email') || '');
