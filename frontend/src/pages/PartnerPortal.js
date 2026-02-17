@@ -40,12 +40,107 @@ export default function PartnerPortal() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState('');
   const [partner, setPartner] = useState(null);
-  const [view, setView] = useState('login'); // login, register, scanner, vouchers, dashboard, create-voucher, statistics, payouts, profile, verification
+  const [view, setView] = useState('login'); // login, register, scanner, vouchers, dashboard, create-voucher, statistics, payouts, profile, verification, staff
+  const [userRole, setUserRole] = useState('admin'); // 'admin' or 'counter'
+  const [isStaff, setIsStaff] = useState(false);
+  const [language, setLanguage] = useState(() => localStorage.getItem('partner_language') || 'de');
+  
+  // Translations
+  const t = (key) => {
+    const translations = {
+      de: {
+        login: 'Anmelden',
+        register: 'Registrieren',
+        email: 'E-Mail',
+        password: 'Passwort',
+        dashboard: 'Dashboard',
+        scanner: 'Scanner',
+        pay: 'Pay',
+        vouchers: 'Gutscheine',
+        statistics: 'Statistiken',
+        payouts: 'Auszahlungen',
+        verification: 'Verifizierung',
+        profile: 'Profil',
+        staff: 'Mitarbeiter',
+        logout: 'Abmelden',
+        available: 'Verfügbar',
+        pending: 'Ausstehend',
+        redeemed: 'Eingelöst',
+        sold: 'Verkauft',
+        commission: 'Provision',
+        staffLogin: 'Mitarbeiter-Login',
+        adminLogin: 'Admin-Login',
+        createStaff: 'Mitarbeiter erstellen',
+        counter: 'Theke',
+        admin: 'Admin',
+        name: 'Name',
+        role: 'Rolle',
+        active: 'Aktiv',
+        inactive: 'Inaktiv',
+        delete: 'Löschen',
+        save: 'Speichern',
+        cancel: 'Abbrechen',
+        scanQR: 'QR-Code scannen',
+        enterCode: 'Code eingeben',
+        processPayment: 'Zahlung verarbeiten',
+        amount: 'Betrag',
+        success: 'Erfolgreich',
+        error: 'Fehler',
+        noAccess: 'Kein Zugriff',
+        counterOnly: 'Diese Ansicht ist nur für Thekenmitarbeiter.',
+        language: 'Sprache'
+      },
+      en: {
+        login: 'Login',
+        register: 'Register',
+        email: 'Email',
+        password: 'Password',
+        dashboard: 'Dashboard',
+        scanner: 'Scanner',
+        pay: 'Pay',
+        vouchers: 'Vouchers',
+        statistics: 'Statistics',
+        payouts: 'Payouts',
+        verification: 'Verification',
+        profile: 'Profile',
+        staff: 'Staff',
+        logout: 'Logout',
+        available: 'Available',
+        pending: 'Pending',
+        redeemed: 'Redeemed',
+        sold: 'Sold',
+        commission: 'Commission',
+        staffLogin: 'Staff Login',
+        adminLogin: 'Admin Login',
+        createStaff: 'Create Staff',
+        counter: 'Counter',
+        admin: 'Admin',
+        name: 'Name',
+        role: 'Role',
+        active: 'Active',
+        inactive: 'Inactive',
+        delete: 'Delete',
+        save: 'Save',
+        cancel: 'Cancel',
+        scanQR: 'Scan QR Code',
+        enterCode: 'Enter Code',
+        processPayment: 'Process Payment',
+        amount: 'Amount',
+        success: 'Success',
+        error: 'Error',
+        noAccess: 'No Access',
+        counterOnly: 'This view is for counter staff only.',
+        language: 'Language'
+      }
+    };
+    return translations[language]?.[key] || translations.de[key] || key;
+  };
   
   // Login state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loginMode, setLoginMode] = useState('admin'); // 'admin' or 'staff'
   
   // Registration state - extended
   const [regStep, setRegStep] = useState(1); // 1: Business Type, 2: Basic Info, 3: Details
