@@ -452,12 +452,18 @@ export default function PartnerPortal() {
         body: JSON.stringify({ email, password })
       });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Login failed');
+      // Clone the response to read it multiple times if needed
+      const responseText = await response.text();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch {
+        throw new Error('Server error');
       }
       
-      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || 'Login failed');
+      }
       
       setToken(data.token);
       setPartner(data.partner);
