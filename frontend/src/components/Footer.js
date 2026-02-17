@@ -17,6 +17,7 @@ const footerTexts = {
     wholesale: 'Großkunden (B2B)',
     vipMembership: 'VIP Mitgliedschaft',
     investors: 'Für Investoren',
+    partnerPortal: 'Partner Portal',
     winners: 'Gewinner',
     features: 'Features',
     dealRadar: 'Deal Radar',
