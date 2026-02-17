@@ -837,6 +837,7 @@ async def request_payout(request: PayoutRequest, token: str):
     
     try:
         await send_partner_payout_confirmation(
+            send_email,
             to_email=partner["email"],
             business_name=partner.get("business_name", partner.get("restaurant_name")),
             payout_amount=amount,
