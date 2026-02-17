@@ -439,6 +439,75 @@ async def websocket_all_auctions_legacy(websocket: WebSocket):
 
 # ==================== BOT BACKGROUND TASK ====================
 
+# ==================== ABANDONED CART REMINDER TASK ====================
+
+async def abandoned_cart_reminder_task():
+    """Background task to send abandoned cart reminder emails every hour"""
+    from utils.email import send_abandoned_cart_reminder
+    
+    logger.info("Abandoned cart reminder task started")
+    
+    while bot_task_running:
+        try:
+            # Check every hour
+            await asyncio.sleep(3600)  # 1 hour
+            
+            now = datetime.now(timezone.utc)
+            # Find carts abandoned more than 1 hour ago but less than 24 hours
+            cutoff_start = (now - timedelta(hours=24)).isoformat()
+            cutoff_end = (now - timedelta(hours=1)).isoformat()
+            
+            abandoned_carts = await db.shopping_carts.find({
+                "status": "active",
+                "updated_at": {"$gte": cutoff_start, "$lt": cutoff_end},
+                "reminder_sent": False
+            }).to_list(50)
+            
+            sent_count = 0
+            for cart in abandoned_carts:
+                try:
+                    user = await db.users.find_one(
+                        {"id": cart["user_id"]},
+                        {"email": 1, "username": 1, "first_name": 1}
+                    )
+                    
+                    if not user or not user.get("email"):
+                        continue
+                    
+                    user_name = user.get("first_name") or user.get("username") or "Kunde"
+                    
+                    # Send reminder email
+                    await send_abandoned_cart_reminder(
+                        to_email=user["email"],
+                        user_name=user_name,
+                        cart_items=cart.get("items", []),
+                        cart_total=cart.get("total", 0)
+                    )
+                    
+                    # Mark as sent
+                    await db.shopping_carts.update_one(
+                        {"id": cart["id"]},
+                        {"$set": {
+                            "reminder_sent": True,
+                            "reminder_sent_at": now.isoformat()
+                        }}
+                    )
+                    sent_count += 1
+                    
+                except Exception as e:
+                    logger.error(f"Failed to send cart reminder: {e}")
+            
+            if sent_count > 0:
+                logger.info(f"Sent {sent_count} abandoned cart reminders")
+                
+        except asyncio.CancelledError:
+            break
+        except Exception as e:
+            logger.error(f"Abandoned cart task error: {e}")
+            await asyncio.sleep(60)  # Wait 1 minute on error
+
+# ==================== BOT BIDDING ====================
+
 async def bot_last_second_bidder():
     """Background task - bots bid with REALISTIC human-like patterns.
     
