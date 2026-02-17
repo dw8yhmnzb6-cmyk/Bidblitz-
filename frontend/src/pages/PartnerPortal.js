@@ -719,9 +719,13 @@ export default function PartnerPortal() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ voucher_code: scanResult.code })
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.detail || 'Einlösung fehlgeschlagen');
       
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Einlösung fehlgeschlagen');
+      }
+      
+      const data = await response.json();
       toast.success(`✅ Gutschein eingelöst! €${data.payout_amount.toFixed(2)} gutgeschrieben.`);
       setScanResult(null);
       setManualCode('');
