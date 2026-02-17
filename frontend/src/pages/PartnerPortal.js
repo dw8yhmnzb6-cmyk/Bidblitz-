@@ -1045,12 +1045,12 @@ export default function PartnerPortal() {
             
             {loginMode === 'admin' && (
               <div className="mt-6 text-center">
-                <p className="text-gray-500 text-sm">{language === 'en' ? 'Not a partner yet?' : 'Noch kein Partner?'}</p>
+                <p className="text-gray-500 text-sm">{t('notPartner')}</p>
                 <button 
                   onClick={() => setView('register')}
                   className="text-amber-600 font-medium hover:underline"
                 >
-                  {language === 'en' ? 'Apply now' : 'Jetzt bewerben'}
+                  {t('applyNow')}
                 </button>
               </div>
             )}
@@ -1058,9 +1058,7 @@ export default function PartnerPortal() {
             {loginMode === 'staff' && (
               <div className="mt-6 p-3 bg-blue-50 rounded-lg">
                 <p className="text-blue-700 text-xs text-center">
-                  {language === 'en' 
-                    ? 'Counter staff login - Limited access to scanner and payment functions only.'
-                    : 'Theken-Mitarbeiter Login - Eingeschränkter Zugang nur für Scanner und Zahlungsfunktionen.'}
+                  {t('counterInfo')}
                 </p>
               </div>
             )}
