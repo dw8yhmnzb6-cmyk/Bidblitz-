@@ -146,6 +146,7 @@ from routers.recommendations import recommendations_router
 from routers.watchers import watchers_router
 from routers.revenge_bid import revenge_bid_router
 from routers.wallet import wallet_router
+from routers.bidblitz_pay import bidblitz_pay_router
 
 # NEW: 10 additional features (batch 2)
 from routers.email_marketing import email_marketing_router
