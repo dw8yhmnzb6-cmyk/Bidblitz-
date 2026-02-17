@@ -251,9 +251,12 @@ const BidBlitzPay = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
-  const [view, setView] = useState('wallet'); // wallet, qr, history
+  const [view, setView] = useState('wallet'); // wallet, qr, history, topup
   const [language, setLanguage] = useState(() => localStorage.getItem('bidblitz_language') || 'de');
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [mainBalance, setMainBalance] = useState(0);
+  const [topUpAmount, setTopUpAmount] = useState('');
+  const [transferring, setTransferring] = useState(false);
 
   const token = localStorage.getItem('token') || sessionStorage.getItem('token') || localStorage.getItem('bidblitz_token');
   
@@ -278,6 +281,66 @@ const BidBlitzPay = () => {
       setLoading(false);
     }
   }, [token]);
+
+  const fetchMainBalance = useCallback(async () => {
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/main-balance`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setMainBalance(data.main_balance || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching main balance:', error);
+    }
+  }, [token]);
+
+  const handleTopUp = async () => {
+    const amount = parseFloat(topUpAmount);
+    if (!amount || amount <= 0) {
+      toast.error(t('enterAmount'));
+      return;
+    }
+    
+    if (amount > mainBalance) {
+      toast.error(`${t('availableOnMain')}: €${mainBalance.toFixed(2)}`);
+      return;
+    }
+    
+    setTransferring(true);
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/topup`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(`${t('successTransfer')}: €${amount.toFixed(2)}`);
+        setMainBalance(data.new_main_balance);
+        setTopUpAmount('');
+        setView('wallet');
+        fetchWallet();
+        fetchTransactions();
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Transfer failed');
+      }
+    } catch (error) {
+      console.error('Error transferring:', error);
+      toast.error('Transfer failed');
+    } finally {
+      setTransferring(false);
+    }
+  };
 
   const fetchTransactions = useCallback(async () => {
     if (!token) return;
