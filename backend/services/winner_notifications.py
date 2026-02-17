@@ -5,6 +5,117 @@ from config import db, logger, RESEND_API_KEY, SENDER_EMAIL
 # Initialize Resend
 resend.api_key = RESEND_API_KEY
 
+async def send_partner_voucher_sold_notification(product_data: dict, winner_name: str, final_price: float):
+    """Send email to partner when a real customer (not bot) wins their voucher"""
+    try:
+        partner_id = product_data.get("partner_id")
+        if not partner_id:
+            return False
+        
+        # Get partner data
+        partner = await db.partner_accounts.find_one({"id": partner_id}, {"_id": 0})
+        if not partner:
+            partner = await db.restaurant_accounts.find_one({"id": partner_id}, {"_id": 0})
+        
+        if not partner or not partner.get("email"):
+            logger.warning(f"Cannot send partner notification - partner {partner_id} not found")
+            return False
+        
+        partner_email = partner["email"]
+        partner_name = partner.get("business_name", partner.get("restaurant_name", "Partner"))
+        commission_rate = partner.get("commission_rate", 10)
+        
+        product_name = product_data.get("name", "Gutschein")
+        product_value = product_data.get("value", product_data.get("retail_price", 0))
+        
+        # Calculate partner payout (after commission)
+        partner_payout = final_price * (1 - commission_rate / 100)
+        
+        subject = f"🎉 Ihr Gutschein wurde verkauft: {product_name}"
+        
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #F59E0B, #D97706); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .content {{ background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .info-card {{ background: white; border-radius: 10px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+                .payout-box {{ background: #10B981; color: white; padding: 15px; border-radius: 8px; text-align: center; margin: 15px 0; }}
+                .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🎉 Verkauf!</h1>
+                    <p>Hallo {partner_name}!</p>
+                </div>
+                
+                <div class="content">
+                    <p>Gute Nachrichten! Ein Kunde hat Ihren Gutschein bei einer BidBlitz-Auktion gewonnen:</p>
+                    
+                    <div class="info-card">
+                        <h3 style="margin: 0 0 15px 0;">{product_name}</h3>
+                        <table width="100%" style="font-size: 14px;">
+                            <tr>
+                                <td style="padding: 5px 0; color: #666;">Gutscheinwert:</td>
+                                <td style="padding: 5px 0; text-align: right; font-weight: bold;">€ {product_value:.2f}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px 0; color: #666;">Verkaufspreis:</td>
+                                <td style="padding: 5px 0; text-align: right; font-weight: bold;">€ {final_price:.2f}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px 0; color: #666;">Provision ({commission_rate}%):</td>
+                                <td style="padding: 5px 0; text-align: right; color: #EF4444;">- € {(final_price * commission_rate / 100):.2f}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="payout-box">
+                        <p style="margin: 0; font-size: 14px;">Ihre Gutschrift</p>
+                        <h2 style="margin: 5px 0; font-size: 28px;">€ {partner_payout:.2f}</h2>
+                        <p style="margin: 0; font-size: 12px; opacity: 0.9;">wird Ihrem Konto gutgeschrieben</p>
+                    </div>
+                    
+                    <p style="text-align: center; margin-top: 20px;">
+                        <strong>Gewinner:</strong> {winner_name}
+                    </p>
+                    
+                    <p style="text-align: center; color: #666; font-size: 14px;">
+                        Der Betrag wird Ihrem ausstehenden Guthaben hinzugefügt.<br>
+                        Besuchen Sie Ihr Partner-Portal für Details.
+                    </p>
+                </div>
+                
+                <div class="footer">
+                    <p>BidBlitz Partner Portal</p>
+                    <p>Diese E-Mail wurde automatisch generiert.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Send email via Resend
+        response = resend.Emails.send({
+            "from": SENDER_EMAIL,
+            "to": partner_email,
+            "subject": subject,
+            "html": html_content
+        })
+        
+        logger.info(f"✉️ Partner voucher sold notification sent to {partner_email} for {product_name}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error sending partner voucher notification: {e}")
+        return False
+
 async def send_winner_email(winner_id: str, auction_data: dict, product_data: dict):
     """Send email to auction winner with payment instructions"""
     try:
