@@ -119,6 +119,7 @@ import TeamBiddingPage from "./pages/TeamBiddingPage";
 import FeaturesPage from "./pages/FeaturesPage";
 import RestaurantVouchersPage from "./pages/RestaurantVouchersPage";
 import RestaurantPortal from "./pages/RestaurantPortal";
+import PartnerPortal from "./pages/PartnerPortal";
 import DiscoverRestaurants from "./pages/DiscoverRestaurants";
 import LoyaltyDashboard from "./pages/LoyaltyDashboard";
 import RestaurantDetail from "./pages/RestaurantDetail";
