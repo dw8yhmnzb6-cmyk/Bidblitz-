@@ -122,6 +122,7 @@ import RestaurantPortal from "./pages/RestaurantPortal";
 import DiscoverRestaurants from "./pages/DiscoverRestaurants";
 import LoyaltyDashboard from "./pages/LoyaltyDashboard";
 import RestaurantDetail from "./pages/RestaurantDetail";
+import WriteReview from "./pages/WriteReview";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
@@ -744,6 +745,11 @@ function AppContent() {
           <Route path="/discover-restaurants" element={<DiscoverRestaurants />} />
           <Route path="/restaurants/discover" element={<DiscoverRestaurants />} />
           <Route path="/restaurant/:id" element={<RestaurantDetail />} />
+            <Route path="/write-review/:id" element={
+              <ProtectedRoute>
+                <WriteReview />
+              </ProtectedRoute>
+            } />
           <Route path="/loyalty" element={<LoyaltyDashboard />} />
           <Route path="/treueprogramm" element={<LoyaltyDashboard />} />
           
