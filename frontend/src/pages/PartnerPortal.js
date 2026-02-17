@@ -605,20 +605,6 @@ export default function PartnerPortal() {
     }
   };
 
-  const handleLogout = () => {
-    setToken('');
-    setPartner(null);
-    setIsLoggedIn(false);
-    setView('login');
-    setUserRole('admin');
-    setIsStaff(false);
-    localStorage.removeItem('partner_token');
-    localStorage.removeItem('partner_data');
-    localStorage.removeItem('partner_role');
-    localStorage.removeItem('partner_is_staff');
-    toast.success(language === 'en' ? 'Logged out' : 'Abgemeldet');
-  };
-  
   // Staff management state
   const [staffList, setStaffList] = useState([]);
   const [newStaff, setNewStaff] = useState({ name: '', email: '', password: '', role: 'counter' });
