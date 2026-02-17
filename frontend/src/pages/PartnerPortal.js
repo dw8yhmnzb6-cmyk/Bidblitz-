@@ -835,8 +835,13 @@ export default function PartnerPortal() {
           refresh_url: `${window.location.origin}/partner-portal?stripe=refresh`
         })
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Stripe connection failed');
+      }
+      
       const data = await response.json();
-      if (!response.ok) throw new Error(data.detail);
       
       // Redirect to Stripe onboarding
       window.location.href = data.url;
@@ -857,9 +862,13 @@ export default function PartnerPortal() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.detail);
       
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Payout request failed');
+      }
+      
+      const data = await response.json();
       toast.success(data.message);
       fetchDashboard();
       fetchPayoutHistory();
