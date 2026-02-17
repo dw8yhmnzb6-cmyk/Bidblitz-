@@ -998,11 +998,11 @@ export default function PartnerPortal() {
                         <div>
                           <p className="font-medium text-gray-800">{r.voucher_code}</p>
                           <p className="text-xs text-gray-500">
-                            {new Date(r.redeemed_at).toLocaleDateString('de-DE')}
+                            {r.date ? new Date(r.date).toLocaleDateString('de-DE') : '-'}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-bold text-green-600">+€{r.payout_amount?.toFixed(2)}</p>
+                          <p className="font-bold text-green-600">+€{(r.payout_amount || r.value * 0.9)?.toFixed(2)}</p>
                           <p className="text-xs text-gray-400">Wert: €{r.value}</p>
                         </div>
                       </div>
