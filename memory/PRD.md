@@ -5,11 +5,49 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
+### ✅ Session Update - February 17, 2026 (Session 24d) - BIDBLITZ PAY ZAHLUNGSSYSTEM ✅
+
+**Neues Feature: BidBlitz Pay - Digitales Zahlungssystem wie AliPay**
+
+#### Für Kunden (User Wallet) ✅
+- **Digitale Geldbörse** unter `/pay` oder `/wallet`
+- Übersicht über Partner-Gutscheine und Universal-Guthaben
+- **QR-Code generieren** zum Bezahlen bei Partnern
+- Transaktionsverlauf einsehen
+- **Teilzahlung erlaubt** - €35 von €50 Gutschein nutzen, Rest bleibt
+- **Kombinierbar** - mehrere Gutscheine zusammen verwenden
+
+#### Für Partner (Payment Scanner) ✅
+- Neuer Tab "Pay" im Partner-Portal
+- **Kunden-QR scannen** zur Zahlung
+- Zeigt verfügbares Guthaben des Kunden
+- Betrag eingeben und Zahlung verarbeiten
+- Quick-Buttons für €5, €10, €20, €50
+- Erfolgsbestätigung mit Transaktions-ID
+
+#### Gutschein-Typen ✅
+- **Partner-spezifisch** - nur bei einem Partner einlösbar
+- **Universal** - bei ALLEN Partnern einlösbar
+
+**Backend-Endpoints:**
+- `GET /api/bidblitz-pay/wallet` - Benutzer-Wallet
+- `GET /api/bidblitz-pay/payment-qr` - QR-Code generieren
+- `GET /api/bidblitz-pay/transactions` - Transaktionsverlauf
+- `POST /api/bidblitz-pay/scan-customer` - Partner scannt Kunden
+- `POST /api/bidblitz-pay/process-payment` - Zahlung verarbeiten
+- `POST /api/bidblitz-pay/add-voucher-to-wallet` - Gutschein hinzufügen
+
+**Frontend-Seiten:**
+- `/pay` - Benutzer-Wallet mit QR-Code
+- Partner-Portal → "Pay" Tab - Zahlungsscanner
+
+---
+
 ### ✅ Session Update - February 17, 2026 (Session 24c) - ADMIN MOBILE UI + INDIVIDUELLE PROVISION ✅
 
 **Neu implementiert:**
 
-#### Admin Partner-Verwaltung Mobile Responsive ✅ NEU
+#### Admin Partner-Verwaltung Mobile Responsive ✅
 - **Mobile Kartenansicht** statt Tabelle für Partner-Liste
 - Übersichtliche Darstellung: Icon, Name, E-Mail, Typ, Stadt, Eingelöst, Ausstehend
 - **Individuelle Provision pro Partner** einstellbar (0-100%)
@@ -36,7 +74,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ### ✅ Session Update - February 17, 2026 (Session 24) - PARTNER PORTAL VOLLSTÄNDIG ✅
 
-**Alle Features implementiert und getestet (100% Erfolgsrate):**
+**Alle Features implementiert und getestet (100% Erfolgsrate):****
 
 #### 1. Partner Portal mit 14 Geschäftstypen ✅
 - Restaurant, Bar, Café, Tankstelle, Kino, Einzelhandel, Wellness, Fitness, Friseur, Hotel, Unterhaltung, Supermarkt, Apotheke, Sonstiges
