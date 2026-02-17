@@ -774,4 +774,249 @@ async def get_all_partners():
         "total": len(all_partners)
     }
 
+# ==================== PAYOUT SYSTEM ====================
+
+class PayoutRequest(BaseModel):
+    amount: Optional[float] = None  # If None, request full pending amount
+
+@router.post("/request-payout")
+async def request_payout(request: PayoutRequest, token: str):
+    """Request a payout of pending earnings"""
+    partner = await get_current_partner(token)
+    
+    pending = partner.get("pending_payout", 0)
+    min_payout = 50.0  # Minimum payout amount
+    
+    amount = request.amount or pending
+    
+    if amount > pending:
+        raise HTTPException(status_code=400, detail=f"Maximaler Betrag: €{pending:.2f}")
+    
+    if amount < min_payout:
+        raise HTTPException(status_code=400, detail=f"Mindestbetrag für Auszahlung: €{min_payout:.2f}")
+    
+    if not partner.get("iban"):
+        raise HTTPException(status_code=400, detail="Bitte hinterlegen Sie zuerst Ihre IBAN")
+    
+    payout_id = f"PAY-{str(uuid.uuid4())[:8].upper()}"
+    now = datetime.now(timezone.utc).isoformat()
+    
+    payout_record = {
+        "id": payout_id,
+        "partner_id": partner["id"],
+        "amount": amount,
+        "status": "pending",
+        "iban": partner.get("iban"),
+        "requested_at": now,
+        "processed_at": None,
+        "completed_at": None,
+        "notes": None
+    }
+    
+    await db.partner_payouts.insert_one(payout_record)
+    
+    partner_collection = db.partner_accounts if await db.partner_accounts.find_one({"id": partner["id"]}) else db.restaurant_accounts
+    await partner_collection.update_one(
+        {"id": partner["id"]},
+        {
+            "$inc": {"pending_payout": -amount},
+            "$push": {
+                "payout_requests": {
+                    "id": payout_id,
+                    "amount": amount,
+                    "status": "pending",
+                    "requested_at": now
+                }
+            }
+        }
+    )
+    
+    try:
+        await send_partner_payout_confirmation(
+            to_email=partner["email"],
+            business_name=partner.get("business_name", partner.get("restaurant_name")),
+            payout_amount=amount,
+            payout_id=payout_id
+        )
+    except Exception as e:
+        logger.error(f"Failed to send payout email: {e}")
+    
+    logger.info(f"Partner {partner['id']} requested payout: €{amount}")
+    
+    return {
+        "success": True,
+        "message": f"Auszahlung von €{amount:.2f} beantragt!",
+        "payout_id": payout_id,
+        "amount": amount,
+        "remaining_balance": pending - amount
+    }
+
+@router.get("/payout-history")
+async def get_payout_history(token: str):
+    """Get payout history for a partner"""
+    partner = await get_current_partner(token)
+    
+    payouts = await db.partner_payouts.find(
+        {"partner_id": partner["id"]},
+        {"_id": 0}
+    ).sort("requested_at", -1).to_list(100)
+    
+    return {
+        "payouts": payouts,
+        "total": len(payouts),
+        "pending_payout": partner.get("pending_payout", 0),
+        "total_paid_out": partner.get("total_payout", 0)
+    }
+
+@router.get("/statistics")
+async def get_partner_statistics(token: str, period: str = "month"):
+    """Get detailed statistics for a partner"""
+    partner = await get_current_partner(token)
+    
+    vouchers = await db.partner_vouchers.find(
+        {"partner_id": partner["id"]},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    total_created = len(vouchers)
+    total_sold = len([v for v in vouchers if v.get("is_sold")])
+    total_redeemed = len([v for v in vouchers if v.get("is_redeemed")])
+    
+    redemptions = partner.get("redemptions", [])
+    
+    from collections import defaultdict
+    daily_data = defaultdict(lambda: {"count": 0, "value": 0})
+    
+    for r in redemptions:
+        date_str = r.get("redeemed_at", "")[:10]
+        if date_str:
+            daily_data[date_str]["count"] += 1
+            daily_data[date_str]["value"] += r.get("payout_amount", 0)
+    
+    chart_data = [
+        {"date": date, "count": data["count"], "value": round(data["value"], 2)}
+        for date, data in sorted(daily_data.items())
+    ][-30:]
+    
+    voucher_performance = {}
+    for v in vouchers:
+        name = v.get("name", "Unbenannt")
+        if name not in voucher_performance:
+            voucher_performance[name] = {"sold": 0, "redeemed": 0, "revenue": 0}
+        if v.get("is_sold"):
+            voucher_performance[name]["sold"] += 1
+            voucher_performance[name]["revenue"] += v.get("price", 0)
+        if v.get("is_redeemed"):
+            voucher_performance[name]["redeemed"] += 1
+    
+    top_vouchers = sorted(
+        [{"name": k, **v} for k, v in voucher_performance.items()],
+        key=lambda x: x["revenue"],
+        reverse=True
+    )[:5]
+    
+    return {
+        "overview": {
+            "total_created": total_created,
+            "total_sold": total_sold,
+            "total_redeemed": total_redeemed,
+            "conversion_rate": round((total_sold / total_created * 100) if total_created > 0 else 0, 1),
+            "redemption_rate": round((total_redeemed / total_sold * 100) if total_sold > 0 else 0, 1)
+        },
+        "financials": {
+            "total_sales": round(partner.get("total_sales", 0), 2),
+            "total_commission": round(partner.get("total_commission", 0), 2),
+            "pending_payout": round(partner.get("pending_payout", 0), 2),
+            "total_paid_out": round(partner.get("total_payout", 0), 2),
+            "commission_rate": partner.get("commission_rate", 10)
+        },
+        "chart_data": chart_data,
+        "top_vouchers": top_vouchers
+    }
+
+@router.put("/profile")
+async def update_profile(token: str, description: str = None, website: str = None, 
+                         phone: str = None, address: str = None, opening_hours: str = None):
+    """Update partner profile information"""
+    partner = await get_current_partner(token)
+    
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    
+    if description is not None:
+        update_data["description"] = description
+    if website is not None:
+        update_data["website"] = website
+    if phone is not None:
+        update_data["phone"] = phone
+    if address is not None:
+        update_data["address"] = address
+    if opening_hours is not None:
+        update_data["opening_hours"] = opening_hours
+    
+    partner_collection = db.partner_accounts if await db.partner_accounts.find_one({"id": partner["id"]}) else db.restaurant_accounts
+    await partner_collection.update_one(
+        {"id": partner["id"]},
+        {"$set": update_data}
+    )
+    
+    return {"success": True, "message": "Profil aktualisiert"}
+
+@router.post("/upload-logo")
+async def upload_logo(token: str, logo: UploadFile = File(...)):
+    """Upload partner logo"""
+    partner = await get_current_partner(token)
+    
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+    if logo.content_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Nur JPEG, PNG, WebP oder GIF erlaubt")
+    
+    contents = await logo.read()
+    if len(contents) > 2 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="Maximale Dateigröße: 2MB")
+    
+    logo_base64 = base64.b64encode(contents).decode()
+    logo_url = f"data:{logo.content_type};base64,{logo_base64}"
+    
+    partner_collection = db.partner_accounts if await db.partner_accounts.find_one({"id": partner["id"]}) else db.restaurant_accounts
+    await partner_collection.update_one(
+        {"id": partner["id"]},
+        {"$set": {
+            "logo_url": logo_url,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    logger.info(f"Partner {partner['id']} uploaded logo")
+    
+    return {
+        "success": True,
+        "message": "Logo hochgeladen!",
+        "logo_url": logo_url
+    }
+
+@router.put("/update-iban")
+async def update_iban(token: str, iban: str, tax_id: str = None):
+    """Update partner banking details"""
+    partner = await get_current_partner(token)
+    
+    iban_clean = iban.replace(" ", "").upper()
+    if len(iban_clean) < 15 or not iban_clean[:2].isalpha():
+        raise HTTPException(status_code=400, detail="Ungültige IBAN")
+    
+    update_data = {
+        "iban": iban_clean,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    if tax_id:
+        update_data["tax_id"] = tax_id
+    
+    partner_collection = db.partner_accounts if await db.partner_accounts.find_one({"id": partner["id"]}) else db.restaurant_accounts
+    await partner_collection.update_one(
+        {"id": partner["id"]},
+        {"$set": update_data}
+    )
+    
+    return {"success": True, "message": "Bankdaten aktualisiert"}
+
 partner_portal_router = router
