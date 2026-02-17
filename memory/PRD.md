@@ -43,6 +43,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 | BidBlitz Branding | ✅ FUNKTIONIERT | Alle Dateien aktualisiert |
 | Abandoned Cart E-Mails | ✅ IMPLEMENTIERT | Background-Task aktiv |
 | Onboarding-Tour | ✅ VERBESSERT | Interaktive Tour mit Live-Demo, Tipps, Confetti |
+| Winner Gallery | ✅ VERBESSERT | Live Stats Banner (Gewinner, Ersparnisse, 98% Avg) |
 | Microsoft Login | ⏳ BLOCKIERT | Wartet auf Azure-Credentials vom User |
 | Tawk.to Chat | ⏳ BLOCKIERT | User muss Domain in Tawk.to Dashboard whitelisten |
 | Influencer-Pages Performance | ✅ OK | API-Response < 0.5s |
