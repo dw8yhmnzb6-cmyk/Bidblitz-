@@ -780,9 +780,12 @@ export default function PartnerPortal() {
         })
       });
       
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.detail || 'Fehler beim Erstellen');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Fehler beim Erstellen');
+      }
       
+      const data = await response.json();
       toast.success(data.message);
       setNewVoucher({ name: '', description: '', value: '', price: '', quantity: 1, valid_until: '', terms: '' });
       setView('vouchers');
