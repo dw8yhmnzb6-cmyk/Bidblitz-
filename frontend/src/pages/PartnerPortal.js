@@ -2713,7 +2713,7 @@ export default function PartnerPortal() {
               <div className="bg-white rounded-xl p-6 shadow-sm">
                 <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-teal-500" />
-                  Banküberweisung
+                  {t('bankTransfer')}
                 </h3>
                 
                 {wiseStatus?.connected ? (
@@ -2721,7 +2721,7 @@ export default function PartnerPortal() {
                     <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
                       <CheckCircle className="w-6 h-6 text-green-500" />
                       <div className="flex-1">
-                        <p className="font-medium text-green-700">Bankkonto verbunden</p>
+                        <p className="font-medium text-green-700">{t('bankConnected')}</p>
                         <p className="text-sm text-green-600">
                           {wiseStatus.account_holder} • ****{wiseStatus.iban_last4}
                         </p>
@@ -2729,7 +2729,7 @@ export default function PartnerPortal() {
                       <button 
                         onClick={disconnectWise}
                         className="text-gray-400 hover:text-red-500 transition-colors"
-                        title="Bankkonto trennen"
+                        title={t('disconnectBank')}
                       >
                         <X className="w-5 h-5" />
                       </button>
@@ -2744,7 +2744,7 @@ export default function PartnerPortal() {
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                           <>
                             <Euro className="w-5 h-5 mr-2" />
-                            Jetzt €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)} auszahlen
+                            {t('payNow')} €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)}
                           </>
                         )}
                       </Button>
@@ -2752,7 +2752,7 @@ export default function PartnerPortal() {
                     
                     {(dashboardData?.stats?.pending_payout || 0) < 10 && (
                       <p className="text-sm text-gray-500 text-center">
-                        Mindestbetrag für Auszahlung: €10
+                        {t('minPayout')}: €10
                       </p>
                     )}
                   </div>
@@ -2761,15 +2761,15 @@ export default function PartnerPortal() {
                     {!showWiseSetup ? (
                       <>
                         <p className="text-gray-600">
-                          Verbinden Sie Ihr Bankkonto für automatische Auszahlungen per SEPA-Überweisung.
+                          {t('stripeDescription')}
                         </p>
                         <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                          <h4 className="font-medium text-teal-800 mb-2">Vorteile:</h4>
+                          <h4 className="font-medium text-teal-800 mb-2">{t('bankAdvantages')}</h4>
                           <ul className="text-sm text-teal-700 space-y-1">
-                            <li>✓ Schnelle Überweisungen (1-2 Werktage)</li>
-                            <li>✓ Keine Gebühren für EUR-Überweisungen</li>
-                            <li>✓ Sichere IBAN-Verifizierung</li>
-                            <li>✓ Mindestbetrag nur €10</li>
+                            <li>✓ {t('fastTransfer')}</li>
+                            <li>✓ {t('noFees')}</li>
+                            <li>✓ {t('secureIban')}</li>
+                            <li>✓ {t('minAmount')}</li>
                           </ul>
                         </div>
                         <Button 
@@ -2777,16 +2777,16 @@ export default function PartnerPortal() {
                           className="w-full bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600"
                         >
                           <CreditCard className="w-5 h-5 mr-2" />
-                          Bankkonto verbinden
+                          {t('connectBank')}
                         </Button>
                       </>
                     ) : (
                       <div className="space-y-4">
-                        <h4 className="font-medium text-gray-800">Bankdaten eingeben</h4>
+                        <h4 className="font-medium text-gray-800">{t('enterBankDetails')}</h4>
                         
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Kontoinhaber
+                            {t('accountHolder')}
                           </label>
                           <Input
                             placeholder="Max Mustermann"
@@ -2797,7 +2797,7 @@ export default function PartnerPortal() {
                         
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            IBAN
+                            {t('iban')}
                           </label>
                           <Input
                             placeholder="DE89 3704 0044 0532 0130 00"
