@@ -10,20 +10,22 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 **Partner Portal für alle Geschäftstypen implementiert:**
 
 #### Neue Geschäftstypen (14 insgesamt):
-- 🍕 Restaurant (10% Provision)
-- 🍺 Bar & Club (10% Provision)
-- ☕ Café (10% Provision)
-- ⛽ Tankstelle (8% Provision)
-- 🎬 Kino (12% Provision)
-- 🛒 Einzelhandel (10% Provision)
-- 💆 Wellness & Spa (12% Provision)
-- 🏋️ Fitness-Studio (10% Provision)
-- 💇 Friseur & Beauty (10% Provision)
-- 🏨 Hotel & Unterkunft (12% Provision)
-- 🎯 Unterhaltung (10% Provision)
-- 🛍️ Supermarkt (8% Provision)
-- 💊 Apotheke (8% Provision)
-- 🏪 Sonstiges (10% Provision)
+| Typ | Icon | Provision |
+|-----|------|-----------|
+| Restaurant | 🍕 | 10% |
+| Bar & Club | 🍺 | 10% |
+| Café | ☕ | 10% |
+| Tankstelle | ⛽ | 8% |
+| Kino | 🎬 | 12% |
+| Einzelhandel | 🛒 | 10% |
+| Wellness & Spa | 💆 | 12% |
+| Fitness-Studio | 🏋️ | 10% |
+| Friseur & Beauty | 💇 | 10% |
+| Hotel & Unterkunft | 🏨 | 12% |
+| Unterhaltung | 🎯 | 10% |
+| Supermarkt | 🛍️ | 8% |
+| Apotheke | 💊 | 8% |
+| Sonstiges | 🏪 | 10% |
 
 #### Features:
 1. **Multi-Step Bewerbungsformular** (3 Schritte)
@@ -32,12 +34,14 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
    - Schritt 3: Details (Adresse, PLZ, Stadt, Website, Steuernummer, IBAN)
 
 2. **Admin-Genehmigung** für neue Partner
+   - Neuer Admin-Tab: "🏪 Partner Portal"
    - Bewerbungen müssen vom Admin genehmigt werden
-   - Automatische E-Mail nach Genehmigung (TODO)
+   - Ablehnungsgrund kann eingegeben werden
 
 3. **Provisions-System**
    - 8-12% je nach Geschäftstyp
    - Automatische Berechnung bei Gutschein-Erstellung
+   - Ausstehende Auszahlungen werden im Dashboard angezeigt
 
 4. **Gutschein-Verwaltung**
    - Partner können Gutscheine erstellen
@@ -48,7 +52,10 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
    - Gutscheine scannen und einlösen
    - Dashboard mit Statistiken
 
-**API-Endpunkte:**
+6. **Footer-Link hinzugefügt**
+   - "🏪 Partner Portal" Link unter EXTRAS im Footer
+
+**Backend API-Endpunkte:**
 - `GET /api/partner-portal/business-types` - Alle Geschäftstypen
 - `POST /api/partner-portal/apply` - Bewerbung einreichen
 - `POST /api/partner-portal/login` - Partner-Login
@@ -57,10 +64,15 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - `POST /api/partner-portal/redeem` - Gutschein einlösen
 - `GET /api/partner-portal/admin/pending-applications` - Offene Bewerbungen
 - `POST /api/partner-portal/admin/approve/{id}` - Bewerbung genehmigen
+- `POST /api/partner-portal/admin/reject/{id}` - Bewerbung ablehnen
+- `GET /api/partner-portal/admin/all-partners` - Alle Partner
 
-**URLs:**
+**Frontend URLs:**
 - `/partner-portal` - Neues Partner Portal (Multi-Business)
 - `/restaurant-portal` - Legacy Restaurant Portal (weiterhin verfügbar)
+
+**Admin Panel:**
+- Neuer Tab "🏪 Partner Portal" mit Bewerbungsübersicht und Partnerliste
 
 ---
 
