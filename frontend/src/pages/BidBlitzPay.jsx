@@ -151,7 +151,14 @@ const translations = {
     login: 'Iniciar sesión',
     pleaseLogin: 'Por favor inicie sesión para continuar',
     credit: 'Crédito',
-    payment: 'Pago'
+    payment: 'Pago',
+    topUp: 'Recargar',
+    mainAccount: 'Cuenta principal',
+    transferToWallet: 'Transferir a BidBlitz Pay',
+    enterAmount: 'Ingresar monto',
+    transfer: 'Transferir',
+    availableOnMain: 'Disponible en cuenta principal',
+    successTransfer: 'Transferido exitosamente'
   },
   tr: {
     wallet: 'Cüzdan',
@@ -181,7 +188,14 @@ const translations = {
     login: 'Giriş',
     pleaseLogin: 'Devam etmek için giriş yapın',
     credit: 'Kredi',
-    payment: 'Ödeme'
+    payment: 'Ödeme',
+    topUp: 'Yükle',
+    mainAccount: 'Ana Hesap',
+    transferToWallet: 'BidBlitz Pay\'e Aktar',
+    enterAmount: 'Tutar girin',
+    transfer: 'Aktar',
+    availableOnMain: 'Ana hesapta mevcut',
+    successTransfer: 'Başarıyla aktarıldı'
   },
   ar: {
     wallet: 'المحفظة',
@@ -211,7 +225,14 @@ const translations = {
     login: 'تسجيل الدخول',
     pleaseLogin: 'الرجاء تسجيل الدخول للمتابعة',
     credit: 'رصيد',
-    payment: 'دفع'
+    payment: 'دفع',
+    topUp: 'شحن',
+    mainAccount: 'الحساب الرئيسي',
+    transferToWallet: 'تحويل إلى BidBlitz Pay',
+    enterAmount: 'أدخل المبلغ',
+    transfer: 'تحويل',
+    availableOnMain: 'متاح في الحساب الرئيسي',
+    successTransfer: 'تم التحويل بنجاح'
   }
 };
 
