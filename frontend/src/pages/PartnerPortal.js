@@ -1563,61 +1563,7 @@ export default function PartnerPortal() {
     }
   };
 
-  // ==================== STRIPE CONNECT ====================
-  
-  const fetchStripeStatus = async () => {
-    try {
-      const response = await axios.get(`${API}/api/partner-stripe/account-status?token=${token}`);
-      setStripeStatus(response.data);
-    } catch (err) {
-      console.error('Stripe status error:', err);
-    }
-  };
-
-  const fetchPayoutHistory = async () => {
-    try {
-      const response = await axios.get(`${API}/api/partner-stripe/payout-history?token=${token}`);
-      setPayoutHistory(response.data.payouts || []);
-    } catch (err) {
-      console.error('Payout history error:', err);
-    }
-  };
-
-  const connectStripe = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.post(`${API}/api/partner-stripe/create-connect-account?token=${token}`, {
-        return_url: `${window.location.origin}/partner-portal?stripe=success`,
-        refresh_url: `${window.location.origin}/partner-portal?stripe=refresh`
-      });
-      
-      // Redirect to Stripe onboarding
-      window.location.href = response.data.url;
-    } catch (err) {
-      toast.error(err.response?.data?.detail || err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const requestStripePayout = async () => {
-    if (!confirm(`Möchten Sie €${(dashboardData?.stats?.pending_payout || 0).toFixed(2)} via Stripe auszahlen?`)) return;
-    
-    try {
-      setLoading(true);
-      const response = await axios.post(`${API}/api/partner-stripe/request-payout?token=${token}`, {});
-      
-      toast.success(response.data.message);
-      fetchDashboard();
-      fetchPayoutHistory();
-    } catch (err) {
-      toast.error(err.response?.data?.detail || err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ==================== WISE PAYOUTS ====================
+  // ==================== WISE PAYOUTS (Sole payout method) ====================
   
   const fetchWiseStatus = async () => {
     try {
