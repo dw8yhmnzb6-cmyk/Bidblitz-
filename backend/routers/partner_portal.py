@@ -186,11 +186,17 @@ async def apply_as_partner(data: PartnerApplication):
     
     # Send confirmation email
     try:
-        await send_partner_application_received(
-            send_email,
+        await send_email(
             to_email=data.email,
-            business_name=data.business_name,
-            business_type=data.business_type
+            subject="Ihre Partner-Bewerbung bei BidBlitz",
+            html_content=f"""
+            <h2>Vielen Dank für Ihre Bewerbung!</h2>
+            <p>Hallo {data.business_name},</p>
+            <p>wir haben Ihre Bewerbung als Partner ({data.business_type}) erhalten und werden diese schnellstmöglich prüfen.</p>
+            <p>Sie erhalten eine E-Mail, sobald Ihre Bewerbung bearbeitet wurde.</p>
+            <br>
+            <p>Mit freundlichen Grüßen,<br>Ihr BidBlitz Team</p>
+            """
         )
     except Exception as e:
         logger.error(f"Failed to send application email: {e}")
@@ -691,12 +697,18 @@ async def approve_application(partner_id: str):
     
     # Send approval email
     try:
-        await send_partner_approved(
-            send_email,
+        await send_email(
             to_email=partner["email"],
-            business_name=partner["business_name"],
-            business_type=partner.get("business_type", "other"),
-            commission_rate=partner.get("commission_rate", 10)
+            subject="Ihre BidBlitz Partner-Bewerbung wurde genehmigt!",
+            html_content=f"""
+            <h2>Herzlichen Glückwunsch!</h2>
+            <p>Hallo {partner["business_name"]},</p>
+            <p>Ihre Bewerbung als BidBlitz Partner wurde genehmigt!</p>
+            <p>Sie können sich jetzt im Partner-Portal anmelden und Ihre Gutscheine verwalten.</p>
+            <p><strong>Ihre Provision:</strong> {partner.get("commission_rate", 10)}%</p>
+            <br>
+            <p>Mit freundlichen Grüßen,<br>Ihr BidBlitz Team</p>
+            """
         )
     except Exception as e:
         logger.error(f"Failed to send approval email: {e}")
@@ -730,11 +742,18 @@ async def reject_application(partner_id: str, reason: str = "Nicht erfüllt die 
     
     # Send rejection email
     try:
-        await send_partner_rejected(
-            send_email,
+        await send_email(
             to_email=partner["email"],
-            business_name=partner["business_name"],
-            reason=reason
+            subject="Ihre BidBlitz Partner-Bewerbung",
+            html_content=f"""
+            <h2>Bewerbungsstatus</h2>
+            <p>Hallo {partner["business_name"]},</p>
+            <p>leider können wir Ihre Bewerbung als BidBlitz Partner derzeit nicht genehmigen.</p>
+            <p><strong>Grund:</strong> {reason}</p>
+            <p>Bei Fragen kontaktieren Sie uns bitte.</p>
+            <br>
+            <p>Mit freundlichen Grüßen,<br>Ihr BidBlitz Team</p>
+            """
         )
     except Exception as e:
         logger.error(f"Failed to send rejection email: {e}")
@@ -830,12 +849,20 @@ async def request_payout(request: PayoutRequest, token: str):
     )
     
     try:
-        await send_partner_payout_confirmation(
-            send_email,
+        business_name = partner.get("business_name", partner.get("restaurant_name", "Partner"))
+        await send_email(
             to_email=partner["email"],
-            business_name=partner.get("business_name", partner.get("restaurant_name")),
-            payout_amount=amount,
-            payout_id=payout_id
+            subject=f"Auszahlung beantragt - {payout_id}",
+            html_content=f"""
+            <h2>Auszahlung beantragt</h2>
+            <p>Hallo {business_name},</p>
+            <p>Ihre Auszahlung wurde erfolgreich beantragt:</p>
+            <p><strong>Betrag:</strong> EUR {amount:.2f}</p>
+            <p><strong>Referenz:</strong> {payout_id}</p>
+            <p>Die Bearbeitung dauert 3-5 Werktage.</p>
+            <br>
+            <p>Mit freundlichen Grüßen,<br>Ihr BidBlitz Team</p>
+            """
         )
     except Exception as e:
         logger.error(f"Failed to send payout email: {e}")
