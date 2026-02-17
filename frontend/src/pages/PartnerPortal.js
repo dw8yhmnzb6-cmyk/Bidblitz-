@@ -893,7 +893,15 @@ export default function PartnerPortal() {
         counter: 'Cassa', admin: 'Admin', name: 'Nome', role: 'Ruolo', active: 'Attivo',
         inactive: 'Inattivo', delete: 'Elimina', save: 'Salva', cancel: 'Annulla',
         welcome: 'Benvenuto', notPartner: 'Non sei ancora partner?', applyNow: 'Candidati ora',
-        rememberMe: 'Ricordami', recentRedemptions: 'Riscatti recenti', noRedemptions: 'Nessun riscatto', value: 'Valore'
+        rememberMe: 'Ricordami', recentRedemptions: 'Riscatti recenti', noRedemptions: 'Nessun riscatto', value: 'Valore',
+        bankTransfer: 'Bonifico bancario', enterBankDetails: 'Inserisci dati bancari', accountHolder: 'Titolare conto',
+        connectBank: 'Collega conto bancario', bankConnected: 'Conto bancario collegato', disconnectBank: 'Scollega conto',
+        connect: 'Collega', minPayout: 'Importo minimo pagamento', bankAdvantages: 'Vantaggi:',
+        fastTransfer: 'Trasferimenti rapidi (1-2 giorni lavorativi)', noFees: 'Nessuna commissione per trasferimenti EUR',
+        secureIban: 'Verifica IBAN sicura', minAmount: 'Importo minimo solo €10',
+        ibanHint: 'Puoi trovare il tuo IBAN sulla carta bancaria o nell\'home banking', payNow: 'Paga ora',
+        completed: 'Completato', processing: 'In elaborazione', pendingStatus: 'In attesa',
+        payoutHistory: 'Storico pagamenti', noPayouts: 'Nessun pagamento ancora', iban: 'IBAN'
       },
       pt: {
         login: 'Entrar', register: 'Registrar', email: 'Email', password: 'Senha',
@@ -905,7 +913,15 @@ export default function PartnerPortal() {
         counter: 'Balcão', admin: 'Admin', name: 'Nome', role: 'Função', active: 'Ativo',
         inactive: 'Inativo', delete: 'Excluir', save: 'Salvar', cancel: 'Cancelar',
         welcome: 'Bem-vindo', notPartner: 'Ainda não é parceiro?', applyNow: 'Candidate-se agora',
-        rememberMe: 'Lembrar-me', recentRedemptions: 'Resgates recentes', noRedemptions: 'Nenhum resgate', value: 'Valor'
+        rememberMe: 'Lembrar-me', recentRedemptions: 'Resgates recentes', noRedemptions: 'Nenhum resgate', value: 'Valor',
+        bankTransfer: 'Transferência bancária', enterBankDetails: 'Inserir dados bancários', accountHolder: 'Titular da conta',
+        connectBank: 'Conectar conta bancária', bankConnected: 'Conta bancária conectada', disconnectBank: 'Desconectar conta',
+        connect: 'Conectar', minPayout: 'Valor mínimo de pagamento', bankAdvantages: 'Vantagens:',
+        fastTransfer: 'Transferências rápidas (1-2 dias úteis)', noFees: 'Sem taxas para transferências EUR',
+        secureIban: 'Verificação IBAN segura', minAmount: 'Valor mínimo apenas €10',
+        ibanHint: 'Pode encontrar o seu IBAN no cartão bancário ou no homebanking', payNow: 'Pagar agora',
+        completed: 'Concluído', processing: 'Processando', pendingStatus: 'Pendente',
+        payoutHistory: 'Histórico de pagamentos', noPayouts: 'Nenhum pagamento ainda', iban: 'IBAN'
       },
       nl: {
         login: 'Inloggen', register: 'Registreren', email: 'E-mail', password: 'Wachtwoord',
@@ -917,7 +933,15 @@ export default function PartnerPortal() {
         counter: 'Balie', admin: 'Admin', name: 'Naam', role: 'Rol', active: 'Actief',
         inactive: 'Inactief', delete: 'Verwijderen', save: 'Opslaan', cancel: 'Annuleren',
         welcome: 'Welkom', notPartner: 'Nog geen partner?', applyNow: 'Nu aanmelden',
-        rememberMe: 'Onthoud mij', recentRedemptions: 'Recente inwisselingen', noRedemptions: 'Geen inwisselingen', value: 'Waarde'
+        rememberMe: 'Onthoud mij', recentRedemptions: 'Recente inwisselingen', noRedemptions: 'Geen inwisselingen', value: 'Waarde',
+        bankTransfer: 'Bankoverschrijving', enterBankDetails: 'Bankgegevens invoeren', accountHolder: 'Rekeninghouder',
+        connectBank: 'Bankrekening koppelen', bankConnected: 'Bankrekening gekoppeld', disconnectBank: 'Rekening ontkoppelen',
+        connect: 'Koppelen', minPayout: 'Minimum uitbetalingsbedrag', bankAdvantages: 'Voordelen:',
+        fastTransfer: 'Snelle overschrijvingen (1-2 werkdagen)', noFees: 'Geen kosten voor EUR-overschrijvingen',
+        secureIban: 'Veilige IBAN-verificatie', minAmount: 'Minimumbedrag slechts €10',
+        ibanHint: 'Uw IBAN vindt u op uw bankpas of in internetbankieren', payNow: 'Nu betalen',
+        completed: 'Voltooid', processing: 'Verwerking', pendingStatus: 'In afwachting',
+        payoutHistory: 'Uitbetalingsgeschiedenis', noPayouts: 'Nog geen uitbetalingen', iban: 'IBAN'
       },
       pl: {
         login: 'Zaloguj się', register: 'Zarejestruj się', email: 'Email', password: 'Hasło',
@@ -929,7 +953,15 @@ export default function PartnerPortal() {
         counter: 'Kasa', admin: 'Admin', name: 'Imię', role: 'Rola', active: 'Aktywny',
         inactive: 'Nieaktywny', delete: 'Usuń', save: 'Zapisz', cancel: 'Anuluj',
         welcome: 'Witamy', notPartner: 'Nie jesteś partnerem?', applyNow: 'Aplikuj teraz',
-        rememberMe: 'Zapamiętaj mnie', recentRedemptions: 'Ostatnie realizacje', noRedemptions: 'Brak realizacji', value: 'Wartość'
+        rememberMe: 'Zapamiętaj mnie', recentRedemptions: 'Ostatnie realizacje', noRedemptions: 'Brak realizacji', value: 'Wartość',
+        bankTransfer: 'Przelew bankowy', enterBankDetails: 'Wprowadź dane bankowe', accountHolder: 'Właściciel konta',
+        connectBank: 'Połącz konto bankowe', bankConnected: 'Konto bankowe połączone', disconnectBank: 'Odłącz konto',
+        connect: 'Połącz', minPayout: 'Minimalna kwota wypłaty', bankAdvantages: 'Zalety:',
+        fastTransfer: 'Szybkie przelewy (1-2 dni robocze)', noFees: 'Bez opłat za przelewy EUR',
+        secureIban: 'Bezpieczna weryfikacja IBAN', minAmount: 'Minimalna kwota tylko €10',
+        ibanHint: 'Numer IBAN znajdziesz na karcie bankowej lub w bankowości internetowej', payNow: 'Wypłać teraz',
+        completed: 'Zakończone', processing: 'Przetwarzanie', pendingStatus: 'Oczekuje',
+        payoutHistory: 'Historia wypłat', noPayouts: 'Brak wypłat', iban: 'IBAN'
       },
       ru: {
         login: 'Войти', register: 'Регистрация', email: 'Email', password: 'Пароль',
