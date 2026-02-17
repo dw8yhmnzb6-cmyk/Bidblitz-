@@ -938,6 +938,7 @@ export default function PartnerPortal() {
             {[
               { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
               { id: 'scanner', label: 'Scanner', icon: Scan },
+              { id: 'bidblitz-pay', label: 'Pay', icon: CreditCard },
               { id: 'vouchers', label: 'Gutscheine', icon: Ticket },
               { id: 'statistics', label: 'Statistiken', icon: TrendingUp },
               { id: 'payouts', label: 'Auszahlungen', icon: Euro },
