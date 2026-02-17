@@ -1142,15 +1142,11 @@ export default function PartnerPortal() {
   // Statistics state
   const [statistics, setStatistics] = useState(null);
   
-  // Stripe Connect state
-  const [stripeStatus, setStripeStatus] = useState(null);
+  // Wise Payout state (Stripe removed - only Wise)
   const [payoutHistory, setPayoutHistory] = useState([]);
-  
-  // Wise Payout state
   const [wiseStatus, setWiseStatus] = useState(null);
   const [wiseSetupForm, setWiseSetupForm] = useState({ account_holder_name: '', iban: '' });
   const [showWiseSetup, setShowWiseSetup] = useState(false);
-  const [payoutMethod, setPayoutMethod] = useState('wise'); // 'wise' or 'stripe'
   
   // Verification state
   const [documents, setDocuments] = useState([]);
