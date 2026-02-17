@@ -19,6 +19,8 @@ import axios from 'axios';
 
 // Import refactored components
 import PartnerPayouts from '../components/partner/PartnerPayouts';
+import PartnerScanner from '../components/partner/PartnerScanner';
+import PartnerStaff from '../components/partner/PartnerStaff';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
