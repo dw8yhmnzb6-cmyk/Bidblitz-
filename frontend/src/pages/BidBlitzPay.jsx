@@ -502,6 +502,15 @@ const BidBlitzPay = () => {
             {t('vouchers')}
           </button>
           <button
+            onClick={() => { setView('topup'); fetchMainBalance(); }}
+            className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+              view === 'topup' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Plus className="w-4 h-4 inline mr-1" />
+            {t('topUp')}
+          </button>
+          <button
             onClick={() => { setView('qr'); generateQR(); }}
             className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all ${
               view === 'qr' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
@@ -523,6 +532,90 @@ const BidBlitzPay = () => {
       </div>
 
       <div className="max-w-lg mx-auto px-4 mt-6">
+        {/* Top Up View */}
+        {view === 'topup' && (
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-amber-500" />
+              {t('transferToWallet')}
+            </h2>
+            
+            <div className="bg-gray-50 rounded-xl p-4 mb-6">
+              <p className="text-sm text-gray-500 mb-1">{t('availableOnMain')}</p>
+              <p className="text-2xl font-bold text-gray-800">€{mainBalance.toFixed(2)}</p>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('enterAmount')}</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">€</span>
+                  <input
+                    type="number"
+                    value={topUpAmount}
+                    onChange={(e) => setTopUpAmount(e.target.value)}
+                    placeholder="0.00"
+                    className="w-full pl-10 pr-4 py-3 text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                    min="0"
+                    step="0.01"
+                    max={mainBalance}
+                  />
+                </div>
+              </div>
+              
+              {/* Quick amount buttons */}
+              <div className="flex gap-2">
+                {[5, 10, 20, 50].map((amount) => (
+                  <button
+                    key={amount}
+                    onClick={() => setTopUpAmount(String(Math.min(amount, mainBalance)))}
+                    disabled={mainBalance < amount}
+                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-all ${
+                      mainBalance >= amount 
+                        ? 'border-amber-300 text-amber-600 hover:bg-amber-50' 
+                        : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    €{amount}
+                  </button>
+                ))}
+              </div>
+              
+              <Button
+                onClick={handleTopUp}
+                disabled={transferring || !topUpAmount || parseFloat(topUpAmount) <= 0 || parseFloat(topUpAmount) > mainBalance}
+                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 py-4 text-lg"
+              >
+                {transferring ? (
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    <ArrowDownLeft className="w-5 h-5 mr-2" />
+                    {t('transfer')}
+                  </>
+                )}
+              </Button>
+            </div>
+            
+            {mainBalance === 0 && (
+              <div className="mt-6 p-4 bg-amber-50 rounded-xl text-center">
+                <p className="text-sm text-amber-700">
+                  {language === 'de' 
+                    ? 'Kein Guthaben auf Hauptkonto. Kaufe Bids, um Guthaben zu erhalten!' 
+                    : 'No balance on main account. Buy bids to get credits!'}
+                </p>
+                <Button 
+                  variant="link" 
+                  className="text-amber-600 mt-2"
+                  onClick={() => window.location.href = '/shop'}
+                >
+                  {language === 'de' ? 'Zum Shop' : 'Go to Shop'} <ChevronRight className="w-4 h-4 ml-1" />
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Wallet View - Vouchers */}
         {view === 'wallet' && (
           <div className="space-y-4">
