@@ -933,6 +933,12 @@ export default function PartnerPortal() {
   const [stripeStatus, setStripeStatus] = useState(null);
   const [payoutHistory, setPayoutHistory] = useState([]);
   
+  // Wise Payout state
+  const [wiseStatus, setWiseStatus] = useState(null);
+  const [wiseSetupForm, setWiseSetupForm] = useState({ account_holder_name: '', iban: '' });
+  const [showWiseSetup, setShowWiseSetup] = useState(false);
+  const [payoutMethod, setPayoutMethod] = useState('wise'); // 'wise' or 'stripe'
+  
   // Verification state
   const [documents, setDocuments] = useState([]);
   const [verificationStatus, setVerificationStatus] = useState(null);
