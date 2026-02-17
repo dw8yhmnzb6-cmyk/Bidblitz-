@@ -725,6 +725,8 @@ export default function PartnerPortal() {
         minAmount: 'Minimum tutar sadece €10',
         ibanHint: 'IBAN numaranızı banka kartınızda veya internet bankacılığında bulabilirsiniz',
         payNow: 'Şimdi öde',
+        payoutAmount: 'Ödeme tutarı',
+        maxAmount: 'Maks',
         completed: 'Tamamlandı',
         processing: 'İşleniyor',
         pendingStatus: 'Beklemede',
