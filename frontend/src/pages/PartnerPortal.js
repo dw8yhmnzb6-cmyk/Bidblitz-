@@ -2805,7 +2805,7 @@ export default function PartnerPortal() {
                             onChange={(e) => setWiseSetupForm({...wiseSetupForm, iban: e.target.value.toUpperCase()})}
                           />
                           <p className="text-xs text-gray-500 mt-1">
-                            Ihre IBAN finden Sie auf Ihrer Bankkarte oder im Online-Banking
+                            {t('ibanHint')}
                           </p>
                         </div>
                         
@@ -2815,14 +2815,14 @@ export default function PartnerPortal() {
                             onClick={() => setShowWiseSetup(false)}
                             className="flex-1"
                           >
-                            Abbrechen
+                            {t('cancel')}
                           </Button>
                           <Button 
                             onClick={setupWiseAccount}
                             disabled={loading || !wiseSetupForm.account_holder_name || !wiseSetupForm.iban}
                             className="flex-1 bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600"
                           >
-                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verbinden'}
+                            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('connect')}
                           </Button>
                         </div>
                       </div>
@@ -2856,9 +2856,9 @@ export default function PartnerPortal() {
                             p.status === 'pending' || p.status === 'pending_funding' ? 'bg-yellow-100 text-yellow-700' :
                             'bg-gray-100 text-gray-600'
                           }`}>
-                            {p.status === 'completed' || p.status === 'outgoing_payment_sent' ? 'Abgeschlossen' : 
-                             p.status === 'processing' ? 'In Bearbeitung' :
-                             p.status === 'pending' || p.status === 'pending_funding' ? 'Ausstehend' : p.status}
+                            {p.status === 'completed' || p.status === 'outgoing_payment_sent' ? t('completed') : 
+                             p.status === 'processing' ? t('processing') :
+                             p.status === 'pending' || p.status === 'pending_funding' ? t('pendingStatus') : p.status}
                           </span>
                         </div>
                       </div>
