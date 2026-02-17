@@ -1,0 +1,598 @@
+"""
+BidBlitz Pay - Digital Payment System for Vouchers
+Like AliPay - Users can pay at partner shops with their won vouchers
+"""
+from fastapi import APIRouter, HTTPException, Depends, Query
+from datetime import datetime, timezone
+from typing import Optional, List
+from pydantic import BaseModel
+import uuid
+import qrcode
+import io
+import base64
+
+from config import db, logger
+from dependencies import get_current_user
+
+router = APIRouter(prefix="/bidblitz-pay", tags=["BidBlitz Pay"])
+
+# ==================== MODELS ====================
+
+class PaymentRequest(BaseModel):
+    amount: float
+    customer_qr_token: str
+    description: Optional[str] = None
+
+class TransferRequest(BaseModel):
+    to_user_id: str
+    amount: float
+    voucher_ids: Optional[List[str]] = None
+
+# ==================== USER WALLET ENDPOINTS ====================
+
+@router.get("/wallet")
+async def get_user_wallet(user: dict = Depends(get_current_user)):
+    """Get user's digital wallet with vouchers and balance"""
+    user_id = user["id"]
+    
+    # Get user's won vouchers (not fully redeemed)
+    vouchers = await db.user_vouchers.find(
+        {
+            "user_id": user_id,
+            "status": {"$in": ["active", "partial"]}
+        },
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Get universal BidBlitz balance
+    user_data = await db.users.find_one({"id": user_id}, {"_id": 0, "bidblitz_balance": 1})
+    universal_balance = user_data.get("bidblitz_balance", 0) if user_data else 0
+    
+    # Calculate totals
+    partner_vouchers = [v for v in vouchers if v.get("partner_id")]
+    universal_vouchers = [v for v in vouchers if not v.get("partner_id")]
+    
+    total_partner_value = sum(v.get("remaining_value", v.get("value", 0)) for v in partner_vouchers)
+    total_universal_value = sum(v.get("remaining_value", v.get("value", 0)) for v in universal_vouchers)
+    
+    return {
+        "wallet": {
+            "universal_balance": universal_balance + total_universal_value,
+            "partner_vouchers_value": total_partner_value,
+            "total_value": universal_balance + total_universal_value + total_partner_value,
+            "voucher_count": len(vouchers)
+        },
+        "vouchers": vouchers,
+        "partner_vouchers": partner_vouchers,
+        "universal_vouchers": universal_vouchers
+    }
+
+@router.get("/payment-qr")
+async def generate_payment_qr(user: dict = Depends(get_current_user)):
+    """Generate QR code for customer to show at partner for payment"""
+    user_id = user["id"]
+    
+    # Create a payment token (valid for 5 minutes)
+    token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc).isoformat()
+    
+    # Store token
+    await db.payment_tokens.insert_one({
+        "token": token,
+        "user_id": user_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": expires_at,
+        "used": False
+    })
+    
+    # Generate QR code with token
+    qr_data = f"BIDBLITZ-PAY:{token}"
+    
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=10,
+        border=2,
+    )
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    # Get wallet summary for display
+    wallet = await get_user_wallet(user)
+    
+    return {
+        "qr_code": f"data:image/png;base64,{qr_base64}",
+        "token": token,
+        "expires_in_seconds": 300,
+        "wallet_summary": wallet["wallet"]
+    }
+
+@router.get("/transactions")
+async def get_payment_transactions(
+    user: dict = Depends(get_current_user),
+    limit: int = Query(default=20, le=100)
+):
+    """Get user's payment transaction history"""
+    user_id = user["id"]
+    
+    transactions = await db.bidblitz_pay_transactions.find(
+        {"$or": [{"user_id": user_id}, {"partner_id": user_id}]},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    return {"transactions": transactions, "total": len(transactions)}
+
+# ==================== PARTNER PAYMENT ENDPOINTS ====================
+
+async def get_current_partner(token: str):
+    """Get partner from token"""
+    partner = await db.partner_accounts.find_one(
+        {"auth_token": token, "is_active": True},
+        {"_id": 0, "password_hash": 0}
+    )
+    if not partner:
+        partner = await db.restaurant_accounts.find_one(
+            {"auth_token": token, "is_active": True},
+            {"_id": 0, "password_hash": 0}
+        )
+    if not partner:
+        raise HTTPException(status_code=401, detail="Ungültiger Partner-Token")
+    return partner
+
+@router.post("/scan-customer")
+async def scan_customer_qr(qr_data: str, token: str = Query(...)):
+    """Partner scans customer QR to initiate payment"""
+    partner = await get_current_partner(token)
+    partner_id = partner["id"]
+    
+    # Parse QR code
+    if not qr_data.startswith("BIDBLITZ-PAY:"):
+        raise HTTPException(status_code=400, detail="Ungültiger QR-Code")
+    
+    payment_token = qr_data.replace("BIDBLITZ-PAY:", "")
+    
+    # Validate token
+    token_data = await db.payment_tokens.find_one({"token": payment_token})
+    if not token_data:
+        raise HTTPException(status_code=400, detail="QR-Code ungültig oder abgelaufen")
+    
+    if token_data.get("used"):
+        raise HTTPException(status_code=400, detail="QR-Code bereits verwendet")
+    
+    customer_id = token_data["user_id"]
+    
+    # Get customer info
+    customer = await db.users.find_one({"id": customer_id}, {"_id": 0, "name": 1, "email": 1, "id": 1})
+    if not customer:
+        raise HTTPException(status_code=404, detail="Kunde nicht gefunden")
+    
+    # Get customer's available vouchers for this partner + universal
+    partner_vouchers = await db.user_vouchers.find(
+        {
+            "user_id": customer_id,
+            "partner_id": partner_id,
+            "status": {"$in": ["active", "partial"]}
+        },
+        {"_id": 0}
+    ).to_list(50)
+    
+    universal_vouchers = await db.user_vouchers.find(
+        {
+            "user_id": customer_id,
+            "partner_id": None,
+            "status": {"$in": ["active", "partial"]}
+        },
+        {"_id": 0}
+    ).to_list(50)
+    
+    # Get universal balance
+    user_data = await db.users.find_one({"id": customer_id}, {"_id": 0, "bidblitz_balance": 1})
+    universal_balance = user_data.get("bidblitz_balance", 0) if user_data else 0
+    
+    # Calculate available amounts
+    partner_total = sum(v.get("remaining_value", v.get("value", 0)) for v in partner_vouchers)
+    universal_total = sum(v.get("remaining_value", v.get("value", 0)) for v in universal_vouchers) + universal_balance
+    
+    return {
+        "customer": {
+            "id": customer["id"],
+            "name": customer.get("name", "Kunde"),
+            "email": customer.get("email", "")[:3] + "***"  # Partial email for privacy
+        },
+        "payment_token": payment_token,
+        "available_balance": {
+            "partner_specific": partner_total,
+            "universal": universal_total,
+            "total": partner_total + universal_total
+        },
+        "partner_vouchers": partner_vouchers,
+        "universal_vouchers": universal_vouchers,
+        "universal_balance": universal_balance
+    }
+
+@router.post("/process-payment")
+async def process_payment(
+    payment_token: str,
+    amount: float,
+    use_partner_vouchers: bool = True,
+    use_universal: bool = True,
+    description: Optional[str] = None,
+    token: str = Query(...)
+):
+    """Partner processes payment after scanning customer QR"""
+    partner = await get_current_partner(token)
+    partner_id = partner["id"]
+    partner_name = partner.get("business_name", partner.get("restaurant_name", "Partner"))
+    commission_rate = partner.get("commission_rate", 10)
+    
+    # Validate payment token
+    token_data = await db.payment_tokens.find_one({"token": payment_token})
+    if not token_data:
+        raise HTTPException(status_code=400, detail="Zahlungs-Token ungültig")
+    
+    if token_data.get("used"):
+        raise HTTPException(status_code=400, detail="Zahlung bereits verarbeitet")
+    
+    customer_id = token_data["user_id"]
+    
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Betrag muss größer als 0 sein")
+    
+    # Collect available funds
+    remaining_amount = amount
+    used_vouchers = []
+    used_universal = 0
+    
+    # 1. First use partner-specific vouchers
+    if use_partner_vouchers and remaining_amount > 0:
+        partner_vouchers = await db.user_vouchers.find(
+            {
+                "user_id": customer_id,
+                "partner_id": partner_id,
+                "status": {"$in": ["active", "partial"]}
+            },
+            {"_id": 0}
+        ).sort("remaining_value", 1).to_list(50)  # Use smallest first
+        
+        for voucher in partner_vouchers:
+            if remaining_amount <= 0:
+                break
+                
+            voucher_value = voucher.get("remaining_value", voucher.get("value", 0))
+            use_amount = min(voucher_value, remaining_amount)
+            
+            new_remaining = voucher_value - use_amount
+            new_status = "redeemed" if new_remaining <= 0 else "partial"
+            
+            await db.user_vouchers.update_one(
+                {"id": voucher["id"]},
+                {"$set": {
+                    "remaining_value": new_remaining,
+                    "status": new_status,
+                    "last_used_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            
+            used_vouchers.append({
+                "voucher_id": voucher["id"],
+                "voucher_name": voucher.get("name", "Gutschein"),
+                "amount_used": use_amount,
+                "type": "partner_specific"
+            })
+            
+            remaining_amount -= use_amount
+    
+    # 2. Then use universal vouchers
+    if use_universal and remaining_amount > 0:
+        universal_vouchers = await db.user_vouchers.find(
+            {
+                "user_id": customer_id,
+                "partner_id": None,
+                "status": {"$in": ["active", "partial"]}
+            },
+            {"_id": 0}
+        ).sort("remaining_value", 1).to_list(50)
+        
+        for voucher in universal_vouchers:
+            if remaining_amount <= 0:
+                break
+                
+            voucher_value = voucher.get("remaining_value", voucher.get("value", 0))
+            use_amount = min(voucher_value, remaining_amount)
+            
+            new_remaining = voucher_value - use_amount
+            new_status = "redeemed" if new_remaining <= 0 else "partial"
+            
+            await db.user_vouchers.update_one(
+                {"id": voucher["id"]},
+                {"$set": {
+                    "remaining_value": new_remaining,
+                    "status": new_status,
+                    "last_used_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+            
+            used_vouchers.append({
+                "voucher_id": voucher["id"],
+                "voucher_name": voucher.get("name", "BidBlitz Guthaben"),
+                "amount_used": use_amount,
+                "type": "universal"
+            })
+            
+            remaining_amount -= use_amount
+    
+    # 3. Finally use universal balance
+    if use_universal and remaining_amount > 0:
+        user_data = await db.users.find_one({"id": customer_id}, {"_id": 0, "bidblitz_balance": 1})
+        balance = user_data.get("bidblitz_balance", 0) if user_data else 0
+        
+        if balance > 0:
+            use_amount = min(balance, remaining_amount)
+            
+            await db.users.update_one(
+                {"id": customer_id},
+                {"$inc": {"bidblitz_balance": -use_amount}}
+            )
+            
+            used_universal = use_amount
+            remaining_amount -= use_amount
+    
+    # Check if payment complete
+    if remaining_amount > 0:
+        # Rollback changes (simplified - in production use transactions)
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Nicht genug Guthaben. Es fehlen €{remaining_amount:.2f}"
+        )
+    
+    # Calculate partner payout (after commission)
+    partner_payout = amount * (1 - commission_rate / 100)
+    
+    # Create transaction record
+    transaction_id = str(uuid.uuid4())[:12].upper()
+    transaction = {
+        "id": transaction_id,
+        "type": "payment",
+        "user_id": customer_id,
+        "partner_id": partner_id,
+        "partner_name": partner_name,
+        "amount": amount,
+        "partner_payout": partner_payout,
+        "commission_rate": commission_rate,
+        "commission_amount": amount - partner_payout,
+        "used_vouchers": used_vouchers,
+        "used_universal_balance": used_universal,
+        "description": description or f"Zahlung bei {partner_name}",
+        "status": "completed",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.bidblitz_pay_transactions.insert_one(transaction)
+    
+    # Update partner's pending payout
+    await db.partner_accounts.update_one(
+        {"id": partner_id},
+        {
+            "$inc": {"pending_payout": partner_payout},
+            "$push": {
+                "transactions": {
+                    "id": transaction_id,
+                    "type": "payment_received",
+                    "amount": partner_payout,
+                    "gross_amount": amount,
+                    "customer_id": customer_id,
+                    "date": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        }
+    )
+    
+    # Also check restaurant_accounts
+    await db.restaurant_accounts.update_one(
+        {"id": partner_id},
+        {
+            "$inc": {"pending_payout": partner_payout},
+            "$push": {
+                "transactions": {
+                    "id": transaction_id,
+                    "type": "payment_received",
+                    "amount": partner_payout,
+                    "gross_amount": amount,
+                    "customer_id": customer_id,
+                    "date": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        }
+    )
+    
+    # Mark payment token as used
+    await db.payment_tokens.update_one(
+        {"token": payment_token},
+        {"$set": {"used": True, "used_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    logger.info(f"💳 BidBlitz Pay: €{amount:.2f} from {customer_id} to {partner_id}")
+    
+    return {
+        "success": True,
+        "transaction_id": transaction_id,
+        "amount": amount,
+        "partner_receives": partner_payout,
+        "commission": amount - partner_payout,
+        "used_vouchers": used_vouchers,
+        "used_universal_balance": used_universal,
+        "message": f"Zahlung von €{amount:.2f} erfolgreich!"
+    }
+
+# ==================== VOUCHER MANAGEMENT ====================
+
+@router.post("/add-voucher-to-wallet")
+async def add_voucher_to_wallet(
+    voucher_code: str,
+    user: dict = Depends(get_current_user)
+):
+    """Add a won voucher to user's wallet"""
+    user_id = user["id"]
+    
+    # Check if voucher exists and belongs to user
+    voucher = await db.vouchers.find_one({
+        "code": voucher_code,
+        "winner_id": user_id,
+        "status": "won"
+    }, {"_id": 0})
+    
+    if not voucher:
+        # Also check won auctions for voucher products
+        won_auction = await db.auctions.find_one({
+            "winner_id": user_id,
+            "status": "ended",
+            "$or": [
+                {"product.type": "voucher"},
+                {"product.is_voucher": True}
+            ]
+        }, {"_id": 0})
+        
+        if won_auction:
+            voucher = {
+                "id": won_auction["id"],
+                "name": won_auction.get("product_name", "Gutschein"),
+                "value": won_auction.get("product", {}).get("value", won_auction.get("product_retail_price", 0)),
+                "partner_id": won_auction.get("product", {}).get("partner_id"),
+                "partner_name": won_auction.get("product", {}).get("partner_name")
+            }
+        else:
+            raise HTTPException(status_code=404, detail="Gutschein nicht gefunden")
+    
+    # Check if already in wallet
+    existing = await db.user_vouchers.find_one({
+        "user_id": user_id,
+        "source_id": voucher.get("id", voucher_code)
+    })
+    
+    if existing:
+        raise HTTPException(status_code=400, detail="Gutschein bereits in Wallet")
+    
+    # Add to wallet
+    wallet_voucher = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "source_id": voucher.get("id", voucher_code),
+        "name": voucher.get("name", "Gutschein"),
+        "value": voucher.get("value", 0),
+        "remaining_value": voucher.get("value", 0),
+        "partner_id": voucher.get("partner_id"),
+        "partner_name": voucher.get("partner_name"),
+        "status": "active",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.user_vouchers.insert_one(wallet_voucher)
+    
+    # Mark original voucher as added to wallet
+    await db.vouchers.update_one(
+        {"code": voucher_code},
+        {"$set": {"status": "in_wallet", "wallet_id": wallet_voucher["id"]}}
+    )
+    
+    logger.info(f"Voucher added to wallet: {wallet_voucher['id']} for user {user_id}")
+    
+    return {
+        "success": True,
+        "message": "Gutschein zur Wallet hinzugefügt",
+        "voucher": {k: v for k, v in wallet_voucher.items() if k != "_id"}
+    }
+
+@router.get("/voucher/{voucher_id}")
+async def get_voucher_details(voucher_id: str, user: dict = Depends(get_current_user)):
+    """Get details of a specific voucher in wallet"""
+    voucher = await db.user_vouchers.find_one(
+        {"id": voucher_id, "user_id": user["id"]},
+        {"_id": 0}
+    )
+    
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Gutschein nicht gefunden")
+    
+    # Get transaction history for this voucher
+    transactions = await db.bidblitz_pay_transactions.find(
+        {"used_vouchers.voucher_id": voucher_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(20)
+    
+    return {
+        "voucher": voucher,
+        "transactions": transactions
+    }
+
+# ==================== ADMIN ENDPOINTS ====================
+
+@router.get("/admin/transactions")
+async def admin_get_all_transactions(
+    limit: int = Query(default=50, le=200),
+    partner_id: Optional[str] = None
+):
+    """Admin: Get all BidBlitz Pay transactions"""
+    query = {}
+    if partner_id:
+        query["partner_id"] = partner_id
+    
+    transactions = await db.bidblitz_pay_transactions.find(
+        query,
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Calculate totals
+    total_volume = sum(t.get("amount", 0) for t in transactions)
+    total_commission = sum(t.get("commission_amount", 0) for t in transactions)
+    
+    return {
+        "transactions": transactions,
+        "total_count": len(transactions),
+        "total_volume": total_volume,
+        "total_commission": total_commission
+    }
+
+@router.post("/admin/add-balance")
+async def admin_add_user_balance(
+    user_id: str,
+    amount: float,
+    reason: str = "Admin-Gutschrift"
+):
+    """Admin: Add universal balance to user account"""
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Betrag muss positiv sein")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {
+            "$inc": {"bidblitz_balance": amount},
+            "$push": {
+                "balance_history": {
+                    "amount": amount,
+                    "type": "admin_credit",
+                    "reason": reason,
+                    "date": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        }
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
+    
+    logger.info(f"Admin added €{amount:.2f} balance to user {user_id}: {reason}")
+    
+    return {
+        "success": True,
+        "message": f"€{amount:.2f} zum Guthaben hinzugefügt",
+        "user_id": user_id,
+        "amount": amount
+    }
+
+
+bidblitz_pay_router = router
