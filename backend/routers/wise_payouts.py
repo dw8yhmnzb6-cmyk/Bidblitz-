@@ -375,3 +375,5 @@ async def disconnect_wise_account(token: str):
     )
     
     return {"success": True, "message": "Bankkonto getrennt"}
+
+wise_payouts_router = router
