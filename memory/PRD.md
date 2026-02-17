@@ -5,6 +5,32 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
+### ✅ Session Update - February 17, 2026 (Session 24i) - KUNDEN-WALLET AUFLADEN & SPRACHEN ✅
+
+#### 1. Kunden-Wallet Aufladen-Funktion ✅
+- Neue "Aufladen" Tab im BidBlitz Pay Wallet (`/pay`)
+- Kunden können Guthaben vom Hauptkonto (Credits) auf ihr BidBlitz Pay Wallet übertragen
+- Backend-Endpoint: `POST /api/bidblitz-pay/topup`
+- Backend-Endpoint: `GET /api/bidblitz-pay/main-balance`
+- Quick-Amount Buttons: €5, €10, €20, €50
+- Übersetzungen für alle 6 Sprachen hinzugefügt
+
+#### 2. Partner-Portal Übersetzungen erweitert ✅
+- Alle 6 Sprachen im gesamten Partner-Portal verfügbar:
+  - 🇩🇪 Deutsch, 🇬🇧 English, 🇫🇷 Français, 🇪🇸 Español, 🇹🇷 Türkçe, 🇸🇦 العربية
+- 60+ neue Übersetzungsschlüssel hinzugefügt
+- Dashboard-Widgets, Scanner, Auszahlungen, etc. jetzt übersetzt
+
+#### 3. Code-Cleanup
+- Doppelten Übersetzungsblock entfernt
+- Auto-Login von gespeicherter E-Mail wenn "Angemeldet bleiben" aktiv
+
+**Hinweis zu Stripe-Meldung:**
+- Die Stripe-Warnung "You must complete your platform profile" ist KEIN Bug
+- Das ist eine normale Stripe Connect Anforderung - der Benutzer muss sein Stripe Dashboard konfigurieren
+
+---
+
 ### ✅ Session Update - February 17, 2026 (Session 24h) - COMPREHENSIVE BUGFIX & NEW FEATURES ✅
 
 **Alle `fetch`-Aufrufe auf `axios` migriert - "Body is disturbed" Fehler komplett behoben!**
