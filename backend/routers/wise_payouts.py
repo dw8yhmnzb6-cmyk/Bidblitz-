@@ -69,55 +69,75 @@ async def get_wise_profile_id():
 
 @router.post("/setup-bank-account")
 async def setup_bank_account(token: str, data: WiseBankAccountRequest):
-    """Setup IBAN bank account for Wise payouts"""
+    """Setup IBAN bank account for payouts - stores locally, attempts Wise registration"""
     from routers.partner_portal import get_current_partner
     partner = await get_current_partner(token)
     
+    # Validate IBAN format (basic check)
+    iban = data.iban.replace(" ", "").upper()
+    if len(iban) < 15 or len(iban) > 34:
+        raise HTTPException(status_code=400, detail="Ungültiges IBAN-Format")
+    
+    wise_recipient_id = None
+    wise_connected = False
+    
+    # Try to register with Wise API (if configured properly)
     try:
         profile_id = await get_wise_profile_id()
-        if not profile_id:
-            raise HTTPException(status_code=400, detail="Wise Profil nicht gefunden. Bitte kontaktieren Sie den Support.")
-        
-        # Create recipient account in Wise
-        recipient_data = {
-            "currency": data.currency,
-            "type": "iban",
-            "profile": profile_id,
-            "accountHolderName": data.account_holder_name,
-            "legalType": "BUSINESS" if partner.get("business_type") else "PRIVATE",
-            "details": {
-                "iban": data.iban.replace(" ", "").upper()
+        if profile_id:
+            recipient_data = {
+                "currency": data.currency,
+                "type": "iban",
+                "profile": profile_id,
+                "accountHolderName": data.account_holder_name,
+                "legalType": "BUSINESS" if partner.get("business_type") else "PRIVATE",
+                "details": {
+                    "iban": iban
+                }
             }
-        }
-        
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{WISE_API_URL}/v1/accounts",
-                headers=await get_wise_headers(),
-                json=recipient_data,
-                timeout=30.0
-            )
             
-            if response.status_code >= 400:
-                error_detail = response.json() if response.content else "Unbekannter Fehler"
-                logger.error(f"Wise API error creating recipient: {error_detail}")
-                raise HTTPException(status_code=400, detail=f"Wise Fehler: IBAN konnte nicht validiert werden. Bitte überprüfen Sie Ihre Bankdaten.")
-            
-            recipient = response.json()
-        
-        # Store Wise recipient ID in partner record
-        partner_collection = db.partner_accounts
-        await partner_collection.update_one(
-            {"id": partner["id"]},
-            {"$set": {
-                "wise_recipient_id": recipient["id"],
-                "wise_account_holder": data.account_holder_name,
-                "wise_iban": data.iban[-4:],  # Store only last 4 digits for security
-                "wise_currency": data.currency,
-                "wise_setup_complete": True,
-                "updated_at": datetime.now(timezone.utc).isoformat()
-            }}
-        )
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
+                    f"{WISE_API_URL}/v1/accounts",
+                    headers=await get_wise_headers(),
+                    json=recipient_data,
+                    timeout=30.0
+                )
+                
+                if response.status_code < 400:
+                    recipient = response.json()
+                    wise_recipient_id = recipient.get("id")
+                    wise_connected = True
+                    logger.info(f"Wise recipient created: {wise_recipient_id}")
+                else:
+                    logger.warning(f"Wise API not available, storing bank details locally")
+    except Exception as e:
+        logger.warning(f"Wise API error (storing locally): {e}")
+    
+    # Always store bank details locally for manual processing
+    partner_collection = db.partner_accounts
+    await partner_collection.update_one(
+        {"id": partner["id"]},
+        {"$set": {
+            "wise_recipient_id": wise_recipient_id,
+            "wise_account_holder": data.account_holder_name,
+            "wise_iban": iban[-4:],  # Last 4 digits for display
+            "wise_iban_full": iban,  # Full IBAN for admin processing
+            "wise_currency": data.currency,
+            "wise_setup_complete": True,
+            "wise_api_connected": wise_connected,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    logger.info(f"Bank account saved for partner {partner['id']} (Wise API: {wise_connected})")
+    
+    return {
+        "success": True,
+        "recipient_id": wise_recipient_id,
+        "wise_connected": wise_connected,
+        "message": "Bankkonto erfolgreich gespeichert" + (" (Wise verbunden)" if wise_connected else " (manuelle Auszahlung)")
+    }
         
         logger.info(f"Created Wise recipient {recipient['id']} for partner {partner['id']}")
         
