@@ -1,7 +1,7 @@
 /**
  * Partner Portal - Multi-Business Registration, QR Scanner & Voucher Management
  * Supports: Restaurants, Bars, Gas Stations, Cinemas, Retail, Wellness, Fitness, etc.
- * Features: Statistics with Charts, Stripe Connect Payouts, Document Verification, Staff Management
+ * Features: Statistics with Charts, Wise Bank Transfer Payouts, Document Verification, Staff Management
  */
 import { useState, useEffect, useRef } from 'react';
 import { 
