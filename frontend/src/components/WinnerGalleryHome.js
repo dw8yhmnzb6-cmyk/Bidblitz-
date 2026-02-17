@@ -272,6 +272,7 @@ export default function WinnerGalleryHome() {
   const t = galleryTexts[language] || galleryTexts.de;
   const [winners, setWinners] = useState(demoWinners);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [liveStats, setLiveStats] = useState({ totalWinners: 2847, totalSavings: 458920 });
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -282,11 +283,30 @@ export default function WinnerGalleryHome() {
         if (response.data?.winners?.length > 0) {
           setWinners(response.data.winners);
         }
+        // Update stats if available
+        if (response.data?.stats) {
+          setLiveStats(response.data.stats);
+        }
       } catch (error) {
         // Use demo data
       }
     };
     fetchWinners();
+    
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchWinners, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Animate stats counter
+  useEffect(() => {
+    const animateCounter = setInterval(() => {
+      setLiveStats(prev => ({
+        totalWinners: prev.totalWinners + Math.floor(Math.random() * 2),
+        totalSavings: prev.totalSavings + Math.floor(Math.random() * 150)
+      }));
+    }, 8000);
+    return () => clearInterval(animateCounter);
   }, []);
 
   // Auto-rotate testimonials
