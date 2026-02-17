@@ -138,20 +138,6 @@ async def setup_bank_account(token: str, data: WiseBankAccountRequest):
         "wise_connected": wise_connected,
         "message": "Bankkonto erfolgreich gespeichert" + (" (Wise verbunden)" if wise_connected else " (manuelle Auszahlung)")
     }
-        
-        logger.info(f"Created Wise recipient {recipient['id']} for partner {partner['id']}")
-        
-        return {
-            "success": True,
-            "recipient_id": recipient["id"],
-            "message": "Bankkonto erfolgreich verbunden"
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error setting up Wise bank account: {e}")
-        raise HTTPException(status_code=500, detail=f"Fehler beim Einrichten: {str(e)}")
 
 
 @router.get("/account-status")
@@ -168,7 +154,8 @@ async def get_wise_account_status(token: str):
         "account_holder": partner.get("wise_account_holder"),
         "iban_last4": partner.get("wise_iban"),
         "currency": partner.get("wise_currency", "EUR"),
-        "payouts_enabled": wise_setup
+        "payouts_enabled": wise_setup,
+        "wise_api_connected": partner.get("wise_api_connected", False)
     }
 
 
@@ -176,7 +163,7 @@ async def get_wise_account_status(token: str):
 
 @router.post("/request-payout")
 async def request_wise_payout(token: str, data: WisePayoutRequest):
-    """Request a payout via Wise transfer"""
+    """Request a payout via Wise transfer or manual processing"""
     from routers.partner_portal import get_current_partner
     partner = await get_current_partner(token)
     
