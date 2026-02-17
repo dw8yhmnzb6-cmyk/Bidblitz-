@@ -5,6 +5,78 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
+### ✅ Session Update - February 17, 2026 (Session 27) - 9 NEUE MARKETING-FEATURES ✅
+
+#### Alle 9 Features implementiert:
+
+**1. Partner Referral System ✅**
+- Partner werben Partner mit eindeutigem Empfehlungscode
+- €10 Bonus für Werber, €5 für neuen Partner
+- Tracking und Statistiken
+
+**2. Auto-Bid / Bid Buddy ✅** (bereits vorhanden)
+- Automatisches Bieten bis zu einem Maximum
+- Backend: `/app/backend/routers/bid_buddy.py`
+
+**3. Watchlist / Favoriten ✅** (bereits vorhanden)
+- Auktionen beobachten mit E-Mail-Erinnerungen
+- Backend: `/app/backend/routers/favorites.py`
+
+**4. Partner-Bewertungssystem ✅**
+- 1-5 Sterne nach Gutschein-Einlösung
+- Empfehlungsrate und Verteilung
+- Backend: `/app/backend/routers/partner_ratings.py`
+
+**5. Auktions-Sound-Alerts ✅**
+- Sound bei Überbieten
+- Countdown-Sounds (letzte 10 Sek)
+- Frontend: `/app/frontend/src/components/AuctionSounds.js`
+
+**6. QR-Code Generator für Partner ✅**
+- Druckbare QR-Codes für Profil, Gutscheine, Speisekarte
+- Download als PNG
+- Backend: `/app/backend/routers/partner_qr.py`
+
+**7. Social Media Sharing ✅**
+- Facebook, Twitter, WhatsApp, Telegram, LinkedIn, E-Mail
+- Tracking und Statistiken
+- Post-Ideen mit kopierbaren Texten
+- Backend: `/app/backend/routers/partner_social.py`
+
+**8. Lokale Radius-Suche ✅**
+- Partner in der Nähe finden (Haversine-Formel)
+- Filter nach Stadt und Geschäftstyp
+- Backend: `/app/backend/routers/partner_search.py`
+
+**9. Happy Hour / Flash Sales ✅**
+- Zeitbegrenzte Rabattaktionen
+- Countdown-Timer
+- Kundenbenachrichtigungen
+- Backend: `/app/backend/routers/partner_flash_sales.py`
+
+#### Neue Komponenten-Struktur:
+```
+/app/frontend/src/components/partner/
+├── PartnerMarketing.js       ✅ NEU - Enthält alle Marketing-Komponenten
+│   ├── PartnerReferral
+│   ├── PartnerQRCodes
+│   ├── PartnerFlashSales
+│   ├── PartnerSocialSharing
+│   └── PartnerRatingsOverview
+```
+
+```
+/app/backend/routers/
+├── partner_referral.py       ✅ NEU
+├── partner_ratings.py        ✅ NEU
+├── partner_qr.py             ✅ NEU
+├── partner_flash_sales.py    ✅ NEU
+├── partner_search.py         ✅ NEU
+├── partner_social.py         ✅ NEU
+```
+
+---
+
 ### ✅ Session Update - February 17, 2026 (Session 26) - PARTNER PORTAL REFACTORING ✅
 
 #### 1. PartnerPortal.js Refaktorierung (P0) ✅
