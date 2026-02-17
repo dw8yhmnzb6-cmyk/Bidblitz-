@@ -40,7 +40,7 @@ export default function PartnerPortal() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState('');
   const [partner, setPartner] = useState(null);
-  const [view, setView] = useState('login'); // login, register, scanner, vouchers, dashboard, create-voucher, statistics, payouts, profile
+  const [view, setView] = useState('login'); // login, register, scanner, vouchers, dashboard, create-voucher, statistics, payouts, profile, verification
   
   // Login state
   const [email, setEmail] = useState('');
@@ -78,6 +78,18 @@ export default function PartnerPortal() {
   // Dashboard state
   const [dashboardData, setDashboardData] = useState(null);
   const [vouchers, setVouchers] = useState([]);
+  
+  // Statistics state
+  const [statistics, setStatistics] = useState(null);
+  
+  // Stripe Connect state
+  const [stripeStatus, setStripeStatus] = useState(null);
+  const [payoutHistory, setPayoutHistory] = useState([]);
+  
+  // Verification state
+  const [documents, setDocuments] = useState([]);
+  const [verificationStatus, setVerificationStatus] = useState(null);
+  const [documentTypes, setDocumentTypes] = useState([]);
   
   // Create voucher state
   const [newVoucher, setNewVoucher] = useState({
