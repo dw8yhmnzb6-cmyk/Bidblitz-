@@ -5,6 +5,65 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
+### ✅ Session Update - February 17, 2026 (Session 23) - PARTNER PORTAL ERWEITERT 🏪
+
+**Partner Portal für alle Geschäftstypen implementiert:**
+
+#### Neue Geschäftstypen (14 insgesamt):
+- 🍕 Restaurant (10% Provision)
+- 🍺 Bar & Club (10% Provision)
+- ☕ Café (10% Provision)
+- ⛽ Tankstelle (8% Provision)
+- 🎬 Kino (12% Provision)
+- 🛒 Einzelhandel (10% Provision)
+- 💆 Wellness & Spa (12% Provision)
+- 🏋️ Fitness-Studio (10% Provision)
+- 💇 Friseur & Beauty (10% Provision)
+- 🏨 Hotel & Unterkunft (12% Provision)
+- 🎯 Unterhaltung (10% Provision)
+- 🛍️ Supermarkt (8% Provision)
+- 💊 Apotheke (8% Provision)
+- 🏪 Sonstiges (10% Provision)
+
+#### Features:
+1. **Multi-Step Bewerbungsformular** (3 Schritte)
+   - Schritt 1: Geschäftstyp wählen
+   - Schritt 2: Grunddaten (Firmenname, E-Mail, Telefon, Passwort)
+   - Schritt 3: Details (Adresse, PLZ, Stadt, Website, Steuernummer, IBAN)
+
+2. **Admin-Genehmigung** für neue Partner
+   - Bewerbungen müssen vom Admin genehmigt werden
+   - Automatische E-Mail nach Genehmigung (TODO)
+
+3. **Provisions-System**
+   - 8-12% je nach Geschäftstyp
+   - Automatische Berechnung bei Gutschein-Erstellung
+
+4. **Gutschein-Verwaltung**
+   - Partner können Gutscheine erstellen
+   - Wert, Preis, Gültigkeit, Bedingungen
+   - Automatische Auszahlungsberechnung
+
+5. **QR-Code Scanner** (wie bisher)
+   - Gutscheine scannen und einlösen
+   - Dashboard mit Statistiken
+
+**API-Endpunkte:**
+- `GET /api/partner-portal/business-types` - Alle Geschäftstypen
+- `POST /api/partner-portal/apply` - Bewerbung einreichen
+- `POST /api/partner-portal/login` - Partner-Login
+- `POST /api/partner-portal/vouchers/create` - Gutschein erstellen
+- `GET /api/partner-portal/dashboard` - Dashboard-Daten
+- `POST /api/partner-portal/redeem` - Gutschein einlösen
+- `GET /api/partner-portal/admin/pending-applications` - Offene Bewerbungen
+- `POST /api/partner-portal/admin/approve/{id}` - Bewerbung genehmigen
+
+**URLs:**
+- `/partner-portal` - Neues Partner Portal (Multi-Business)
+- `/restaurant-portal` - Legacy Restaurant Portal (weiterhin verfügbar)
+
+---
+
 ### ✅ Session Update - February 17, 2026 (Session 23) - RESTAURANT FEATURES VOLLSTÄNDIG VERIFIZIERT ✅
 
 **Alle Restaurant-Features getestet und funktionsfähig:**
