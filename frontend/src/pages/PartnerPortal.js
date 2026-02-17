@@ -973,7 +973,15 @@ export default function PartnerPortal() {
         counter: 'Касса', admin: 'Админ', name: 'Имя', role: 'Роль', active: 'Активен',
         inactive: 'Неактивен', delete: 'Удалить', save: 'Сохранить', cancel: 'Отмена',
         welcome: 'Добро пожаловать', notPartner: 'Еще не партнер?', applyNow: 'Подать заявку',
-        rememberMe: 'Запомнить меня', recentRedemptions: 'Последние использования', noRedemptions: 'Нет использований', value: 'Значение'
+        rememberMe: 'Запомнить меня', recentRedemptions: 'Последние использования', noRedemptions: 'Нет использований', value: 'Значение',
+        bankTransfer: 'Банковский перевод', enterBankDetails: 'Введите банковские данные', accountHolder: 'Владелец счета',
+        connectBank: 'Подключить банковский счет', bankConnected: 'Банковский счет подключен', disconnectBank: 'Отключить счет',
+        connect: 'Подключить', minPayout: 'Минимальная сумма выплаты', bankAdvantages: 'Преимущества:',
+        fastTransfer: 'Быстрые переводы (1-2 рабочих дня)', noFees: 'Без комиссии за переводы в EUR',
+        secureIban: 'Безопасная проверка IBAN', minAmount: 'Минимальная сумма всего €10',
+        ibanHint: 'IBAN вы найдете на банковской карте или в интернет-банкинге', payNow: 'Выплатить сейчас',
+        completed: 'Завершено', processing: 'Обработка', pendingStatus: 'В ожидании',
+        payoutHistory: 'История выплат', noPayouts: 'Выплат пока нет', iban: 'IBAN'
       },
       zh: {
         login: '登录', register: '注册', email: '邮箱', password: '密码',
@@ -985,7 +993,15 @@ export default function PartnerPortal() {
         counter: '柜台', admin: '管理员', name: '姓名', role: '角色', active: '活跃',
         inactive: '非活跃', delete: '删除', save: '保存', cancel: '取消',
         welcome: '欢迎', notPartner: '还不是合作伙伴？', applyNow: '立即申请',
-        rememberMe: '记住我', recentRedemptions: '最近兑换', noRedemptions: '暂无兑换', value: '价值'
+        rememberMe: '记住我', recentRedemptions: '最近兑换', noRedemptions: '暂无兑换', value: '价值',
+        bankTransfer: '银行转账', enterBankDetails: '输入银行信息', accountHolder: '账户持有人',
+        connectBank: '连接银行账户', bankConnected: '银行账户已连接', disconnectBank: '断开账户',
+        connect: '连接', minPayout: '最低付款金额', bankAdvantages: '优势:',
+        fastTransfer: '快速转账（1-2个工作日）', noFees: 'EUR转账无手续费',
+        secureIban: '安全的IBAN验证', minAmount: '最低金额仅€10',
+        ibanHint: '您可以在银行卡或网上银行中找到您的IBAN', payNow: '立即付款',
+        completed: '已完成', processing: '处理中', pendingStatus: '待处理',
+        payoutHistory: '付款历史', noPayouts: '暂无付款', iban: 'IBAN'
       },
       ja: {
         login: 'ログイン', register: '登録', email: 'メール', password: 'パスワード',
