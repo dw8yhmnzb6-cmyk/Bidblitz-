@@ -5,7 +5,36 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
-### ✅ Session Update - February 17, 2026 (Session 24) - PARTNER PORTAL + VERKAUFSBENACHRICHTIGUNG ✅
+### ✅ Session Update - February 17, 2026 (Session 24c) - ADMIN MOBILE UI + INDIVIDUELLE PROVISION ✅
+
+**Neu implementiert:**
+
+#### Admin Partner-Verwaltung Mobile Responsive ✅ NEU
+- **Mobile Kartenansicht** statt Tabelle für Partner-Liste
+- Übersichtliche Darstellung: Icon, Name, E-Mail, Typ, Stadt, Eingelöst, Ausstehend
+- **Individuelle Provision pro Partner** einstellbar (0-100%)
+- "Ändern" Button für direkte Provisions-Bearbeitung
+- Speichern/Abbrechen Buttons für Änderungen
+- Provision bei Genehmigung festlegbar
+
+**Neue Backend-Endpoints:**
+- `PUT /api/partner-portal/admin/update-commission/{partner_id}` - Provision ändern
+- `POST /api/partner-portal/admin/approve/{partner_id}?commission_rate=X` - Mit Provision genehmigen
+
+---
+
+### ✅ Session Update - February 17, 2026 (Session 24b) - PARTNER VERKAUFSBENACHRICHTIGUNG ✅
+
+#### Partner Verkaufsbenachrichtigung ✅
+- E-Mail an Partner wenn echter Kunde Gutschein gewinnt
+- **NICHT** bei Bot-Gewinnen (is_bot Check)
+- Zeigt: Produktname, Verkaufspreis, Provision, Gutschrift
+- Automatisch nach Auktionsende
+- Implementiert in: `/app/backend/services/winner_notifications.py`
+
+---
+
+### ✅ Session Update - February 17, 2026 (Session 24) - PARTNER PORTAL VOLLSTÄNDIG ✅
 
 **Alle Features implementiert und getestet (100% Erfolgsrate):**
 
@@ -14,28 +43,21 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - 3-Schritte Bewerbungsformular
 - Admin-Genehmigung erforderlich
 
-#### 2. Statistik-Dashboard mit Grafiken ✅ NEU
+#### 2. Statistik-Dashboard mit Grafiken ✅
 - Übersicht: Erstellt, Verkauft, Eingelöst mit Conversion/Redemption Rate
 - Finanzübersicht: Gesamtumsatz, Provision, Ausstehend, Ausgezahlt
 - SVG-Kreisdiagramm für Gutschein-Status (Verfügbar/Verkauft/Eingelöst)
 - Balkendiagramm für Einlösungen (letzte 30 Tage)
 - Top-Gutscheine Ranking
 
-#### 3. Stripe Connect Automatische Auszahlungen ✅ NEU
+#### 3. Stripe Connect Automatische Auszahlungen ✅
 - "Mit Stripe verbinden" Button für Express Connect Onboarding
 - Automatische Auszahlung bei verbundenem Konto
 - Mindestbetrag: €50
 - Auszahlungsverlauf mit Stripe Transfer IDs
 - Status-Anzeige (verbunden/nicht verbunden, payouts_enabled)
 
-#### 4. Partner Verkaufsbenachrichtigung ✅ NEU (Session 24b)
-- E-Mail an Partner wenn echter Kunde Gutschein gewinnt
-- **NICHT** bei Bot-Gewinnen (is_bot Check)
-- Zeigt: Produktname, Verkaufspreis, Provision, Gutschrift
-- Automatisch nach Auktionsende
-- Implementiert in: `/app/backend/services/winner_notifications.py`
-
-#### 4. Partner-Verifizierung mit Dokumenten ✅ NEU
+#### 4. Partner-Verifizierung mit Dokumenten ✅
 - 6 Dokumenttypen: Gewerbeanmeldung, Handelsregisterauszug, Steuerbescheinigung, Personalausweis, Adressnachweis, Kontoauszug
 - 2 erforderlich: Gewerbeanmeldung + Personalausweis
 - Upload-Status: Ausstehend → In Prüfung → Genehmigt/Abgelehnt
