@@ -317,6 +317,8 @@ export default function PartnerPortal() {
         minAmount: 'Minimum amount only €10',
         ibanHint: 'You can find your IBAN on your bank card or in online banking',
         payNow: 'Pay out now',
+        payoutAmount: 'Payout amount',
+        maxAmount: 'Max',
         completed: 'Completed',
         processing: 'Processing',
         pendingStatus: 'Pending',
