@@ -1430,7 +1430,7 @@ export default function PartnerPortal() {
                   className="w-4 h-4 text-amber-500 border-gray-300 rounded focus:ring-amber-500"
                 />
                 <label htmlFor="remember-me" className="text-sm text-gray-600">
-                  {language === 'en' ? 'Remember me' : 'Angemeldet bleiben'}
+                  {t('rememberMe')}
                 </label>
               </div>
               
