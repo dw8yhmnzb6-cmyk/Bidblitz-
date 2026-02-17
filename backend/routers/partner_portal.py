@@ -731,6 +731,16 @@ async def reject_application(partner_id: str, reason: str = "Nicht erfüllt die 
     
     logger.info(f"Partner application {partner_id} rejected: {reason}")
     
+    # Send rejection email
+    try:
+        await send_partner_rejected(
+            to_email=partner["email"],
+            business_name=partner["business_name"],
+            reason=reason
+        )
+    except Exception as e:
+        logger.error(f"Failed to send rejection email: {e}")
+    
     return {
         "success": True,
         "message": "Bewerbung abgelehnt",
