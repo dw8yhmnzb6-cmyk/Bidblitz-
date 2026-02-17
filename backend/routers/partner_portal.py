@@ -189,6 +189,16 @@ async def apply_as_partner(data: PartnerApplication):
     
     logger.info(f"New partner application: {data.business_name} ({data.business_type})")
     
+    # Send confirmation email
+    try:
+        await send_partner_application_received(
+            to_email=data.email,
+            business_name=data.business_name,
+            business_type=data.business_type
+        )
+    except Exception as e:
+        logger.error(f"Failed to send application email: {e}")
+    
     return {
         "success": True,
         "message": "Bewerbung erfolgreich eingereicht! Sie erhalten eine E-Mail, sobald Ihre Bewerbung geprüft wurde.",
