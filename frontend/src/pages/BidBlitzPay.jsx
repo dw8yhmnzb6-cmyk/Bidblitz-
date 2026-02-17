@@ -2,12 +2,206 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { 
   Wallet, QrCode, CreditCard, History, ChevronRight, 
   Store, RefreshCw, Euro, CheckCircle, AlertCircle,
-  Smartphone, ArrowUpRight, ArrowDownLeft, Gift
+  Smartphone, ArrowUpRight, ArrowDownLeft, Gift, Languages,
+  Plus, Minus, X
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
 
 const API = process.env.REACT_APP_BACKEND_URL;
+
+// Translations
+const translations = {
+  de: {
+    wallet: 'Geldbörse',
+    pay: 'Bezahlen',
+    history: 'Verlauf',
+    vouchers: 'Gutscheine',
+    availableBalance: 'Verfügbares Guthaben',
+    partnerVouchers: 'Partner-Gutscheine',
+    universal: 'Universal',
+    showQR: 'Zeige diesen QR-Code',
+    partnerScans: 'Der Partner scannt ihn zum Bezahlen',
+    availableForPayment: 'Verfügbar für Zahlung',
+    qrValidFor: 'QR-Code gültig für 5 Minuten',
+    generateNew: 'Neuen Code generieren',
+    howItWorks: 'So funktioniert\'s',
+    step1: 'Zeige dem Partner diesen QR-Code',
+    step2: 'Partner scannt und gibt Betrag ein',
+    step3: 'Bestätige die Zahlung',
+    step4: 'Fertig - Guthaben wird abgezogen',
+    transactionHistory: 'Transaktionsverlauf',
+    noTransactions: 'Noch keine Transaktionen',
+    noVouchers: 'Noch keine Gutscheine',
+    winVouchers: 'Gewinne Gutscheine bei Auktionen!',
+    toAuctions: 'Zu den Auktionen',
+    redeemableAt: 'Bei allen Partnern einlösbar',
+    of: 'von',
+    login: 'Einloggen',
+    pleaseLogin: 'Bitte einloggen, um fortzufahren',
+    credit: 'Gutschrift',
+    payment: 'Zahlung'
+  },
+  en: {
+    wallet: 'Wallet',
+    pay: 'Pay',
+    history: 'History',
+    vouchers: 'Vouchers',
+    availableBalance: 'Available Balance',
+    partnerVouchers: 'Partner Vouchers',
+    universal: 'Universal',
+    showQR: 'Show this QR Code',
+    partnerScans: 'The partner scans it to accept payment',
+    availableForPayment: 'Available for payment',
+    qrValidFor: 'QR code valid for 5 minutes',
+    generateNew: 'Generate new code',
+    howItWorks: 'How it works',
+    step1: 'Show the partner this QR code',
+    step2: 'Partner scans and enters amount',
+    step3: 'Confirm the payment',
+    step4: 'Done - Balance is deducted',
+    transactionHistory: 'Transaction History',
+    noTransactions: 'No transactions yet',
+    noVouchers: 'No vouchers yet',
+    winVouchers: 'Win vouchers at auctions!',
+    toAuctions: 'Go to auctions',
+    redeemableAt: 'Redeemable at all partners',
+    of: 'of',
+    login: 'Login',
+    pleaseLogin: 'Please login to continue',
+    credit: 'Credit',
+    payment: 'Payment'
+  },
+  fr: {
+    wallet: 'Portefeuille',
+    pay: 'Payer',
+    history: 'Historique',
+    vouchers: 'Bons',
+    availableBalance: 'Solde disponible',
+    partnerVouchers: 'Bons partenaires',
+    universal: 'Universel',
+    showQR: 'Montrez ce QR Code',
+    partnerScans: 'Le partenaire le scanne pour accepter le paiement',
+    availableForPayment: 'Disponible pour le paiement',
+    qrValidFor: 'QR code valide 5 minutes',
+    generateNew: 'Générer un nouveau code',
+    howItWorks: 'Comment ça marche',
+    step1: 'Montrez ce QR code au partenaire',
+    step2: 'Le partenaire scanne et entre le montant',
+    step3: 'Confirmez le paiement',
+    step4: 'Terminé - Le solde est déduit',
+    transactionHistory: 'Historique des transactions',
+    noTransactions: 'Pas encore de transactions',
+    noVouchers: 'Pas encore de bons',
+    winVouchers: 'Gagnez des bons aux enchères!',
+    toAuctions: 'Aller aux enchères',
+    redeemableAt: 'Utilisable chez tous les partenaires',
+    of: 'de',
+    login: 'Connexion',
+    pleaseLogin: 'Veuillez vous connecter pour continuer',
+    credit: 'Crédit',
+    payment: 'Paiement'
+  },
+  es: {
+    wallet: 'Cartera',
+    pay: 'Pagar',
+    history: 'Historial',
+    vouchers: 'Vales',
+    availableBalance: 'Saldo disponible',
+    partnerVouchers: 'Vales de socios',
+    universal: 'Universal',
+    showQR: 'Muestra este código QR',
+    partnerScans: 'El socio lo escanea para aceptar el pago',
+    availableForPayment: 'Disponible para pago',
+    qrValidFor: 'Código QR válido por 5 minutos',
+    generateNew: 'Generar nuevo código',
+    howItWorks: 'Cómo funciona',
+    step1: 'Muestra este código QR al socio',
+    step2: 'El socio escanea e ingresa el monto',
+    step3: 'Confirma el pago',
+    step4: 'Listo - Se deduce el saldo',
+    transactionHistory: 'Historial de transacciones',
+    noTransactions: 'Aún no hay transacciones',
+    noVouchers: 'Aún no hay vales',
+    winVouchers: '¡Gana vales en subastas!',
+    toAuctions: 'Ir a subastas',
+    redeemableAt: 'Canjeable en todos los socios',
+    of: 'de',
+    login: 'Iniciar sesión',
+    pleaseLogin: 'Por favor inicie sesión para continuar',
+    credit: 'Crédito',
+    payment: 'Pago'
+  },
+  tr: {
+    wallet: 'Cüzdan',
+    pay: 'Öde',
+    history: 'Geçmiş',
+    vouchers: 'Kuponlar',
+    availableBalance: 'Mevcut Bakiye',
+    partnerVouchers: 'Partner Kuponları',
+    universal: 'Evrensel',
+    showQR: 'Bu QR Kodunu Göster',
+    partnerScans: 'Partner ödeme için tarar',
+    availableForPayment: 'Ödeme için mevcut',
+    qrValidFor: 'QR kod 5 dakika geçerli',
+    generateNew: 'Yeni kod oluştur',
+    howItWorks: 'Nasıl çalışır',
+    step1: 'Partnere bu QR kodu göster',
+    step2: 'Partner tarar ve tutarı girer',
+    step3: 'Ödemeyi onayla',
+    step4: 'Bitti - Bakiye düşüldü',
+    transactionHistory: 'İşlem Geçmişi',
+    noTransactions: 'Henüz işlem yok',
+    noVouchers: 'Henüz kupon yok',
+    winVouchers: 'Açık artırmalarda kupon kazan!',
+    toAuctions: 'Açık artırmalara git',
+    redeemableAt: 'Tüm partnerlerde geçerli',
+    of: '/',
+    login: 'Giriş',
+    pleaseLogin: 'Devam etmek için giriş yapın',
+    credit: 'Kredi',
+    payment: 'Ödeme'
+  },
+  ar: {
+    wallet: 'المحفظة',
+    pay: 'الدفع',
+    history: 'السجل',
+    vouchers: 'القسائم',
+    availableBalance: 'الرصيد المتاح',
+    partnerVouchers: 'قسائم الشركاء',
+    universal: 'عالمي',
+    showQR: 'أظهر رمز QR هذا',
+    partnerScans: 'يقوم الشريك بمسحه لقبول الدفع',
+    availableForPayment: 'متاح للدفع',
+    qrValidFor: 'رمز QR صالح لمدة 5 دقائق',
+    generateNew: 'إنشاء رمز جديد',
+    howItWorks: 'كيف يعمل',
+    step1: 'أظهر للشريك رمز QR هذا',
+    step2: 'يقوم الشريك بالمسح وإدخال المبلغ',
+    step3: 'أكد الدفع',
+    step4: 'تم - تم خصم الرصيد',
+    transactionHistory: 'سجل المعاملات',
+    noTransactions: 'لا توجد معاملات بعد',
+    noVouchers: 'لا توجد قسائم بعد',
+    winVouchers: 'اربح قسائم في المزادات!',
+    toAuctions: 'اذهب إلى المزادات',
+    redeemableAt: 'قابلة للاستبدال عند جميع الشركاء',
+    of: 'من',
+    login: 'تسجيل الدخول',
+    pleaseLogin: 'الرجاء تسجيل الدخول للمتابعة',
+    credit: 'رصيد',
+    payment: 'دفع'
+  }
+};
+
+const languages = [
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+  { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+];
 
 const BidBlitzPay = () => {
   const [wallet, setWallet] = useState(null);
@@ -16,8 +210,13 @@ const BidBlitzPay = () => {
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
   const [view, setView] = useState('wallet'); // wallet, qr, history
+  const [language, setLanguage] = useState(() => localStorage.getItem('bidblitz_language') || 'de');
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
   const token = localStorage.getItem('token') || sessionStorage.getItem('token') || localStorage.getItem('bidblitz_token');
+  
+  const t = (key) => translations[language]?.[key] || translations.de[key] || key;
+  const isRTL = language === 'ar';
 
   const fetchWallet = useCallback(async () => {
     if (!token) return;
@@ -57,7 +256,7 @@ const BidBlitzPay = () => {
 
   const generateQR = async () => {
     if (!token) {
-      toast.error('Bitte einloggen');
+      toast.error(t('pleaseLogin'));
       return;
     }
     
@@ -72,11 +271,11 @@ const BidBlitzPay = () => {
         setShowQR(true);
         setView('qr');
       } else {
-        toast.error('Fehler beim Generieren des QR-Codes');
+        toast.error('Error generating QR code');
       }
     } catch (error) {
       console.error('Error generating QR:', error);
-      toast.error('Fehler beim Generieren des QR-Codes');
+      toast.error('Error generating QR code');
     }
   };
 
@@ -84,6 +283,10 @@ const BidBlitzPay = () => {
     fetchWallet();
     fetchTransactions();
   }, [fetchWallet, fetchTransactions]);
+
+  useEffect(() => {
+    localStorage.setItem('bidblitz_language', language);
+  }, [language]);
 
   // Auto-refresh QR code every 4 minutes
   useEffect(() => {
@@ -95,13 +298,13 @@ const BidBlitzPay = () => {
 
   if (!token) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white flex items-center justify-center p-4" dir={isRTL ? 'rtl' : 'ltr'}>
         <div className="text-center">
           <Wallet className="w-16 h-16 text-amber-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-800 mb-2">BidBlitz Pay</h1>
-          <p className="text-gray-600 mb-4">Bitte einloggen, um fortzufahren</p>
+          <p className="text-gray-600 mb-4">{t('pleaseLogin')}</p>
           <Button onClick={() => window.location.href = '/login'} className="bg-amber-500 hover:bg-amber-600">
-            Einloggen
+            {t('login')}
           </Button>
         </div>
       </div>
@@ -109,7 +312,7 @@ const BidBlitzPay = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white pb-20" dir={isRTL ? 'rtl' : 'ltr'}>
       {/* Header */}
       <div className="bg-gradient-to-r from-amber-500 to-orange-500 text-white p-4 sm:p-6">
         <div className="max-w-lg mx-auto">
@@ -118,29 +321,61 @@ const BidBlitzPay = () => {
               <Wallet className="w-6 h-6" />
               <h1 className="text-xl font-bold">BidBlitz Pay</h1>
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={fetchWallet}
-              className="text-white hover:bg-white/20"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {/* Language Selector */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLangMenu(!showLangMenu)}
+                  className="flex items-center gap-1 text-white/80 hover:text-white p-1.5 rounded"
+                >
+                  <span>{languages.find(l => l.code === language)?.flag}</span>
+                </button>
+                
+                {showLangMenu && (
+                  <div className="absolute top-full right-0 mt-1 bg-white rounded-lg shadow-lg py-1 z-50 min-w-[130px]">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setShowLangMenu(false);
+                        }}
+                        className={`w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-amber-50 ${
+                          language === lang.code ? 'bg-amber-50 text-amber-600' : 'text-gray-700'
+                        }`}
+                      >
+                        <span>{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={fetchWallet}
+                className="text-white hover:bg-white/20"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
           
           {/* Balance Card */}
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
-            <p className="text-white/80 text-sm mb-1">Verfügbares Guthaben</p>
+            <p className="text-white/80 text-sm mb-1">{t('availableBalance')}</p>
             <p className="text-3xl font-bold">
               €{(wallet?.wallet?.total_value || 0).toFixed(2)}
             </p>
             <div className="flex gap-4 mt-3 text-sm">
               <div>
-                <p className="text-white/70">Partner-Gutscheine</p>
+                <p className="text-white/70">{t('partnerVouchers')}</p>
                 <p className="font-semibold">€{(wallet?.wallet?.partner_vouchers_value || 0).toFixed(2)}</p>
               </div>
               <div>
-                <p className="text-white/70">Universal</p>
+                <p className="text-white/70">{t('universal')}</p>
                 <p className="font-semibold">€{(wallet?.wallet?.universal_balance || 0).toFixed(2)}</p>
               </div>
             </div>
@@ -158,7 +393,7 @@ const BidBlitzPay = () => {
             }`}
           >
             <Gift className="w-4 h-4 inline mr-1" />
-            Gutscheine
+            {t('vouchers')}
           </button>
           <button
             onClick={() => { setView('qr'); generateQR(); }}
@@ -167,7 +402,7 @@ const BidBlitzPay = () => {
             }`}
           >
             <QrCode className="w-4 h-4 inline mr-1" />
-            Bezahlen
+            {t('pay')}
           </button>
           <button
             onClick={() => { setView('history'); fetchTransactions(); }}
@@ -176,7 +411,7 @@ const BidBlitzPay = () => {
             }`}
           >
             <History className="w-4 h-4 inline mr-1" />
-            Verlauf
+            {t('history')}
           </button>
         </div>
       </div>
@@ -196,7 +431,7 @@ const BidBlitzPay = () => {
                   <div>
                     <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
                       <Store className="w-4 h-4" />
-                      Partner-Gutscheine
+                      {t('partnerVouchers')}
                     </h3>
                     <div className="space-y-3">
                       {wallet.partner_vouchers.map((voucher) => (
@@ -219,7 +454,7 @@ const BidBlitzPay = () => {
                                 €{(voucher.remaining_value || voucher.value).toFixed(2)}
                               </p>
                               {voucher.remaining_value < voucher.value && (
-                                <p className="text-xs text-gray-400">von €{voucher.value.toFixed(2)}</p>
+                                <p className="text-xs text-gray-400">{t('of')} €{voucher.value.toFixed(2)}</p>
                               )}
                             </div>
                           </div>
@@ -234,7 +469,7 @@ const BidBlitzPay = () => {
                   <div>
                     <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-2">
                       <CreditCard className="w-4 h-4" />
-                      Universal-Guthaben
+                      {t('universal')}
                     </h3>
                     <div className="space-y-3">
                       {wallet.universal_vouchers.map((voucher) => (
@@ -249,7 +484,7 @@ const BidBlitzPay = () => {
                               </div>
                               <div>
                                 <p className="font-semibold text-gray-800">{voucher.name}</p>
-                                <p className="text-sm text-purple-600">Bei allen Partnern einlösbar</p>
+                                <p className="text-sm text-purple-600">{t('redeemableAt')}</p>
                               </div>
                             </div>
                             <div className="text-right">
@@ -268,15 +503,15 @@ const BidBlitzPay = () => {
                 {(!wallet?.vouchers || wallet.vouchers.length === 0) && (
                   <div className="text-center py-12 bg-gray-50 rounded-xl">
                     <Gift className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                    <p className="text-gray-500">Noch keine Gutscheine</p>
+                    <p className="text-gray-500">{t('noVouchers')}</p>
                     <p className="text-sm text-gray-400 mt-1">
-                      Gewinne Gutscheine bei Auktionen!
+                      {t('winVouchers')}
                     </p>
                     <Button 
                       onClick={() => window.location.href = '/'}
                       className="mt-4 bg-amber-500 hover:bg-amber-600"
                     >
-                      Zu den Auktionen
+                      {t('toAuctions')}
                     </Button>
                   </div>
                 )}
@@ -291,8 +526,8 @@ const BidBlitzPay = () => {
             <div className="bg-white rounded-2xl p-6 shadow-lg text-center">
               <div className="mb-4">
                 <Smartphone className="w-8 h-8 text-amber-500 mx-auto mb-2" />
-                <h2 className="text-lg font-bold text-gray-800">Zeige diesen QR-Code</h2>
-                <p className="text-sm text-gray-500">Der Partner scannt ihn zum Bezahlen</p>
+                <h2 className="text-lg font-bold text-gray-800">{t('showQR')}</h2>
+                <p className="text-sm text-gray-500">{t('partnerScans')}</p>
               </div>
 
               {qrCode ? (
@@ -306,14 +541,14 @@ const BidBlitzPay = () => {
                   </div>
                   
                   <div className="bg-amber-50 rounded-xl p-4">
-                    <p className="text-xs text-amber-600 mb-2">Verfügbar für Zahlung:</p>
+                    <p className="text-xs text-amber-600 mb-2">{t('availableForPayment')}:</p>
                     <p className="text-2xl font-bold text-amber-700">
                       €{(qrCode.wallet_summary?.total_value || 0).toFixed(2)}
                     </p>
                   </div>
 
                   <p className="text-xs text-gray-400">
-                    QR-Code gültig für 5 Minuten
+                    {t('qrValidFor')}
                   </p>
 
                   <Button 
@@ -322,13 +557,12 @@ const BidBlitzPay = () => {
                     className="w-full"
                   >
                     <RefreshCw className="w-4 h-4 mr-2" />
-                    Neuen Code generieren
+                    {t('generateNew')}
                   </Button>
                 </div>
               ) : (
                 <div className="py-8">
                   <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto" />
-                  <p className="text-gray-500 mt-2">Generiere QR-Code...</p>
                 </div>
               )}
             </div>
@@ -337,12 +571,12 @@ const BidBlitzPay = () => {
               <div className="flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-blue-800">
-                  <p className="font-medium mb-1">So funktioniert's:</p>
+                  <p className="font-medium mb-1">{t('howItWorks')}:</p>
                   <ol className="list-decimal list-inside space-y-1 text-blue-700">
-                    <li>Zeige dem Partner diesen QR-Code</li>
-                    <li>Partner scannt und gibt Betrag ein</li>
-                    <li>Bestätige die Zahlung</li>
-                    <li>Fertig - Guthaben wird abgezogen</li>
+                    <li>{t('step1')}</li>
+                    <li>{t('step2')}</li>
+                    <li>{t('step3')}</li>
+                    <li>{t('step4')}</li>
                   </ol>
                 </div>
               </div>
@@ -355,7 +589,7 @@ const BidBlitzPay = () => {
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
               <History className="w-4 h-4" />
-              Transaktionsverlauf
+              {t('transactionHistory')}
             </h3>
 
             {transactions.length > 0 ? (
@@ -378,10 +612,10 @@ const BidBlitzPay = () => {
                         </div>
                         <div>
                           <p className="font-medium text-gray-800">
-                            {tx.type === 'payment' ? tx.partner_name : 'Gutschrift'}
+                            {tx.type === 'payment' ? tx.partner_name : t('credit')}
                           </p>
                           <p className="text-xs text-gray-500">
-                            {new Date(tx.created_at).toLocaleDateString('de-DE', {
+                            {new Date(tx.created_at).toLocaleDateString(language === 'ar' ? 'ar-SA' : language + '-' + language.toUpperCase(), {
                               day: '2-digit',
                               month: '2-digit',
                               year: 'numeric',
@@ -405,7 +639,6 @@ const BidBlitzPay = () => {
                     
                     {tx.used_vouchers?.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-gray-100">
-                        <p className="text-xs text-gray-500 mb-1">Verwendete Gutscheine:</p>
                         <div className="flex flex-wrap gap-1">
                           {tx.used_vouchers.map((v, i) => (
                             <span key={i} className="text-xs bg-gray-100 px-2 py-1 rounded">
@@ -421,7 +654,7 @@ const BidBlitzPay = () => {
             ) : (
               <div className="text-center py-12 bg-gray-50 rounded-xl">
                 <History className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">Noch keine Transaktionen</p>
+                <p className="text-gray-500">{t('noTransactions')}</p>
               </div>
             )}
           </div>
