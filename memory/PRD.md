@@ -5,6 +5,31 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 17, 2026)
 
+### ✅ Session Update - February 17, 2026 (Session 24g) - LOGIN BUGFIX ✅
+
+**Bugfix: "Body is disturbed or locked" Error beim Partner-Login behoben**
+
+#### Problem
+- Bei fehlgeschlagenem Login (falsche Credentials) erschien ein technischer Fehler:
+  - "Failed to execute 'json' on 'Response': body stream already read"
+  - "Failed to execute 'clone' on 'Response': Response body is already used"
+- Ursache: Das Emergent-Platform-Script (`emergent-main.js`) verwendet einen globalen Fetch-Interceptor, der den Response-Body liest, bevor unser Code ihn erreicht.
+
+#### Lösung
+- **Login-Funktion von `fetch` auf `axios` umgestellt** in `/app/frontend/src/pages/PartnerPortal.js`
+- Axios verwendet seinen eigenen HTTP-Client und ist nicht vom globalen Fetch-Interceptor betroffen
+- Fehlerbehandlung zeigt jetzt korrekt die Server-Fehlermeldung an (z.B. "Ungültige Anmeldedaten")
+
+#### Weitere Verbesserungen
+- Alle anderen fetch-Aufrufe im Partner-Portal mit konsistentem Error-Handling-Muster aktualisiert
+- Body wird nur einmal gelesen, dann sofort `response.ok` geprüft
+
+**Getestet:**
+- ❌ Falscher Login → Zeigt "Ungültige Anmeldedaten" (korrekt)
+- ✅ Korrekter Login → Dashboard wird geladen (korrekt)
+
+---
+
 ### ✅ Session Update - February 17, 2026 (Session 24f) - INTERNATIONALE SPRACHEN + KUNDEN-WALLET ✅
 
 **Neue Features:**
