@@ -291,66 +291,6 @@ async def request_wise_payout(token: str, data: WisePayoutRequest):
             "status": payout_status,
             "message": f"Auszahlung von €{payout_amount:.2f} wird automatisch verarbeitet"
         }
-            
-            transfer = transfer_response.json()
-            transfer_id = transfer["id"]
-            
-            # Step 3: Fund the transfer (from Wise balance)
-            fund_response = await client.post(
-                f"{WISE_API_URL}/v3/profiles/{profile_id}/transfers/{transfer_id}/payments",
-                headers=await get_wise_headers(),
-                json={"type": "BALANCE"},
-                timeout=30.0
-            )
-            
-            if fund_response.status_code >= 400:
-                error = fund_response.json() if fund_response.content else {}
-                logger.error(f"Wise funding error: {error}")
-                # Transfer created but not funded - still log it
-                fund_status = "pending_funding"
-            else:
-                fund_status = "processing"
-        
-        # Record payout in database
-        payout_record = {
-            "id": f"wise_{transfer_id}",
-            "partner_id": partner["id"],
-            "wise_transfer_id": transfer_id,
-            "wise_quote_id": quote_id,
-            "amount": payout_amount,
-            "currency": partner.get("wise_currency", "EUR"),
-            "status": fund_status,
-            "reference": data.reference,
-            "requested_at": datetime.now(timezone.utc).isoformat()
-        }
-        
-        await db.partner_payouts.insert_one(payout_record)
-        
-        # Update partner's pending payout
-        new_pending = max(0, pending_amount - payout_amount)
-        await partner_collection.update_one(
-            {"id": partner["id"]},
-            {"$set": {
-                "pending_payout": new_pending,
-                "last_payout_at": datetime.now(timezone.utc).isoformat()
-            }}
-        )
-        
-        logger.info(f"Wise payout {transfer_id} created for partner {partner['id']}: €{payout_amount}")
-        
-        return {
-            "success": True,
-            "transfer_id": transfer_id,
-            "amount": payout_amount,
-            "status": fund_status,
-            "message": f"Auszahlung von €{payout_amount:.2f} wird verarbeitet"
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error processing Wise payout: {e}")
-        raise HTTPException(status_code=500, detail=f"Fehler bei der Auszahlung: {str(e)}")
 
 
 @router.get("/payout-history")
