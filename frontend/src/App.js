@@ -737,6 +737,7 @@ function AppContent() {
           <Route path="/restaurant-gutscheine" element={<RestaurantVouchersPage />} />
           <Route path="/restaurant-vouchers" element={<RestaurantVouchersPage />} />
           <Route path="/restaurants" element={<RestaurantVouchersPage />} />
+          <Route path="/restaurant-portal" element={<RestaurantPortal />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
