@@ -1130,19 +1130,28 @@ export default function PartnerPortal() {
         <nav className="bg-white border-b sticky top-14 z-10">
           <div className="max-w-4xl mx-auto px-4 flex gap-1 overflow-x-auto">
             {[
-              { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-              { id: 'scanner', label: 'Scanner', icon: Scan },
-              { id: 'bidblitz-pay', label: 'Pay', icon: CreditCard },
-              { id: 'vouchers', label: 'Gutscheine', icon: Ticket },
-              { id: 'statistics', label: 'Statistiken', icon: TrendingUp },
-              { id: 'payouts', label: 'Auszahlungen', icon: Euro },
-              { id: 'verification', label: 'Verifizierung', icon: Shield },
-              { id: 'profile', label: 'Profil', icon: User },
+              // Admin-only tabs
+              ...(userRole === 'admin' ? [{ id: 'dashboard', label: t('dashboard'), icon: BarChart3 }] : []),
+              // Both roles
+              { id: 'scanner', label: t('scanner'), icon: Scan },
+              { id: 'bidblitz-pay', label: t('pay'), icon: CreditCard },
+              // Admin-only tabs
+              ...(userRole === 'admin' ? [
+                { id: 'vouchers', label: t('vouchers'), icon: Ticket },
+                { id: 'statistics', label: t('statistics'), icon: TrendingUp },
+                { id: 'payouts', label: t('payouts'), icon: Euro },
+                { id: 'verification', label: t('verification'), icon: Shield },
+                { id: 'profile', label: t('profile'), icon: User },
+                { id: 'staff', label: t('staff'), icon: Users },
+              ] : []),
             ].map((item) => (
               <button
                 key={item.id}
-                onClick={() => setView(item.id)}
-                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                onClick={() => {
+                  if (item.id === 'staff') fetchStaff();
+                  setView(item.id);
+                }}
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
                   view === item.id
                     ? 'border-amber-500 text-amber-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -1157,25 +1166,25 @@ export default function PartnerPortal() {
         
         {/* Content */}
         <main className="max-w-4xl mx-auto px-4 py-6">
-          {/* Dashboard View */}
-          {view === 'dashboard' && dashboardData && (
+          {/* Dashboard View - Admin Only */}
+          {view === 'dashboard' && userRole === 'admin' && dashboardData && (
             <div className="space-y-6">
               {/* Stats Cards */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <p className="text-gray-500 text-sm">Ausstehend</p>
+                  <p className="text-gray-500 text-sm">{t('pending')}</p>
                   <p className="text-2xl font-bold text-green-600">€{dashboardData.stats.pending_payout?.toFixed(2)}</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <p className="text-gray-500 text-sm">Eingelöst</p>
+                  <p className="text-gray-500 text-sm">{t('redeemed')}</p>
                   <p className="text-2xl font-bold text-amber-600">{dashboardData.stats.total_redeemed}</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <p className="text-gray-500 text-sm">Verkauft</p>
+                  <p className="text-gray-500 text-sm">{t('sold')}</p>
                   <p className="text-2xl font-bold text-blue-600">{dashboardData.vouchers.sold}</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 shadow-sm">
-                  <p className="text-gray-500 text-sm">Provision</p>
+                  <p className="text-gray-500 text-sm">{t('commission')}</p>
                   <p className="text-2xl font-bold text-gray-600">{partner?.commission_rate}%</p>
                 </div>
               </div>
