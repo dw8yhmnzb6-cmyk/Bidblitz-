@@ -166,6 +166,7 @@ from routers.fraud_detection import fraud_detection_router
 from routers.winback import winback_router
 from routers.abandoned_cart import abandoned_cart_router
 from routers.sustainability import router as sustainability_router
+from routers.microsoft_auth import microsoft_auth_router
 
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
