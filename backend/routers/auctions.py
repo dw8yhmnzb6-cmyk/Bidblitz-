@@ -384,22 +384,6 @@ async def get_featured_auction():
 async def get_auctions():
     """Get all auctions with product details - CACHED & OPTIMIZED"""
     return await get_cached_auctions()
-        
-        # Mark paused auctions with appropriate message
-        if auction.get("status") == "day_paused":
-            auction["is_paused"] = True
-            auction["pause_message"] = "☀️ Aktiv ab 06:00 Uhr"
-            auction["pause_type"] = "night_only"
-        elif auction.get("status") == "night_paused":
-            auction["is_paused"] = True
-            auction["pause_message"] = "🌙 Aktiv ab 23:30 Uhr"
-            auction["pause_type"] = "day_only"
-        elif auction.get("is_night_auction") and not is_night_time:
-            # Legacy support for auctions marked as night but not properly paused
-            auction["is_night_paused"] = True
-            auction["night_message"] = "🌙 Nur 23:30-06:00 Uhr"
-    
-    return auctions
 
 @router.get("/auctions/ended")
 async def get_ended_auctions(limit: int = 50):
