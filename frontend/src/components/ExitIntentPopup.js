@@ -7,7 +7,7 @@ const translations = {
   de: {
     wait: "Warte!",
     title: "Hier sind 5 Gratis-Gebote",
-    subtitle: "für deinen Start bei bidblitz.ae!",
+    subtitle: "für deinen Start bei BidBlitz.ae!",
     description: "Registriere dich jetzt und erhalte sofort 5 kostenlose Gebote, um deine erste Auktion zu gewinnen.",
     cta: "Jetzt Gratis-Gebote sichern",
     noThanks: "Nein, danke",
@@ -16,7 +16,7 @@ const translations = {
   en: {
     wait: "Wait!",
     title: "Here are 5 Free Bids",
-    subtitle: "for your start at bidblitz.ae!",
+    subtitle: "for your start at BidBlitz.ae!",
     description: "Register now and instantly receive 5 free bids to win your first auction.",
     cta: "Claim Free Bids Now",
     noThanks: "No, thanks",
@@ -25,7 +25,7 @@ const translations = {
   sq: {
     wait: "Prit!",
     title: "Ja 5 Oferta Falas",
-    subtitle: "për fillimin tënd në bidblitz.ae!",
+    subtitle: "për fillimin tënd në BidBlitz.ae!",
     description: "Regjistrohu tani dhe merr menjëherë 5 oferta falas për të fituar ankadin e parë.",
     cta: "Merr Ofertat Falas Tani",
     noThanks: "Jo, faleminderit",
@@ -34,7 +34,7 @@ const translations = {
   xk: {
     wait: "Prit!",
     title: "Ja 5 Oferta Falas",
-    subtitle: "për fillimin tënd në bidblitz.ae!",
+    subtitle: "për fillimin tënd në BidBlitz.ae!",
     description: "Regjistrohu tani dhe merr menjëherë 5 oferta falas për të fituar ankadin e parë.",
     cta: "Merr Ofertat Falas Tani",
     noThanks: "Jo, faleminderit",
@@ -43,7 +43,7 @@ const translations = {
   tr: {
     wait: "Bekle!",
     title: "İşte 5 Ücretsiz Teklif",
-    subtitle: "bidblitz.ae'e başlangıcın için!",
+    subtitle: "BidBlitz.ae'e başlangıcın için!",
     description: "Şimdi kayıt ol ve ilk açık artırmanı kazanmak için anında 5 ücretsiz teklif al.",
     cta: "Şimdi Ücretsiz Teklifleri Al",
     noThanks: "Hayır, teşekkürler",
@@ -52,7 +52,7 @@ const translations = {
   fr: {
     wait: "Attendez!",
     title: "Voici 5 Enchères Gratuites",
-    subtitle: "pour votre début chez bidblitz.ae!",
+    subtitle: "pour votre début chez BidBlitz.ae!",
     description: "Inscrivez-vous maintenant et recevez instantanément 5 enchères gratuites pour gagner votre première vente aux enchères.",
     cta: "Réclamez les Enchères Gratuites",
     noThanks: "Non, merci",

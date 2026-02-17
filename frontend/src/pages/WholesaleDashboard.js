@@ -326,7 +326,7 @@ export default function WholesaleDashboard() {
               <Building2 className="w-5 h-5 text-white" />
             </div>
             <div>
-              <span className="text-xl font-bold text-white">bidblitz.ae</span>
+              <span className="text-xl font-bold text-white">BidBlitz.ae</span>
               <span className="text-cyan-400 font-bold ml-1">B2B</span>
             </div>
           </div>
@@ -945,7 +945,7 @@ export default function WholesaleDashboard() {
             
             <div className="mt-6 pt-6 border-t border-slate-700">
               <p className="text-slate-400 text-sm mb-2">Für Änderungen an Ihrem Profil kontaktieren Sie bitte:</p>
-              <p className="text-cyan-400">b2b@bidblitz.ae</p>
+              <p className="text-cyan-400">b2b@BidBlitz.ae</p>
             </div>
           </div>
         )}

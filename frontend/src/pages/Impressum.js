@@ -63,7 +63,7 @@ export default function Impressum() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">Anbieter</h2>
                 <div className="text-[#94A3B8] space-y-1">
-                  <p className="font-semibold text-white">bidblitz.ae FZCO</p>
+                  <p className="font-semibold text-white">BidBlitz.ae FZCO</p>
                   <p>Dubai Silicon Oasis</p>
                   <p>DDP, Building A1</p>
                   <p>Dubai, Vereinigte Arabische Emirate</p>
@@ -81,7 +81,7 @@ export default function Impressum() {
               <section className="space-y-3">
                 <h2 className="text-xl font-bold text-white">Kontakt</h2>
                 <div className="text-[#94A3B8] space-y-1">
-                  <p>E-Mail: info@bidblitz.ae</p>
+                  <p>E-Mail: info@BidBlitz.ae</p>
                   <p>Telefon: +971 4 501 2345</p>
                 </div>
               </section>
@@ -105,7 +105,7 @@ export default function Impressum() {
                 <h2 className="text-xl font-bold text-white">Verantwortlich für den Inhalt</h2>
                 <div className="text-[#94A3B8] space-y-1">
                   <p className="font-semibold text-white">Afrim Krasniqi</p>
-                  <p>bidblitz.ae FZCO</p>
+                  <p>BidBlitz.ae FZCO</p>
                   <p>Dubai Silicon Oasis, DDP Building A1</p>
                   <p>Dubai, VAE</p>
                 </div>

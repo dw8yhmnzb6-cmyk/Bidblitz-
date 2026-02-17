@@ -1,4 +1,4 @@
-// Push Notification Utilities for bidblitz.ae
+// Push Notification Utilities for BidBlitz.ae
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 

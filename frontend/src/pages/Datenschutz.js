@@ -64,11 +64,11 @@ export default function Datenschutz() {
                 <h2 className="text-xl font-bold text-white">1. Verantwortlicher</h2>
                 <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
                 <div className="bg-white/5 rounded-lg p-4 mt-2">
-                  <p className="font-semibold text-white">bidblitz.ae FZCO</p>
+                  <p className="font-semibold text-white">BidBlitz.ae FZCO</p>
                   <p>Dubai Silicon Oasis, DDP Building A1</p>
                   <p>Dubai, Vereinigte Arabische Emirate</p>
                   <p>CEO: Afrim Krasniqi</p>
-                  <p>E-Mail: datenschutz@bidblitz.ae</p>
+                  <p>E-Mail: datenschutz@BidBlitz.ae</p>
                 </div>
               </section>
 
@@ -85,7 +85,7 @@ export default function Datenschutz() {
                 <h2 className="text-xl font-bold text-white">3. Datenerfassung auf dieser Website</h2>
                 <h3 className="text-lg font-semibold text-white mt-4">3.1 Wer ist verantwortlich?</h3>
                 <p>
-                  Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber bidblitz.ae FZCO.
+                  Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber BidBlitz.ae FZCO.
                 </p>
 
                 <h3 className="text-lg font-semibold text-white mt-4">3.2 Wie erfassen wir Ihre Daten?</h3>
@@ -116,7 +116,7 @@ export default function Datenschutz() {
                   <li><strong className="text-white">Widerspruch</strong> gegen die Verarbeitung</li>
                 </ul>
                 <p className="mt-2">
-                  Zur Ausübung dieser Rechte kontaktieren Sie uns unter: datenschutz@bidblitz.ae
+                  Zur Ausübung dieser Rechte kontaktieren Sie uns unter: datenschutz@BidBlitz.ae
                 </p>
               </section>
 
@@ -183,8 +183,8 @@ export default function Datenschutz() {
               <div className="mt-8 p-4 bg-white/5 rounded-lg">
                 <p className="text-sm">
                   <strong className="text-white">Fragen zum Datenschutz?</strong><br />
-                  Kontaktieren Sie uns: datenschutz@bidblitz.ae<br /><br />
-                  <strong className="text-white">bidblitz.ae FZCO</strong><br />
+                  Kontaktieren Sie uns: datenschutz@BidBlitz.ae<br /><br />
+                  <strong className="text-white">BidBlitz.ae FZCO</strong><br />
                   Dubai Silicon Oasis, DDP Building A1<br />
                   Dubai, Vereinigte Arabische Emirate<br />
                   CEO: Afrim Krasniqi

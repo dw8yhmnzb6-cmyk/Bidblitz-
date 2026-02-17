@@ -11,7 +11,7 @@ const translations = {
   de: {
     title: 'Herzlichen Glückwunsch!',
     subtitle: 'Du hast gewonnen',
-    question: 'Wie wahrscheinlich würdest du bidblitz.ae weiterempfehlen?',
+    question: 'Wie wahrscheinlich würdest du BidBlitz.ae weiterempfehlen?',
     notLikely: 'Unwahrscheinlich',
     veryLikely: 'Sehr wahrscheinlich',
     feedbackPlaceholder: 'Was hat dir gefallen oder was können wir verbessern? (optional)',
@@ -23,7 +23,7 @@ const translations = {
   en: {
     title: 'Congratulations!',
     subtitle: 'You won',
-    question: 'How likely are you to recommend bidblitz.ae?',
+    question: 'How likely are you to recommend BidBlitz.ae?',
     notLikely: 'Not likely',
     veryLikely: 'Very likely',
     feedbackPlaceholder: 'What did you like or what can we improve? (optional)',
@@ -35,7 +35,7 @@ const translations = {
   sq: {
     title: 'Urime!',
     subtitle: 'Fitove',
-    question: 'Sa gjasa ke që do ta rekomandoje bidblitz.ae?',
+    question: 'Sa gjasa ke që do ta rekomandoje BidBlitz.ae?',
     notLikely: 'Jo të ngjarë',
     veryLikely: 'Shumë të ngjarë',
     feedbackPlaceholder: 'Çfarë të pëlqeu apo çfarë mund të përmirësojmë? (opsionale)',
@@ -47,7 +47,7 @@ const translations = {
   xk: {
     title: 'Urime!',
     subtitle: 'Fitove',
-    question: 'Sa gjasa ke që do ta rekomandoje bidblitz.ae?',
+    question: 'Sa gjasa ke që do ta rekomandoje BidBlitz.ae?',
     notLikely: 'Jo të ngjarë',
     veryLikely: 'Shumë të ngjarë',
     feedbackPlaceholder: 'Çfarë të pëlqeu apo çfarë mund të përmirësojmë? (opsionale)',
@@ -59,7 +59,7 @@ const translations = {
   tr: {
     title: 'Tebrikler!',
     subtitle: 'Kazandınız',
-    question: 'bidblitz.ae\'i tavsiye etme olasılığınız nedir?',
+    question: 'BidBlitz.ae\'i tavsiye etme olasılığınız nedir?',
     notLikely: 'Olası değil',
     veryLikely: 'Çok olası',
     feedbackPlaceholder: 'Neyi beğendiniz veya neyi geliştirebiliriz? (isteğe bağlı)',
@@ -71,7 +71,7 @@ const translations = {
   fr: {
     title: 'Félicitations!',
     subtitle: 'Vous avez gagné',
-    question: 'Quelle est la probabilité que vous recommandiez bidblitz.ae?',
+    question: 'Quelle est la probabilité que vous recommandiez BidBlitz.ae?',
     notLikely: 'Peu probable',
     veryLikely: 'Très probable',
     feedbackPlaceholder: 'Qu\'avez-vous aimé ou que pouvons-nous améliorer? (optionnel)',

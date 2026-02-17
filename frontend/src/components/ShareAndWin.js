@@ -12,7 +12,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const shareTexts = {
   de: {
     title: 'Teilen & Gebote gewinnen!',
-    subtitle: 'Teile bidblitz.ae und erhalte Gratis-Gebote',
+    subtitle: 'Teile BidBlitz.ae und erhalte Gratis-Gebote',
     shareOn: 'Teilen auf',
     copyLink: 'Link kopieren',
     copied: 'Kopiert!',
@@ -20,12 +20,12 @@ const shareTexts = {
     twitter: 'Twitter/X',
     facebook: 'Facebook',
     whatsapp: 'WhatsApp',
-    shareMessage: 'Ich spare bis zu 90% bei bidblitz.ae! Probier es aus:',
+    shareMessage: 'Ich spare bis zu 90% bei BidBlitz.ae! Probier es aus:',
     thankYou: 'Danke fürs Teilen!'
   },
   sq: {
     title: 'Ndaj & Fito Oferta!',
-    subtitle: 'Ndaj bidblitz.ae dhe merr oferta falas',
+    subtitle: 'Ndaj BidBlitz.ae dhe merr oferta falas',
     shareOn: 'Ndaj në',
     copyLink: 'Kopjo linkun',
     copied: 'Kopjuar!',
@@ -33,12 +33,12 @@ const shareTexts = {
     twitter: 'Twitter/X',
     facebook: 'Facebook',
     whatsapp: 'WhatsApp',
-    shareMessage: 'Po kursej deri 90% në bidblitz.ae! Provoje:',
+    shareMessage: 'Po kursej deri 90% në BidBlitz.ae! Provoje:',
     thankYou: 'Faleminderit për ndarjen!'
   },
   en: {
     title: 'Share & Win Bids!',
-    subtitle: 'Share bidblitz.ae and get free bids',
+    subtitle: 'Share BidBlitz.ae and get free bids',
     shareOn: 'Share on',
     copyLink: 'Copy link',
     copied: 'Copied!',
@@ -46,7 +46,7 @@ const shareTexts = {
     twitter: 'Twitter/X',
     facebook: 'Facebook',
     whatsapp: 'WhatsApp',
-    shareMessage: "I'm saving up to 90% on bidblitz.ae! Try it:",
+    shareMessage: "I'm saving up to 90% on BidBlitz.ae! Try it:",
     thankYou: 'Thanks for sharing!'
   }
 };
@@ -59,7 +59,7 @@ export default function ShareAndWin({ onClose, compact = false }) {
   const [sharing, setSharing] = useState(false);
 
   const referralCode = user?.id?.substring(0, 8).toUpperCase() || 'BIDBLITZ';
-  const shareUrl = `https://bidblitz.ae/register?ref=${referralCode}`;
+  const shareUrl = `https://BidBlitz.ae/register?ref=${referralCode}`;
   const shareMessage = `${t.shareMessage} ${shareUrl}`;
 
   const trackShare = async (platform) => {
