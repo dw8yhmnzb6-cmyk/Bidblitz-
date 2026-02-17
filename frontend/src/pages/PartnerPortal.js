@@ -38,7 +38,7 @@ export default function PartnerPortal() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState('');
   const [partner, setPartner] = useState(null);
-  const [view, setView] = useState('login'); // login, register, scanner, vouchers, dashboard, create-voucher
+  const [view, setView] = useState('login'); // login, register, scanner, vouchers, dashboard, create-voucher, statistics, payouts, profile
   
   // Login state
   const [email, setEmail] = useState('');
