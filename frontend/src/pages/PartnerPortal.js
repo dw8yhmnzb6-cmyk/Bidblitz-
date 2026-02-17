@@ -1409,15 +1409,274 @@ export default function PartnerPortal() {
               )}
             </div>
           )}
-            </div>
-          )}
 
-          {/* Payouts View */}
+          {/* Payouts View with Stripe Connect */}
           {view === 'payouts' && (
             <div className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="font-bold text-gray-800 text-xl">Auszahlungen</h2>
-                <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg">
+                <h2 className="font-bold text-gray-800 text-xl flex items-center gap-2">
+                  <Euro className="w-6 h-6 text-green-500" />
+                  Auszahlungen
+                </h2>
+                <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg font-bold">
+                  €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)} verfügbar
+                </div>
+              </div>
+              
+              {/* Stripe Connect Status */}
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-purple-500" />
+                  Stripe Connect
+                </h3>
+                
+                {stripeStatus?.connected ? (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
+                      <CheckCircle className="w-6 h-6 text-green-500" />
+                      <div>
+                        <p className="font-medium text-green-700">Stripe-Konto verbunden</p>
+                        <p className="text-sm text-green-600">
+                          {stripeStatus.payouts_enabled ? 'Auszahlungen aktiviert' : 'Onboarding abschließen'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {stripeStatus.payouts_enabled && (dashboardData?.stats?.pending_payout || 0) >= 50 && (
+                      <Button 
+                        onClick={requestStripePayout}
+                        disabled={loading}
+                        className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                      >
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                          <>
+                            <Euro className="w-5 h-5 mr-2" />
+                            Jetzt €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)} auszahlen
+                          </>
+                        )}
+                      </Button>
+                    )}
+                    
+                    {!stripeStatus.payouts_enabled && (
+                      <Button onClick={connectStripe} variant="outline" className="w-full">
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Onboarding abschließen
+                      </Button>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <p className="text-gray-600">
+                      Verbinden Sie Ihr Stripe-Konto für automatische Auszahlungen direkt auf Ihr Bankkonto.
+                    </p>
+                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                      <h4 className="font-medium text-purple-800 mb-2">Vorteile von Stripe Connect:</h4>
+                      <ul className="text-sm text-purple-700 space-y-1">
+                        <li>✓ Sofortige Auszahlungen</li>
+                        <li>✓ Sichere Bankverbindung</li>
+                        <li>✓ Transparente Gebühren</li>
+                        <li>✓ Detaillierte Berichte</li>
+                      </ul>
+                    </div>
+                    <Button 
+                      onClick={connectStripe}
+                      disabled={loading}
+                      className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+                    >
+                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                        <>
+                          <CreditCard className="w-5 h-5 mr-2" />
+                          Mit Stripe verbinden
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              {/* Payout History */}
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h3 className="font-bold text-gray-800">Auszahlungsverlauf</h3>
+                  <History className="w-5 h-5 text-gray-400" />
+                </div>
+                {payoutHistory.length > 0 ? (
+                  <div className="divide-y">
+                    {payoutHistory.map((p, i) => (
+                      <div key={i} className="p-4 flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-gray-800">{p.id}</p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(p.requested_at).toLocaleDateString('de-DE')}
+                            {p.stripe_transfer_id && ` • ${p.stripe_transfer_id}`}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-green-600">€{p.amount?.toFixed(2)}</p>
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            p.status === 'completed' ? 'bg-green-100 text-green-700' :
+                            p.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-gray-100 text-gray-600'
+                          }`}>
+                            {p.status === 'completed' ? 'Abgeschlossen' : 
+                             p.status === 'pending' ? 'Ausstehend' : p.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-8 text-center text-gray-400">
+                    <History className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                    <p>Noch keine Auszahlungen</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Verification View */}
+          {view === 'verification' && (
+            <div className="space-y-6">
+              <h2 className="font-bold text-gray-800 text-xl flex items-center gap-2">
+                <Shield className="w-6 h-6 text-blue-500" />
+                Verifizierung
+              </h2>
+              
+              {/* Verification Status */}
+              <div className={`p-4 rounded-xl border ${
+                verificationStatus?.is_verified ? 'bg-green-50 border-green-200' :
+                verificationStatus?.overall_status === 'in_review' ? 'bg-blue-50 border-blue-200' :
+                verificationStatus?.overall_status === 'more_info' ? 'bg-amber-50 border-amber-200' :
+                'bg-gray-50 border-gray-200'
+              }`}>
+                <div className="flex items-center gap-3">
+                  {verificationStatus?.is_verified ? (
+                    <CheckCircle className="w-8 h-8 text-green-500" />
+                  ) : verificationStatus?.overall_status === 'in_review' ? (
+                    <Clock className="w-8 h-8 text-blue-500" />
+                  ) : (
+                    <AlertCircle className="w-8 h-8 text-amber-500" />
+                  )}
+                  <div>
+                    <p className="font-bold text-gray-800">
+                      {verificationStatus?.is_verified ? 'Verifiziert' :
+                       verificationStatus?.overall_status === 'in_review' ? 'In Prüfung' :
+                       verificationStatus?.overall_status === 'more_info' ? 'Mehr Info benötigt' :
+                       'Verifizierung ausstehend'}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {verificationStatus?.approved_required || 0} von {verificationStatus?.required_documents || 0} erforderlichen Dokumenten genehmigt
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Document Upload */}
+              <div className="bg-white rounded-xl p-6 shadow-sm">
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <Upload className="w-5 h-5 text-amber-500" />
+                  Dokumente hochladen
+                </h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {documentTypes.map((dt) => {
+                    const uploaded = documents.find(d => d.document_type === dt.id && d.status !== 'rejected');
+                    
+                    return (
+                      <div key={dt.id} className={`p-4 rounded-lg border-2 ${
+                        uploaded?.status === 'approved' ? 'border-green-300 bg-green-50' :
+                        uploaded?.status === 'pending' ? 'border-blue-300 bg-blue-50' :
+                        uploaded?.status === 'in_review' ? 'border-amber-300 bg-amber-50' :
+                        'border-dashed border-gray-300'
+                      }`}>
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <p className="font-medium text-gray-800">{dt.name}</p>
+                            {dt.required && <span className="text-xs text-red-500">Erforderlich</span>}
+                          </div>
+                          {uploaded && (
+                            <span className={`text-xs px-2 py-1 rounded-full ${
+                              uploaded.status === 'approved' ? 'bg-green-200 text-green-700' :
+                              uploaded.status === 'pending' ? 'bg-blue-200 text-blue-700' :
+                              'bg-gray-200 text-gray-600'
+                            }`}>
+                              {uploaded.status === 'approved' ? '✓ Genehmigt' :
+                               uploaded.status === 'pending' ? 'Ausstehend' :
+                               uploaded.status}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {uploaded ? (
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <FileText className="w-4 h-4" />
+                            <span className="truncate">{uploaded.file_name}</span>
+                          </div>
+                        ) : (
+                          <label className="block cursor-pointer">
+                            <input
+                              type="file"
+                              accept=".pdf,.jpg,.jpeg,.png,.webp"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) uploadDocument(file, dt.id);
+                              }}
+                            />
+                            <div className="flex items-center justify-center gap-2 py-3 text-amber-600 hover:text-amber-700 transition-colors">
+                              <Upload className="w-5 h-5" />
+                              <span className="text-sm font-medium">Hochladen</span>
+                            </div>
+                          </label>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              {/* Uploaded Documents List */}
+              {documents.length > 0 && (
+                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <div className="p-4 border-b">
+                    <h3 className="font-bold text-gray-800">Hochgeladene Dokumente</h3>
+                  </div>
+                  <div className="divide-y">
+                    {documents.map((doc) => (
+                      <div key={doc.id} className="p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <FileText className="w-8 h-8 text-gray-400" />
+                          <div>
+                            <p className="font-medium text-gray-800">{doc.type_info?.name || doc.document_type}</p>
+                            <p className="text-xs text-gray-500">{doc.file_name}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            doc.status === 'approved' ? 'bg-green-100 text-green-700' :
+                            doc.status === 'rejected' ? 'bg-red-100 text-red-700' :
+                            doc.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-blue-100 text-blue-700'
+                          }`}>
+                            {doc.status === 'approved' ? 'Genehmigt' :
+                             doc.status === 'rejected' ? 'Abgelehnt' :
+                             doc.status === 'pending' ? 'Ausstehend' :
+                             'In Prüfung'}
+                          </span>
+                          {doc.rejection_reason && (
+                            <span className="text-xs text-red-600" title={doc.rejection_reason}>
+                              <AlertCircle className="w-4 h-4" />
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
                   Verfügbar: €{(dashboardData?.stats?.pending_payout || 0).toFixed(2)}
                 </div>
               </div>
