@@ -356,6 +356,8 @@ export default function WinnerGalleryHome() {
                       src={winner.product_image || 'https://via.placeholder.com/256x144'} 
                       alt={winner.product_name}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                       -{savingsPercent}%
