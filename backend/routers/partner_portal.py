@@ -14,7 +14,8 @@ import base64
 import uuid
 
 from config import db, logger
-from utils.email import (
+from utils.email import send_email
+from utils.partner_emails import (
     send_partner_application_received,
     send_partner_approved,
     send_partner_rejected,
