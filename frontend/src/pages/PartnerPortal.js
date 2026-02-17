@@ -21,6 +21,10 @@ import axios from 'axios';
 import PartnerPayouts from '../components/partner/PartnerPayouts';
 import PartnerScanner from '../components/partner/PartnerScanner';
 import PartnerStaff from '../components/partner/PartnerStaff';
+import PartnerVouchers from '../components/partner/PartnerVouchers';
+import PartnerStatistics from '../components/partner/PartnerStatistics';
+import PartnerProfile from '../components/partner/PartnerProfile';
+import PartnerVerification from '../components/partner/PartnerVerification';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
