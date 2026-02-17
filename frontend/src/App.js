@@ -750,8 +750,8 @@ function AppContent() {
                 <WriteReview />
               </ProtectedRoute>
             } />
-          <Route path="/loyalty" element={<LoyaltyDashboard />} />
-          <Route path="/treueprogramm" element={<LoyaltyDashboard />} />
+          <Route path="/restaurant-loyalty" element={<LoyaltyDashboard />} />
+          <Route path="/stempelkarte" element={<LoyaltyDashboard />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
