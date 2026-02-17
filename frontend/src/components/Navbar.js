@@ -285,6 +285,13 @@ export const Navbar = () => {
                   >
                     Dashboard
                   </Link>
+                  <Link 
+                    to="/pay" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white py-2.5 px-3 rounded-lg font-semibold text-center text-sm flex items-center justify-center gap-1"
+                  >
+                    💳 Wallet
+                  </Link>
                   {isAdmin && (
                     <Link 
                       to="/admin" 
