@@ -26,6 +26,15 @@ import PartnerStatistics from '../components/partner/PartnerStatistics';
 import PartnerProfile from '../components/partner/PartnerProfile';
 import PartnerVerification from '../components/partner/PartnerVerification';
 
+// Import marketing components
+import { 
+  PartnerReferral, 
+  PartnerQRCodes, 
+  PartnerFlashSales, 
+  PartnerSocialSharing,
+  PartnerRatingsOverview 
+} from '../components/partner/PartnerMarketing';
+
 const API = process.env.REACT_APP_BACKEND_URL;
 
 // Business Types
