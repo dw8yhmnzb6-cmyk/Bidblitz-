@@ -1408,6 +1408,86 @@ export default function PartnerPortal() {
     }
   };
 
+  // ==================== WISE PAYOUTS ====================
+  
+  const fetchWiseStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/api/wise-payouts/account-status?token=${token}`);
+      setWiseStatus(response.data);
+    } catch (err) {
+      console.error('Wise status error:', err);
+    }
+  };
+
+  const fetchWisePayoutHistory = async () => {
+    try {
+      const response = await axios.get(`${API}/api/wise-payouts/payout-history?token=${token}`);
+      setPayoutHistory(response.data.payouts || []);
+    } catch (err) {
+      console.error('Wise payout history error:', err);
+    }
+  };
+
+  const setupWiseAccount = async () => {
+    if (!wiseSetupForm.account_holder_name || !wiseSetupForm.iban) {
+      toast.error('Bitte füllen Sie alle Felder aus');
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API}/api/wise-payouts/setup-bank-account?token=${token}`, wiseSetupForm);
+      
+      toast.success(response.data.message || 'Bankkonto erfolgreich verbunden');
+      setShowWiseSetup(false);
+      fetchWiseStatus();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Fehler beim Verbinden des Bankkontos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const requestWisePayout = async () => {
+    const amount = dashboardData?.stats?.pending_payout || 0;
+    if (amount < 10) {
+      toast.error('Mindestbetrag für Auszahlung: €10');
+      return;
+    }
+    
+    if (!confirm(`Möchten Sie €${amount.toFixed(2)} auf Ihr Bankkonto überweisen?`)) return;
+    
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API}/api/wise-payouts/request-payout?token=${token}`, {
+        reference: `BidBlitz Auszahlung - ${partner?.business_name || 'Partner'}`
+      });
+      
+      toast.success(response.data.message || 'Auszahlung wird verarbeitet');
+      fetchDashboard();
+      fetchWisePayoutHistory();
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Fehler bei der Auszahlung');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const disconnectWise = async () => {
+    if (!confirm('Möchten Sie Ihr Bankkonto wirklich trennen?')) return;
+    
+    try {
+      setLoading(true);
+      await axios.delete(`${API}/api/wise-payouts/disconnect?token=${token}`);
+      toast.success('Bankkonto getrennt');
+      setWiseStatus(null);
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Fehler beim Trennen');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ==================== VERIFICATION ====================
   
   const fetchVerificationStatus = async () => {
