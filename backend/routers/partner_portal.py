@@ -15,12 +15,6 @@ import uuid
 
 from config import db, logger
 from utils.email import send_email
-from utils.partner_emails import (
-    send_partner_application_received,
-    send_partner_approved,
-    send_partner_rejected,
-    send_partner_payout_confirmation
-)
 
 router = APIRouter(prefix="/partner-portal", tags=["Partner Portal"])
 
