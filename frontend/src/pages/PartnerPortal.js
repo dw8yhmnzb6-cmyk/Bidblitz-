@@ -504,33 +504,23 @@ export default function PartnerPortal() {
     setLoading(true);
     
     try {
-      const response = await fetch(`${API}/api/partner-portal/apply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          business_type: regData.business_type,
-          business_name: regData.business_name,
-          email: regData.email,
-          password: regData.password,
-          phone: regData.phone,
-          address: regData.address,
-          city: regData.city,
-          postal_code: regData.postal_code,
-          country: regData.country,
-          description: regData.description,
-          website: regData.website,
-          tax_id: regData.tax_id,
-          iban: regData.iban,
-          contact_person: regData.contact_person,
-          logo_url: regData.logo_url
-        })
+      await axios.post(`${API}/api/partner-portal/apply`, {
+        business_type: regData.business_type,
+        business_name: regData.business_name,
+        email: regData.email,
+        password: regData.password,
+        phone: regData.phone,
+        address: regData.address,
+        city: regData.city,
+        postal_code: regData.postal_code,
+        country: regData.country,
+        description: regData.description,
+        website: regData.website,
+        tax_id: regData.tax_id,
+        iban: regData.iban,
+        contact_person: regData.contact_person,
+        logo_url: regData.logo_url
       });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.detail || 'Registrierung fehlgeschlagen');
-      }
       
       toast.success('Bewerbung erfolgreich eingereicht! Sie erhalten eine E-Mail nach der Prüfung.');
       setView('login');
@@ -554,7 +544,7 @@ export default function PartnerPortal() {
         logo_url: ''
       });
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.detail || 'Registrierung fehlgeschlagen');
     } finally {
       setLoading(false);
     }
