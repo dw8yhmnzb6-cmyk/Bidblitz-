@@ -2264,6 +2264,16 @@ const BidBlitzPay = () => {
             />
           </div>
         )}
+
+        {/* Cashback System View */}
+        {view === 'cashback' && (
+          <div className="bg-white rounded-2xl shadow-lg p-6" data-testid="cashback-view">
+            <CashbackSystem 
+              language={language}
+              onBalanceUpdate={() => { fetchWallet(); fetchTransactions(); }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
