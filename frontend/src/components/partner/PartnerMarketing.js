@@ -335,6 +335,17 @@ export const PartnerQRCodes = ({ token, partner, t }) => {
       <div className="bg-white rounded-xl p-6 shadow-sm text-center">
         {loading ? (
           <Loader2 className="w-12 h-12 animate-spin text-amber-500 mx-auto" />
+        ) : errorMsg ? (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-red-500 text-2xl">!</span>
+            </div>
+            <p className="text-red-600 font-medium mb-2">{errorMsg}</p>
+            <p className="text-gray-500 text-sm mb-4">Bitte versuchen Sie es erneut</p>
+            <Button onClick={() => generateQR(selectedType)} className="bg-amber-500 hover:bg-amber-600">
+              Erneut versuchen
+            </Button>
+          </div>
         ) : qrData?.qr_base64 ? (
           <>
             <img 
@@ -363,7 +374,15 @@ export const PartnerQRCodes = ({ token, partner, t }) => {
               </Button>
             </div>
           </>
-        ) : null}
+        ) : (
+          <div className="text-center py-8">
+            <QrCode className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-500">QR-Code wird geladen...</p>
+            <Button onClick={() => generateQR(selectedType)} className="mt-4 bg-amber-500 hover:bg-amber-600">
+              QR-Code generieren
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Stats */}
