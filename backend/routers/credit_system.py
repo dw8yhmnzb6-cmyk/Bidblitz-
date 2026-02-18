@@ -2,6 +2,7 @@
 Credit System - Kredit-System für BidBlitz Pay
 Nutzer können Kredite beantragen mit Dokumenten-Upload
 Admin genehmigt/ablehnt manuell
+Inkl. Kredit-Score System für bessere Konditionen
 """
 from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
 from datetime import datetime, timezone, timedelta
@@ -19,7 +20,7 @@ router = APIRouter(prefix="/credit", tags=["Credit System"])
 # Constants
 MIN_CREDIT_AMOUNT = 50
 MAX_CREDIT_AMOUNT = 2000
-MIN_INTEREST_RATE = 2  # 2% per month
+MIN_INTEREST_RATE = 1.5  # 1.5% per month (for Diamond tier)
 MAX_INTEREST_RATE = 5  # 5% per month
 NO_INTEREST_THRESHOLD = 50  # No interest for amounts under €50
 MIN_REPAYMENT_MONTHS = 3
@@ -29,6 +30,183 @@ UPLOAD_DIR = "/app/backend/uploads/credit_documents"
 
 # Ensure upload directory exists
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+# ==================== CREDIT SCORE SYSTEM ====================
+
+# Score Constants
+INITIAL_SCORE = 500
+MIN_SCORE = 0
+MAX_SCORE = 1000
+
+# Score Tiers with benefits
+SCORE_TIERS = {
+    "red": {
+        "name": "Rot",
+        "name_en": "Red",
+        "min_score": 0,
+        "max_score": 300,
+        "max_credit": 0,  # No credit allowed
+        "interest_rate": 5.0,
+        "color": "#EF4444",
+        "icon": "🔴"
+    },
+    "yellow": {
+        "name": "Gelb",
+        "name_en": "Yellow",
+        "min_score": 301,
+        "max_score": 500,
+        "max_credit": 500,
+        "interest_rate": 5.0,
+        "color": "#EAB308",
+        "icon": "🟡"
+    },
+    "green": {
+        "name": "Grün",
+        "name_en": "Green",
+        "min_score": 501,
+        "max_score": 700,
+        "max_credit": 1500,
+        "interest_rate": 3.0,
+        "color": "#22C55E",
+        "icon": "🟢"
+    },
+    "gold": {
+        "name": "Gold",
+        "name_en": "Gold",
+        "min_score": 701,
+        "max_score": 900,
+        "max_credit": 2000,
+        "interest_rate": 2.0,
+        "color": "#F59E0B",
+        "icon": "⭐"
+    },
+    "diamond": {
+        "name": "Diamant",
+        "name_en": "Diamond",
+        "min_score": 901,
+        "max_score": 1000,
+        "max_credit": 2000,  # Still max €2000 as requested
+        "interest_rate": 1.5,
+        "color": "#06B6D4",
+        "icon": "💎"
+    }
+}
+
+# Score change events
+SCORE_EVENTS = {
+    "on_time_payment": 20,      # Pünktliche Zahlung
+    "early_payment": 30,        # Frühe Zahlung (vor Fälligkeit)
+    "full_repayment": 100,      # Vollständige Rückzahlung
+    "late_payment": -30,        # Verspätete Zahlung
+    "very_late_payment": -50,   # Sehr verspätete Zahlung (>7 Tage)
+    "missed_payment": -100,     # Verpasste Zahlung
+    "first_credit_completed": 50,  # Erster Kredit erfolgreich zurückgezahlt
+    "account_verification": 25,    # Konto verifiziert
+}
+
+
+def get_tier_for_score(score: int) -> dict:
+    """Get the tier information for a given score"""
+    for tier_key, tier in SCORE_TIERS.items():
+        if tier["min_score"] <= score <= tier["max_score"]:
+            return {**tier, "key": tier_key}
+    return {**SCORE_TIERS["red"], "key": "red"}
+
+
+def get_next_tier(current_score: int) -> Optional[dict]:
+    """Get the next tier the user can achieve"""
+    current_tier = get_tier_for_score(current_score)
+    tier_order = ["red", "yellow", "green", "gold", "diamond"]
+    current_idx = tier_order.index(current_tier["key"])
+    
+    if current_idx < len(tier_order) - 1:
+        next_tier_key = tier_order[current_idx + 1]
+        next_tier = SCORE_TIERS[next_tier_key]
+        return {
+            **next_tier,
+            "key": next_tier_key,
+            "points_needed": next_tier["min_score"] - current_score
+        }
+    return None
+
+
+async def get_user_credit_score(user_id: str) -> dict:
+    """Get or create a user's credit score"""
+    score_doc = await db.credit_scores.find_one({"user_id": user_id})
+    
+    if not score_doc:
+        # Create initial score
+        score_doc = {
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "score": INITIAL_SCORE,
+            "history": [{
+                "event": "account_created",
+                "change": 0,
+                "score_after": INITIAL_SCORE,
+                "date": datetime.now(timezone.utc).isoformat(),
+                "description": "Konto erstellt - Startscore"
+            }],
+            "total_credits_completed": 0,
+            "total_on_time_payments": 0,
+            "total_late_payments": 0,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.credit_scores.insert_one(score_doc)
+    
+    return score_doc
+
+
+async def update_credit_score(user_id: str, event: str, description: str = None) -> dict:
+    """Update a user's credit score based on an event"""
+    if event not in SCORE_EVENTS:
+        return None
+    
+    change = SCORE_EVENTS[event]
+    score_doc = await get_user_credit_score(user_id)
+    
+    current_score = score_doc.get("score", INITIAL_SCORE)
+    new_score = max(MIN_SCORE, min(MAX_SCORE, current_score + change))
+    
+    history_entry = {
+        "event": event,
+        "change": change,
+        "score_before": current_score,
+        "score_after": new_score,
+        "date": datetime.now(timezone.utc).isoformat(),
+        "description": description or event
+    }
+    
+    # Update stats based on event type
+    update_fields = {
+        "score": new_score,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    if event in ["on_time_payment", "early_payment"]:
+        update_fields["total_on_time_payments"] = score_doc.get("total_on_time_payments", 0) + 1
+    elif event in ["late_payment", "very_late_payment", "missed_payment"]:
+        update_fields["total_late_payments"] = score_doc.get("total_late_payments", 0) + 1
+    elif event in ["full_repayment", "first_credit_completed"]:
+        update_fields["total_credits_completed"] = score_doc.get("total_credits_completed", 0) + 1
+    
+    await db.credit_scores.update_one(
+        {"user_id": user_id},
+        {
+            "$set": update_fields,
+            "$push": {"history": {"$each": [history_entry], "$slice": -50}}  # Keep last 50 entries
+        }
+    )
+    
+    logger.info(f"Credit score updated for user {user_id}: {current_score} -> {new_score} ({event})")
+    
+    return {
+        "previous_score": current_score,
+        "new_score": new_score,
+        "change": change,
+        "event": event
+    }
 
 
 class CreditApplication(BaseModel):
