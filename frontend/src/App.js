@@ -213,9 +213,7 @@ function AppContent() {
       
       {/* Main content wrapper - Offset for fixed navbar */}
       <div className="pt-16">
-        {/* Promotional Banners - Re-enabled with stable layout container */}
-        {/* Each banner handles its own visibility internally */}
-        <WelcomeBonusBanner language={mappedLanguage || language} />
+        {/* Welcome Bonus Banner removed per user request */}
       </div>
       
       <main className="flex-grow">
