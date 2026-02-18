@@ -5,6 +5,47 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 39) - HÄNDLER BUDGET SYSTEM ✅
+
+#### Feature: Händler Gutschein-Budget & Wise-Zahlungssystem ✅
+
+**1. Freibetrag-System (Admin):**
+- Admin kann jedem Händler kostenloses Gutschein-Budget zuweisen
+- Händler kann Gutscheine bis zum Freibetrag erstellen
+- Nach Verbrauch: Händler muss bezahlen oder neuen Freibetrag erhalten
+
+**2. Händler-Zahlung via Wise:**
+- Händler wählt Aufladebetrag (min. €50)
+- System generiert eindeutige Referenz (z.B. BIDBLITZ-F098-A3B2C1)
+- Händler überweist via Wise an BidBlitz
+- Admin bestätigt Zahlung → Guthaben wird aktiviert
+
+**3. Händler-Auszahlungen via Wise:**
+- Händler verdient durch Kundenzahlungen (abzüglich 2% Provision)
+- Wählbare Auszahlungsfrequenz: täglich, wöchentlich, monatlich, manuell
+- Mindestbetrag für Auszahlung einstellbar
+- Auszahlung via Wise an Händler-Bankkonto
+
+**Neue API-Endpoints:**
+- `GET /api/partner-budget/my-budget` - Händler-Budget & Einnahmen
+- `GET /api/partner-budget/wise-payment-details` - Überweisungsdaten generieren
+- `POST /api/partner-budget/update-payout-settings` - Auszahlungseinstellungen
+- `POST /api/partner-budget/request-payout` - Manuelle Auszahlung beantragen
+- `POST /api/partner-budget/admin/set-freibetrag` - Admin: Freibetrag setzen
+- `POST /api/partner-budget/admin/confirm-payment` - Admin: Zahlung bestätigen
+- `POST /api/partner-budget/admin/process-payout` - Admin: Auszahlung verarbeiten
+
+**Neue Dateien:**
+- `/app/backend/routers/partner_budget.py` - Backend-Router
+- `/app/frontend/src/components/partner/PartnerBudget.js` - Frontend-Komponente
+- Tab "Guthaben" im Partner-Portal hinzugefügt
+
+**Test-Ergebnisse:**
+- Freibetrag erfolgreich gesetzt: €500 für Wise Test Partner
+- API-Endpunkte funktionieren korrekt
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 38) - STRIPE INTEGRATION ✅
 
 #### Feature: Echte Kartenzahlungen via Stripe ✅
