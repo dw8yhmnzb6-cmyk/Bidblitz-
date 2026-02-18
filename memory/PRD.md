@@ -5,6 +5,34 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 37) - UI VERBESSERUNGEN ✅
+
+#### Drei UI-Änderungen implementiert:
+
+**1. Mitarbeiter erstellen - Vereinfachtes Formular ✅**
+- **Entfernt:** E-Mail-Feld
+- **Neu hinzugefügt:** "Login-Daten speichern" Checkbox
+- Nur noch: Name, Passwort, Rolle
+- Datei: `/app/frontend/src/components/partner/PartnerStaff.js`
+
+**2. Partner Pay - Neuer 3-Schritte-Ablauf ✅**
+- **Step 1:** Zahlungsbetrag eingeben (zuerst!)
+- Quick-Buttons: €5, €10, €20, €50
+- **Step 2:** QR-Code scannen (Kamera startet automatisch)
+- **Step 3:** Zahlung bestätigen
+- Datei: `/app/frontend/src/pages/PartnerPortal.js` (BidBlitzPayPartner)
+
+**3. Kunden QR-Code - Guthaben ausblenden ✅**
+- Toggle-Switch "Guthaben ausblenden"
+- Zeigt "€••••" statt echtem Betrag
+- Datenschutz für Kunden
+- Datei: `/app/frontend/src/pages/BidBlitzPay.jsx`
+
+**Test-Ergebnisse (iteration_66.json):**
+- Frontend: 100% (3/3 Features verifiziert)
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 36) - BUGFIXES & PARTNER MARKETING ✅
 
 #### Behobene Fehler:
