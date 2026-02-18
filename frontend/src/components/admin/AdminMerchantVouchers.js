@@ -122,6 +122,51 @@ const AdminMerchantVouchers = () => {
     setDurationHours('24');
   };
 
+  const handleSetPremium = async (partnerId, partnerName) => {
+    const months = parseInt(premiumMonths) || 1;
+    
+    try {
+      const res = await fetch(`${API}/api/merchant-vouchers/admin/set-premium`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ partner_id: partnerId, months })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        toast.success(`${partnerName} ist jetzt Premium für ${months} Monat(e)`);
+        fetchPartners();
+      } else {
+        const error = await res.json();
+        toast.error(error.detail || 'Fehler beim Setzen');
+      }
+    } catch (err) {
+      console.error('Error setting premium:', err);
+      toast.error('Fehler beim Setzen von Premium');
+    }
+  };
+
+  const handleRemovePremium = async (partnerId, partnerName) => {
+    if (!window.confirm(`Premium-Status von "${partnerName}" entfernen?`)) return;
+    
+    try {
+      const res = await fetch(`${API}/api/merchant-vouchers/admin/remove-premium/${partnerId}`, {
+        method: 'POST'
+      });
+
+      if (res.ok) {
+        toast.success(`Premium-Status von ${partnerName} entfernt`);
+        fetchPartners();
+      } else {
+        const error = await res.json();
+        toast.error(error.detail || 'Fehler');
+      }
+    } catch (err) {
+      console.error('Error removing premium:', err);
+      toast.error('Fehler beim Entfernen von Premium');
+    }
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
     return new Date(dateStr).toLocaleDateString('de-DE', {
