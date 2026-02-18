@@ -84,12 +84,14 @@ async def register(user: UserCreate, request: Request):
     
     user_id = str(uuid.uuid4())
     referral_code = user_id[:8].upper()
+    customer_number = await generate_customer_number()
     
     new_user = {
         "id": user_id,
         "email": user.email.lower(),
         "password": hash_password(user.password),
         "name": user.name,
+        "customer_number": customer_number,  # Unique customer number for payments
         "bids_balance": 10,  # Welcome bids
         "is_admin": False,
         "is_blocked": False,
