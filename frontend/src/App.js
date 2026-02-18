@@ -126,6 +126,7 @@ import RestaurantDetail from "./pages/RestaurantDetail";
 import WriteReview from "./pages/WriteReview";
 import BidBlitzPay from "./pages/BidBlitzPay";
 import PartnerLanding from "./pages/PartnerLanding";
+import PartnerDirectory from "./pages/PartnerDirectory";
 
 // Protected Route Component
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
