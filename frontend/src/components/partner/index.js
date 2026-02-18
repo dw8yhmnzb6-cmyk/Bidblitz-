@@ -12,6 +12,7 @@ export { default as PartnerVouchers } from './PartnerVouchers';
 export { default as PartnerStatistics } from './PartnerStatistics';
 export { default as PartnerProfile } from './PartnerProfile';
 export { default as PartnerVerification } from './PartnerVerification';
+export { default as PartnerBudget } from './PartnerBudget';
 
 // Marketing Components
 export { 
