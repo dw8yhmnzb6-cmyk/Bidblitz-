@@ -1153,13 +1153,101 @@ const BidBlitzPay = () => {
         {/* Request Money View */}
         {view === 'request' && (
           <div className="space-y-6">
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <ArrowDownLeft className="w-5 h-5 text-green-500" />
-                {t('requestMoney')}
-              </h2>
-              
-              {requestQR ? (
+            {/* Scanned Request - Pay Modal */}
+            {scannedRequest && (
+              <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-green-500">
+                <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  {t('requestDetails')}
+                </h2>
+                
+                <div className="space-y-4">
+                  <div className="bg-green-50 rounded-xl p-4 text-center">
+                    <p className="text-3xl font-bold text-green-600">€{scannedRequest.amount?.toFixed(2)}</p>
+                    {scannedRequest.description && (
+                      <p className="text-sm text-gray-600 mt-1">{scannedRequest.description}</p>
+                    )}
+                    <p className="text-sm text-gray-500 mt-2">
+                      {t('from')}: <span className="font-medium">{scannedRequest.requester_name}</span>
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => setScannedRequest(null)}
+                      className="flex-1"
+                    >
+                      {language === 'de' ? 'Abbrechen' : 'Cancel'}
+                    </Button>
+                    <Button
+                      onClick={payScannedRequest}
+                      className="flex-1 bg-green-500 hover:bg-green-600 text-white"
+                      disabled={payingRequest}
+                    >
+                      {payingRequest ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                      )}
+                      {t('confirmPayment')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Scanner Section */}
+            {!scannedRequest && (
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <ScanLine className="w-5 h-5 text-blue-500" />
+                  {t('scanToPay')}
+                </h2>
+                
+                {scannerActive ? (
+                  <div className="space-y-4">
+                    <div 
+                      id="qr-reader" 
+                      ref={scannerRef}
+                      className="w-full aspect-square max-w-xs mx-auto rounded-xl overflow-hidden bg-black"
+                    />
+                    <Button
+                      onClick={stopScanner}
+                      variant="outline"
+                      className="w-full border-red-300 text-red-600 hover:bg-red-50"
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      {t('stopScanner')}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-4">
+                    <div className="bg-gray-100 rounded-xl p-8">
+                      <Camera className="w-16 h-16 text-gray-400 mx-auto mb-3" />
+                      <p className="text-sm text-gray-500">{t('scanRequestQR')}</p>
+                    </div>
+                    <Button
+                      onClick={startScanner}
+                      className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                    >
+                      <Camera className="w-4 h-4 mr-2" />
+                      {t('startScanner')}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            
+            {/* Create Request Section */}
+            {!scannedRequest && !scannerActive && (
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <ArrowDownLeft className="w-5 h-5 text-green-500" />
+                  {t('requestMoney')}
+                </h2>
+                
+                {requestQR ? (
                 <div className="text-center space-y-4">
                   <div className="bg-gray-50 rounded-xl p-6">
                     <img 
