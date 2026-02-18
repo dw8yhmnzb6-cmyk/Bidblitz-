@@ -85,12 +85,12 @@ export default function AdminWisePayouts({ token }) {
 
     setProcessing(partner.partner_id);
     try {
-      const response = await axios.post(`${API}/api/wise/initiate-payout?token=${token}`, {
+      const response = await axios.post(`${API}/api/wise-payouts/admin/initiate?token=${token}`, {
         partner_id: partner.partner_id,
         amount: partner.earnings_balance
       });
       
-      toast.success(response.data.message);
+      toast.success(response.data.message || 'Auszahlung initiiert');
       await loadData();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Auszahlung fehlgeschlagen');
