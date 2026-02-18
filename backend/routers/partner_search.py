@@ -173,6 +173,13 @@ async def get_partners_by_city(
             "partner_id": partner["id"],
             "is_sold": False,
             "is_redeemed": False
+        })
+        partner["voucher_count"] = voucher_count
+    
+    return {
+        "partners": partners,
+        "total": len(partners)
+    }
 
 
 # ==================== MAP ENDPOINT ====================
