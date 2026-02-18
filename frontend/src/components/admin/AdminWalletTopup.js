@@ -361,6 +361,102 @@ export default function AdminWalletTopup({ token, t }) {
                   ))}
                 </div>
 
+                {/* Merchant Selection (Optional) */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    <Store className="w-4 h-4 inline mr-1" />
+                    Händler zuordnen <span className="text-slate-400 font-normal">(optional - für 2% Provision)</span>
+                  </label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setShowMerchantDropdown(!showMerchantDropdown)}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-lg border text-left transition-all ${
+                        selectedMerchant 
+                          ? 'border-amber-400 bg-amber-50' 
+                          : 'border-slate-200 bg-white hover:border-amber-300'
+                      }`}
+                    >
+                      {selectedMerchant ? (
+                        <div className="flex items-center gap-2">
+                          <Store className="w-4 h-4 text-amber-600" />
+                          <span className="font-medium text-slate-800">
+                            {selectedMerchant.company_name || selectedMerchant.business_name}
+                          </span>
+                          <span className="text-xs text-amber-600 bg-amber-100 px-2 py-0.5 rounded-full">
+                            +2% Provision
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-slate-400">Kein Händler (keine Provision)</span>
+                      )}
+                      <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${showMerchantDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {/* Merchant Dropdown */}
+                    {showMerchantDropdown && (
+                      <div className="absolute z-20 w-full mt-1 bg-white rounded-lg border border-slate-200 shadow-lg max-h-64 overflow-hidden">
+                        <div className="p-2 border-b border-slate-100">
+                          <Input
+                            type="text"
+                            placeholder="Händler suchen..."
+                            value={merchantSearchQuery}
+                            onChange={(e) => setMerchantSearchQuery(e.target.value)}
+                            className="text-sm"
+                          />
+                        </div>
+                        <div className="overflow-y-auto max-h-48">
+                          {/* Option: No merchant */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedMerchant(null);
+                              setShowMerchantDropdown(false);
+                              setMerchantSearchQuery('');
+                            }}
+                            className="w-full text-left px-3 py-2 hover:bg-slate-50 text-sm text-slate-500"
+                          >
+                            Kein Händler (keine Provision)
+                          </button>
+                          
+                          {filteredMerchants.length > 0 ? (
+                            filteredMerchants.map((merchant) => (
+                              <button
+                                key={merchant.id}
+                                type="button"
+                                onClick={() => {
+                                  setSelectedMerchant(merchant);
+                                  setShowMerchantDropdown(false);
+                                  setMerchantSearchQuery('');
+                                }}
+                                className={`w-full text-left px-3 py-2 hover:bg-amber-50 flex items-center justify-between ${
+                                  selectedMerchant?.id === merchant.id ? 'bg-amber-50' : ''
+                                }`}
+                              >
+                                <div>
+                                  <p className="font-medium text-slate-800 text-sm">
+                                    {merchant.company_name || merchant.business_name}
+                                  </p>
+                                  <p className="text-xs text-slate-400">
+                                    {merchant.city || merchant.email}
+                                  </p>
+                                </div>
+                                {selectedMerchant?.id === merchant.id && (
+                                  <CheckCircle className="w-4 h-4 text-amber-500" />
+                                )}
+                              </button>
+                            ))
+                          ) : (
+                            <p className="px-3 py-4 text-center text-sm text-slate-400">
+                              Keine Händler gefunden
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Bonus Preview */}
                 {topUpAmount && parseFloat(topUpAmount) > 0 && (
                   <div className="bg-green-50 border border-green-200 rounded-xl p-4">
