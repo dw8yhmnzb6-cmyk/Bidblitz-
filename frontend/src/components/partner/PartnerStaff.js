@@ -288,8 +288,50 @@ const PartnerStaff = ({ token, language, t }) => {
       
       {/* Staff List */}
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="p-4 border-b">
+        <div className="p-4 border-b flex items-center justify-between flex-wrap gap-3">
           <h3 className="font-bold text-gray-800">{language === 'en' ? 'Staff Members' : 'Mitarbeiter-Liste'}</h3>
+          
+          {/* Print Actions */}
+          {staffList.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={selectAllForPrint}
+                className="border-gray-300"
+              >
+                <Check className={`w-4 h-4 mr-1 ${selectedForPrint.length === staffList.length ? 'text-amber-500' : ''}`} />
+                {selectedForPrint.length === staffList.length 
+                  ? (language === 'en' ? 'Deselect All' : 'Alle abwählen')
+                  : (language === 'en' ? 'Select All' : 'Alle auswählen')}
+              </Button>
+              
+              {selectedForPrint.length > 0 && (
+                <Button
+                  size="sm"
+                  onClick={printSelectedCardsA4}
+                  className="bg-blue-500 hover:bg-blue-600"
+                  data-testid="print-selected-cards"
+                >
+                  <FileText className="w-4 h-4 mr-1" />
+                  {language === 'en' 
+                    ? `Print ${selectedForPrint.length} Cards (A4)` 
+                    : `${selectedForPrint.length} Karten drucken (A4)`}
+                </Button>
+              )}
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={printAllCards}
+                className="border-amber-400 text-amber-700 hover:bg-amber-50"
+                data-testid="print-all-cards"
+              >
+                <Printer className="w-4 h-4 mr-1" />
+                {language === 'en' ? 'Print All Cards' : 'Alle Karten drucken'}
+              </Button>
+            </div>
+          )}
         </div>
         
         {loadingStaff ? (
