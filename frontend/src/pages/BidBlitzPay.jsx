@@ -585,6 +585,116 @@ const BidBlitzPay = () => {
     }
   }, [token]);
 
+  // QR Scanner functions
+  const startScanner = async () => {
+    try {
+      const html5QrCode = new Html5Qrcode("qr-reader");
+      html5QrCodeRef.current = html5QrCode;
+      
+      await html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 }
+        },
+        async (decodedText) => {
+          // Check if it's a payment request QR
+          if (decodedText.startsWith("BIDBLITZ-REQ:")) {
+            const requestId = decodedText.replace("BIDBLITZ-REQ:", "");
+            await stopScanner();
+            await fetchRequestDetails(requestId);
+          } else {
+            toast.error(language === 'de' ? 'Ungültiger QR-Code' : 'Invalid QR code');
+          }
+        },
+        () => {}
+      );
+      
+      setScannerActive(true);
+    } catch (err) {
+      console.error('Scanner error:', err);
+      if (err.name === 'NotAllowedError') {
+        toast.error(language === 'de' ? 'Kamerazugriff verweigert' : 'Camera access denied');
+      } else {
+        toast.error(language === 'de' ? 'Kamera konnte nicht gestartet werden' : 'Could not start camera');
+      }
+    }
+  };
+
+  const stopScanner = async () => {
+    if (html5QrCodeRef.current) {
+      try {
+        await html5QrCodeRef.current.stop();
+        html5QrCodeRef.current = null;
+      } catch (err) {
+        console.error('Stop scanner error:', err);
+      }
+    }
+    setScannerActive(false);
+  };
+
+  const fetchRequestDetails = async (requestId) => {
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/request-money/${requestId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status !== 'pending') {
+          toast.error(language === 'de' ? 'Diese Anforderung ist nicht mehr gültig' : 'This request is no longer valid');
+          return;
+        }
+        setScannedRequest(data);
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.detail || 'Anforderung nicht gefunden');
+      }
+    } catch (error) {
+      console.error('Fetch request error:', error);
+      toast.error('Fehler beim Laden der Anforderung');
+    }
+  };
+
+  const payScannedRequest = async () => {
+    if (!scannedRequest) return;
+    
+    setPayingRequest(true);
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/pay-request/${scannedRequest.id}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast.success(data.message || `€${scannedRequest.amount.toFixed(2)} bezahlt!`);
+        setScannedRequest(null);
+        fetchWallet();
+      } else {
+        toast.error(data.detail || 'Zahlung fehlgeschlagen');
+      }
+    } catch (error) {
+      console.error('Pay request error:', error);
+      toast.error('Zahlung fehlgeschlagen');
+    } finally {
+      setPayingRequest(false);
+    }
+  };
+
+  // Cleanup scanner on unmount
+  useEffect(() => {
+    return () => {
+      if (html5QrCodeRef.current) {
+        html5QrCodeRef.current.stop().catch(() => {});
+      }
+    };
+  }, []);
+
   const fetchTransactions = useCallback(async () => {
     if (!token) return;
     
