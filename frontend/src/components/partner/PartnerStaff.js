@@ -99,6 +99,57 @@ const PartnerStaff = ({ token, language, t }) => {
     toast.success(language === 'en' ? `${label} copied!` : `${label} kopiert!`);
   };
 
+  // Print single staff card
+  const printSingleCard = (staffId) => {
+    window.open(`${API}/api/staff-cards/single/${staffId}?token=${token}`, '_blank');
+  };
+
+  // Print all selected cards as A4
+  const printSelectedCardsA4 = async () => {
+    if (selectedForPrint.length === 0) {
+      toast.error(language === 'en' ? 'Please select staff members' : 'Bitte Mitarbeiter auswählen');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${API}/api/staff-cards/a4-sheet?token=${token}`,
+        { staff_ids: selectedForPrint },
+        { responseType: 'blob' }
+      );
+      
+      // Open HTML in new window
+      const blob = new Blob([response.data], { type: 'text/html' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (err) {
+      toast.error(err.response?.data?.detail || 'Fehler beim Erstellen der Karten');
+    }
+  };
+
+  // Print all staff cards
+  const printAllCards = () => {
+    window.open(`${API}/api/staff-cards/all?token=${token}`, '_blank');
+  };
+
+  // Toggle staff selection for print
+  const togglePrintSelection = (staffId) => {
+    setSelectedForPrint(prev => 
+      prev.includes(staffId) 
+        ? prev.filter(id => id !== staffId)
+        : [...prev, staffId]
+    );
+  };
+
+  // Select all staff for print
+  const selectAllForPrint = () => {
+    if (selectedForPrint.length === staffList.length) {
+      setSelectedForPrint([]);
+    } else {
+      setSelectedForPrint(staffList.map(s => s.id));
+    }
+  };
+
   useEffect(() => {
     if (token) {
       fetchStaffList();
