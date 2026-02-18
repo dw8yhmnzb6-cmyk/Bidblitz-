@@ -1024,6 +1024,161 @@ const BidBlitzPay = () => {
           </div>
         )}
 
+        {/* Request Money View */}
+        {view === 'request' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <ArrowDownLeft className="w-5 h-5 text-green-500" />
+                {t('requestMoney')}
+              </h2>
+              
+              {requestQR ? (
+                <div className="text-center space-y-4">
+                  <div className="bg-gray-50 rounded-xl p-6">
+                    <img 
+                      src={requestQR.qr_code} 
+                      alt="Payment Request QR" 
+                      className="mx-auto w-48 h-48"
+                    />
+                  </div>
+                  <div className="bg-amber-50 rounded-xl p-4">
+                    <p className="text-2xl font-bold text-amber-600">€{requestQR.amount?.toFixed(2)}</p>
+                    {requestQR.description && (
+                      <p className="text-sm text-gray-600 mt-1">{requestQR.description}</p>
+                    )}
+                    <p className="text-xs text-gray-400 mt-2">
+                      {t('shareQRToGetPaid')}
+                    </p>
+                    <p className="text-xs text-gray-400">
+                      ID: {requestQR.request_id}
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      setRequestQR(null);
+                      setRequestAmount('');
+                      setRequestDescription('');
+                    }}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    {t('createRequest')}
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={createPaymentRequest} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('requestAmount')}
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">€</span>
+                      <Input
+                        type="number"
+                        step="0.01"
+                        min="1"
+                        value={requestAmount}
+                        onChange={(e) => setRequestAmount(e.target.value)}
+                        className="pl-8"
+                        placeholder="0.00"
+                        required
+                        data-testid="request-amount-input"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('requestDescription')}
+                    </label>
+                    <Input
+                      type="text"
+                      value={requestDescription}
+                      onChange={(e) => setRequestDescription(e.target.value)}
+                      placeholder={language === 'de' ? 'z.B. Abendessen teilen' : 'e.g. Splitting dinner'}
+                      className="w-full"
+                      data-testid="request-description-input"
+                    />
+                  </div>
+                  
+                  <Button
+                    type="submit"
+                    className="w-full bg-green-500 hover:bg-green-600 text-white"
+                    disabled={creatingRequest || !requestAmount}
+                    data-testid="create-request-btn"
+                  >
+                    {creatingRequest ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        {language === 'de' ? 'Wird erstellt...' : 'Creating...'}
+                      </>
+                    ) : (
+                      <>
+                        <QrCode className="w-4 h-4 mr-2" />
+                        {t('generateRequestQR')}
+                      </>
+                    )}
+                  </Button>
+                  
+                  <p className="text-xs text-center text-gray-400">
+                    {t('requestExpires')}
+                  </p>
+                </form>
+              )}
+            </div>
+            
+            {/* My Payment Requests */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <History className="w-5 h-5 text-gray-400" />
+                {t('myRequests')}
+              </h3>
+              
+              {myRequests.length > 0 ? (
+                <div className="space-y-3 max-h-64 overflow-y-auto">
+                  {myRequests.map((req) => (
+                    <div
+                      key={req.id}
+                      className={`p-3 rounded-xl border ${
+                        req.status === 'paid' 
+                          ? 'border-green-100 bg-green-50' 
+                          : req.status === 'expired'
+                            ? 'border-gray-100 bg-gray-50'
+                            : 'border-amber-100 bg-amber-50'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium text-gray-800">€{req.amount?.toFixed(2)}</p>
+                          {req.description && (
+                            <p className="text-xs text-gray-500">{req.description}</p>
+                          )}
+                          <p className="text-xs text-gray-400">ID: {req.id}</p>
+                        </div>
+                        <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                          req.status === 'paid' 
+                            ? 'bg-green-100 text-green-600'
+                            : req.status === 'expired'
+                              ? 'bg-gray-100 text-gray-600'
+                              : 'bg-amber-100 text-amber-600'
+                        }`}>
+                          {req.status === 'paid' ? t('paid') : req.status === 'expired' ? t('expired') : t('pending')}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-gray-50 rounded-xl">
+                  <ArrowDownLeft className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                  <p className="text-gray-500">{language === 'de' ? 'Noch keine Anforderungen' : 'No requests yet'}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Wallet View - Vouchers */}
         {view === 'wallet' && (
           <div className="space-y-4">
