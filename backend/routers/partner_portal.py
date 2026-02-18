@@ -123,6 +123,58 @@ async def get_business_types():
     """Get all available business types"""
     return BUSINESS_TYPES
 
+# ==================== PUBLIC PARTNER PROFILE ====================
+
+@router.get("/public-profile/{partner_id}")
+async def get_public_partner_profile(partner_id: str):
+    """Get public partner profile for landing page"""
+    # Find partner by ID
+    partner = await db.partner_accounts.find_one(
+        {"id": partner_id},
+        {
+            "_id": 0,
+            "password_hash": 0,
+            "auth_token": 0,
+            "iban": 0,
+            "tax_id": 0,
+            "wise_iban_full": 0
+        }
+    )
+    
+    if not partner:
+        raise HTTPException(status_code=404, detail="Partner nicht gefunden")
+    
+    if not partner.get("is_active", True):
+        raise HTTPException(status_code=404, detail="Partner ist nicht mehr aktiv")
+    
+    # Get ratings
+    ratings_agg = await db.partner_ratings.aggregate([
+        {"$match": {"partner_id": partner_id, "status": "published"}},
+        {"$group": {
+            "_id": None,
+            "average_rating": {"$avg": "$rating"},
+            "total_ratings": {"$sum": 1},
+            "recommend_count": {"$sum": {"$cond": ["$recommend", 1, 0]}}
+        }}
+    ]).to_list(1)
+    
+    if ratings_agg:
+        partner["average_rating"] = round(ratings_agg[0]["average_rating"], 1)
+        partner["total_ratings"] = ratings_agg[0]["total_ratings"]
+        partner["recommend_rate"] = round(
+            (ratings_agg[0]["recommend_count"] / ratings_agg[0]["total_ratings"] * 100)
+            if ratings_agg[0]["total_ratings"] > 0 else 0
+        )
+    
+    # Get business type info
+    business_type = next(
+        (bt for bt in BUSINESS_TYPES if bt["id"] == partner.get("business_type")),
+        {"id": "other", "name": "Sonstiges", "icon": "🏪"}
+    )
+    partner["business_type_info"] = business_type
+    
+    return partner
+
 # ==================== PARTNER AUTH ====================
 
 @router.post("/apply")
