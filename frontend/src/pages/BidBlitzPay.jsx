@@ -1188,7 +1188,7 @@ const BidBlitzPay = () => {
                 </div>
                 
                 {/* Quick amount buttons */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {[5, 10, 20, 50].map((amount) => (
                     <button
                       key={amount}
@@ -1205,6 +1205,21 @@ const BidBlitzPay = () => {
                       €{amount}
                     </button>
                   ))}
+                  {/* Complete sum button */}
+                  <button
+                    type="button"
+                    onClick={() => setTopUpAmount(String(mainBalance))}
+                    disabled={mainBalance <= 0}
+                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-all ${
+                      parseFloat(topUpAmount) === mainBalance && mainBalance > 0
+                        ? 'border-green-500 bg-green-50 text-green-600'
+                        : mainBalance > 0 
+                          ? 'border-green-300 text-green-600 hover:bg-green-50' 
+                          : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {language === 'de' ? 'Alles' : 'All'} (€{mainBalance.toFixed(2)})
+                  </button>
                 </div>
                 
                 <Button
