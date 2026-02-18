@@ -764,11 +764,11 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
             
             <Button
               onClick={handlePayment}
-              disabled={paying || !paymentAmount}
+              disabled={paying || !paymentAmount || parseFloat(paymentAmount) <= 0}
               className="w-full bg-gradient-to-r from-orange-500 to-amber-600"
             >
               {paying ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Euro className="w-5 h-5 mr-2" />}
-              {t('pay')} €{paymentAmount || '0'}
+              {t('pay')} €{parseFloat(paymentAmount || 0).toFixed(2)}
             </Button>
             
             <p className="text-xs text-gray-500 text-center">
