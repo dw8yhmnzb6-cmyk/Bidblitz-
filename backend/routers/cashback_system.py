@@ -560,3 +560,130 @@ async def admin_get_merchant_cashback_stats():
         "merchants": result,
         "total": len(result)
     }
+
+
+# ==================== ADMIN PROMOTION ENDPOINT ====================
+
+class CashbackPromotion(BaseModel):
+    special_rate: float  # e.g., 8.0 for 8%
+    duration_days: int   # How many days the promotion lasts
+
+
+@router.post("/admin/create-promotion/{partner_id}")
+async def create_cashback_promotion(
+    partner_id: str,
+    data: CashbackPromotion
+):
+    """
+    Admin: Temporäre Cashback-Aktion für einen Händler erstellen.
+    
+    - special_rate: Der erhöhte Cashback-Prozentsatz (z.B. 8% statt 3%)
+    - duration_days: Wie lange die Aktion läuft (1-30 Tage)
+    """
+    # Validate rate
+    if data.special_rate < MIN_CASHBACK_RATE or data.special_rate > MAX_CASHBACK_RATE:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Sonder-Rate muss zwischen {MIN_CASHBACK_RATE}% und {MAX_CASHBACK_RATE}% liegen"
+        )
+    
+    if data.duration_days < 1 or data.duration_days > 30:
+        raise HTTPException(
+            status_code=400,
+            detail="Aktionsdauer muss zwischen 1 und 30 Tagen liegen"
+        )
+    
+    # Check if partner exists
+    partner = await db.users.find_one({"id": partner_id, "role": "partner"})
+    if not partner:
+        raise HTTPException(status_code=404, detail="Händler nicht gefunden")
+    
+    # Calculate end date
+    end_date = datetime.now(timezone.utc) + timedelta(days=data.duration_days)
+    
+    # Update or create cashback settings with special rate
+    await db.merchant_cashback_settings.update_one(
+        {"merchant_id": partner_id},
+        {
+            "$set": {
+                "merchant_id": partner_id,
+                "special_rate": data.special_rate,
+                "special_rate_until": end_date.isoformat(),
+                "cashback_enabled": True,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        },
+        upsert=True
+    )
+    
+    logger.info(f"Admin created cashback promotion for {partner.get('business_name')}: {data.special_rate}% for {data.duration_days} days")
+    
+    return {
+        "success": True,
+        "message": f"Cashback-Aktion erstellt: {data.special_rate}% für {data.duration_days} Tage",
+        "partner_id": partner_id,
+        "partner_name": partner.get("business_name", partner.get("name")),
+        "special_rate": data.special_rate,
+        "ends_at": end_date.isoformat(),
+        "duration_days": data.duration_days
+    }
+
+
+@router.delete("/admin/remove-promotion/{partner_id}")
+async def remove_cashback_promotion(partner_id: str):
+    """Admin: Cashback-Aktion für einen Händler beenden"""
+    # Check if partner exists
+    partner = await db.users.find_one({"id": partner_id, "role": "partner"})
+    if not partner:
+        raise HTTPException(status_code=404, detail="Händler nicht gefunden")
+    
+    # Remove special rate
+    await db.merchant_cashback_settings.update_one(
+        {"merchant_id": partner_id},
+        {
+            "$set": {
+                "special_rate": None,
+                "special_rate_until": None,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    logger.info(f"Admin removed cashback promotion for {partner.get('business_name')}")
+    
+    return {
+        "success": True,
+        "message": "Cashback-Aktion beendet",
+        "partner_id": partner_id,
+        "partner_name": partner.get("business_name", partner.get("name"))
+    }
+
+
+@router.get("/admin/promotions")
+async def get_active_promotions():
+    """Admin: Alle aktiven Cashback-Aktionen abrufen"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    # Find all settings with active special rates
+    settings = await db.merchant_cashback_settings.find({
+        "special_rate": {"$ne": None},
+        "special_rate_until": {"$gt": now}
+    }).to_list(100)
+    
+    promotions = []
+    for setting in settings:
+        partner = await db.users.find_one({"id": setting["merchant_id"]})
+        if partner:
+            promotions.append({
+                "partner_id": setting["merchant_id"],
+                "partner_name": partner.get("business_name", partner.get("name")),
+                "is_premium": partner.get("is_premium", False),
+                "special_rate": setting["special_rate"],
+                "ends_at": setting["special_rate_until"],
+                "cashback_enabled": setting.get("cashback_enabled", True)
+            })
+    
+    return {
+        "promotions": promotions,
+        "total": len(promotions)
+    }
