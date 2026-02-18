@@ -30,6 +30,7 @@ const translations = {
     credit: 'Kredit', payment: 'Zahlung', topUp: 'Aufladen',
     mainAccount: 'Hauptkonto', transferToWallet: 'Zu BidBlitz Pay übertragen',
     transfer: 'Übertragen', successTransfer: 'Erfolgreich übertragen',
+    cashback: 'Cashback',
     // Credit System
     creditSystem: 'Kredit beantragen', applyForCredit: 'Kredit beantragen',
     creditAmount: 'Kreditbetrag', repaymentMonths: 'Rückzahlung (Monate)',
