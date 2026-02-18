@@ -180,6 +180,56 @@ const AdminAnalytics = ({ token }) => {
     }
   };
 
+  // Extended Analytics Functions
+  const fetchExtendedAnalytics = async () => {
+    setExtendedLoading(true);
+    try {
+      const res = await axios.get(
+        `${API}/api/analytics/extended?period=${extendedPeriod}&compare=${compareEnabled}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setExtendedData(res.data);
+    } catch (error) {
+      console.error('Extended analytics error:', error);
+      toast.error('Fehler beim Laden der erweiterten Analytics');
+    } finally {
+      setExtendedLoading(false);
+    }
+  };
+
+  const handleExportAnalytics = async (format = 'csv') => {
+    try {
+      const periodMap = { week: 'week', month: 'month', year: 'year', day: 'week', hour: 'week' };
+      const response = await axios.get(
+        `${API}/api/analytics/export?format=${format}&period=${periodMap[extendedPeriod] || 'month'}`,
+        { 
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: format === 'csv' ? 'blob' : 'json'
+        }
+      );
+      
+      if (format === 'csv') {
+        const url = window.URL.createObjectURL(response.data);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `analytics_${extendedPeriod}_${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        toast.success('Export erfolgreich!');
+      }
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Export fehlgeschlagen');
+    }
+  };
+
+  // Fetch extended analytics when period or compare changes
+  useEffect(() => {
+    if (activeTab === 'extended') {
+      fetchExtendedAnalytics();
+    }
+  }, [extendedPeriod, compareEnabled, activeTab]);
+
   useEffect(() => {
     fetchAnalytics();
     fetchDeviceAnalytics();
