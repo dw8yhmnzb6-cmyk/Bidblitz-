@@ -82,6 +82,9 @@ import AdminWalletTopup from '../components/admin/AdminWalletTopup';
 // Import Admin Wise Payouts
 import AdminWisePayouts from '../components/admin/AdminWisePayouts';
 
+// Import Admin Password Manager
+import AdminPasswordManager from '../components/admin/AdminPasswordManager';
+
 // Import Voice Debug Assistant
 import VoiceDebugAssistant from '../components/VoiceDebugAssistant';
 
