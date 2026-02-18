@@ -2242,6 +2242,17 @@ const BidBlitzPay = () => {
             )}
           </div>
         )}
+
+        {/* Credit System View */}
+        {view === 'credit' && (
+          <div className="bg-white rounded-2xl shadow-lg p-6" data-testid="credit-view">
+            <CreditSystem 
+              language={language} 
+              walletBalance={wallet?.wallet?.universal_balance || 0}
+              onBalanceUpdate={() => { fetchWallet(); fetchTransactions(); }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
