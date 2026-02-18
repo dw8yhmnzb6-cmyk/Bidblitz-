@@ -1202,7 +1202,8 @@ export default function PartnerPortal() {
       }
     };
     const langKey = getLangKey(language);
-    return translations[langKey]?.[key] || translations.de[key] || key;
+    // First check centralized partner translations, then inline translations
+    return partnerTranslations[langKey]?.[key] || partnerTranslations.de?.[key] || translations[langKey]?.[key] || translations.de[key] || key;
   };
   // Login state
   const [email, setEmail] = useState(() => localStorage.getItem('partner_saved_email') || '');
