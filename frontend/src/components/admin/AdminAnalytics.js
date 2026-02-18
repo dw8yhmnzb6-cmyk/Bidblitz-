@@ -809,9 +809,31 @@ const AdminAnalytics = ({ token }) => {
           Reports enthalten: Nutzer-Statistiken, Umsatz, Auktionen, und Geräte-Verteilung.
         </p>
       </div>
+        </>
+      )}
     </div>
   );
 };
+
+// Extended KPI Card with Comparison
+const ExtendedKPICard = ({ title, value, change, previousValue, icon: Icon, color }) => (
+  <div className="bg-gray-800/50 rounded-xl p-3 border border-gray-700/50">
+    <div className="flex items-center justify-between mb-1">
+      <span className="text-gray-400 text-xs truncate">{title}</span>
+      <Icon className={`w-4 h-4 ${color} flex-shrink-0`} />
+    </div>
+    <div className="text-lg font-bold text-white truncate">{value}</div>
+    {change !== undefined && change !== null && (
+      <div className={`flex items-center gap-1 text-xs mt-1 ${change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+        {change >= 0 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />}
+        {Math.abs(change)}%
+        {previousValue !== undefined && previousValue !== null && (
+          <span className="text-gray-500 ml-1">(vorher: {typeof previousValue === 'number' && previousValue > 100 ? previousValue.toLocaleString('de-DE') : previousValue})</span>
+        )}
+      </div>
+    )}
+  </div>
+);
 
 // KPI Card Component
 const KPICard = ({ title, value, change, subtext, icon: Icon, color }) => (
