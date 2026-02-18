@@ -208,6 +208,7 @@ const translations = {
     pay: 'الدفع',
     history: 'السجل',
     vouchers: 'القسائم',
+    security: 'الأمان',
     availableBalance: 'الرصيد المتاح',
     partnerVouchers: 'قسائم الشركاء',
     universal: 'عالمي',
