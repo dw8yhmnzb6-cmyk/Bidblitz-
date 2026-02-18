@@ -825,3 +825,120 @@ async def verify_2fa_code_only(code: str, user: dict = Depends(get_current_user)
         }
     
     raise HTTPException(status_code=400, detail="Ungültiger Code")
+
+
+# ==================== ADMIN PASSWORD MANAGEMENT ====================
+
+class AdminChangePasswordRequest(BaseModel):
+    user_id: str
+    new_password: str
+
+class AdminChangeOwnPasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+from pydantic import BaseModel
+
+@router.post("/admin/change-own-password")
+async def admin_change_own_password(
+    request: AdminChangeOwnPasswordRequest,
+    admin: dict = Depends(get_current_user)
+):
+    """Admin changes their own password"""
+    if not admin.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin-Zugang erforderlich")
+    
+    # Verify current password
+    if not verify_password(request.current_password, admin["password"]):
+        raise HTTPException(status_code=401, detail="Aktuelles Passwort ist falsch")
+    
+    # Validate new password strength
+    is_valid, message = validate_password_strength(request.new_password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=message)
+    
+    # Hash and update password
+    new_hash = hash_password(request.new_password)
+    await db.users.update_one(
+        {"id": admin["id"]},
+        {"$set": {
+            "password": new_hash,
+            "password_changed_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    await log_security_event("admin_password_changed", admin["id"], {
+        "email": admin["email"],
+        "changed_by": "self"
+    })
+    
+    return {"success": True, "message": "Passwort erfolgreich geändert"}
+
+
+@router.post("/admin/reset-user-password")
+async def admin_reset_user_password(
+    request: AdminChangePasswordRequest,
+    admin: dict = Depends(get_current_user)
+):
+    """Admin resets any user's password"""
+    if not admin.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin-Zugang erforderlich")
+    
+    # Find target user
+    target_user = await db.users.find_one({"id": request.user_id}, {"_id": 0})
+    if not target_user:
+        raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
+    
+    # Validate new password strength
+    is_valid, message = validate_password_strength(request.new_password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=message)
+    
+    # Hash and update password
+    new_hash = hash_password(request.new_password)
+    await db.users.update_one(
+        {"id": request.user_id},
+        {"$set": {
+            "password": new_hash,
+            "password_changed_at": datetime.now(timezone.utc).isoformat(),
+            "password_reset_by_admin": True
+        }}
+    )
+    
+    await log_security_event("admin_reset_user_password", admin["id"], {
+        "admin_email": admin["email"],
+        "target_user_id": request.user_id,
+        "target_email": target_user.get("email")
+    })
+    
+    return {
+        "success": True, 
+        "message": f"Passwort für {target_user.get('email')} erfolgreich zurückgesetzt"
+    }
+
+
+@router.get("/admin/users")
+async def admin_get_all_users(
+    admin: dict = Depends(get_current_user),
+    search: str = None,
+    limit: int = 50
+):
+    """Admin gets list of all users for password management"""
+    if not admin.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admin-Zugang erforderlich")
+    
+    query = {}
+    if search:
+        query = {
+            "$or": [
+                {"email": {"$regex": search, "$options": "i"}},
+                {"name": {"$regex": search, "$options": "i"}}
+            ]
+        }
+    
+    users = await db.users.find(
+        query,
+        {"_id": 0, "password": 0, "two_factor_secret": 0, "two_factor_backup_codes": 0}
+    ).limit(limit).to_list(limit)
+    
+    return {"users": users, "count": len(users)}
