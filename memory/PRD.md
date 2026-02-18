@@ -5,6 +5,58 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 30) - WALLET-SYSTEM & BUGFIXES ✅
+
+#### Behobene Fehler:
+
+**1. Partner Marketing Übersetzungen ✅**
+- Problem: Schlüssel wie `referral`, `qrCodes`, `socialSharing` wurden roh angezeigt
+- Lösung: PartnerPortal.js nutzt jetzt zentralisierte partnerTranslations.js
+- Alle Marketing-Texte jetzt korrekt auf Deutsch
+
+**2. Ungültiger QR-Code Fehler ✅**
+- Problem: scan-customer Endpoint war POST, Frontend nutzte GET
+- Lösung: Endpoint auf GET geändert
+- QR-Code-Scannen funktioniert wieder
+
+**3. Biometrische Authentifizierung ✅**
+- Problem: Generischer Fehler "Fehler bei der Registrierung"
+- Lösung: Verbesserte Fehlerbehandlung mit spezifischen Meldungen für WebAuthn-Fehler
+
+#### Neue Wallet-Features:
+
+**1. Geld senden zwischen Nutzern (P2P Transfer) ✅**
+- Neuer "Senden" Tab in BidBlitz Pay
+- POST /api/bidblitz-pay/send-money
+- Validierung: Min. €1, Empfänger existiert, kein Self-Transfer, Guthabenprüfung
+- Überweisungsverlauf mit sent/received Anzeige
+
+**2. Transfer-Historie ✅**
+- GET /api/bidblitz-pay/transfer-history
+- Zeigt gesendete und empfangene Überweisungen
+- Summen für total_sent und total_received
+
+**3. Cashback-System ✅**
+- GET /api/bidblitz-pay/cashback-balance
+- POST /api/bidblitz-pay/redeem-cashback (Min. €5)
+- Umwandlung von Cashback in BidBlitz-Guthaben
+
+#### Neue API-Endpoints:
+- `POST /api/bidblitz-pay/send-money` - Geld an anderen Nutzer senden
+- `GET /api/bidblitz-pay/transfer-history` - Überweisungsverlauf
+- `GET /api/bidblitz-pay/cashback-balance` - Cashback-Guthaben
+- `POST /api/bidblitz-pay/redeem-cashback` - Cashback einlösen
+- `GET /api/bidblitz-pay/scan-customer` - QR-Code scannen (war POST)
+
+#### Geänderte Dateien:
+- `/app/backend/routers/bidblitz_pay.py` - P2P Transfer, Cashback, scan-customer GET
+- `/app/frontend/src/pages/BidBlitzPay.jsx` - Neuer "Senden" Tab
+- `/app/frontend/src/pages/PartnerPortal.js` - Nutzt partnerTranslations.js
+- `/app/frontend/src/components/BiometricAuth.js` - Verbesserte Fehlerbehandlung
+- `/app/frontend/src/components/partner/partnerTranslations.js` - printTemplates hinzugefügt
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 29) - BIDBLITZ PAY SICHERHEITSFEATURES ✅
 
 #### Neue Features:
