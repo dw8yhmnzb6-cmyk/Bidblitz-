@@ -1392,6 +1392,7 @@ const BidBlitzPay = () => {
                 </div>
               )}
             </div>
+            )}
           </div>
         )}
 
