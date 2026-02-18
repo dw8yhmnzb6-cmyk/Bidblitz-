@@ -25,6 +25,7 @@ import PartnerVouchers from '../components/partner/PartnerVouchers';
 import PartnerStatistics from '../components/partner/PartnerStatistics';
 import PartnerProfile from '../components/partner/PartnerProfile';
 import PartnerVerification from '../components/partner/PartnerVerification';
+import PartnerBudget from '../components/partner/PartnerBudget';
 
 // Import marketing components
 import { 
