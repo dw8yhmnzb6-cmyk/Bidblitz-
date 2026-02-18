@@ -33,19 +33,21 @@ async def search_customers(
     query: str = Query(..., min_length=1),
     admin: dict = Depends(get_admin_user)
 ):
-    """Search customers by email or ID"""
-    # Search by email (case-insensitive) or ID
+    """Search customers by email, ID, name, or customer number"""
+    # Search by email (case-insensitive), ID, name, or customer_number
     users = await db.users.find({
         "$or": [
             {"email": {"$regex": query, "$options": "i"}},
             {"id": {"$regex": query, "$options": "i"}},
-            {"name": {"$regex": query, "$options": "i"}}
+            {"name": {"$regex": query, "$options": "i"}},
+            {"customer_number": {"$regex": query, "$options": "i"}}
         ]
     }, {
         "_id": 0,
         "id": 1,
         "name": 1,
         "email": 1,
+        "customer_number": 1,
         "bidblitz_balance": 1,
         "has_first_topup": 1
     }).limit(10).to_list(10)
