@@ -337,10 +337,19 @@ export default function PartnerDirectory() {
 
         {/* Map View */}
         {!loading && viewMode === 'map' && (
-          <PartnerMap 
-            partners={displayPartners} 
-            userLocation={userLocation}
-          />
+          <Suspense fallback={
+            <div className="h-96 bg-gray-100 rounded-xl flex items-center justify-center">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-amber-500 mx-auto mb-2" />
+                <p className="text-gray-500">Karte wird geladen...</p>
+              </div>
+            </div>
+          }>
+            <PartnerMap 
+              partners={displayPartners} 
+              userLocation={userLocation}
+            />
+          </Suspense>
         )}
 
         {/* No Results */}
