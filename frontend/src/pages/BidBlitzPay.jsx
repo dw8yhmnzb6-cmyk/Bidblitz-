@@ -1712,7 +1712,7 @@ const BidBlitzPay = () => {
                       {t('partnerVouchers')}
                     </h3>
                     <div className="space-y-3">
-                      {wallet.partner_vouchers.map((voucher) => (
+                      {wallet?.partner_vouchers?.map((voucher) => (
                         <div 
                           key={voucher.id}
                           className="bg-white rounded-xl p-4 shadow-sm border border-gray-100"
