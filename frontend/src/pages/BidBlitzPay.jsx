@@ -258,17 +258,37 @@ const BidBlitzPay = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
-  const [view, setView] = useState('wallet'); // wallet, qr, history, topup
+  const [view, setView] = useState('wallet'); // wallet, qr, history, topup, security
   const [language, setLanguage] = useState(() => localStorage.getItem('bidblitz_language') || 'de');
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [mainBalance, setMainBalance] = useState(0);
   const [topUpAmount, setTopUpAmount] = useState('');
   const [transferring, setTransferring] = useState(false);
+  const [user, setUser] = useState(null);
 
   const token = localStorage.getItem('token') || sessionStorage.getItem('token') || localStorage.getItem('bidblitz_token');
   
   const t = (key) => translations[language]?.[key] || translations.de[key] || key;
   const isRTL = language === 'ar';
+
+  // Fetch user data for security settings
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!token) return;
+      try {
+        const response = await fetch(`${API}/api/user/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        }
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    };
+    fetchUser();
+  }, [token]);
 
   const fetchWallet = useCallback(async () => {
     if (!token) return;
