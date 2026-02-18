@@ -196,6 +196,9 @@ const AdminMerchantVouchers = () => {
     p.city?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const premiumPartners = partners.filter(p => p.is_premium);
+  const regularPartners = partners.filter(p => !p.is_premium);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -206,7 +209,7 @@ const AdminMerchantVouchers = () => {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-800">Händler-Gutscheine</h2>
-            <p className="text-sm text-gray-500">Erstelle Gutschein-Auktionen für Partner</p>
+            <p className="text-sm text-gray-500">Gutscheine & Premium-Partner verwalten</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -218,14 +221,42 @@ const AdminMerchantVouchers = () => {
             <RefreshCw className="w-4 h-4 mr-1" />
             Aktualisieren
           </Button>
-          <Button
-            onClick={() => setShowCreateForm(!showCreateForm)}
-            className="bg-amber-500 hover:bg-amber-600"
-          >
-            <Plus className="w-4 h-4 mr-1" />
-            Gutschein erstellen
-          </Button>
+          {activeTab === 'vouchers' && (
+            <Button
+              onClick={() => setShowCreateForm(!showCreateForm)}
+              className="bg-amber-500 hover:bg-amber-600"
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Gutschein erstellen
+            </Button>
+          )}
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-2 border-b border-gray-200 pb-2">
+        <button
+          onClick={() => setActiveTab('vouchers')}
+          className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+            activeTab === 'vouchers'
+              ? 'bg-amber-500 text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          <Ticket className="w-4 h-4" />
+          Gutscheine ({vouchers.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('premium')}
+          className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${
+            activeTab === 'premium'
+              ? 'bg-yellow-500 text-white'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          }`}
+        >
+          <Crown className="w-4 h-4" />
+          Premium Partner ({premiumPartners.length})
+        </button>
       </div>
 
       {/* Create Form */}
