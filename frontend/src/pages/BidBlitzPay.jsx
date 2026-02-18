@@ -132,6 +132,7 @@ const translations = {
     pay: 'Pagar',
     history: 'Historial',
     vouchers: 'Vales',
+    security: 'Seguridad',
     availableBalance: 'Saldo disponible',
     partnerVouchers: 'Vales de socios',
     universal: 'Universal',
