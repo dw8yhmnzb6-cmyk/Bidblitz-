@@ -376,4 +376,279 @@ async def disconnect_wise_account(token: str):
     
     return {"success": True, "message": "Bankkonto getrennt"}
 
+
+# ==================== ADMIN ENDPOINTS ====================
+
+async def verify_admin(token: str):
+    """Verify admin token"""
+    user = await db.users.find_one({"token": token}, {"_id": 0})
+    if not user or user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin-Zugang erforderlich")
+    return user
+
+
+@router.get("/pending")
+async def get_pending_payouts(token: str):
+    """Admin: Get all partners with pending payouts"""
+    await verify_admin(token)
+    
+    # Get all partners with pending payouts
+    partners_with_payouts = await db.partner_accounts.find(
+        {"pending_payout": {"$gt": 0}},
+        {"_id": 0, "password_hash": 0, "auth_token": 0}
+    ).to_list(100)
+    
+    # Also check restaurant accounts
+    restaurants_with_payouts = await db.restaurant_accounts.find(
+        {"pending_payout": {"$gt": 0}},
+        {"_id": 0, "password_hash": 0, "auth_token": 0}
+    ).to_list(100)
+    
+    all_partners = partners_with_payouts + restaurants_with_payouts
+    
+    # Format response
+    result = []
+    for p in all_partners:
+        result.append({
+            "partner_id": p.get("id"),
+            "partner_name": p.get("business_name") or p.get("company_name") or p.get("name"),
+            "earnings_balance": p.get("pending_payout", 0),
+            "total_earnings": p.get("total_earned", 0),
+            "min_payout_amount": 10,
+            "has_bank_details": bool(p.get("wise_setup_complete")),
+            "bank_iban": p.get("wise_iban"),
+            "bank_holder_name": p.get("wise_account_holder"),
+            "wise_connected": p.get("wise_api_connected", False)
+        })
+    
+    # Sort by earnings balance
+    result.sort(key=lambda x: x["earnings_balance"], reverse=True)
+    
+    return {
+        "partners": result,
+        "total_pending": sum(p["earnings_balance"] for p in result),
+        "count": len(result)
+    }
+
+
+@router.get("/history")
+async def get_admin_payout_history(token: str, limit: int = 50):
+    """Admin: Get all payout history"""
+    await verify_admin(token)
+    
+    payouts = await db.partner_payouts.find(
+        {},
+        {"_id": 0}
+    ).sort("requested_at", -1).limit(limit).to_list(limit)
+    
+    # Enrich with partner names
+    for p in payouts:
+        partner = await db.partner_accounts.find_one(
+            {"id": p.get("partner_id")},
+            {"_id": 0, "business_name": 1, "company_name": 1}
+        )
+        if not partner:
+            partner = await db.restaurant_accounts.find_one(
+                {"id": p.get("partner_id")},
+                {"_id": 0, "business_name": 1, "company_name": 1}
+            )
+        p["partner_name"] = partner.get("business_name") or partner.get("company_name") if partner else "Unbekannt"
+        p["created_at"] = p.get("requested_at")
+    
+    return {"payouts": payouts, "count": len(payouts)}
+
+
+@router.post("/admin/initiate")
+async def admin_initiate_payout(token: str, partner_id: str, amount: float):
+    """Admin: Initiate a payout for a specific partner"""
+    admin = await verify_admin(token)
+    
+    # Get partner
+    partner = await db.partner_accounts.find_one({"id": partner_id}, {"_id": 0})
+    if not partner:
+        partner = await db.restaurant_accounts.find_one({"id": partner_id}, {"_id": 0})
+    
+    if not partner:
+        raise HTTPException(status_code=404, detail="Partner nicht gefunden")
+    
+    # Verify bank details
+    if not partner.get("wise_setup_complete"):
+        raise HTTPException(status_code=400, detail="Partner hat keine Bankdaten hinterlegt")
+    
+    # Verify amount
+    pending = partner.get("pending_payout", 0)
+    if amount > pending:
+        raise HTTPException(status_code=400, detail=f"Betrag überschreitet verfügbares Guthaben (€{pending:.2f})")
+    
+    # Create payout record
+    payout_id = f"payout_admin_{str(uuid.uuid4())[:8]}"
+    payout_status = "pending_manual"  # Default to manual processing
+    
+    # Try Wise API if configured
+    wise_transfer_id = None
+    if partner.get("wise_api_connected") and partner.get("wise_recipient_id"):
+        try:
+            profile_id = await get_wise_profile_id()
+            if profile_id:
+                # Create quote
+                async with httpx.AsyncClient() as client:
+                    quote_response = await client.post(
+                        f"{WISE_API_URL}/v3/profiles/{profile_id}/quotes",
+                        headers=await get_wise_headers(),
+                        json={
+                            "sourceCurrency": "EUR",
+                            "targetCurrency": partner.get("wise_currency", "EUR"),
+                            "sourceAmount": amount,
+                            "profile": profile_id
+                        },
+                        timeout=30.0
+                    )
+                    
+                    if quote_response.status_code < 400:
+                        quote = quote_response.json()
+                        
+                        # Create transfer
+                        transfer_response = await client.post(
+                            f"{WISE_API_URL}/v1/transfers",
+                            headers=await get_wise_headers(),
+                            json={
+                                "targetAccount": partner["wise_recipient_id"],
+                                "quoteUuid": quote["id"],
+                                "customerTransactionId": str(uuid.uuid4()),
+                                "details": {"reference": f"BidBlitz Admin Payout {payout_id}"}
+                            },
+                            timeout=30.0
+                        )
+                        
+                        if transfer_response.status_code < 400:
+                            transfer = transfer_response.json()
+                            wise_transfer_id = transfer["id"]
+                            payout_status = "processing"
+                            
+                            # Fund transfer
+                            await client.post(
+                                f"{WISE_API_URL}/v3/profiles/{profile_id}/transfers/{wise_transfer_id}/payments",
+                                headers=await get_wise_headers(),
+                                json={"type": "BALANCE"},
+                                timeout=30.0
+                            )
+                            payout_status = "funded"
+        except Exception as e:
+            logger.warning(f"Wise API error, falling back to manual: {e}")
+    
+    # Record payout
+    payout_record = {
+        "id": payout_id,
+        "partner_id": partner_id,
+        "wise_transfer_id": wise_transfer_id,
+        "amount": amount,
+        "currency": partner.get("wise_currency", "EUR"),
+        "status": payout_status,
+        "reference": f"BidBlitz Admin Payout",
+        "iban": partner.get("wise_iban_full", ""),
+        "account_holder": partner.get("wise_account_holder", ""),
+        "initiated_by": admin.get("email"),
+        "requested_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.partner_payouts.insert_one(payout_record)
+    
+    # Update partner balance
+    collection = db.partner_accounts if await db.partner_accounts.find_one({"id": partner_id}) else db.restaurant_accounts
+    await collection.update_one(
+        {"id": partner_id},
+        {
+            "$inc": {"pending_payout": -amount},
+            "$set": {"last_payout_at": datetime.now(timezone.utc).isoformat()}
+        }
+    )
+    
+    logger.info(f"Admin payout initiated: €{amount} to {partner_id} by {admin.get('email')}")
+    
+    return {
+        "success": True,
+        "payout_id": payout_id,
+        "amount": amount,
+        "status": payout_status,
+        "message": f"Auszahlung von €{amount:.2f} initiiert" + (" (automatisch via Wise)" if wise_transfer_id else " (manuelle Bearbeitung)")
+    }
+
+
+@router.post("/admin/batch")
+async def admin_batch_payout(token: str, partner_ids: list):
+    """Admin: Process batch payouts for multiple partners"""
+    admin = await verify_admin(token)
+    
+    results = []
+    total_amount = 0
+    
+    for partner_id in partner_ids:
+        try:
+            # Get partner
+            partner = await db.partner_accounts.find_one({"id": partner_id}, {"_id": 0})
+            if not partner:
+                partner = await db.restaurant_accounts.find_one({"id": partner_id}, {"_id": 0})
+            
+            if not partner:
+                results.append({"partner_id": partner_id, "error": "Partner nicht gefunden"})
+                continue
+            
+            if not partner.get("wise_setup_complete"):
+                results.append({"partner_id": partner_id, "error": "Keine Bankdaten"})
+                continue
+            
+            amount = partner.get("pending_payout", 0)
+            if amount < 10:
+                results.append({"partner_id": partner_id, "error": f"Betrag zu niedrig (€{amount:.2f})"})
+                continue
+            
+            # Create simple payout record (manual processing)
+            payout_id = f"payout_batch_{str(uuid.uuid4())[:8]}"
+            payout_record = {
+                "id": payout_id,
+                "partner_id": partner_id,
+                "amount": amount,
+                "currency": "EUR",
+                "status": "pending_manual",
+                "reference": f"BidBlitz Batch Payout",
+                "iban": partner.get("wise_iban_full", ""),
+                "account_holder": partner.get("wise_account_holder", ""),
+                "initiated_by": admin.get("email"),
+                "batch": True,
+                "requested_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.partner_payouts.insert_one(payout_record)
+            
+            # Update partner balance
+            collection = db.partner_accounts if await db.partner_accounts.find_one({"id": partner_id}) else db.restaurant_accounts
+            await collection.update_one(
+                {"id": partner_id},
+                {
+                    "$inc": {"pending_payout": -amount},
+                    "$set": {"last_payout_at": datetime.now(timezone.utc).isoformat()}
+                }
+            )
+            
+            total_amount += amount
+            results.append({
+                "partner_id": partner_id,
+                "success": True,
+                "payout_id": payout_id,
+                "amount": amount
+            })
+            
+        except Exception as e:
+            results.append({"partner_id": partner_id, "error": str(e)})
+    
+    successful = sum(1 for r in results if r.get("success"))
+    
+    logger.info(f"Batch payout: {successful}/{len(partner_ids)} processed, total €{total_amount:.2f} by {admin.get('email')}")
+    
+    return {
+        "success": True,
+        "message": f"{successful}/{len(partner_ids)} Auszahlungen verarbeitet",
+        "total_amount": total_amount,
+        "results": results
+    }
+
+
 wise_payouts_router = router
