@@ -229,6 +229,77 @@ const translations = {
     step3: 'اربح واسترد عند التاجر',
     availableVouchers: 'القسائم المتاحة',
     comingSoon: 'قريبًا'
+  },
+  fr: {
+    title: 'Bons Marchands', subtitle: 'Enchérissez sur des bons de partenaires locaux',
+    allMerchants: 'Tous les Marchands', searchPlaceholder: 'Rechercher des marchands...',
+    filterAll: 'Tous', filterRestaurant: 'Restaurants', filterBar: 'Bars', filterCafe: 'Cafés',
+    filterRetail: 'Commerce', filterWellness: 'Bien-être', filterOther: 'Autres',
+    noMerchants: 'Aucun marchand trouvé', vouchers: 'Bons', noVouchers: 'Pas encore de bons disponibles',
+    value: 'Valeur', currentPrice: 'Prix actuel', bids: 'Enchères', endsIn: 'Se termine dans',
+    bidNow: 'Enchérir maintenant', viewMerchant: 'Voir le marchand', back: 'Retour',
+    activeAuctions: 'Enchères actives', wonVouchers: 'Bons gagnés', redeemAt: 'Valable chez',
+    savings: 'Économies', hot: 'Populaire', new: 'Nouveau', endingSoon: 'Bientôt terminé',
+    premium: 'Partenaire Premium', verified: 'Vérifié', openingHours: 'Horaires d\'ouverture',
+    gallery: 'Galerie', contact: 'Contact', website: 'Site web', specialties: 'Spécialités',
+    paymentMethods: 'Moyens de paiement', reviews: 'Avis',
+    monday: 'Lundi', tuesday: 'Mardi', wednesday: 'Mercredi', thursday: 'Jeudi',
+    friday: 'Vendredi', saturday: 'Samedi', sunday: 'Dimanche', closed: 'Fermé',
+    winnerGets: 'Le gagnant reçoit', redeemInfo: 'Après avoir gagné, vous pouvez échanger ce bon directement chez le marchand.',
+    howItWorks: 'Comment ça marche', step1: 'Choisissez un marchand', step2: 'Enchérissez sur un bon',
+    step3: 'Gagnez et échangez chez le marchand', availableVouchers: 'Bons disponibles', comingSoon: 'Bientôt disponible'
+  },
+  it: {
+    title: 'Buoni Commercianti', subtitle: 'Fai offerte su buoni di partner locali',
+    allMerchants: 'Tutti i Commercianti', searchPlaceholder: 'Cerca commercianti...',
+    filterAll: 'Tutti', filterRestaurant: 'Ristoranti', filterBar: 'Bar', filterCafe: 'Caffè',
+    filterRetail: 'Negozi', filterWellness: 'Benessere', filterOther: 'Altri',
+    noMerchants: 'Nessun commerciante trovato', vouchers: 'Buoni', noVouchers: 'Ancora nessun buono disponibile',
+    value: 'Valore', currentPrice: 'Prezzo attuale', bids: 'Offerte', endsIn: 'Termina tra',
+    bidNow: 'Offri ora', viewMerchant: 'Vedi commerciante', back: 'Indietro',
+    activeAuctions: 'Aste attive', premium: 'Partner Premium', verified: 'Verificato',
+    winnerGets: 'Il vincitore riceve', redeemInfo: 'Dopo aver vinto, puoi riscattare questo buono direttamente dal commerciante.',
+    howItWorks: 'Come funziona', step1: 'Scegli un commerciante', step2: 'Fai un\'offerta su un buono',
+    step3: 'Vinci e riscatta dal commerciante', availableVouchers: 'Buoni disponibili', comingSoon: 'Prossimamente'
+  },
+  pt: {
+    title: 'Vouchers de Comerciantes', subtitle: 'Faça lances em vouchers de parceiros locais',
+    allMerchants: 'Todos os Comerciantes', searchPlaceholder: 'Pesquisar comerciantes...',
+    filterAll: 'Todos', filterRestaurant: 'Restaurantes', filterBar: 'Bares', filterCafe: 'Cafés',
+    filterRetail: 'Varejo', filterWellness: 'Bem-estar', filterOther: 'Outros',
+    noMerchants: 'Nenhum comerciante encontrado', vouchers: 'Vouchers', noVouchers: 'Ainda não há vouchers disponíveis',
+    value: 'Valor', currentPrice: 'Preço atual', bids: 'Lances', endsIn: 'Termina em',
+    bidNow: 'Dar lance agora', viewMerchant: 'Ver comerciante', back: 'Voltar',
+    activeAuctions: 'Leilões ativos', premium: 'Parceiro Premium', verified: 'Verificado',
+    winnerGets: 'O vencedor recebe', redeemInfo: 'Após vencer, você pode resgatar este voucher diretamente no comerciante.',
+    howItWorks: 'Como funciona', step1: 'Escolha um comerciante', step2: 'Faça um lance em um voucher',
+    step3: 'Ganhe e resgate no comerciante', availableVouchers: 'Vouchers disponíveis', comingSoon: 'Em breve'
+  },
+  ru: {
+    title: 'Купоны Продавцов', subtitle: 'Делайте ставки на купоны от местных партнёров',
+    allMerchants: 'Все Продавцы', searchPlaceholder: 'Поиск продавцов...',
+    filterAll: 'Все', filterRestaurant: 'Рестораны', filterBar: 'Бары', filterCafe: 'Кафе',
+    filterRetail: 'Розница', filterWellness: 'Велнес', filterOther: 'Другие',
+    noMerchants: 'Продавцы не найдены', vouchers: 'Купоны', noVouchers: 'Пока нет доступных купонов',
+    value: 'Стоимость', currentPrice: 'Текущая цена', bids: 'Ставки', endsIn: 'Заканчивается через',
+    bidNow: 'Сделать ставку', viewMerchant: 'Посмотреть продавца', back: 'Назад',
+    activeAuctions: 'Активные аукционы', premium: 'Премиум-партнёр', verified: 'Проверено',
+    winnerGets: 'Победитель получает', redeemInfo: 'После победы вы можете обменять этот купон напрямую у продавца.',
+    howItWorks: 'Как это работает', step1: 'Выберите продавца', step2: 'Сделайте ставку на купон',
+    step3: 'Выиграйте и обменяйте у продавца', availableVouchers: 'Доступные купоны', comingSoon: 'Скоро'
+  },
+  zh: {
+    title: '商家优惠券', subtitle: '竞拍本地合作伙伴的优惠券',
+    allMerchants: '所有商家', searchPlaceholder: '搜索商家...',
+    filterAll: '全部', filterRestaurant: '餐厅', filterBar: '酒吧', filterCafe: '咖啡厅',
+    filterRetail: '零售', filterWellness: '健康', filterOther: '其他',
+    noMerchants: '未找到商家', vouchers: '优惠券', noVouchers: '暂无可用优惠券',
+    value: '价值', currentPrice: '当前价格', bids: '出价', endsIn: '结束于',
+    bidNow: '立即出价', viewMerchant: '查看商家', back: '返回',
+    activeAuctions: '进行中的拍卖', premium: '高级合作伙伴', verified: '已验证',
+    winnerGets: '获胜者获得', redeemInfo: '中奖后，您可以直接在商家处兑换此优惠券。',
+    howItWorks: '如何运作', step1: '选择商家', step2: '对优惠券出价',
+    step3: '赢得并在商家处兑换', availableVouchers: '可用优惠券', comingSoon: '即将推出'
   }
 };
 
