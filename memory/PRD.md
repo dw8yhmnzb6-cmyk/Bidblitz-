@@ -5,6 +5,38 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 41) - PARTNER LOCKING ✅
+
+#### Feature: Admin Partner Locking System ✅
+
+**Anforderung:** Admin kann Partner-Accounts sperren/entsperren (Locking-Funktion)
+
+**Implementiert:**
+1. **Backend Endpoint (partner_portal.py):**
+   - `POST /api/partner-portal/admin/lock/{partner_id}` - Toggle Lock/Unlock
+   - Optionaler `reason` Parameter für Sperrgrund
+   - Gesperrte Partner können sich nicht einloggen (403 mit Sperrgrund)
+   - E-Mail-Benachrichtigung bei Sperrung/Entsperrung
+
+2. **Frontend (AdminPartnerApplications.js):**
+   - "Sperren" / "Entsperren" Button auf jeder Partner-Karte
+   - Rotes Banner für gesperrte Partner mit Sperrgrund
+   - "Gesperrt" Badge statt "Genehmigt"
+   - Grau/deaktiviertes Aussehen für gesperrte Partner
+   - Prompt für Sperrgrund bei Sperrung
+
+3. **Datenbankfelder:**
+   - `is_locked` (boolean) - Sperrstatus
+   - `lock_reason` (string) - Sperrgrund
+   - `locked_at` (datetime) - Sperrzeitpunkt
+   - `unlocked_at` (datetime) - Entsperrzeitpunkt
+
+**Test-Ergebnisse (iteration_70.json):**
+- Backend: 8/8 Tests bestanden (100%)
+- Frontend: 100% UI-Features verifiziert
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 40) - WISE AUSZAHLUNGEN ✅
 
 #### Feature: Admin Wise Payouts System ✅
