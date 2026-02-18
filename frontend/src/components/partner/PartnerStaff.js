@@ -461,6 +461,18 @@ const PartnerStaff = ({ token, language, t }) => {
                           <Copy className="w-4 h-4" />
                         </Button>
                       )}
+                      {staff.staff_number && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => printSingleCard(staff.id)}
+                          className="text-blue-500 hover:text-blue-700 hover:bg-blue-50"
+                          title={language === 'en' ? 'Print Card' : 'Karte drucken'}
+                          data-testid={`print-card-${staff.id}`}
+                        >
+                          <CreditCard className="w-4 h-4" />
+                        </Button>
+                      )}
                       <Button
                         variant="ghost"
                         size="sm"
