@@ -22,6 +22,7 @@ const translations = {
     vouchers: 'Gutscheine',
     security: 'Sicherheit',
     sendMoney: 'Geld senden',
+    recipientId: 'Empfänger (Kundennummer oder E-Mail)',
     recipientEmail: 'E-Mail des Empfängers',
     amount: 'Betrag',
     message: 'Nachricht (optional)',
