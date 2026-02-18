@@ -334,3 +334,130 @@ async def get_bot_status(auction_id: str, admin: dict = Depends(get_admin_user))
         "status": auction.get("status")
     }
 
+
+# ==================== MERCHANT VOUCHER BOT SYSTEM ====================
+
+@router.post("/configure-voucher-bots")
+async def configure_voucher_bots(
+    min_percent: float = 10,
+    max_percent: float = 30,
+    admin: dict = Depends(get_admin_user)
+):
+    """
+    Konfiguriere Bots für alle Händler-Gutschein-Auktionen.
+    Bots bieten zwischen 10-30% des Gutscheinwerts.
+    
+    Args:
+        min_percent: Minimum Prozent des Gutscheinwerts (Standard: 10%)
+        max_percent: Maximum Prozent des Gutscheinwerts (Standard: 30%)
+    """
+    import random
+    
+    # Validate percentages
+    if min_percent < 5 or max_percent > 50:
+        raise HTTPException(status_code=400, detail="Prozent muss zwischen 5% und 50% liegen")
+    if min_percent > max_percent:
+        raise HTTPException(status_code=400, detail="min_percent muss kleiner als max_percent sein")
+    
+    # Get all active merchant voucher auctions
+    voucher_auctions = await db.auctions.find({
+        "auction_type": "merchant_voucher",
+        "status": {"$in": ["active", "scheduled", "day_paused", "night_paused"]}
+    }).to_list(200)
+    
+    if not voucher_auctions:
+        return {
+            "success": True,
+            "message": "Keine Händler-Gutschein-Auktionen gefunden",
+            "configured": 0
+        }
+    
+    configured = 0
+    results = []
+    
+    for auction in voucher_auctions:
+        # Get voucher value from product_details or title
+        voucher_value = auction.get("product_details", {}).get("value", 0)
+        
+        # Try to extract from title if not in product_details
+        if voucher_value == 0:
+            title = auction.get("product_name", "")
+            # Extract number from title like "€50 Gutschein"
+            import re
+            match = re.search(r'€?(\d+(?:\.\d+)?)', title)
+            if match:
+                voucher_value = float(match.group(1))
+        
+        if voucher_value <= 0:
+            continue
+        
+        # Calculate random target price between min and max percent
+        target_percent = random.uniform(min_percent, max_percent)
+        target_price = round(voucher_value * (target_percent / 100), 2)
+        
+        # Ensure minimum target price
+        target_price = max(target_price, 0.50)
+        
+        # Update auction with bot target
+        await db.auctions.update_one(
+            {"id": auction["id"]},
+            {"$set": {
+                "bot_target_price": target_price,
+                "bot_target_percent": target_percent
+            }}
+        )
+        
+        configured += 1
+        results.append({
+            "auction_id": auction["id"],
+            "voucher_value": voucher_value,
+            "target_price": target_price,
+            "target_percent": round(target_percent, 1)
+        })
+    
+    logger.info(f"Configured bots for {configured} merchant voucher auctions")
+    
+    return {
+        "success": True,
+        "message": f"Bots für {configured} Gutschein-Auktionen konfiguriert",
+        "configured": configured,
+        "min_percent": min_percent,
+        "max_percent": max_percent,
+        "auctions": results
+    }
+
+
+@router.get("/voucher-bot-status")
+async def get_voucher_bot_status(admin: dict = Depends(get_admin_user)):
+    """Übersicht aller Händler-Gutschein-Auktionen mit Bot-Status"""
+    voucher_auctions = await db.auctions.find({
+        "auction_type": "merchant_voucher"
+    }, {"_id": 0}).to_list(200)
+    
+    active_bots = 0
+    auctions_info = []
+    
+    for auction in voucher_auctions:
+        target_price = auction.get("bot_target_price", 0)
+        current_price = auction.get("current_price", 0)
+        is_active = target_price > 0 and current_price < target_price and auction.get("status") == "active"
+        
+        if is_active:
+            active_bots += 1
+        
+        auctions_info.append({
+            "auction_id": auction["id"],
+            "title": auction.get("product_name", ""),
+            "voucher_value": auction.get("product_details", {}).get("value", 0),
+            "current_price": current_price,
+            "bot_target_price": target_price,
+            "bot_target_percent": auction.get("bot_target_percent", 0),
+            "bot_active": is_active,
+            "status": auction.get("status")
+        })
+    
+    return {
+        "total_voucher_auctions": len(voucher_auctions),
+        "active_bots": active_bots,
+        "auctions": auctions_info
+    }
