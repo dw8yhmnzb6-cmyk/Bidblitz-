@@ -1756,6 +1756,11 @@ export default function Admin() {
           {activeTab === 'wise-payouts' && (
             <AdminWisePayouts token={token} />
           )}
+
+          {/* Passwords Tab */}
+          {activeTab === 'passwords' && (
+            <AdminPasswordManager token={token} />
+          )}
         </main>
       </div>
       
