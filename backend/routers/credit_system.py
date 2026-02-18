@@ -576,24 +576,40 @@ async def repay_credit(data: CreditRepayment, user: dict = Depends(get_current_u
     if data.amount <= 0:
         raise HTTPException(status_code=400, detail="Ungültiger Betrag")
     
-    # Check wallet balance
+    # Check user's bidblitz_balance (main wallet used by BidBlitz Pay)
+    user_data = await db.users.find_one({"id": user["id"]}, {"_id": 0, "bidblitz_balance": 1})
+    bidblitz_balance = user_data.get("bidblitz_balance", 0) if user_data else 0
+    
+    # Also check wallets collection as fallback
     wallet = await db.wallets.find_one({"user_id": user["id"]})
-    if not wallet or wallet.get("balance", 0) < data.amount:
-        raise HTTPException(status_code=400, detail="Nicht genügend Guthaben in der Wallet")
+    wallet_balance = wallet.get("balance", 0) if wallet else 0
+    
+    # Use whichever is higher (for backwards compatibility)
+    available_balance = max(bidblitz_balance, wallet_balance)
+    
+    if available_balance < data.amount:
+        raise HTTPException(status_code=400, detail=f"Nicht genügend Guthaben. Verfügbar: €{available_balance:.2f}")
     
     # Calculate remaining
-    total_due = credit["amount"] + credit.get("total_interest", 0)
+    total_due = credit.get("total_repayment") or (credit["amount"] + credit.get("total_interest", 0))
     already_paid = credit.get("amount_repaid", 0)
     remaining = total_due - already_paid
     
     # Limit payment to remaining amount
     actual_payment = min(data.amount, remaining)
     
-    # Deduct from wallet
-    await db.wallets.update_one(
-        {"user_id": user["id"]},
-        {"$inc": {"balance": -actual_payment}}
+    # Deduct from bidblitz_balance (main wallet)
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$inc": {"bidblitz_balance": -actual_payment}}
     )
+    
+    # Also deduct from wallets collection for consistency
+    if wallet:
+        await db.wallets.update_one(
+            {"user_id": user["id"]},
+            {"$inc": {"balance": -actual_payment}}
+        )
     
     # Update credit
     new_amount_repaid = already_paid + actual_payment
