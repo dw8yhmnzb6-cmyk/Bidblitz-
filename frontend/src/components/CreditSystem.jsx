@@ -1117,11 +1117,11 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
 
       {/* Eligibility Card */}
       {eligibility && (
-        <div className={`rounded-xl p-4 ${eligibility.eligible ? 'bg-green-50 border border-green-200' : eligibility.score_eligible === false ? 'bg-red-50 border border-red-200' : 'bg-yellow-50 border border-yellow-200'}`}>
+        <div className={`rounded-xl p-4 ${eligibility.eligible ? 'bg-green-50 border border-green-200' : eligibility.blocking_reason === 'score_too_low' ? 'bg-red-50 border border-red-200' : 'bg-yellow-50 border border-yellow-200'}`}>
           <div className="flex items-center gap-3">
             {eligibility.eligible ? (
               <CheckCircle className="w-8 h-8 text-green-600" />
-            ) : eligibility.score_eligible === false ? (
+            ) : eligibility.blocking_reason === 'score_too_low' ? (
               <XCircle className="w-8 h-8 text-red-600" />
             ) : (
               <AlertCircle className="w-8 h-8 text-yellow-600" />
@@ -1131,9 +1131,10 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
                 {eligibility.eligible ? t('eligible') : t('notEligible')}
               </p>
               <p className="text-sm text-gray-600">
-                {!eligibility.is_verified && t('verificationRequired')}
-                {eligibility.has_open_credit && t('openCreditExists')}
-                {eligibility.score_eligible === false && t('scoreTooLow')}
+                {eligibility.blocking_reason === 'verification_required' && t('verificationRequired')}
+                {eligibility.blocking_reason === 'active_credit_exists' && t('activeCreditExists')}
+                {eligibility.blocking_reason === 'pending_application' && t('pendingApplication')}
+                {eligibility.blocking_reason === 'score_too_low' && t('scoreTooLow')}
                 {eligibility.eligible && `€${eligibility.min_amount} - €${eligibility.max_amount} • ${eligibility.interest_rate}% Zinsen`}
               </p>
             </div>
@@ -1148,6 +1149,14 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
           </div>
         </div>
       )}
+      
+      {/* Disclaimer - BidBlitz Guthaben only */}
+      <div className="bg-blue-50 rounded-xl p-3 text-center">
+        <p className="text-sm text-blue-700 flex items-center justify-center gap-2">
+          <Info className="w-4 h-4" />
+          {t('creditDisclaimer')}
+        </p>
+      </div>
       
       {/* Features Info */}
       <div className="grid grid-cols-2 gap-3">
