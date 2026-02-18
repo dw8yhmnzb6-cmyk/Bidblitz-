@@ -428,6 +428,34 @@ async def get_public_restaurant_vouchers():
     }
 
 
+@router.get("/vouchers/partner/{partner_id}/public")
+async def get_public_partner_vouchers(partner_id: str, limit: int = 20):
+    """Öffentliche Liste der verfügbaren Gutscheine eines Partners"""
+    # Check if partner exists and is active
+    partner = await db.partner_accounts.find_one(
+        {"id": partner_id, "is_active": True},
+        {"_id": 0, "id": 1, "business_name": 1, "name": 1}
+    )
+    
+    if not partner:
+        return {"vouchers": [], "partner_name": None}
+    
+    # Get available vouchers for this partner
+    vouchers = await db.vouchers.find(
+        {
+            "partner_id": partner_id,
+            "is_sold": False,
+            "is_redeemed": False
+        },
+        {"_id": 0, "created_by": 0, "redeemed_by": 0}
+    ).sort("created_at", -1).limit(limit).to_list(limit)
+    
+    return {
+        "vouchers": vouchers,
+        "partner_name": partner.get("business_name") or partner.get("name"),
+        "total": len(vouchers)
+    }
+
 @router.get("/vouchers/restaurant/{restaurant_name}")
 async def get_restaurant_voucher_details(restaurant_name: str):
     """Details zu einem bestimmten Restaurant und seinen Gutscheinen"""
