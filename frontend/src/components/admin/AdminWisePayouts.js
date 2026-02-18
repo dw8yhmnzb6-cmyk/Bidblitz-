@@ -41,10 +41,11 @@ export default function AdminWisePayouts({ token }) {
   // Fetch pending payouts
   const fetchPendingPayouts = useCallback(async () => {
     try {
-      const response = await axios.get(`${API}/api/wise/pending-payouts?token=${token}`);
-      setPendingPayouts(response.data.pending_payouts || []);
+      const response = await axios.get(`${API}/api/wise-payouts/pending?token=${token}`);
+      setPendingPayouts(response.data.partners || []);
     } catch (error) {
       console.error('Error fetching pending payouts:', error);
+      setPendingPayouts([]);
     }
   }, [token]);
 
