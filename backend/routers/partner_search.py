@@ -173,6 +173,56 @@ async def get_partners_by_city(
             "partner_id": partner["id"],
             "is_sold": False,
             "is_redeemed": False
+
+
+# ==================== MAP ENDPOINT ====================
+
+@router.get("/map")
+async def get_partners_for_map():
+    """Get all partners with coordinates for map display"""
+    partners = await db.partner_accounts.find(
+        {"status": "approved"},
+        {"_id": 0}
+    ).to_list(500)
+    
+    # Get cashback settings
+    cashback_settings = await db.merchant_cashback_settings.find(
+        {},
+        {"_id": 0, "merchant_id": 1, "cashback_rate": 1, "special_rate": 1}
+    ).to_list(500)
+    
+    cashback_map = {s["merchant_id"]: s for s in cashback_settings}
+    
+    result = []
+    for p in partners:
+        partner_data = {
+            "id": p.get("id"),
+            "business_name": p.get("business_name") or p.get("name"),
+            "address": p.get("address", ""),
+            "city": p.get("city", ""),
+            "latitude": p.get("latitude"),
+            "longitude": p.get("longitude"),
+            "is_premium": p.get("is_premium", False),
+            "category": p.get("business_type") or p.get("category", "other"),
+            "phone": p.get("phone"),
+            "logo_url": p.get("logo_url"),
+            "average_rating": p.get("average_rating")
+        }
+        
+        # Add cashback info
+        cashback = cashback_map.get(p.get("id"), {})
+        partner_data["cashback_rate"] = cashback.get("special_rate") or cashback.get("cashback_rate") or (5 if p.get("is_premium") else 3)
+        
+        result.append(partner_data)
+    
+    return {
+        "partners": result,
+        "total": len(result)
+    }
+
+
+# Also add to main partners router for easier access
+
         })
         partner["available_vouchers"] = voucher_count
     
