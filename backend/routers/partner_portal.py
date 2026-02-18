@@ -374,6 +374,11 @@ async def login_partner(data: PartnerLogin):
     if not partner.get("is_active"):
         raise HTTPException(status_code=403, detail="Konto deaktiviert")
     
+    # Check if partner is locked
+    if partner.get("is_locked"):
+        lock_reason = partner.get("lock_reason", "Administrativ gesperrt")
+        raise HTTPException(status_code=403, detail=f"Konto gesperrt: {lock_reason}")
+    
     # Generate token
     import secrets
     token = secrets.token_urlsafe(32)
