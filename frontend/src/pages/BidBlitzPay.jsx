@@ -994,60 +994,165 @@ const BidBlitzPay = () => {
       <div className="max-w-lg mx-auto px-4 mt-6">
         {/* Top Up View */}
         {view === 'topup' && (
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Plus className="w-5 h-5 text-amber-500" />
-              {t('transferToWallet')}
-            </h2>
-            
-            <div className="bg-gray-50 rounded-xl p-4 mb-6">
-              <p className="text-sm text-gray-500 mb-1">{t('availableOnMain')}</p>
-              <p className="text-2xl font-bold text-gray-800">€{mainBalance.toFixed(2)}</p>
+          <div className="space-y-6">
+            {/* Mode Toggle */}
+            <div className="bg-white rounded-2xl shadow-lg p-2 flex gap-2">
+              <button
+                onClick={() => setTopUpMode('direct')}
+                className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                  topUpMode === 'direct' 
+                    ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <CreditCard className="w-4 h-4 inline mr-2" />
+                {t('directTopUp')}
+              </button>
+              <button
+                onClick={() => setTopUpMode('transfer')}
+                className={`flex-1 py-3 px-4 rounded-xl text-sm font-medium transition-all ${
+                  topUpMode === 'transfer' 
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md' 
+                    : 'text-gray-600 hover:bg-gray-100'
+                }`}
+              >
+                <RefreshCw className="w-4 h-4 inline mr-2" />
+                {t('transfer')}
+              </button>
             </div>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t('enterAmount')}</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">€</span>
-                  <input
-                    type="number"
-                    value={topUpAmount}
-                    onChange={(e) => setTopUpAmount(e.target.value)}
-                    placeholder="0.00"
-                    className="w-full pl-10 pr-4 py-3 text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                    min="0"
-                    step="0.01"
-                    max={mainBalance}
-                  />
+
+            {/* Direct Top Up Section */}
+            {topUpMode === 'direct' && (
+              <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-green-500" />
+                  {t('directTopUp')}
+                </h2>
+                <p className="text-sm text-gray-500 mb-6">{t('directTopUpDesc')}</p>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('enterAmount')}</label>
+                    <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">€</span>
+                      <input
+                        type="number"
+                        value={directTopUpAmount}
+                        onChange={(e) => setDirectTopUpAmount(e.target.value)}
+                        placeholder="0.00"
+                        className="w-full pl-10 pr-4 py-3 text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        min="5"
+                        max="500"
+                        step="0.01"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {language === 'de' ? 'Min: €5 | Max: €500' : 'Min: €5 | Max: €500'}
+                    </p>
+                  </div>
+                  
+                  {/* Quick amount buttons */}
+                  <div className="flex gap-2">
+                    {[10, 25, 50, 100].map((amount) => (
+                      <button
+                        key={amount}
+                        type="button"
+                        onClick={() => setDirectTopUpAmount(String(amount))}
+                        className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-all ${
+                          parseFloat(directTopUpAmount) === amount
+                            ? 'border-green-500 bg-green-50 text-green-600'
+                            : 'border-green-300 text-green-600 hover:bg-green-50'
+                        }`}
+                      >
+                        €{amount}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <Button
+                    onClick={handleDirectTopUp}
+                    disabled={processingPayment || !directTopUpAmount || parseFloat(directTopUpAmount) < 5}
+                    className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 py-4 text-lg disabled:opacity-50"
+                  >
+                    {processingPayment ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        {t('processing')}
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-5 h-5 mr-2" />
+                        {t('payWithCard')} {directTopUpAmount && `€${parseFloat(directTopUpAmount).toFixed(2)}`}
+                      </>
+                    )}
+                  </Button>
+                  
+                  <div className="flex items-center gap-3 justify-center text-xs text-gray-400">
+                    <span>💳 Visa</span>
+                    <span>💳 Mastercard</span>
+                    <span>📱 Apple Pay</span>
+                    <span>📱 Google Pay</span>
+                  </div>
                 </div>
               </div>
+            )}
+
+            {/* Transfer from Main Account Section */}
+            {topUpMode === 'transfer' && (
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <RefreshCw className="w-5 h-5 text-amber-500" />
+                {t('transferToWallet')}
+              </h2>
               
-              {/* Quick amount buttons */}
-              <div className="flex gap-2">
-                {[5, 10, 20, 50].map((amount) => (
-                  <button
-                    key={amount}
-                    type="button"
-                    onClick={() => setTopUpAmount(String(amount))}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-all ${
-                      parseFloat(topUpAmount) === amount
-                        ? 'border-amber-500 bg-amber-50 text-amber-600'
-                        : mainBalance >= amount 
-                          ? 'border-amber-300 text-amber-600 hover:bg-amber-50' 
-                          : 'border-gray-200 text-gray-400 hover:border-gray-300'
-                    }`}
-                  >
-                    €{amount}
-                  </button>
-                ))}
+              <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                <p className="text-sm text-gray-500 mb-1">{t('availableOnMain')}</p>
+                <p className="text-2xl font-bold text-gray-800">€{mainBalance.toFixed(2)}</p>
               </div>
               
-              <Button
-                onClick={handleTopUp}
-                disabled={transferring || !topUpAmount || parseFloat(topUpAmount) <= 0 || parseFloat(topUpAmount) > mainBalance}
-                className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('enterAmount')}</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-semibold">€</span>
+                    <input
+                      type="number"
+                      value={topUpAmount}
+                      onChange={(e) => setTopUpAmount(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full pl-10 pr-4 py-3 text-xl font-semibold border rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                      min="0"
+                      step="0.01"
+                      max={mainBalance}
+                    />
+                  </div>
+                </div>
+                
+                {/* Quick amount buttons */}
+                <div className="flex gap-2">
+                  {[5, 10, 20, 50].map((amount) => (
+                    <button
+                      key={amount}
+                      type="button"
+                      onClick={() => setTopUpAmount(String(amount))}
+                      className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium border transition-all ${
+                        parseFloat(topUpAmount) === amount
+                          ? 'border-amber-500 bg-amber-50 text-amber-600'
+                          : mainBalance >= amount 
+                            ? 'border-amber-300 text-amber-600 hover:bg-amber-50' 
+                            : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                      }`}
+                    >
+                      €{amount}
+                    </button>
+                  ))}
+                </div>
+                
+                <Button
+                  onClick={handleTopUp}
+                  disabled={transferring || !topUpAmount || parseFloat(topUpAmount) <= 0 || parseFloat(topUpAmount) > mainBalance}
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                 {transferring ? (
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (
