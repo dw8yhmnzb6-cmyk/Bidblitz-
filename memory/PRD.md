@@ -5,6 +5,39 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 41) - HÄNDLER-GUTSCHEINE FEATURE ✅
+
+#### Feature: Händler-Gutscheine auf Startseite ✅
+
+**Anforderung:** 
+1. "Wie funktioniert es?" und Willkommensbonus-Banner entfernen
+2. Neuer "Händler-Gutscheine" Bereich auf der Startseite für Restaurant/Bar-Gutscheine
+
+**Implementiert:**
+1. **Entfernte Elemente:**
+   - ❌ WelcomeBonusBanner (entfernt aus App.js)
+   - ❌ HowItWorksFloatingButton (entfernt aus App.js)
+   - ❌ "Wie funktioniert's" Sektion in BidBlitzPay (entfernt)
+
+2. **Neue Komponente: VoucherAuctionsSection**
+   - Neue Datei: `/app/frontend/src/components/VoucherAuctionsSection.js`
+   - Position: Nach "Entdecke alle Features" Banner auf der Startseite
+   - Zeigt: 4 aktive Gutschein-Auktionen (Restaurant, Bar, Café, Wellness etc.)
+   - Kategorien mit Icons: 🍽️ Restaurant, 🍷 Bar, ☕ Café, 🛍️ Einzelhandel, ✨ Wellness
+   - Ersparnisanzeige: Zeigt %-Ersparnis gegenüber Gutscheinwert
+   - Demo-Fallback: Wenn keine echten Daten vorhanden
+
+3. **Backend Endpoint:**
+   - `GET /api/voucher-auctions/active` - Gibt alle aktiven Gutschein-Auktionen zurück
+   - Aggregiert Gutscheine aus: is_free_auction, restaurant_voucher, voucher category
+
+**Test-Ergebnisse (iteration_72.json):**
+- Backend: 100% 
+- Frontend: 100%
+- Echte Gutschein-Daten werden korrekt angezeigt
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 41) - ADMIN MENÜ REDESIGN ✅
 
 #### Feature: Kategorisiertes Admin Panel Menü ✅
