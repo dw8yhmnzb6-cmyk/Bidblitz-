@@ -1282,7 +1282,7 @@ export default function Admin() {
             <span className="xs:hidden">Admin</span>
           </h2>
           <div className="flex items-center gap-2">
-            <span className="text-[10px] text-gray-500 hidden sm:inline">
+            <span className={`text-[10px] px-2 py-0.5 rounded-full hidden sm:inline ${getTabCategory(activeTab)?.bgColor || 'bg-gray-100'} ${getTabCategory(activeTab)?.textColor || 'text-gray-600'}`}>
               {tabs.find(t => t.id === activeTab)?.label}
             </span>
             <Button 
@@ -1298,38 +1298,49 @@ export default function Admin() {
           </div>
         </div>
         
-        {/* Mobile/Tablet Menu Dropdown */}
+        {/* Mobile/Tablet Menu Dropdown - Kategorisiert */}
         {mobileMenuOpen && (
           <div className="px-2 pb-3 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 max-h-[70vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-            <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 py-2">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-[#7C3AED] text-white shadow-lg scale-105'
-                      : 'bg-white text-gray-600 hover:bg-gray-50 shadow-sm'
-                  }`}
-                >
-                  <span className={activeTab === tab.id ? 'text-white' : 'text-gray-500'}>
-                    {tab.icon}
-                  </span>
-                  <span className="text-[9px] xs:text-[10px] font-medium text-center leading-tight line-clamp-2">
-                    {tab.label}
-                  </span>
-                </button>
-              ))}
-            </div>
+            {tabCategories.map((category) => (
+              <div key={category.category} className="mb-4">
+                {/* Kategorie-Header */}
+                <div className={`flex items-center gap-2 px-2 py-1.5 mb-2 rounded-lg ${category.bgColor}`}>
+                  <span className={`text-xs font-bold ${category.textColor}`}>{category.category}</span>
+                  <span className={`text-[10px] ${category.textColor} opacity-70`}>({category.tabs.length})</span>
+                </div>
+                {/* Tabs Grid */}
+                <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2">
+                  {category.tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setActiveTab(tab.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all border ${
+                        activeTab === tab.id
+                          ? `${category.bgColor} ${category.textColor} ${category.borderColor} shadow-md scale-105`
+                          : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-100 shadow-sm'
+                      }`}
+                      data-testid={`mobile-tab-${tab.id}`}
+                    >
+                      <span className={activeTab === tab.id ? category.textColor : 'text-gray-500'}>
+                        {tab.icon}
+                      </span>
+                      <span className="text-[9px] xs:text-[10px] font-medium text-center leading-tight line-clamp-2">
+                        {tab.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
 
       <div className="flex">
-        {/* Desktop Sidebar - visible on lg (1024px) and up */}
+        {/* Desktop Sidebar - visible on lg (1024px) and up - Kategorisiert */}
         <aside className="hidden lg:block w-56 lg:w-64 min-h-screen bg-gradient-to-b from-cyan-50 to-cyan-100 border-r border-gray-200 fixed left-0 top-16 pt-6 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 64px)', WebkitOverflowScrolling: 'touch' }}>
           <div className="px-3 lg:px-4 mb-6">
             <h2 className="text-base lg:text-lg font-bold text-gray-800 flex items-center gap-2">
@@ -1337,23 +1348,39 @@ export default function Admin() {
               {t('admin.panel')}
             </h2>
           </div>
-          <nav className="space-y-1 px-2">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 lg:py-3 rounded-lg transition-colors text-sm lg:text-base ${
-                  activeTab === tab.id
-                    ? 'bg-[#7C3AED]/20 text-[#7C3AED]'
-                    : 'text-gray-500 hover:bg-white/5 hover:text-gray-800'
-                }`}
-                data-testid={`tab-${tab.id}`}
-              >
-                <span className="flex-shrink-0">{tab.icon}</span>
-                <span className="truncate">{tab.label}</span>
-              </button>
+          
+          {/* Kategorisierte Navigation */}
+          <nav className="px-2 space-y-4">
+            {tabCategories.map((category) => (
+              <div key={category.category}>
+                {/* Kategorie-Header */}
+                <div className={`flex items-center gap-2 px-3 py-2 mb-1 rounded-lg ${category.bgColor}`}>
+                  <span className={`text-xs font-bold ${category.textColor}`}>{category.category}</span>
+                </div>
+                {/* Tabs Liste */}
+                <div className="space-y-0.5">
+                  {category.tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`w-full flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 rounded-lg transition-colors text-sm ${
+                        activeTab === tab.id
+                          ? `${category.bgColor} ${category.textColor} font-medium`
+                          : 'text-gray-500 hover:bg-white/50 hover:text-gray-800'
+                      }`}
+                      data-testid={`tab-${tab.id}`}
+                    >
+                      <span className={`flex-shrink-0 ${activeTab === tab.id ? category.textColor : ''}`}>
+                        {tab.icon}
+                      </span>
+                      <span className="truncate">{tab.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </nav>
+          
           <div className="px-3 lg:px-4 mt-8 space-y-3">
             <Button onClick={handleSeedData} variant="outline" className="w-full border-gray-200 text-gray-800 hover:bg-white/10">
               <Plus className="w-4 h-4 mr-2" />{t('admin.seedData')}
