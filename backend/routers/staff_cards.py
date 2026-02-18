@@ -446,7 +446,7 @@ async def admin_get_all_staff_cards(admin: dict = Depends(get_admin_user)):
     
     # Get all partners with staff
     all_staff = await db.partner_staff.find(
-        {"active": True},
+        {"is_active": True},
         {"_id": 0}
     ).to_list(200)
     
