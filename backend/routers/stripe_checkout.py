@@ -4,9 +4,10 @@ Allows users to top up their wallet using credit card payments
 """
 import os
 import logging
+import jwt
 from datetime import datetime, timezone
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Request, Depends
+from fastapi import APIRouter, HTTPException, Request, Header, Depends
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
@@ -24,6 +25,10 @@ from emergentintegrations.payments.stripe.checkout import (
 from config import db
 
 logger = logging.getLogger(__name__)
+
+# JWT config
+JWT_SECRET = os.environ.get("JWT_SECRET", "bidblitz-secret-key")
+JWT_ALGORITHM = "HS256"
 
 router = APIRouter(tags=["Stripe Checkout"])
 
