@@ -128,17 +128,28 @@ const AdminMerchantVouchers = () => {
 
   const handleSetPremium = async (partnerId, partnerName) => {
     const months = parseInt(premiumMonths) || 1;
+    const price = parseFloat(premiumPrice) || 10;
+    
+    // Validate price range (5€-20€)
+    if (price < 5 || price > 20) {
+      toast.error('Premium-Preis muss zwischen 5€ und 20€ liegen');
+      return;
+    }
     
     try {
       const res = await fetch(`${API}/api/merchant-vouchers/admin/set-premium`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ partner_id: partnerId, months })
+        body: JSON.stringify({ 
+          partner_id: partnerId, 
+          months,
+          price 
+        })
       });
 
       if (res.ok) {
         const data = await res.json();
-        toast.success(`${partnerName} ist jetzt Premium für ${months} Monat(e)`);
+        toast.success(`${partnerName} ist jetzt Premium für ${months} Monat(e) (€${price}/Monat)`);
         fetchPartners();
       } else {
         const error = await res.json();
