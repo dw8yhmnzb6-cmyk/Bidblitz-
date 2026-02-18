@@ -477,7 +477,147 @@ const AdminMerchantVouchers = () => {
             ))}
           </div>
         )}
-      </div>
+        </div>
+      )}
+
+      {/* Premium Tab */}
+      {activeTab === 'premium' && (
+        <div className="space-y-4">
+          {/* Premium Info */}
+          <div className="bg-gradient-to-r from-yellow-400 to-amber-500 rounded-xl p-4 text-white">
+            <div className="flex items-center gap-3">
+              <Crown className="w-8 h-8" />
+              <div>
+                <h3 className="font-bold text-lg">Premium Partner System</h3>
+                <p className="text-yellow-100 text-sm">Premium-Partner werden ganz oben in der Händler-Liste angezeigt</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Current Premium Partners */}
+          <div className="bg-white rounded-xl border border-yellow-200 overflow-hidden">
+            <div className="p-4 border-b border-yellow-100 bg-yellow-50">
+              <h3 className="font-semibold text-yellow-800 flex items-center gap-2">
+                <Crown className="w-5 h-5" />
+                Aktive Premium Partner ({premiumPartners.length})
+              </h3>
+            </div>
+            
+            {premiumPartners.length === 0 ? (
+              <div className="p-8 text-center text-gray-500">
+                <Crown className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+                <p>Noch keine Premium-Partner</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-yellow-100">
+                {premiumPartners.map((partner) => (
+                  <div key={partner.id} className="p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        {partner.logo_url ? (
+                          <img src={partner.logo_url} alt={partner.business_name} className="w-8 h-8 rounded object-cover" />
+                        ) : (
+                          <Store className="w-5 h-5 text-yellow-600" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800 flex items-center gap-1">
+                          {partner.business_name}
+                          <Crown className="w-4 h-4 text-yellow-500" />
+                        </p>
+                        <p className="text-sm text-gray-500">{partner.city}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400">Premium bis</p>
+                        <p className="text-sm font-medium text-yellow-600">{formatDate(partner.premium_until)}</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleRemovePremium(partner.id, partner.business_name)}
+                        className="border-red-200 text-red-600 hover:bg-red-50"
+                      >
+                        <XCircle className="w-4 h-4 mr-1" />
+                        Entfernen
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Set Premium for Partner */}
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <Plus className="w-5 h-5 text-yellow-500" />
+              Partner zu Premium machen
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Partner auswählen</label>
+                <div className="relative mb-2">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Partner suchen..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+                <div className="max-h-40 overflow-y-auto border border-gray-200 rounded-lg">
+                  {filteredPartners.filter(p => !p.is_premium).map((partner) => (
+                    <div
+                      key={partner.id}
+                      onClick={() => setSelectedPartner(partner.id)}
+                      className={`p-3 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-0 flex items-center justify-between ${
+                        selectedPartner === partner.id ? 'bg-yellow-50' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Store className="w-4 h-4 text-gray-400" />
+                        <span className="font-medium text-sm">{partner.business_name}</span>
+                        <span className="text-xs text-gray-400">{partner.city}</span>
+                      </div>
+                      {selectedPartner === partner.id && (
+                        <CheckCircle className="w-4 h-4 text-yellow-600" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Dauer (Monate)</label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="12"
+                  value={premiumMonths}
+                  onChange={(e) => setPremiumMonths(e.target.value)}
+                  className="mb-3"
+                />
+                <Button
+                  onClick={() => {
+                    const partner = partners.find(p => p.id === selectedPartner);
+                    if (partner) handleSetPremium(selectedPartner, partner.business_name);
+                  }}
+                  disabled={!selectedPartner}
+                  className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600"
+                >
+                  <Crown className="w-4 h-4 mr-1" />
+                  Premium aktivieren
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
