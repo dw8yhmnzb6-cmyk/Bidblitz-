@@ -610,7 +610,7 @@ const AdminAnalytics = ({ token }) => {
       </div>
 
       {/* Device Analytics Section */}
-      {deviceData && (
+      {deviceData && deviceData.summary && (
         <div className="space-y-4 sm:space-y-6">
           <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
             <Smartphone className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500" />
