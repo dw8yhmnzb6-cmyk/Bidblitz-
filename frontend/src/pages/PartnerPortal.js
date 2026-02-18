@@ -2830,31 +2830,15 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate }) {
           </div>
         </div>
       )}
-            <Button onClick={stopScanner} variant="outline" className="w-full mt-4">
-              <X className="w-4 h-4 mr-2" />
-              Scanner beenden
-            </Button>
-          )}
-          
-          {/* Manual Input */}
-          <div className="mt-6 pt-6 border-t">
-            <p className="text-sm text-gray-500 mb-3">Oder QR-Code manuell eingeben:</p>
-            <form onSubmit={handleManualInput} className="flex gap-2">
-              <Input
-                value={manualQR}
-                onChange={(e) => setManualQR(e.target.value)}
-                placeholder="BIDBLITZ-PAY:xxxxx"
-                className="flex-1"
-              />
-              <Button type="submit">Prüfen</Button>
-            </form>
-          </div>
-        </div>
-      )}
 
-      {/* Customer Found - Payment Form */}
-      {!paymentSuccess && customerData && (
+      {/* Step 3: Customer Found - Confirm Payment */}
+      {!paymentSuccess && step === 'confirm' && customerData && (
         <div className="bg-white rounded-xl p-6 shadow-sm">
+          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-green-500" />
+            3. Zahlung bestätigen
+          </h3>
+          
           <div className="flex items-center gap-3 mb-6 pb-4 border-b">
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
               <User className="w-6 h-6 text-green-600" />
