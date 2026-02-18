@@ -5,6 +5,35 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 33) - 3 WEITERE FIXES ✅
+
+#### Behobene Fehler:
+
+**1. Kamera funktioniert nicht - Manuelle ID-Eingabe ✅**
+- Problem: Kamera konnte nicht gestartet werden
+- Lösung: Alternative manuelle Eingabe der Anforderungs-ID hinzugefügt
+- Eingabefeld mit Placeholder "z.B. 149F919F"
+- "ID laden" Button
+
+**2. Aufladen-Button deaktiviert - Hilfreicher Hinweis ✅**
+- Problem: Button war bei €0 Guthaben ohne Erklärung deaktiviert
+- Lösung: Hinweis-Box mit "💡 Ihr Hauptkonto-Guthaben ist €0. Gewinnen Sie Auktionen oder kaufen Sie Bids, um Guthaben zu erhalten."
+
+**3. Sprachreihenfolge korrigiert ✅**
+- Problem: Arabisch war nicht an erster Stelle, Albanisch nicht an vierter
+- Lösung: Neue Reihenfolge:
+  1. 🇦🇪 العربية (Arabisch - UAE/Dubai Flagge)
+  2. 🇩🇪 Deutsch
+  3. 🇬🇧 English
+  4. 🇽🇰 Shqip (Albanisch - Kosovo Flagge)
+  5. 🇹🇷 Türkçe
+  6. ... weitere Sprachen
+
+#### Geänderte Dateien:
+- `/app/frontend/src/pages/BidBlitzPay.jsx` - Manuelle ID-Eingabe, Guthaben-Hinweis, Sprachreihenfolge
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 32) - QR SCANNER + BUGFIX ✅
 
 #### Behobene Fehler:
