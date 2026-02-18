@@ -2212,80 +2212,9 @@ const BidBlitzPay = () => {
           </div>
         )}
 
-        {/* Transaction History */}
+        {/* Transaction History - Now using PaymentHistory component */}
         {view === 'history' && (
-          <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-2">
-              <History className="w-4 h-4" />
-              {t('transactionHistory')}
-            </h3>
-
-            {transactions.length > 0 ? (
-              <div className="space-y-3">
-                {transactions.map((tx) => (
-                  <div 
-                    key={tx.id}
-                    className="bg-white rounded-xl p-4 shadow-sm border border-gray-100"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          tx.type === 'payment' ? 'bg-red-100' : 'bg-green-100'
-                        }`}>
-                          {tx.type === 'payment' ? (
-                            <ArrowUpRight className="w-5 h-5 text-red-600" />
-                          ) : (
-                            <ArrowDownLeft className="w-5 h-5 text-green-600" />
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-800">
-                            {tx.type === 'payment' ? tx.partner_name : t('credit')}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(tx.created_at).toLocaleDateString(language === 'ar' ? 'ar-SA' : language + '-' + language.toUpperCase(), {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className={`font-bold ${
-                          tx.type === 'payment' ? 'text-red-600' : 'text-green-600'
-                        }`}>
-                          {tx.type === 'payment' ? '-' : '+'}€{tx.amount.toFixed(2)}
-                        </p>
-                        {tx.status === 'completed' && (
-                          <CheckCircle className="w-4 h-4 text-green-500 inline" />
-                        )}
-                      </div>
-                    </div>
-                    
-                    {tx.used_vouchers?.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-gray-100">
-                        <div className="flex flex-wrap gap-1">
-                          {tx.used_vouchers.map((v, i) => (
-                            <span key={i} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                              {v.voucher_name}: €{v.amount_used.toFixed(2)}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12 bg-gray-50 rounded-xl">
-                <History className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500">{t('noTransactions')}</p>
-              </div>
-            )}
-          </div>
+          <PaymentHistory token={token} language={language} />
         )}
 
         {/* Security Settings */}
