@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { 
   Wallet, Search, Plus, Euro, CheckCircle, Users, 
   Gift, Percent, Trophy, TrendingUp, Crown, AlertCircle,
-  RefreshCw, History, ArrowUpRight
+  RefreshCw, History, ArrowUpRight, Store, ChevronDown
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -31,6 +31,26 @@ export default function AdminWalletTopup({ token, t }) {
     totalBonus: 0,
     newCustomers: 0
   });
+  
+  // Merchant selection
+  const [merchants, setMerchants] = useState([]);
+  const [selectedMerchant, setSelectedMerchant] = useState(null);
+  const [showMerchantDropdown, setShowMerchantDropdown] = useState(false);
+  const [merchantSearchQuery, setMerchantSearchQuery] = useState('');
+
+  // Fetch merchants list
+  const fetchMerchants = useCallback(async () => {
+    try {
+      const response = await axios.get(`${API}/api/partner-portal/admin/partners`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Filter only approved partners
+      const approvedMerchants = (response.data.partners || []).filter(p => p.status === 'approved');
+      setMerchants(approvedMerchants);
+    } catch (error) {
+      console.error('Error fetching merchants:', error);
+    }
+  }, [token]);
 
   // Fetch leaderboard and stats
   const fetchStats = useCallback(async () => {
@@ -48,6 +68,7 @@ export default function AdminWalletTopup({ token, t }) {
 
   useEffect(() => {
     fetchStats();
+    fetchMerchants();
   }, [fetchStats]);
 
   // Search customers
