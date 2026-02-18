@@ -676,7 +676,10 @@ async def get_active_promotions():
     
     promotions = []
     for setting in settings:
-        partner = await db.users.find_one({"id": setting["merchant_id"]})
+        # Try both collections
+        partner = await db.partner_accounts.find_one({"id": setting["merchant_id"]})
+        if not partner:
+            partner = await db.users.find_one({"id": setting["merchant_id"]})
         if partner:
             promotions.append({
                 "partner_id": setting["merchant_id"],
