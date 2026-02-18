@@ -1341,8 +1341,10 @@ const BidBlitzPay = () => {
                 </form>
               )}
             </div>
+            )}
             
             {/* My Payment Requests */}
+            {!scannedRequest && !scannerActive && (
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <History className="w-5 h-5 text-gray-400" />
