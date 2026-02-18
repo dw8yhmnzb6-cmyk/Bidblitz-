@@ -1234,6 +1234,7 @@ export default function Admin() {
         { id: 'payments', label: 'Zahlungen', icon: <DollarSign className="w-5 h-5" /> },
         { id: 'wallet-topup', label: 'Wallet Aufladen', icon: <DollarSign className="w-5 h-5" /> },
         { id: 'wise-payouts', label: 'Wise Auszahlungen', icon: <CreditCard className="w-5 h-5" /> },
+        { id: 'credit-management', label: 'Kredit-Verwaltung', icon: <CreditCard className="w-5 h-5" /> },
       ]
     },
     {
