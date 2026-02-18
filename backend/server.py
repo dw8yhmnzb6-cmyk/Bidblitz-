@@ -194,6 +194,9 @@ from routers.admin_wallet_topup import router as admin_wallet_topup_router
 # NEW: Stripe Checkout for Wallet Top-up
 from routers.stripe_checkout import router as stripe_checkout_router
 
+# NEW: Partner Budget System (Freibetrag, Wise Payments)
+from routers.partner_budget import router as partner_budget_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
 
