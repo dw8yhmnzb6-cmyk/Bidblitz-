@@ -79,6 +79,9 @@ import AdminMysteryBox from '../components/admin/AdminMysteryBox';
 // Import Admin Wallet Top-up
 import AdminWalletTopup from '../components/admin/AdminWalletTopup';
 
+// Import Admin Wise Payouts
+import AdminWisePayouts from '../components/admin/AdminWisePayouts';
+
 // Import Voice Debug Assistant
 import VoiceDebugAssistant from '../components/VoiceDebugAssistant';
 
