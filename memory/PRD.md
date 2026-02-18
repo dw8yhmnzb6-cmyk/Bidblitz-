@@ -5,6 +5,31 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 32) - QR SCANNER + BUGFIX ✅
+
+#### Behobene Fehler:
+
+**1. JavaScript Fehler "detail.toLowerCase is not a function" ✅**
+- Problem: Fehler in Sicherheitseinstellungen wenn Backend `detail` als Objekt sendet
+- Lösung: axiosConfig.js und utils.js prüfen jetzt ob `detail` ein String ist
+- Fallback zu `detail.message || detail.msg || String(detail)`
+
+#### Neues Feature: QR-Code Scanner für Zahlungsanforderungen ✅
+
+**"Scannen zum Bezahlen" Sektion:**
+- Kamera starten zum Scannen von BIDBLITZ-REQ: QR-Codes
+- Anforderungsdetails anzeigen (Betrag, Beschreibung, Von)
+- "Zahlung bestätigen" Button
+- Kamera stoppen Button
+- html5-qrcode Bibliothek für Scanning
+
+#### Geänderte Dateien:
+- `/app/frontend/src/pages/BidBlitzPay.jsx` - Scanner UI und Logik
+- `/app/frontend/src/lib/axiosConfig.js` - detail.toLowerCase Fix
+- `/app/frontend/src/lib/utils.js` - detail.toLowerCase Fix
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 31) - 5 BUGFIXES + REQUEST MONEY ✅
 
 #### Behobene Fehler:
