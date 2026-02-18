@@ -5,6 +5,49 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 41) - PREMIUM HÄNDLER SYSTEM ✅
+
+#### Feature: Premium Partner System & Erweiterte Händler-Informationen ✅
+
+**Implementiert:**
+
+1. **Händler-Gutscheine Banner auf Startseite**
+   - Oranges Banner unter "Entdecke alle Features"
+   - Text: "🎫 Händler-Gutscheine - Ersteigere Gutscheine bei lokalen Partnern!"
+   - Link zu `/haendler-gutscheine`
+
+2. **Premium Partner System**
+   - Premium-Händler werden ganz oben in der Liste angezeigt
+   - Goldener Rahmen und "Premium Partner" Badge mit Krone
+   - Sortierung: Premium zuerst, dann nach Gutschein-Anzahl
+   - Admin kann Premium-Status setzen (1-12 Monate)
+
+3. **Erweiterte Händler-Informationen**
+   - Logo & Fotos hochladen
+   - Website & E-Mail
+   - Öffnungszeiten
+   - Social Media (Instagram, Facebook)
+   - Spezialitäten & Zahlungsarten
+   - Bewertungen (Rating & Review Count)
+   - Verifiziert-Badge (✓)
+
+4. **Admin Panel - Premium Tab**
+   - Neuer "Premium Partner" Tab unter Händler-Gutscheine
+   - Aktive Premium-Partner anzeigen mit Ablaufdatum
+   - Partner zu Premium machen (Dauer wählbar)
+   - Premium-Status entfernen
+
+**API Endpoints:**
+- `POST /api/merchant-vouchers/admin/set-premium` - Premium aktivieren
+- `POST /api/merchant-vouchers/admin/remove-premium/{id}` - Premium entfernen
+- `PUT /api/merchant-vouchers/merchant/{id}/profile` - Profil aktualisieren
+
+**Test-Ergebnisse (iteration_74.json):**
+- Backend: 100% (14/14 Tests)
+- Frontend: 100%
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 41) - HÄNDLER-GUTSCHEINE SYSTEM ✅
 
 #### Feature: Neues Händler-Gutscheine System ✅
