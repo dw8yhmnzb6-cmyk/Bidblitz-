@@ -5,6 +5,41 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 38) - STRIPE INTEGRATION ✅
+
+#### Feature: Echte Kartenzahlungen via Stripe ✅
+
+**Stripe Checkout Integration:**
+- Sichere Kartenzahlung für Wallet-Aufladungen
+- Unterstützt: Visa, Mastercard, Apple Pay, Google Pay
+- Checkout Session mit automatischer Rückleitung
+- Webhook für Zahlungsbestätigung
+
+**Neuer Backend-Router:** `/app/backend/routers/stripe_checkout.py`
+- `POST /api/stripe/create-topup-session` - Erstellt Stripe Checkout Session
+- `GET /api/stripe/payment-status/{session_id}` - Prüft Zahlungsstatus
+- `POST /api/stripe/webhook` - Empfängt Stripe Webhooks
+
+**Funktionsweise:**
+1. User wählt Betrag (€5 - €500)
+2. Weiterleitung zu Stripe Checkout
+3. Nach erfolgreicher Zahlung: Zurück zur App
+4. Frontend pollt Zahlungsstatus
+5. Automatische Wallet-Gutschrift bei Erfolg
+
+**Sicherheit:**
+- Betrag wird serverseitig validiert (nicht vom Frontend)
+- JWT-Token-Authentifizierung
+- Doppelte Gutschrift wird verhindert
+- payment_transactions Collection für Audit-Trail
+
+**Geänderte/Neue Dateien:**
+- `/app/backend/routers/stripe_checkout.py` - NEU
+- `/app/backend/server.py` - Router registriert
+- `/app/frontend/src/pages/BidBlitzPay.jsx` - Stripe Checkout Integration
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 37) - UI VERBESSERUNGEN ✅
 
 #### Drei UI-Änderungen implementiert:
