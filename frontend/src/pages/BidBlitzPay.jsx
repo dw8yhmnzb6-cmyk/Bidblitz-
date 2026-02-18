@@ -1131,7 +1131,7 @@ const BidBlitzPay = () => {
                     {processingPayment ? (
                       <>
                         <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        {t('processing')}
+                        {language === 'de' ? 'Weiterleitung zu Stripe...' : 'Redirecting to Stripe...'}
                       </>
                     ) : (
                       <>
@@ -1147,6 +1147,10 @@ const BidBlitzPay = () => {
                     <span>📱 Apple Pay</span>
                     <span>📱 Google Pay</span>
                   </div>
+                  
+                  <p className="text-center text-xs text-gray-400 mt-2">
+                    {language === 'de' ? '🔒 Sichere Zahlung via Stripe' : '🔒 Secure payment via Stripe'}
+                  </p>
                 </div>
               </div>
             )}
