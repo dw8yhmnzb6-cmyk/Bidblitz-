@@ -13,7 +13,8 @@ import {
   Store, Ticket, Clock, ChevronRight, ChevronLeft, Zap, Gift, 
   MapPin, Phone, Globe, Star, Euro, Users, Gavel, Trophy,
   Search, Filter, Coffee, Utensils, Wine, ShoppingBag, Sparkles,
-  Heart, Award, Timer, ArrowRight
+  Heart, Award, Timer, ArrowRight, Crown, Camera, ExternalLink,
+  Mail, Instagram, Facebook, CreditCard, CheckCircle
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL;
@@ -48,6 +49,23 @@ const translations = {
     hot: 'Beliebt',
     new: 'Neu',
     endingSoon: 'Endet bald',
+    premium: 'Premium Partner',
+    verified: 'Verifiziert',
+    openingHours: 'Öffnungszeiten',
+    gallery: 'Galerie',
+    contact: 'Kontakt',
+    website: 'Website',
+    specialties: 'Spezialitäten',
+    paymentMethods: 'Zahlungsarten',
+    reviews: 'Bewertungen',
+    monday: 'Montag',
+    tuesday: 'Dienstag',
+    wednesday: 'Mittwoch',
+    thursday: 'Donnerstag',
+    friday: 'Freitag',
+    saturday: 'Samstag',
+    sunday: 'Sonntag',
+    closed: 'Geschlossen',
     address: 'Adresse',
     phone: 'Telefon',
     website: 'Website',
