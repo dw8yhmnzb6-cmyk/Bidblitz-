@@ -392,6 +392,62 @@ const translations = {
     transfer: 'Μεταφορά',
     availableOnMain: 'Διαθέσιμο στον κύριο λογαριασμό',
     successTransfer: 'Μεταφέρθηκε με επιτυχία'
+  },
+  ru: {
+    wallet: 'Кошелёк', pay: 'Оплата', send: 'Отправить', history: 'История',
+    vouchers: 'Купоны', security: 'Безопасность', sendMoney: 'Отправить деньги',
+    availableBalance: 'Доступный баланс', partnerVouchers: 'Купоны партнёров',
+    universal: 'Универсальный', showQR: 'Покажите этот QR-код',
+    partnerScans: 'Партнёр сканирует для приёма платежа',
+    howItWorks: 'Как это работает', transactionHistory: 'История транзакций',
+    noTransactions: 'Транзакций пока нет', noVouchers: 'Купонов пока нет',
+    winVouchers: 'Выигрывайте купоны на аукционах!', toAuctions: 'К аукционам',
+    login: 'Войти', pleaseLogin: 'Пожалуйста, войдите для продолжения',
+    credit: 'Кредит', payment: 'Платёж', topUp: 'Пополнить',
+    mainAccount: 'Основной счёт', transferToWallet: 'Перевести в BidBlitz Pay',
+    transfer: 'Перевести', successTransfer: 'Успешно переведено'
+  },
+  zh: {
+    wallet: '钱包', pay: '支付', send: '发送', history: '历史',
+    vouchers: '优惠券', security: '安全', sendMoney: '发送金额',
+    availableBalance: '可用余额', partnerVouchers: '合作伙伴优惠券',
+    universal: '通用', showQR: '显示此二维码',
+    partnerScans: '合作伙伴扫描以接受付款',
+    howItWorks: '使用方法', transactionHistory: '交易历史',
+    noTransactions: '暂无交易', noVouchers: '暂无优惠券',
+    winVouchers: '在拍卖中赢取优惠券！', toAuctions: '前往拍卖',
+    login: '登录', pleaseLogin: '请登录以继续',
+    credit: '信用', payment: '付款', topUp: '充值',
+    mainAccount: '主账户', transferToWallet: '转账至 BidBlitz Pay',
+    transfer: '转账', successTransfer: '转账成功'
+  },
+  it: {
+    wallet: 'Portafoglio', pay: 'Paga', send: 'Invia', history: 'Cronologia',
+    vouchers: 'Buoni', security: 'Sicurezza', sendMoney: 'Invia denaro',
+    availableBalance: 'Saldo disponibile', partnerVouchers: 'Buoni partner',
+    universal: 'Universale', showQR: 'Mostra questo codice QR',
+    partnerScans: 'Il partner scansiona per accettare il pagamento',
+    howItWorks: 'Come funziona', transactionHistory: 'Cronologia transazioni',
+    noTransactions: 'Nessuna transazione', noVouchers: 'Nessun buono',
+    winVouchers: 'Vinci buoni alle aste!', toAuctions: 'Vai alle aste',
+    login: 'Accedi', pleaseLogin: 'Accedi per continuare',
+    credit: 'Credito', payment: 'Pagamento', topUp: 'Ricarica',
+    mainAccount: 'Conto principale', transferToWallet: 'Trasferisci a BidBlitz Pay',
+    transfer: 'Trasferisci', successTransfer: 'Trasferito con successo'
+  },
+  pt: {
+    wallet: 'Carteira', pay: 'Pagar', send: 'Enviar', history: 'Histórico',
+    vouchers: 'Vouchers', security: 'Segurança', sendMoney: 'Enviar dinheiro',
+    availableBalance: 'Saldo disponível', partnerVouchers: 'Vouchers de parceiros',
+    universal: 'Universal', showQR: 'Mostre este código QR',
+    partnerScans: 'O parceiro escaneia para aceitar o pagamento',
+    howItWorks: 'Como funciona', transactionHistory: 'Histórico de transações',
+    noTransactions: 'Sem transações', noVouchers: 'Sem vouchers',
+    winVouchers: 'Ganhe vouchers em leilões!', toAuctions: 'Ir para leilões',
+    login: 'Entrar', pleaseLogin: 'Faça login para continuar',
+    credit: 'Crédito', payment: 'Pagamento', topUp: 'Recarregar',
+    mainAccount: 'Conta principal', transferToWallet: 'Transferir para BidBlitz Pay',
+    transfer: 'Transferir', successTransfer: 'Transferido com sucesso'
   }
 };
 
