@@ -614,35 +614,68 @@ const MerchantVouchersPage = () => {
               const category = merchant.business_type || 'other';
               const colorClass = categoryColors[category] || categoryColors.other;
               const voucherCount = merchant.voucher_count || 0;
+              const isPremium = merchant.is_premium;
+              const isVerified = merchant.is_verified;
 
               return (
                 <div
                   key={merchant.id}
                   onClick={() => navigate(`/haendler-gutscheine/${merchant.id}`)}
-                  className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all cursor-pointer border border-gray-100 dark:border-gray-700 group"
+                  className={`bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all cursor-pointer group ${
+                    isPremium ? 'border-2 border-yellow-400 ring-2 ring-yellow-400/20' : 'border border-gray-100 dark:border-gray-700'
+                  }`}
                 >
+                  {/* Premium Badge */}
+                  {isPremium && (
+                    <div className="bg-gradient-to-r from-yellow-400 to-amber-500 px-3 py-1 text-center">
+                      <span className="text-xs font-bold text-yellow-900 flex items-center justify-center gap-1">
+                        <Crown className="w-3 h-3" />
+                        {t.premium || 'Premium Partner'}
+                      </span>
+                    </div>
+                  )}
+                  
                   {/* Merchant Header with gradient */}
-                  <div className={`bg-gradient-to-r ${colorClass} p-4 text-white`}>
+                  <div className={`bg-gradient-to-r ${colorClass} p-4 text-white relative`}>
                     <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                      <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center overflow-hidden">
                         {merchant.logo_url ? (
-                          <img src={merchant.logo_url} alt={merchant.business_name} className="w-12 h-12 rounded-lg object-cover" />
+                          <img src={merchant.logo_url} alt={merchant.business_name} className="w-full h-full object-cover" />
                         ) : (
                           categoryIcons[category] || <Store className="w-8 h-8" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-lg truncate">{merchant.business_name}</h3>
+                        <div className="flex items-center gap-1">
+                          <h3 className="font-bold text-lg truncate">{merchant.business_name}</h3>
+                          {isVerified && (
+                            <CheckCircle className="w-4 h-4 text-green-300 flex-shrink-0" title={t.verified} />
+                          )}
+                        </div>
                         <p className="text-white/80 text-sm flex items-center gap-1">
                           <MapPin className="w-3 h-3" />
                           {merchant.city}
                         </p>
+                        {/* Rating */}
+                        {merchant.rating > 0 && (
+                          <div className="flex items-center gap-0.5 mt-1">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} className={`w-3 h-3 ${i < merchant.rating ? 'text-yellow-300 fill-yellow-300' : 'text-white/30'}`} />
+                            ))}
+                            <span className="text-white/70 text-xs ml-1">({merchant.review_count || 0})</span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
 
                   {/* Merchant Body */}
                   <div className="p-4">
+                    {/* Description snippet */}
+                    {merchant.description && (
+                      <p className="text-gray-500 text-xs mb-3 line-clamp-2">{merchant.description}</p>
+                    )}
+                    
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <Ticket className="w-4 h-4 text-amber-500" />
@@ -659,7 +692,11 @@ const MerchantVouchersPage = () => {
 
                     <Button
                       variant="outline"
-                      className="w-full group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500 transition-all"
+                      className={`w-full transition-all ${
+                        isPremium 
+                          ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-yellow-900 border-yellow-400 hover:from-yellow-500 hover:to-amber-600'
+                          : 'group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500'
+                      }`}
                     >
                       {t.viewMerchant}
                       <ChevronRight className="w-4 h-4 ml-1" />
