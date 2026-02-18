@@ -63,9 +63,15 @@ async def get_merchants_with_vouchers():
             "phone": p.get("phone", ""),
             "website": p.get("website", ""),
             "logo_url": p.get("logo_url", ""),
+            "photos": p.get("photos", []),
             "description": p.get("description", ""),
+            "opening_hours": p.get("opening_hours", {}),
             "voucher_count": voucher_count,
-            "is_verified": p.get("is_verified", False)
+            "is_verified": p.get("is_verified", False),
+            "is_premium": p.get("is_premium", False),
+            "premium_until": p.get("premium_until"),
+            "rating": p.get("rating", 0),
+            "review_count": p.get("review_count", 0)
         })
     
     for r in restaurants:
@@ -83,13 +89,19 @@ async def get_merchants_with_vouchers():
             "phone": r.get("phone", ""),
             "website": r.get("website", ""),
             "logo_url": r.get("logo_url", ""),
+            "photos": r.get("photos", []),
             "description": r.get("description", ""),
+            "opening_hours": r.get("opening_hours", {}),
             "voucher_count": voucher_count,
-            "is_verified": r.get("is_verified", False)
+            "is_verified": r.get("is_verified", False),
+            "is_premium": r.get("is_premium", False),
+            "premium_until": r.get("premium_until"),
+            "rating": r.get("rating", 0),
+            "review_count": r.get("review_count", 0)
         })
     
-    # Sort by voucher count (merchants with vouchers first)
-    all_merchants.sort(key=lambda x: -x["voucher_count"])
+    # Sort: Premium first, then by voucher count
+    all_merchants.sort(key=lambda x: (-int(x.get("is_premium", False)), -x["voucher_count"]))
     
     return {
         "merchants": all_merchants,
