@@ -296,16 +296,38 @@ async def get_payment_history(token: str, limit: int = 20):
 @router.post("/admin/set-freibetrag")
 async def admin_set_freibetrag(token: str, request: SetFreibetragRequest):
     """Admin: Set free voucher credit for a partner"""
-    # Verify admin
-    admin = await db.users.find_one({"auth_token": token, "is_admin": True})
+    import jwt
+    
+    JWT_SECRET = os.environ.get("JWT_SECRET", "bidblitz-secret-key")
+    JWT_ALGORITHM = "HS256"
+    
+    # Try to decode JWT token
+    admin = None
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        admin = await db.users.find_one(
+            {"id": payload.get("user_id"), "is_admin": True},
+            {"_id": 0, "password": 0}
+        )
+    except:
+        pass
+    
+    # Fallback: Check partner admin
     if not admin:
-        # Try partner admin
-        partner_admin = await db.partners.find_one({"auth_token": token, "role": "admin"})
-        if not partner_admin:
-            raise HTTPException(status_code=403, detail="Admin-Zugriff erforderlich")
+        partner_admin = await db.partner_accounts.find_one(
+            {"auth_token": token, "role": "admin"},
+            {"_id": 0, "password_hash": 0}
+        )
+        if partner_admin:
+            admin = partner_admin
+    
+    if not admin:
+        raise HTTPException(status_code=403, detail="Admin-Zugriff erforderlich")
     
     # Get partner
-    partner = await db.partners.find_one({"id": request.partner_id}, {"_id": 0})
+    partner = await db.partner_accounts.find_one({"id": request.partner_id}, {"_id": 0})
+    if not partner:
+        partner = await db.partners.find_one({"id": request.partner_id}, {"_id": 0})
     if not partner:
         raise HTTPException(status_code=404, detail="Partner nicht gefunden")
     
@@ -330,7 +352,7 @@ async def admin_set_freibetrag(token: str, request: SetFreibetragRequest):
         "action": "freibetrag_set",
         "amount": request.amount,
         "note": request.note,
-        "admin_id": admin.get("id") if admin else "partner_admin",
+        "admin_id": admin.get("id", "admin"),
         "created_at": datetime.now(timezone.utc)
     })
     
