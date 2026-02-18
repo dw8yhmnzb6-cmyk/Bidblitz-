@@ -607,16 +607,32 @@ const AdminMerchantVouchers = () => {
                 </div>
               </div>
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Dauer (Monate)</label>
-                <Input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={premiumMonths}
-                  onChange={(e) => setPremiumMonths(e.target.value)}
-                  className="mb-3"
-                />
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Dauer (Monate)</label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={premiumMonths}
+                    onChange={(e) => setPremiumMonths(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Preis pro Monat (€5-€20)</label>
+                  <Input
+                    type="number"
+                    min="5"
+                    max="20"
+                    step="1"
+                    value={premiumPrice}
+                    onChange={(e) => setPremiumPrice(e.target.value)}
+                    placeholder="10"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Gesamt: €{(parseFloat(premiumPrice) || 10) * (parseInt(premiumMonths) || 1)}
+                  </p>
+                </div>
                 <Button
                   onClick={() => {
                     const partner = partners.find(p => p.id === selectedPartner);
@@ -626,7 +642,7 @@ const AdminMerchantVouchers = () => {
                   className="w-full bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600"
                 >
                   <Crown className="w-4 h-4 mr-1" />
-                  Premium aktivieren
+                  Premium aktivieren (€{(parseFloat(premiumPrice) || 10) * (parseInt(premiumMonths) || 1)} total)
                 </Button>
               </div>
             </div>
