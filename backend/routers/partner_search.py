@@ -236,7 +236,7 @@ async def get_partners_for_map():
 async def get_business_types():
     """Get list of all business types with counts"""
     pipeline = [
-        {"$match": {"is_active": True}},
+        {"$match": {"status": "approved"}},
         {"$group": {
             "_id": "$business_type",
             "count": {"$sum": 1}
