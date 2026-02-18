@@ -94,6 +94,7 @@ const translations = {
     pay: 'Payer',
     history: 'Historique',
     vouchers: 'Bons',
+    security: 'Sécurité',
     availableBalance: 'Solde disponible',
     partnerVouchers: 'Bons partenaires',
     universal: 'Universel',
