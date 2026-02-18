@@ -226,13 +226,14 @@ const translations = {
 };
 
 const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) => {
-  const [view, setView] = useState('main'); // main, apply, details, payment
+  const [view, setView] = useState('main'); // main, apply, details, payment, score
   const [step, setStep] = useState(1);
   const [eligibility, setEligibility] = useState(null);
   const [credits, setCredits] = useState([]);
   const [selectedCredit, setSelectedCredit] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [scoreData, setScoreData] = useState(null);
   
   // Application form state
   const [amount, setAmount] = useState(100);
@@ -256,17 +257,20 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
   
   const t = (key) => translations[language]?.[key] || translations.de[key] || translations.en[key] || key;
   
-  // Fetch eligibility and credits
+  // Fetch eligibility, credits and score
   const fetchData = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     
     try {
-      const [eligRes, creditsRes] = await Promise.all([
+      const [eligRes, creditsRes, scoreRes] = await Promise.all([
         fetch(`${API}/api/credit/eligibility`, {
           headers: { 'Authorization': `Bearer ${token}` }
         }),
         fetch(`${API}/api/credit/my-credits`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`${API}/api/credit/score`, {
           headers: { 'Authorization': `Bearer ${token}` }
         })
       ]);
