@@ -56,6 +56,7 @@ const translations = {
     pay: 'Pay',
     history: 'History',
     vouchers: 'Vouchers',
+    security: 'Security',
     availableBalance: 'Available Balance',
     partnerVouchers: 'Partner Vouchers',
     universal: 'Universal',
