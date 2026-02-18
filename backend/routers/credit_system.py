@@ -364,11 +364,27 @@ async def check_credit_eligibility(user: dict = Depends(get_current_user)):
     # Check if eligible based on score tier
     score_eligible = current_tier["max_credit"] > 0
     
+    # User is eligible if: verified, no active credit, and score allows
+    is_eligible = is_verified and not has_active_credit and score_eligible
+    
+    # Determine the blocking reason
+    blocking_reason = None
+    if not is_verified:
+        blocking_reason = "verification_required"
+    elif has_active_credit:
+        blocking_reason = "active_credit_exists"
+    elif has_pending:
+        blocking_reason = "pending_application"
+    elif not score_eligible:
+        blocking_reason = "score_too_low"
+    
     return {
-        "eligible": is_verified and not has_open_credit and score_eligible,
+        "eligible": is_eligible,
         "is_verified": is_verified,
-        "has_open_credit": has_open_credit,
-        "open_credit_id": existing_credit["id"] if existing_credit else None,
+        "has_active_credit": has_active_credit,
+        "has_pending_application": has_pending,
+        "active_credit_id": active_credit["id"] if active_credit else None,
+        "pending_credit_id": pending_credit["id"] if pending_credit else None,
         "credit_history_count": len(credit_history),
         "min_amount": MIN_CREDIT_AMOUNT,
         "max_amount": tier_max_credit,
@@ -383,7 +399,7 @@ async def check_credit_eligibility(user: dict = Depends(get_current_user)):
             "color": current_tier["color"]
         },
         "score_eligible": score_eligible,
-        "score_message": "Ihr Score ist zu niedrig für einen Kredit. Verbessern Sie ihn durch pünktliche Zahlungen." if not score_eligible else None
+        "blocking_reason": blocking_reason
     }
 
 
