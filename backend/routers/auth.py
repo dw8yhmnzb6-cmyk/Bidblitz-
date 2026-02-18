@@ -829,15 +829,16 @@ async def verify_2fa_code_only(code: str, user: dict = Depends(get_current_user)
 
 # ==================== ADMIN PASSWORD MANAGEMENT ====================
 
-class AdminChangePasswordRequest(BaseModel):
+from pydantic import BaseModel as PydanticBaseModel
+
+class AdminChangePasswordRequest(PydanticBaseModel):
     user_id: str
     new_password: str
 
-class AdminChangeOwnPasswordRequest(BaseModel):
+class AdminChangeOwnPasswordRequest(PydanticBaseModel):
     current_password: str
     new_password: str
 
-from pydantic import BaseModel
 
 @router.post("/admin/change-own-password")
 async def admin_change_own_password(
