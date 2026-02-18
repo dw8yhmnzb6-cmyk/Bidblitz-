@@ -145,6 +145,7 @@ from routers.partner_qr import router as partner_qr_router
 from routers.partner_flash_sales import router as partner_flash_sales_router
 from routers.partner_search import router as partner_search_router
 from routers.partner_social import router as partner_social_router
+from routers.staff_cards import router as staff_cards_router
 
 # NEW: BidBlitz Pay Security
 from routers.security import router as security_router
