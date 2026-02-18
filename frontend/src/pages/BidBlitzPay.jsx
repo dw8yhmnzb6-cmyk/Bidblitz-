@@ -18,6 +18,7 @@ const translations = {
     pay: 'Bezahlen',
     history: 'Verlauf',
     vouchers: 'Gutscheine',
+    security: 'Sicherheit',
     availableBalance: 'Verfügbares Guthaben',
     partnerVouchers: 'Partner-Gutscheine',
     universal: 'Universal',
