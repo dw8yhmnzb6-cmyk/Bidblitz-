@@ -549,21 +549,26 @@ async def list_staff(token: str):
 
 @router.post("/staff/create")
 async def create_staff_account(staff_data: StaffAccountCreate, token: str):
-    """Create a new staff account (counter employee)"""
+    """Create a new staff account (counter employee) with auto-generated staff_number (Kundennummer)"""
     partner = await get_current_partner(token)
     
-    # Check if email already exists
-    existing = await db.partner_staff.find_one({"email": staff_data.email.lower()})
+    # Generate unique staff number (Kundennummer)
+    staff_number = await generate_staff_number(partner["id"])
+    
+    # Check if staff_number already exists (should not happen, but safety check)
+    existing = await db.partner_staff.find_one({"staff_number": staff_number})
     if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
+        # Append a random suffix if collision
+        staff_number = f"{staff_number}-{str(uuid.uuid4())[:4].upper()}"
     
     staff_id = str(uuid.uuid4())
     
     staff_doc = {
         "id": staff_id,
         "partner_id": partner["id"],
+        "staff_number": staff_number,  # Kundennummer for login
         "name": staff_data.name,
-        "email": staff_data.email.lower(),
+        "email": staff_data.email.lower() if staff_data.email else None,
         "password_hash": hash_password(staff_data.password),
         "role": staff_data.role,  # "counter" or "admin"
         "is_active": True,
@@ -572,12 +577,14 @@ async def create_staff_account(staff_data: StaffAccountCreate, token: str):
     
     await db.partner_staff.insert_one(staff_doc)
     
-    logger.info(f"Staff account created: {staff_data.email} for partner {partner['id']}")
+    logger.info(f"Staff account created: {staff_number} ({staff_data.name}) for partner {partner['id']}")
     
     return {
         "success": True,
-        "message": f"Staff account created for {staff_data.name}",
+        "message": f"Mitarbeiter-Konto erstellt für {staff_data.name}",
         "staff_id": staff_id,
+        "staff_number": staff_number,  # Return the Kundennummer to show to admin
+        "name": staff_data.name,
         "role": staff_data.role
     }
 
