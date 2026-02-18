@@ -827,7 +827,14 @@ async def admin_decide_credit(data: AdminCreditDecision):
         # Set first payment date (30 days from now)
         next_payment_date = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
         
-        # AUTO-ACTIVATE: Credit amount to user's BidBlitz Pay wallet immediately
+        # AUTO-ACTIVATE: Credit amount to user's BidBlitz Pay balance immediately
+        # Update user's bidblitz_balance (main wallet used by BidBlitz Pay)
+        await db.users.update_one(
+            {"id": user_id},
+            {"$inc": {"bidblitz_balance": amount}}
+        )
+        
+        # Also update wallets collection for consistency
         wallet = await db.wallets.find_one({"user_id": user_id})
         if wallet:
             await db.wallets.update_one(
@@ -848,7 +855,7 @@ async def admin_decide_credit(data: AdminCreditDecision):
             "user_id": user_id,
             "type": "credit_disbursement",
             "amount": amount,
-            "description": f"BidBlitz Kredit ausgezahlt ({data.credit_id[:8]})",
+            "description": f"BidBlitz Guthaben-Kredit ausgezahlt ({data.credit_id[:8]})",
             "credit_id": data.credit_id,
             "created_at": datetime.now(timezone.utc).isoformat()
         })
