@@ -1,11 +1,13 @@
 """
 Test Merchant Vouchers API - Händler-Gutscheine System
 Tests for:
-- GET /api/merchant-vouchers/merchants - Get all merchants
-- GET /api/merchant-vouchers/merchant/{id} - Get merchant details
+- GET /api/merchant-vouchers/merchants - Get all merchants (sorted: Premium first)
+- GET /api/merchant-vouchers/merchant/{id} - Get merchant details (with extended info)
 - GET /api/merchant-vouchers/merchant/{id}/vouchers - Get merchant vouchers
 - POST /api/merchant-vouchers/admin/create - Create voucher for merchant
 - GET /api/merchant-vouchers/admin/all - Get all vouchers (admin)
+- POST /api/merchant-vouchers/admin/set-premium - Set merchant as Premium
+- POST /api/merchant-vouchers/admin/remove-premium/{id} - Remove Premium status
 """
 import pytest
 import requests
