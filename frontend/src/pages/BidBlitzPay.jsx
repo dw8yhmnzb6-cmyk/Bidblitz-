@@ -76,6 +76,7 @@ const translations = {
     vouchers: 'Vouchers',
     security: 'Security',
     sendMoney: 'Send Money',
+    recipientId: 'Recipient (Customer ID or Email)',
     recipientEmail: 'Recipient Email',
     amount: 'Amount',
     message: 'Message (optional)',
