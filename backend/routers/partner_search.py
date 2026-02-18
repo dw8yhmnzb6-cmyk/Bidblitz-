@@ -228,14 +228,6 @@ async def get_partners_for_map():
     }
 
 
-# Also add to main partners router for easier access
-
-        })
-        partner["available_vouchers"] = voucher_count
-    
-    return {"city": city, "count": len(partners), "partners": partners}
-
-
 @router.get("/business-types")
 async def get_business_types():
     """Get list of all business types with counts"""
