@@ -265,28 +265,229 @@ const AdminAnalytics = ({ token }) => {
           <p className="text-gray-400 text-sm">Geschäftsmetriken und Benutzerverhalten</p>
         </div>
         <div className="flex items-center gap-2">
-          <select
-            value={period}
-            onChange={(e) => setPeriod(Number(e.target.value))}
-            className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm"
-          >
-            <option value={7}>Letzte 7 Tage</option>
-            <option value={14}>Letzte 14 Tage</option>
-            <option value={30}>Letzte 30 Tage</option>
-            <option value={90}>Letzte 90 Tage</option>
-          </select>
-          <Button 
-            onClick={fetchAnalytics}
-            variant="outline"
-            size="sm"
-            className="border-gray-700"
-          >
-            <RefreshCw className="w-4 h-4" />
-          </Button>
+          {/* Tab Switcher */}
+          <div className="flex bg-gray-800 rounded-lg p-1">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                activeTab === 'overview' ? 'bg-amber-500 text-white' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Übersicht
+            </button>
+            <button
+              onClick={() => setActiveTab('extended')}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${
+                activeTab === 'extended' ? 'bg-amber-500 text-white' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              Erweitert
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* Extended Analytics Tab */}
+      {activeTab === 'extended' && (
+        <div className="space-y-6">
+          {/* Period & Compare Controls */}
+          <div className="bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex gap-2">
+                {TIME_PERIODS.map((tp) => (
+                  <button
+                    key={tp.value}
+                    onClick={() => setExtendedPeriod(tp.value)}
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      extendedPeriod === tp.value 
+                        ? 'bg-amber-500 text-white' 
+                        : 'bg-gray-700/50 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    <tp.icon className="w-4 h-4" />
+                    {tp.label}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="flex items-center gap-4 ml-auto">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={compareEnabled}
+                    onChange={(e) => setCompareEnabled(e.target.checked)}
+                    className="w-4 h-4 rounded border-gray-600 text-amber-500 focus:ring-amber-500"
+                  />
+                  <span className="text-gray-300 text-sm">Mit Vorperiode vergleichen</span>
+                </label>
+                
+                <Button
+                  onClick={() => handleExportAnalytics('csv')}
+                  variant="outline"
+                  size="sm"
+                  className="border-gray-600 text-gray-300"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  CSV Export
+                </Button>
+                
+                <Button
+                  onClick={fetchExtendedAnalytics}
+                  variant="outline"
+                  size="sm"
+                  className="border-gray-600"
+                >
+                  <RefreshCw className={`w-4 h-4 ${extendedLoading ? 'animate-spin' : ''}`} />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Extended Analytics Content */}
+          {extendedLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <RefreshCw className="w-8 h-8 animate-spin text-amber-500" />
+            </div>
+          ) : extendedData ? (
+            <>
+              {/* Period Info */}
+              <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl p-4 border border-amber-500/20">
+                <p className="text-amber-400 font-medium">{extendedData.period?.label}</p>
+                <p className="text-gray-400 text-sm">
+                  {new Date(extendedData.period?.start).toLocaleDateString('de-DE')} – {new Date(extendedData.period?.end).toLocaleDateString('de-DE')}
+                </p>
+              </div>
+
+              {/* Extended KPI Cards with Comparison */}
+              <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+                <ExtendedKPICard
+                  title="Umsatz"
+                  value={`€${extendedData.current?.revenue?.toLocaleString('de-DE') || 0}`}
+                  change={extendedData.changes?.revenue}
+                  previousValue={extendedData.previous?.revenue}
+                  icon={DollarSign}
+                  color="text-green-500"
+                />
+                <ExtendedKPICard
+                  title="Bestellungen"
+                  value={extendedData.current?.orders || 0}
+                  change={extendedData.changes?.orders}
+                  previousValue={extendedData.previous?.orders}
+                  icon={ShoppingCart}
+                  color="text-amber-500"
+                />
+                <ExtendedKPICard
+                  title="Neue Nutzer"
+                  value={extendedData.current?.new_users || 0}
+                  change={extendedData.changes?.new_users}
+                  previousValue={extendedData.previous?.new_users}
+                  icon={UserPlus}
+                  color="text-cyan-500"
+                />
+                <ExtendedKPICard
+                  title="Gebote"
+                  value={extendedData.current?.bids?.toLocaleString('de-DE') || 0}
+                  change={extendedData.changes?.bids}
+                  previousValue={extendedData.previous?.bids}
+                  icon={TrendingUp}
+                  color="text-purple-500"
+                />
+                <ExtendedKPICard
+                  title="Auktionen"
+                  value={extendedData.current?.auctions || 0}
+                  change={extendedData.changes?.auctions}
+                  previousValue={extendedData.previous?.auctions}
+                  icon={BarChart3}
+                  color="text-pink-500"
+                />
+                <ExtendedKPICard
+                  title="Seitenaufrufe"
+                  value={extendedData.current?.page_views?.toLocaleString('de-DE') || 0}
+                  change={extendedData.changes?.page_views}
+                  previousValue={extendedData.previous?.page_views}
+                  icon={Eye}
+                  color="text-blue-500"
+                />
+              </div>
+
+              {/* Time Series Charts */}
+              {extendedData.time_series && extendedData.time_series.length > 0 && (
+                <div className="grid lg:grid-cols-2 gap-6">
+                  {/* Revenue Over Time */}
+                  <div className="bg-gray-800/50 rounded-xl p-4 sm:p-6 border border-gray-700/50">
+                    <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-green-500" />
+                      Umsatz über Zeit
+                    </h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <AreaChart data={extendedData.time_series}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                        <XAxis dataKey="date" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                        <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                        <Tooltip
+                          contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px' }}
+                          formatter={(value) => [`€${value.toFixed(2)}`, 'Umsatz']}
+                        />
+                        <Area type="monotone" dataKey="revenue" stroke={CHART_COLORS.success} fill={CHART_COLORS.success} fillOpacity={0.3} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* Bids & Orders Over Time */}
+                  <div className="bg-gray-800/50 rounded-xl p-4 sm:p-6 border border-gray-700/50">
+                    <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-purple-500" />
+                      Aktivität über Zeit
+                    </h3>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <LineChart data={extendedData.time_series}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                        <XAxis dataKey="date" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                        <YAxis stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+                        <Tooltip contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px' }} />
+                        <Legend wrapperStyle={{ fontSize: '12px' }} />
+                        <Line type="monotone" dataKey="bids" stroke={CHART_COLORS.purple} name="Gebote" strokeWidth={2} />
+                        <Line type="monotone" dataKey="orders" stroke={CHART_COLORS.primary} name="Bestellungen" strokeWidth={2} />
+                        <Line type="monotone" dataKey="users" stroke={CHART_COLORS.secondary} name="Neue Nutzer" strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-12 text-gray-400">
+              <BarChart3 className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Keine Daten verfügbar</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Overview Tab - Original Content */}
+      {activeTab === 'overview' && (
+        <>
+          {/* Period Selector for Overview */}
+          <div className="flex items-center gap-2 justify-end">
+            <select
+              value={period}
+              onChange={(e) => setPeriod(Number(e.target.value))}
+              className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm"
+            >
+              <option value={7}>Letzte 7 Tage</option>
+              <option value={14}>Letzte 14 Tage</option>
+              <option value={30}>Letzte 30 Tage</option>
+              <option value={90}>Letzte 90 Tage</option>
+            </select>
+            <Button 
+              onClick={fetchAnalytics}
+              variant="outline"
+              size="sm"
+              className="border-gray-700"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </Button>
+          </div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         <KPICard 
           title="Umsatz" 
