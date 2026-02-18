@@ -634,8 +634,10 @@ async def create_cashback_promotion(
 @router.delete("/admin/remove-promotion/{partner_id}")
 async def remove_cashback_promotion(partner_id: str):
     """Admin: Cashback-Aktion für einen Händler beenden"""
-    # Check if partner exists
-    partner = await db.users.find_one({"id": partner_id, "role": "partner"})
+    # Check if partner exists - try both collections
+    partner = await db.partner_accounts.find_one({"id": partner_id})
+    if not partner:
+        partner = await db.users.find_one({"id": partner_id, "role": "partner"})
     if not partner:
         raise HTTPException(status_code=404, detail="Händler nicht gefunden")
     
