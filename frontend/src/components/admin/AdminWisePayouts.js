@@ -27,10 +27,14 @@ export default function AdminWisePayouts({ token }) {
   // Fetch Wise status
   const fetchWiseStatus = useCallback(async () => {
     try {
-      const response = await axios.get(`${API}/api/wise/status?token=${token}`);
-      setWiseStatus(response.data);
+      const response = await axios.get(`${API}/api/wise-payouts/account-status?token=${token}`);
+      setWiseStatus({
+        configured: response.data.connected,
+        message: response.data.payouts_enabled ? 'Wise API ist verbunden' : 'Wise API nicht konfiguriert - Manuelle Auszahlung'
+      });
     } catch (error) {
       console.error('Error fetching Wise status:', error);
+      setWiseStatus({ configured: false, message: 'Wise Status nicht verfügbar' });
     }
   }, [token]);
 
