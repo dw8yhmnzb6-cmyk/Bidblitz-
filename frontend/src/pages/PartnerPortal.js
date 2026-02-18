@@ -1340,8 +1340,13 @@ export default function PartnerPortal() {
       const endpoint = loginMode === 'staff' 
         ? `${API}/api/partner-portal/staff/login`
         : `${API}/api/partner-portal/login`;
+      
+      // Staff login uses staff_number, admin uses email
+      const payload = loginMode === 'staff'
+        ? { staff_number: email, password }
+        : { email, password };
         
-      const response = await axios.post(endpoint, { email, password });
+      const response = await axios.post(endpoint, payload);
       const data = response.data;
       
       setToken(data.token);
