@@ -5,6 +5,53 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 31) - 5 BUGFIXES + REQUEST MONEY ✅
+
+#### Behobene Fehler:
+
+**1. Geld senden - Kundennummer statt E-Mail ✅**
+- Problem: Empfängerfeld akzeptierte nur E-Mail
+- Lösung: Backend akzeptiert jetzt Kundennummer ODER E-Mail
+- Suche: Email → User ID → Case-insensitive ID
+
+**2. WebAuthn getPublicKey Fehler ✅**
+- Problem: "getPublicKey is not a function" auf manchen Geräten
+- Lösung: Fallback zu attestationObject wenn getPublicKey nicht verfügbar
+
+**3. Aufladen-Buttons nicht klickbar ✅**
+- Problem: Quick-Buttons (€5, €10, etc.) waren deaktiviert bei 0 Guthaben
+- Lösung: Buttons sind jetzt immer klickbar, setzen den Betrag
+
+**4. Fehlende Sprachen im Menü ✅**
+- Problem: Nur 6 Sprachen verfügbar
+- Lösung: 16 Sprachen hinzugefügt (de, en, fr, es, tr, ar, it, pt, nl, pl, ru, zh, ja, ko, el, sq)
+
+**5. Sicherheit-Tab fehlt in Mobile ✅**
+- Problem: Tab-Leiste auf Mobile zu schmal
+- Lösung: Tab-Navigation horizontal scrollbar mit flex-shrink-0
+
+#### Neues Feature: Zahlungsanforderung (Request Money) ✅
+
+**Neuer "Anfordern" Tab:**
+- QR-Code erstellen für gewünschten Betrag
+- Beschreibung optional (z.B. "Abendessen teilen")
+- QR-Code 1 Stunde gültig
+- Andere können scannen und direkt bezahlen
+- Verlauf der eigenen Anforderungen (pending/paid/expired)
+
+**Neue API-Endpoints:**
+- `POST /api/bidblitz-pay/request-money` - Anforderung mit QR erstellen
+- `GET /api/bidblitz-pay/request-money/{id}` - Details abrufen
+- `POST /api/bidblitz-pay/pay-request/{id}` - Anforderung bezahlen
+- `GET /api/bidblitz-pay/my-payment-requests` - Eigene Anforderungen
+
+#### Geänderte Dateien:
+- `/app/backend/routers/bidblitz_pay.py` - Request Money Endpoints, Send Money akzeptiert ID
+- `/app/frontend/src/pages/BidBlitzPay.jsx` - Request Tab, scrollbare Navigation, 16 Sprachen
+- `/app/frontend/src/components/BiometricAuth.js` - getPublicKey Fallback
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 30) - WALLET-SYSTEM & BUGFIXES ✅
 
 #### Behobene Fehler:
