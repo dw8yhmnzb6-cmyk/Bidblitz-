@@ -1357,42 +1357,6 @@ const BidBlitzPay = () => {
               </div>
             </div>
             )}
-                  </>
-                )}
-              </Button>
-              
-              {/* Help message when balance is 0 */}
-              {mainBalance <= 0 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center">
-                  <p className="text-sm text-amber-700">
-                    {language === 'de' 
-                      ? '💡 Ihr Hauptkonto-Guthaben ist €0. Gewinnen Sie Auktionen oder kaufen Sie Bids, um Guthaben zu erhalten.'
-                      : language === 'ar'
-                        ? '💡 رصيد حسابك الرئيسي €0. اربح المزادات أو اشترِ العروض للحصول على رصيد.'
-                        : '💡 Your main account balance is €0. Win auctions or buy bids to get balance.'}
-                  </p>
-                </div>
-              )}
-            </div>
-            
-            {mainBalance === 0 && (
-              <div className="mt-6 p-4 bg-amber-50 rounded-xl text-center">
-                <p className="text-sm text-amber-700">
-                  {language === 'de' 
-                    ? 'Kein Guthaben auf Hauptkonto. Kaufe Bids, um Guthaben zu erhalten!' 
-                    : 'No balance on main account. Buy bids to get credits!'}
-                </p>
-                <Button 
-                  variant="link" 
-                  className="text-amber-600 mt-2"
-                  onClick={() => window.location.href = '/shop'}
-                >
-                  {language === 'de' ? 'Zum Shop' : 'Go to Shop'} <ChevronRight className="w-4 h-4 ml-1" />
-                </Button>
-              </div>
-            )}
-          </div>
-            )}
           </div>
         )}
 
