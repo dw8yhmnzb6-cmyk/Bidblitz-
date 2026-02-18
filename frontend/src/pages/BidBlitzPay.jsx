@@ -3,10 +3,11 @@ import {
   Wallet, QrCode, CreditCard, History, ChevronRight, 
   Store, RefreshCw, Euro, CheckCircle, AlertCircle,
   Smartphone, ArrowUpRight, ArrowDownLeft, Gift, Languages,
-  Plus, Minus, X
+  Plus, Minus, X, Shield
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { toast } from 'sonner';
+import { SecuritySettings } from '../components/BiometricAuth';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
