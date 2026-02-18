@@ -3,7 +3,7 @@ import {
   Wallet, QrCode, CreditCard, History, ChevronRight, 
   Store, RefreshCw, Euro, CheckCircle, AlertCircle,
   Smartphone, ArrowUpRight, ArrowDownLeft, Gift, Languages,
-  Plus, Minus, X, Shield, Loader2, Camera, ScanLine, Banknote, Percent
+  Plus, Minus, X, Shield, Loader2, Camera, ScanLine, Banknote, Percent, Copy
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
