@@ -137,11 +137,148 @@ async def get_merchant_details(partner_id: str):
             "address": merchant.get("address", ""),
             "phone": merchant.get("phone", ""),
             "website": merchant.get("website", ""),
+            "email": merchant.get("email", ""),
             "logo_url": merchant.get("logo_url", ""),
+            "photos": merchant.get("photos", []),
             "description": merchant.get("description", ""),
-            "is_verified": merchant.get("is_verified", False)
+            "opening_hours": merchant.get("opening_hours", {}),
+            "is_verified": merchant.get("is_verified", False),
+            "is_premium": merchant.get("is_premium", False),
+            "premium_until": merchant.get("premium_until"),
+            "rating": merchant.get("rating", 0),
+            "review_count": merchant.get("review_count", 0),
+            "social_media": merchant.get("social_media", {}),
+            "specialties": merchant.get("specialties", []),
+            "payment_methods": merchant.get("payment_methods", [])
         }
     }
+
+
+class UpdateMerchantProfile(BaseModel):
+    logo_url: Optional[str] = None
+    photos: Optional[List[str]] = None
+    description: Optional[str] = None
+    website: Optional[str] = None
+    phone: Optional[str] = None
+    opening_hours: Optional[dict] = None
+    social_media: Optional[dict] = None
+    specialties: Optional[List[str]] = None
+    payment_methods: Optional[List[str]] = None
+
+
+@router.put("/merchant/{partner_id}/profile")
+async def update_merchant_profile(partner_id: str, data: UpdateMerchantProfile):
+    """Händler-Profil aktualisieren (Logo, Fotos, Öffnungszeiten etc.)"""
+    # Find merchant
+    partner = await db.partner_accounts.find_one({"id": partner_id})
+    collection = db.partner_accounts
+    
+    if not partner:
+        partner = await db.restaurant_accounts.find_one({"id": partner_id})
+        collection = db.restaurant_accounts
+    
+    if not partner:
+        raise HTTPException(status_code=404, detail="Händler nicht gefunden")
+    
+    # Build update dict
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    
+    if data.logo_url is not None:
+        update_data["logo_url"] = data.logo_url
+    if data.photos is not None:
+        update_data["photos"] = data.photos
+    if data.description is not None:
+        update_data["description"] = data.description
+    if data.website is not None:
+        update_data["website"] = data.website
+    if data.phone is not None:
+        update_data["phone"] = data.phone
+    if data.opening_hours is not None:
+        update_data["opening_hours"] = data.opening_hours
+    if data.social_media is not None:
+        update_data["social_media"] = data.social_media
+    if data.specialties is not None:
+        update_data["specialties"] = data.specialties
+    if data.payment_methods is not None:
+        update_data["payment_methods"] = data.payment_methods
+    
+    await collection.update_one(
+        {"id": partner_id},
+        {"$set": update_data}
+    )
+    
+    logger.info(f"Merchant profile updated: {partner_id}")
+    
+    return {"success": True, "message": "Profil aktualisiert"}
+
+
+class SetPremiumRequest(BaseModel):
+    partner_id: str
+    months: int = 1  # Premium duration in months
+    
+
+@router.post("/admin/set-premium")
+async def admin_set_premium_merchant(data: SetPremiumRequest):
+    """Admin: Händler als Premium markieren"""
+    partner = await db.partner_accounts.find_one({"id": data.partner_id})
+    collection = db.partner_accounts
+    
+    if not partner:
+        partner = await db.restaurant_accounts.find_one({"id": data.partner_id})
+        collection = db.restaurant_accounts
+    
+    if not partner:
+        raise HTTPException(status_code=404, detail="Händler nicht gefunden")
+    
+    from datetime import timedelta
+    premium_until = datetime.now(timezone.utc) + timedelta(days=30 * data.months)
+    
+    await collection.update_one(
+        {"id": data.partner_id},
+        {
+            "$set": {
+                "is_premium": True,
+                "premium_until": premium_until.isoformat(),
+                "premium_started": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    logger.info(f"Partner {data.partner_id} set as Premium until {premium_until}")
+    
+    return {
+        "success": True,
+        "message": f"Partner ist jetzt Premium bis {premium_until.strftime('%d.%m.%Y')}",
+        "premium_until": premium_until.isoformat()
+    }
+
+
+@router.post("/admin/remove-premium/{partner_id}")
+async def admin_remove_premium(partner_id: str):
+    """Admin: Premium-Status entfernen"""
+    partner = await db.partner_accounts.find_one({"id": partner_id})
+    collection = db.partner_accounts
+    
+    if not partner:
+        partner = await db.restaurant_accounts.find_one({"id": partner_id})
+        collection = db.restaurant_accounts
+    
+    if not partner:
+        raise HTTPException(status_code=404, detail="Händler nicht gefunden")
+    
+    await collection.update_one(
+        {"id": partner_id},
+        {
+            "$set": {
+                "is_premium": False,
+                "premium_until": None,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    return {"success": True, "message": "Premium-Status entfernt"}
 
 
 @router.get("/merchant/{partner_id}/vouchers")
