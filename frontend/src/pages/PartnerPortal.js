@@ -2476,6 +2476,14 @@ export default function PartnerPortal() {
             />
           )}
 
+          {/* Budget View - Voucher Budget & Earnings */}
+          {view === 'budget' && (
+            <PartnerBudget 
+              token={token}
+              language={language}
+            />
+          )}
+
           {/* Marketing View - New Marketing Features */}
           {view === 'marketing' && (
             <div className="space-y-8">
