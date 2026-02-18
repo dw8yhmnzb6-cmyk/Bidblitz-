@@ -5,6 +5,44 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 40) - ERWEITERTES PARTNER-DASHBOARD ✅
+
+#### Feature: Partner Dashboard Expansion + Bugfix ✅
+
+**1. Kritischer Bugfix: "Wallet is not defined"**
+- Problem: Nach Login erschien JavaScript-Fehler "Wallet is not defined"
+- Ursache: `Wallet` Icon wurde in lucide-react nicht importiert
+- Lösung: Import in PartnerPortal.js hinzugefügt (Zeile 13)
+
+**2. Neues Erweitertes Dashboard:**
+- **Schnellaktionen** (orangefarbener Banner):
+  - Gutschein erstellen
+  - Zahlungen ansehen
+  - Budget prüfen
+- **4 Statistik-Karten**:
+  - Ausstehend (mit € Icon)
+  - Eingelöst (mit CheckCircle Icon)
+  - Verkauft (mit ShoppingBag Icon)
+  - Provision (mit Target Icon)
+- **Budget & Einnahmen Karten**:
+  - Guthaben-Karte mit Freibetrag-Info
+  - Einnahmen-Karte mit Auszahlungsstatus
+- **Performance Score**:
+  - Kreisförmiger Indikator (0-100)
+  - Konversionsrate-Balken
+  - Kundenzufriedenheit-Balken
+- **Tipps zur Verbesserung** (bei Score < 70)
+- **Letzte Einlösungen** mit "Alle ansehen" Link
+
+**Neue Dateien:**
+- `/app/frontend/src/components/partner/PartnerDashboardExpanded.js`
+
+**Test-Ergebnisse (iteration_67.json):**
+- Backend: 13/13 Tests bestanden (100%)
+- Frontend: 100% UI-Features verifiziert
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 39) - HÄNDLER BUDGET SYSTEM ✅
 
 #### Feature: Händler Gutschein-Budget & Wise-Zahlungssystem ✅
