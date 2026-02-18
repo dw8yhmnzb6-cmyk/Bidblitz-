@@ -52,10 +52,11 @@ export default function AdminWisePayouts({ token }) {
   // Fetch payout history
   const fetchPayoutHistory = useCallback(async () => {
     try {
-      const response = await axios.get(`${API}/api/wise/payout-history?token=${token}&limit=20`);
+      const response = await axios.get(`${API}/api/wise-payouts/history?token=${token}&limit=20`);
       setPayoutHistory(response.data.payouts || []);
     } catch (error) {
       console.error('Error fetching payout history:', error);
+      setPayoutHistory([]);
     }
   }, [token]);
 
