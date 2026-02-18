@@ -406,6 +406,71 @@ const BidBlitzPay = () => {
     }
   };
 
+  // P2P Transfer function
+  const sendMoney = async (e) => {
+    e.preventDefault();
+    if (!recipientEmail || !sendAmount) {
+      toast.error(t('fillAllFields') || 'Bitte alle Felder ausfüllen');
+      return;
+    }
+    
+    const amount = parseFloat(sendAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error(t('invalidAmount') || 'Ungültiger Betrag');
+      return;
+    }
+    
+    setSendingMoney(true);
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/send-money`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          recipient_email: recipientEmail,
+          amount: amount,
+          message: sendMessage || null
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast.success(data.message || `€${amount.toFixed(2)} gesendet!`);
+        setRecipientEmail('');
+        setSendAmount('');
+        setSendMessage('');
+        fetchWallet();
+        fetchTransferHistory();
+      } else {
+        toast.error(data.detail || 'Fehler beim Senden');
+      }
+    } catch (error) {
+      console.error('Send money error:', error);
+      toast.error('Fehler beim Senden');
+    } finally {
+      setSendingMoney(false);
+    }
+  };
+
+  // Fetch transfer history
+  const fetchTransferHistory = useCallback(async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/transfer-history`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setTransfers(data.transfers || []);
+      }
+    } catch (error) {
+      console.error('Transfer history error:', error);
+    }
+  }, [token]);
+
   const fetchTransactions = useCallback(async () => {
     if (!token) return;
     
