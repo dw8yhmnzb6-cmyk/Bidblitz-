@@ -3,7 +3,7 @@ import axios from 'axios';
 import { 
   BarChart3, TrendingUp, Users, DollarSign, ShoppingCart, 
   Eye, MousePointer, UserPlus, RefreshCw, Calendar, ArrowUp, ArrowDown,
-  Smartphone, Monitor, Tablet, Globe, Mail, Send, Settings
+  Smartphone, Monitor, Tablet, Globe, Mail, Send, Settings, Clock, Download
 } from 'lucide-react';
 import { 
   AreaChart, Area, BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -26,6 +26,15 @@ const CHART_COLORS = {
   desktop: '#06B6D4'
 };
 
+// Time Period Options for Extended Analytics
+const TIME_PERIODS = [
+  { value: 'hour', label: 'Letzte Stunde', icon: Clock },
+  { value: 'day', label: 'Letzter Tag', icon: Calendar },
+  { value: 'week', label: 'Letzte 7 Tage', icon: Calendar },
+  { value: 'month', label: 'Letzte 30 Tage', icon: Calendar },
+  { value: 'year', label: 'Letztes Jahr', icon: Calendar }
+];
+
 const AdminAnalytics = ({ token }) => {
   const [data, setData] = useState(null);
   const [deviceData, setDeviceData] = useState(null);
@@ -33,6 +42,13 @@ const AdminAnalytics = ({ token }) => {
   const [period, setPeriod] = useState(7);
   const [reportEmail, setReportEmail] = useState('');
   const [sendingReport, setSendingReport] = useState(false);
+  
+  // Extended Analytics State
+  const [extendedData, setExtendedData] = useState(null);
+  const [extendedPeriod, setExtendedPeriod] = useState('week');
+  const [compareEnabled, setCompareEnabled] = useState(false);
+  const [extendedLoading, setExtendedLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview'); // 'overview' or 'extended'
 
   const fetchAnalytics = async () => {
     setLoading(true);
