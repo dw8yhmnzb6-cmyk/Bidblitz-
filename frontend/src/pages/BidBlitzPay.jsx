@@ -481,6 +481,50 @@ const BidBlitzPay = () => {
     }
   };
 
+  // Direct Top Up function (with card)
+  const handleDirectTopUp = async () => {
+    const amount = parseFloat(directTopUpAmount);
+    if (isNaN(amount) || amount < 5) {
+      toast.error(language === 'de' ? 'Mindestbetrag: €5' : 'Minimum amount: €5');
+      return;
+    }
+    if (amount > 500) {
+      toast.error(language === 'de' ? 'Maximalbetrag: €500' : 'Maximum amount: €500');
+      return;
+    }
+    
+    setProcessingPayment(true);
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/direct-topup`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          amount: amount,
+          payment_method: 'card'
+        })
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || `€${amount.toFixed(2)} aufgeladen!`);
+        setDirectTopUpAmount('');
+        fetchWallet();
+        fetchTransactions();
+      } else {
+        const error = await response.json();
+        toast.error(error.detail || 'Aufladung fehlgeschlagen');
+      }
+    } catch (error) {
+      console.error('Direct top up error:', error);
+      toast.error('Aufladung fehlgeschlagen');
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
   // P2P Transfer function
   const sendMoney = async (e) => {
     e.preventDefault();
