@@ -6,18 +6,109 @@
  * - Social Sharing
  * - Ratings Overview
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { 
   Users, Gift, QrCode, Share2, Star, Clock, Plus, Copy, 
   Download, Facebook, Twitter, Mail, MessageCircle, Loader2,
-  TrendingUp, ExternalLink, Zap, MapPin
+  TrendingUp, ExternalLink, Zap, MapPin, Printer
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 const API = process.env.REACT_APP_BACKEND_URL;
+
+// ==================== INLINE PRINT TEMPLATES ====================
+
+const PrintTemplatesInline = ({ qrBase64, partnerName, t }) => {
+  const [selectedTemplate, setSelectedTemplate] = useState('table_tent');
+  const printRef = useRef(null);
+
+  const templates = [
+    { id: 'table_tent', name: 'Tischaufsteller', size: '10x15cm', icon: '🪑' },
+    { id: 'flyer', name: 'Flyer A6', size: '10.5x14.8cm', icon: '📄' },
+    { id: 'window', name: 'Schaufenster', size: '15x15cm', icon: '🪟' },
+    { id: 'receipt', name: 'Kassenbon', size: '8cm breit', icon: '🧾' }
+  ];
+
+  const handlePrint = () => {
+    const printContent = printRef.current;
+    if (!printContent) return;
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <!DOCTYPE html><html><head><title>BidBlitz QR - ${partnerName}</title>
+      <style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui}
+      @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style>
+      </head><body>${printContent.innerHTML}</body></html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => { printWindow.print(); printWindow.close(); }, 250);
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Template Selection */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {templates.map((tmpl) => (
+          <button
+            key={tmpl.id}
+            onClick={() => setSelectedTemplate(tmpl.id)}
+            className={`p-3 rounded-xl border-2 text-center transition-all ${
+              selectedTemplate === tmpl.id ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-gray-300'
+            }`}
+          >
+            <span className="text-2xl block mb-1">{tmpl.icon}</span>
+            <p className="font-medium text-gray-800 text-sm">{tmpl.name}</p>
+            <p className="text-xs text-gray-500">{tmpl.size}</p>
+          </button>
+        ))}
+      </div>
+
+      {/* Preview */}
+      <div className="bg-gray-100 rounded-xl p-6 flex justify-center">
+        <div 
+          ref={printRef}
+          className={`bg-white shadow-xl flex flex-col items-center justify-center p-4 ${
+            selectedTemplate === 'table_tent' ? 'w-56 h-80' :
+            selectedTemplate === 'flyer' ? 'w-60 h-96' :
+            selectedTemplate === 'window' ? 'w-64 h-64' : 'w-40 h-64'
+          }`}
+          style={{ border: '3px solid #F59E0B', borderRadius: selectedTemplate === 'window' ? 0 : 12 }}
+        >
+          <p className="text-xl font-bold text-gray-800 mb-1">🎯 BidBlitz</p>
+          <p className="text-amber-600 font-medium text-sm mb-2">{partnerName}</p>
+          <p className="text-xs text-gray-500 mb-3">Scannen für Angebote!</p>
+          {qrBase64 && (
+            <img 
+              src={qrBase64} 
+              alt="QR" 
+              className={selectedTemplate === 'receipt' ? 'w-24 h-24' : selectedTemplate === 'window' ? 'w-36 h-36' : 'w-32 h-32'}
+            />
+          )}
+          <p className="text-amber-600 font-bold text-xs mt-3">Gutscheine • Rabatte</p>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-3 justify-center">
+        <Button onClick={handlePrint} className="bg-amber-500 hover:bg-amber-600">
+          <Printer className="w-4 h-4 mr-2" /> Drucken
+        </Button>
+      </div>
+
+      {/* Tips */}
+      <div className="bg-blue-50 rounded-xl p-4 border border-blue-200">
+        <h4 className="font-medium text-blue-800 mb-2">💡 Drucktipps</h4>
+        <ul className="text-sm text-blue-700 space-y-1">
+          <li>• Dickes Papier (200g/m²) für Tischaufsteller</li>
+          <li>• Laminieren für längere Haltbarkeit</li>
+          <li>• QR-Codes auf Augenhöhe platzieren</li>
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 // ==================== PARTNER REFERRAL ====================
 
