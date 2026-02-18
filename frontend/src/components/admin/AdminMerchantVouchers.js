@@ -1,5 +1,6 @@
 /**
  * AdminMerchantVouchers - Admin Panel für Händler-Gutscheine erstellen
+ * Mobile-optimiert mit Premium-Preissystem
  */
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
@@ -28,7 +29,10 @@ const AdminMerchantVouchers = () => {
   const [voucherValue, setVoucherValue] = useState('50');
   const [startPrice, setStartPrice] = useState('0.01');
   const [durationHours, setDurationHours] = useState('24');
+  
+  // Premium state
   const [premiumMonths, setPremiumMonths] = useState('1');
+  const [premiumPrice, setPremiumPrice] = useState('10'); // €5-€20
 
   const fetchPartners = useCallback(async () => {
     try {
