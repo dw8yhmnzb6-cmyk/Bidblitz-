@@ -562,3 +562,4 @@ async def get_device_analytics(
         "daily_trends": list(daily_trends.values())
     }
 
+
