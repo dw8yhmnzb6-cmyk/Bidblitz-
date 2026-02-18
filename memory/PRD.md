@@ -5,6 +5,54 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 45) - CASHBACK-SYSTEM ✅
+
+#### Feature: Cashback-System für BidBlitz Pay ✅
+
+**Nutzer-Anforderungen:**
+- Variabel: 3% Standard, 5% Premium-Händler, bis 10% bei Aktionen
+- Auszahlung: Wallet ODER Gebote (5 Gebote pro €1)
+- Kosten: 40% BidBlitz, 60% Händler
+- Kein Limit
+- Premium-Händler = höherer Cashback
+
+**Implementiert:**
+
+1. **Backend (`/app/backend/routers/cashback_system.py`):**
+   - `GET /api/cashback/balance` - Cashback-Guthaben des Nutzers
+   - `GET /api/cashback/merchants` - Händler mit Cashback-Raten
+   - `POST /api/cashback/earn` - Cashback für Einkauf gutschreiben
+   - `POST /api/cashback/payout` - Auszahlung (Wallet oder Gebote)
+   - `GET /api/cashback/history` - Transaktionsverlauf
+   - `GET /api/cashback/merchant/settings` - Händler: eigene Einstellungen
+   - `POST /api/cashback/merchant/settings` - Händler: Cashback-Rate setzen
+   - `GET /api/cashback/admin/overview` - Admin: Statistiken
+   - `GET /api/cashback/admin/merchants` - Admin: Alle Händler
+
+2. **Frontend (`/app/frontend/src/components/CashbackSystem.jsx`):**
+   - Grüne Cashback-Guthaben-Karte
+   - "So funktioniert's" Erklärung (3 Schritte)
+   - Händler-Liste mit Cashback-Raten
+   - Premium-Händler hervorgehoben
+   - Auszahlungs-Optionen (Wallet oder Gebote)
+   - Transaktionsverlauf
+   - 5 Sprachen (DE, EN, TR, AR, EL)
+
+3. **BidBlitz Pay Integration:**
+   - Neuer "Cashback" Tab in der Navigation
+   - Zwischen Kredit und anderen Tabs
+
+**Kosten-Aufteilung:**
+- BidBlitz: 40%
+- Händler: 60%
+
+**Gebote-Umrechnung:**
+- €1 Cashback = 5 Gebote
+
+**Test-Status:** Frontend und Backend funktionieren (Screenshot bestätigt)
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 44) - KREDIT-SCORE SYSTEM ✅
 
 #### Feature: Kredit-Score System mit Stufen und Vorteilen ✅
