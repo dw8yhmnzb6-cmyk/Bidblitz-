@@ -5,6 +5,30 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
+### ✅ Session Update - February 18, 2026 (Session 34) - DIREKTE AUFLADUNG ✅
+
+#### Neues Feature: Direkt aufladen (Direct Top Up) ✅
+
+**"Direkt aufladen" Tab im Aufladen-Bereich:**
+- Tab-Umschalter: "Direkt aufladen" | "Übertragen"
+- Betrag eingeben mit Min: €5 | Max: €500
+- Quick-Buttons: €10, €25, €50, €100
+- "Mit Karte bezahlen" Button (grün)
+- Zahlungsmethoden: Visa, Mastercard, Apple Pay, Google Pay
+- Sofortige Gutschrift auf BidBlitz Pay
+
+**Neuer API-Endpoint:**
+- `POST /api/bidblitz-pay/direct-topup` - Direkte Aufladung
+  - Parameter: amount, payment_method
+  - Validierung: Min €5, Max €500
+  - Erstellt Transaktion in DB
+
+#### Geänderte Dateien:
+- `/app/backend/routers/bidblitz_pay.py` - direct-topup Endpoint
+- `/app/frontend/src/pages/BidBlitzPay.jsx` - Direkt aufladen UI
+
+---
+
 ### ✅ Session Update - February 18, 2026 (Session 33) - 3 WEITERE FIXES ✅
 
 #### Behobene Fehler:
