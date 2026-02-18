@@ -353,6 +353,13 @@ const BidBlitzPay = () => {
   const [requestQR, setRequestQR] = useState(null);
   const [creatingRequest, setCreatingRequest] = useState(false);
   const [myRequests, setMyRequests] = useState([]);
+  
+  // Scanner states
+  const [scannerActive, setScannerActive] = useState(false);
+  const [scannedRequest, setScannedRequest] = useState(null);
+  const [payingRequest, setPayingRequest] = useState(false);
+  const scannerRef = useRef(null);
+  const html5QrCodeRef = useRef(null);
 
   const token = localStorage.getItem('token') || sessionStorage.getItem('token') || localStorage.getItem('bidblitz_token');
   
