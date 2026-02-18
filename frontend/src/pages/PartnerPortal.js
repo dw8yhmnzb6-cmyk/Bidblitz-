@@ -35,6 +35,9 @@ import {
   PartnerRatingsOverview 
 } from '../components/partner/PartnerMarketing';
 
+// Import centralized translations
+import { translations as partnerTranslations, getLangKey } from '../components/partner/partnerTranslations';
+
 const API = process.env.REACT_APP_BACKEND_URL;
 
 // Business Types
