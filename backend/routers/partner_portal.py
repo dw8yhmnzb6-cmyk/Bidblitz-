@@ -1129,6 +1129,87 @@ async def get_all_partners():
         "total": len(all_partners)
     }
 
+@router.post("/admin/lock/{partner_id}")
+async def toggle_partner_lock(partner_id: str, reason: Optional[str] = None):
+    """Lock or unlock a partner account (Admin only)"""
+    # Check partner_accounts first
+    partner = await db.partner_accounts.find_one({"id": partner_id})
+    collection = db.partner_accounts
+    
+    # If not found, check restaurant_accounts
+    if not partner:
+        partner = await db.restaurant_accounts.find_one({"id": partner_id})
+        collection = db.restaurant_accounts
+    
+    if not partner:
+        raise HTTPException(status_code=404, detail="Partner nicht gefunden")
+    
+    # Toggle the is_locked status
+    current_locked = partner.get("is_locked", False)
+    new_locked = not current_locked
+    
+    update_data = {
+        "is_locked": new_locked,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    if new_locked:
+        update_data["locked_at"] = datetime.now(timezone.utc).isoformat()
+        update_data["lock_reason"] = reason or "Administrativ gesperrt"
+    else:
+        update_data["unlocked_at"] = datetime.now(timezone.utc).isoformat()
+        update_data["lock_reason"] = None
+    
+    await collection.update_one(
+        {"id": partner_id},
+        {"$set": update_data}
+    )
+    
+    business_name = partner.get("business_name", partner.get("restaurant_name", "Partner"))
+    action = "gesperrt" if new_locked else "entsperrt"
+    logger.info(f"Partner {partner_id} ({business_name}) wurde {action}")
+    
+    # Send notification email to partner
+    try:
+        if new_locked:
+            await send_email(
+                to_email=partner["email"],
+                subject="Ihr BidBlitz Partner-Konto wurde gesperrt",
+                html_content=f"""
+                <h2>Konto gesperrt</h2>
+                <p>Hallo {business_name},</p>
+                <p>Ihr Partner-Konto bei BidBlitz wurde vorübergehend gesperrt.</p>
+                <p><strong>Grund:</strong> {reason or 'Administrativ gesperrt'}</p>
+                <p>Während der Sperrung können Sie keine Gutscheine einlösen oder neue erstellen.</p>
+                <p>Bei Fragen kontaktieren Sie bitte unseren Support.</p>
+                <br>
+                <p>Mit freundlichen Grüßen,<br>Ihr BidBlitz Team</p>
+                """
+            )
+        else:
+            await send_email(
+                to_email=partner["email"],
+                subject="Ihr BidBlitz Partner-Konto wurde entsperrt",
+                html_content=f"""
+                <h2>Konto entsperrt</h2>
+                <p>Hallo {business_name},</p>
+                <p>Ihr Partner-Konto bei BidBlitz wurde wieder entsperrt.</p>
+                <p>Sie können nun wieder wie gewohnt Gutscheine einlösen und verwalten.</p>
+                <br>
+                <p>Mit freundlichen Grüßen,<br>Ihr BidBlitz Team</p>
+                """
+            )
+    except Exception as e:
+        logger.error(f"Failed to send lock/unlock email: {e}")
+    
+    return {
+        "success": True,
+        "message": f"Partner wurde {action}",
+        "partner_id": partner_id,
+        "is_locked": new_locked,
+        "lock_reason": update_data.get("lock_reason")
+    }
+
 # ==================== PAYOUT SYSTEM ====================
 
 class PayoutRequest(BaseModel):
