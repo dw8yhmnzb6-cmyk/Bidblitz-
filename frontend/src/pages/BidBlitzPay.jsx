@@ -1266,6 +1266,15 @@ const BidBlitzPay = () => {
             <Banknote className="w-4 h-4 inline mr-1" />
             {t('credit')}
           </button>
+          <button
+            onClick={() => setView('cashback')}
+            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              view === 'cashback' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Percent className="w-4 h-4 inline mr-1" />
+            {t('cashback')}
+          </button>
         </div>
       </div>
 
