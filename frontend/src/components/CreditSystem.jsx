@@ -733,15 +733,23 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
             </h3>
             
             <div className="flex gap-2">
-              {[50, 100, remaining].map((val) => (
-                <button
-                  key={val}
-                  onClick={() => setPaymentAmount(Math.min(val, remaining).toFixed(2))}
-                  className="flex-1 py-2 px-3 rounded-lg border border-gray-200 hover:border-orange-300 text-sm font-medium"
-                >
-                  €{Math.min(val, remaining).toFixed(0)}
-                </button>
-              ))}
+              {[50, 100, remaining].filter(v => v > 0).map((val) => {
+                const displayVal = Math.min(val, remaining);
+                const isSelected = parseFloat(paymentAmount) === displayVal;
+                return (
+                  <button
+                    key={val}
+                    onClick={() => setPaymentAmount(displayVal.toFixed(2))}
+                    className={`flex-1 py-2 px-3 rounded-lg border text-sm font-medium transition-all ${
+                      isSelected 
+                        ? 'border-orange-500 bg-orange-50 text-orange-700' 
+                        : 'border-gray-200 hover:border-orange-300'
+                    }`}
+                  >
+                    €{displayVal.toFixed(0)}
+                  </button>
+                );
+              })}
             </div>
             
             <Input
