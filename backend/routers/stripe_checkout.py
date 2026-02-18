@@ -73,27 +73,40 @@ class PaymentStatusResponse(BaseModel):
 @router.post("/create-topup-session")
 async def create_topup_session(
     request: Request,
-    topup_request: TopUpRequest
+    topup_request: TopUpRequest,
+    authorization: Optional[str] = Header(None)
 ) -> TopUpResponse:
     """
     Create a Stripe Checkout session for wallet top-up.
     Amount is determined server-side from fixed packages for security.
     """
     
-    
-    # Get user from token (if authenticated)
+    # Get user from JWT token
+    user = None
     token = request.query_params.get("token")
-    user_id = None
-    user_email = None
     
+    # Try JWT token from query param first
     if token:
-        user = await db.users.find_one({"auth_token": token})
-        if user:
-            user_id = user.get("id")
-            user_email = user.get("email")
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            user = await db.users.find_one({"id": payload["user_id"]}, {"_id": 0})
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError) as e:
+            logger.warning(f"JWT decode error: {e}")
     
-    if not user_id:
+    # Fallback to Authorization header
+    if not user and authorization and authorization.startswith("Bearer "):
+        try:
+            bearer_token = authorization.split(" ")[1]
+            payload = jwt.decode(bearer_token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+            user = await db.users.find_one({"id": payload["user_id"]}, {"_id": 0})
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError) as e:
+            logger.warning(f"JWT decode error: {e}")
+    
+    if not user:
         raise HTTPException(status_code=401, detail="Nicht autorisiert")
+    
+    user_id = user.get("id")
+    user_email = user.get("email")
     
     # Determine amount from package (SECURITY: Never accept amount from frontend)
     if topup_request.package_id == "custom":
