@@ -1151,44 +1151,125 @@ export default function Admin() {
     );
   }
 
-  const tabs = [
-    { id: 'dashboard', label: at('dashboard'), icon: <LayoutDashboard className="w-5 h-5" /> },
-    { id: 'maintenance', label: language === 'en' ? 'Maintenance' : 'Wartung', icon: <Wrench className="w-5 h-5" />, highlight: true },
-    { id: 'voice', label: language === 'en' ? 'Voice Commands' : 'Sprachbefehle', icon: <Mic className="w-5 h-5" />, highlight: true },
-    { id: 'debug-reports', label: language === 'en' ? 'Debug Reports' : 'Debug Reports', icon: <Bug className="w-5 h-5" />, highlight: true },
-    { id: 'products', label: at('products'), icon: <Package className="w-5 h-5" /> },
-    { id: 'auctions', label: at('auctions'), icon: <Gavel className="w-5 h-5" /> },
-    { id: 'vip-auctions', label: at('vipAuctions'), icon: <Crown className="w-5 h-5" /> },
-    { id: 'banners', label: at('banners'), icon: <Eye className="w-5 h-5" /> },
-    { id: 'influencers', label: language === 'en' ? 'Influencers' : 'Influencer', icon: <Star className="w-5 h-5" /> },
-    { id: 'managers', label: language === 'en' ? 'Managers' : 'Manager', icon: <Building2 className="w-5 h-5" />, highlight: true },
-    { id: 'wholesale', label: language === 'en' ? 'Wholesale' : 'Großkunden', icon: <Building2 className="w-5 h-5" /> },
-    { id: 'users', label: at('users'), icon: <Users className="w-5 h-5" /> },
-    { id: 'staff', label: language === 'en' ? 'Staff' : 'Mitarbeiter', icon: <UserPlus className="w-5 h-5" /> },
-    { id: 'vouchers', label: at('vouchers'), icon: <Ticket className="w-5 h-5" /> },
-    { id: 'restaurant-vouchers', label: '🍽️ Restaurant-Gutscheine', icon: <Ticket className="w-5 h-5" />, highlight: true },
-    { id: 'restaurant-auctions', label: '🎯 Gutschein-Auktionen', icon: <Gavel className="w-5 h-5" />, highlight: true },
-    { id: 'restaurant-applications', label: '📋 Partner-Bewerbungen (Alt)', icon: <Building2 className="w-5 h-5" /> },
-    { id: 'partner-portal', label: '🏪 Partner Portal', icon: <Store className="w-5 h-5" />, highlight: true },
-    { id: 'bots', label: at('bots'), icon: <Bot className="w-5 h-5" /> },
-    { id: 'email', label: at('email'), icon: <Mail className="w-5 h-5" /> },
-    { id: 'pages', label: at('pages'), icon: <FileText className="w-5 h-5" /> },
-    { id: 'payments', label: language === 'en' ? 'Payments' : 'Zahlungen', icon: <DollarSign className="w-5 h-5" /> },
-    { id: 'analytics', label: language === 'en' ? 'Analytics' : 'Analytics', icon: <BarChart3 className="w-5 h-5" />, highlight: true },
-    { id: 'surveys', label: language === 'en' ? 'Surveys' : 'Umfragen', icon: <Star className="w-5 h-5" />, highlight: true },
-    { id: 'logs', label: language === 'en' ? 'System Logs' : 'Systemlogs', icon: <BarChart3 className="w-5 h-5" /> },
-    { id: 'jackpot', label: '🏆 Jackpot', icon: <Trophy className="w-5 h-5" />, highlight: true },
-    { id: 'winner-control', label: '🎯 Gewinner', icon: <Target className="w-5 h-5" />, highlight: true },
-    { id: 'weekly-challenges', label: '🏅 Challenges', icon: <Trophy className="w-5 h-5" />, highlight: true },
-    { id: 'coupons', label: '🎟️ Gutscheine', icon: <Ticket className="w-5 h-5" />, highlight: true },
-    { id: 'mystery-box', label: '🎁 Mystery Box', icon: <Gift className="w-5 h-5" />, highlight: true },
-    { id: 'sustainability', label: '🌿 Nachhaltigkeit', icon: <Leaf className="w-5 h-5" />, highlight: true },
-    { id: 'promo-codes', label: '🎫 Gutschein-Codes', icon: <Gift className="w-5 h-5" />, highlight: true },
-    { id: 'wallet-topup', label: '💳 Wallet Aufladen', icon: <DollarSign className="w-5 h-5" />, highlight: true },
-    { id: 'wise-payouts', label: '💰 Wise Auszahlungen', icon: <CreditCard className="w-5 h-5" />, highlight: true },
-    { id: 'passwords', label: '🔑 Passwörter', icon: <Key className="w-5 h-5" />, highlight: true },
-    { id: 'game-config', label: at('gameSettings'), icon: <Settings className="w-5 h-5" /> }
+  // Kategorisierte Tabs mit Farben und klarer Organisation
+  const tabCategories = [
+    {
+      category: 'Übersicht',
+      color: 'emerald',
+      bgColor: 'bg-emerald-500/10',
+      textColor: 'text-emerald-600',
+      borderColor: 'border-emerald-500/30',
+      tabs: [
+        { id: 'dashboard', label: at('dashboard'), icon: <LayoutDashboard className="w-5 h-5" /> },
+        { id: 'analytics', label: 'Analytics', icon: <BarChart3 className="w-5 h-5" /> },
+      ]
+    },
+    {
+      category: 'Kunden & Personal',
+      color: 'blue',
+      bgColor: 'bg-blue-500/10',
+      textColor: 'text-blue-600',
+      borderColor: 'border-blue-500/30',
+      tabs: [
+        { id: 'users', label: 'Kunden', icon: <Users className="w-5 h-5" /> },
+        { id: 'managers', label: 'Manager', icon: <Building2 className="w-5 h-5" /> },
+        { id: 'staff', label: 'Mitarbeiter', icon: <UserPlus className="w-5 h-5" /> },
+        { id: 'wholesale', label: 'Großkunden', icon: <Building2 className="w-5 h-5" /> },
+        { id: 'influencers', label: 'Influencer', icon: <Star className="w-5 h-5" /> },
+      ]
+    },
+    {
+      category: 'Partner & Händler',
+      color: 'amber',
+      bgColor: 'bg-amber-500/10',
+      textColor: 'text-amber-600',
+      borderColor: 'border-amber-500/30',
+      tabs: [
+        { id: 'partner-portal', label: 'Partner Portal', icon: <Store className="w-5 h-5" /> },
+        { id: 'restaurant-applications', label: 'Alte Bewerbungen', icon: <Building2 className="w-5 h-5" /> },
+      ]
+    },
+    {
+      category: 'Auktionen',
+      color: 'purple',
+      bgColor: 'bg-purple-500/10',
+      textColor: 'text-purple-600',
+      borderColor: 'border-purple-500/30',
+      tabs: [
+        { id: 'products', label: at('products'), icon: <Package className="w-5 h-5" /> },
+        { id: 'auctions', label: 'Standard-Auktionen', icon: <Gavel className="w-5 h-5" /> },
+        { id: 'vip-auctions', label: 'VIP-Auktionen', icon: <Crown className="w-5 h-5" /> },
+        { id: 'restaurant-auctions', label: 'Gutschein-Auktionen', icon: <Gavel className="w-5 h-5" /> },
+        { id: 'bots', label: 'Bot-System', icon: <Bot className="w-5 h-5" /> },
+        { id: 'winner-control', label: 'Gewinner-Kontrolle', icon: <Target className="w-5 h-5" /> },
+      ]
+    },
+    {
+      category: 'Gutscheine & Codes',
+      color: 'pink',
+      bgColor: 'bg-pink-500/10',
+      textColor: 'text-pink-600',
+      borderColor: 'border-pink-500/30',
+      tabs: [
+        { id: 'vouchers', label: 'Bieter-Gutscheine', icon: <Ticket className="w-5 h-5" /> },
+        { id: 'restaurant-vouchers', label: 'Partner-Gutscheine', icon: <Ticket className="w-5 h-5" /> },
+        { id: 'coupons', label: 'Rabatt-Coupons', icon: <Ticket className="w-5 h-5" /> },
+        { id: 'promo-codes', label: 'Promo-Codes', icon: <Gift className="w-5 h-5" /> },
+      ]
+    },
+    {
+      category: 'Finanzen',
+      color: 'green',
+      bgColor: 'bg-green-500/10',
+      textColor: 'text-green-600',
+      borderColor: 'border-green-500/30',
+      tabs: [
+        { id: 'payments', label: 'Zahlungen', icon: <DollarSign className="w-5 h-5" /> },
+        { id: 'wallet-topup', label: 'Wallet Aufladen', icon: <DollarSign className="w-5 h-5" /> },
+        { id: 'wise-payouts', label: 'Wise Auszahlungen', icon: <CreditCard className="w-5 h-5" /> },
+      ]
+    },
+    {
+      category: 'Marketing',
+      color: 'orange',
+      bgColor: 'bg-orange-500/10',
+      textColor: 'text-orange-600',
+      borderColor: 'border-orange-500/30',
+      tabs: [
+        { id: 'banners', label: 'Werbebanner', icon: <Eye className="w-5 h-5" /> },
+        { id: 'email', label: 'E-Mail Marketing', icon: <Mail className="w-5 h-5" /> },
+        { id: 'jackpot', label: 'Jackpot', icon: <Trophy className="w-5 h-5" /> },
+        { id: 'weekly-challenges', label: 'Challenges', icon: <Trophy className="w-5 h-5" /> },
+        { id: 'mystery-box', label: 'Mystery Box', icon: <Gift className="w-5 h-5" /> },
+        { id: 'surveys', label: 'Umfragen', icon: <Star className="w-5 h-5" /> },
+      ]
+    },
+    {
+      category: 'System',
+      color: 'slate',
+      bgColor: 'bg-slate-500/10',
+      textColor: 'text-slate-600',
+      borderColor: 'border-slate-500/30',
+      tabs: [
+        { id: 'maintenance', label: 'Wartung', icon: <Wrench className="w-5 h-5" /> },
+        { id: 'pages', label: 'Seiten (CMS)', icon: <FileText className="w-5 h-5" /> },
+        { id: 'game-config', label: 'Spiel-Einstellungen', icon: <Settings className="w-5 h-5" /> },
+        { id: 'sustainability', label: 'Nachhaltigkeit', icon: <Leaf className="w-5 h-5" /> },
+        { id: 'passwords', label: 'Passwörter', icon: <Key className="w-5 h-5" /> },
+        { id: 'logs', label: 'Systemlogs', icon: <BarChart3 className="w-5 h-5" /> },
+        { id: 'voice', label: 'Sprachbefehle', icon: <Mic className="w-5 h-5" /> },
+        { id: 'debug-reports', label: 'Debug Reports', icon: <Bug className="w-5 h-5" /> },
+      ]
+    },
   ];
+
+  // Flache Tab-Liste für Kompatibilität
+  const tabs = tabCategories.flatMap(cat => cat.tabs);
+
+  // Finde die Kategorie für den aktiven Tab
+  const getTabCategory = (tabId) => {
+    return tabCategories.find(cat => cat.tabs.some(t => t.id === tabId));
+  };
 
   return (
     <div className="min-h-screen pt-36 lg:pt-0" data-testid="admin-page">
