@@ -95,6 +95,41 @@ def verify_password(password: str, hashed: str) -> bool:
     """Verify password against hash"""
     return hash_password(password) == hashed
 
+async def generate_staff_number(partner_id: str) -> str:
+    """Generate unique staff number (Kundennummer) for a partner
+    Format: PARTNER_PREFIX-PARTNER_NUM-STAFF_NUM
+    Example: PR-001-003 (3rd staff member of partner PR-001)
+    """
+    # Get partner info to create prefix
+    partner = await db.partner_accounts.find_one({"id": partner_id})
+    if not partner:
+        partner = await db.restaurant_accounts.find_one({"id": partner_id})
+    
+    if not partner:
+        # Fallback
+        prefix = "ST"
+    else:
+        # Use first 2 letters of business name as prefix
+        business_name = partner.get("business_name", partner.get("restaurant_name", "Partner"))
+        prefix = business_name[:2].upper().replace(" ", "")
+    
+    # Get partner's number or assign one
+    partner_number = partner.get("partner_number") if partner else None
+    if not partner_number:
+        # Count existing partners to create a number
+        existing_count = await db.partner_accounts.count_documents({}) + await db.restaurant_accounts.count_documents({})
+        partner_number = f"{existing_count:03d}"
+        # Store it for future reference
+        if partner:
+            collection = "partner_accounts" if await db.partner_accounts.find_one({"id": partner_id}) else "restaurant_accounts"
+            await db[collection].update_one({"id": partner_id}, {"$set": {"partner_number": partner_number}})
+    
+    # Count existing staff for this partner
+    staff_count = await db.partner_staff.count_documents({"partner_id": partner_id})
+    staff_number = f"{staff_count + 1:03d}"
+    
+    return f"{prefix}-{partner_number}-{staff_number}"
+
 def generate_qr_code(data: str, size: int = 200) -> str:
     """Generate QR code and return as base64 PNG"""
     qr = qrcode.QRCode(
