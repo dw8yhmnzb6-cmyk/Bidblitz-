@@ -230,7 +230,15 @@ const AdminPartnerApplications = () => {
     });
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status, isLocked = false) => {
+    if (isLocked) {
+      return (
+        <span className="px-2 py-1 rounded-full text-xs font-medium border bg-red-100 text-red-700 border-red-300 flex items-center gap-1">
+          <Lock className="w-3 h-3" />
+          Gesperrt
+        </span>
+      );
+    }
     const badges = {
       pending: 'bg-yellow-100 text-yellow-700 border-yellow-300',
       approved: 'bg-green-100 text-green-700 border-green-300',
