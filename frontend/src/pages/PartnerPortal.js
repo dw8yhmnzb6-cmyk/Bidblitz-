@@ -1896,18 +1896,34 @@ export default function PartnerPortal() {
             
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {loginMode === 'staff' 
+                    ? (language === 'en' ? 'Staff Number' : 'Kundennummer')
+                    : t('email')
+                  }
+                </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  {loginMode === 'staff' ? (
+                    <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  ) : (
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  )}
                   <Input
-                    type="email"
+                    type={loginMode === 'staff' ? 'text' : 'email'}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={loginMode === 'staff' ? 'staff@partner.com' : 'partner@example.de'}
-                    className="pl-10"
+                    placeholder={loginMode === 'staff' ? 'z.B. PR-001-001' : 'partner@example.de'}
+                    className="pl-10 font-mono"
                     required
                   />
                 </div>
+                {loginMode === 'staff' && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {language === 'en' 
+                      ? 'Enter the staff number provided by your employer'
+                      : 'Geben Sie die Kundennummer ein, die Sie von Ihrem Arbeitgeber erhalten haben'}
+                  </p>
+                )}
               </div>
               
               <div>
