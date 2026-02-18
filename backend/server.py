@@ -432,6 +432,9 @@ app.include_router(security_router, prefix="/api")
 # Admin Wallet Top-up & Incentives System
 app.include_router(admin_wallet_topup_router, prefix="/api/admin/wallet-topup")
 
+# Stripe Checkout for Wallet Top-up
+app.include_router(stripe_checkout_router, prefix="/api/stripe")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
