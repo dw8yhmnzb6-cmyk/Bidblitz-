@@ -2,7 +2,7 @@
  * Partner Directory Page - Alle Partner durchsuchen
  * Mit Karte, Filter nach Stadt/Kategorie und Suche
  */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
@@ -11,6 +11,9 @@ import {
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+
+// Lazy load PartnerMap for better performance
+const PartnerMap = lazy(() => import('../components/PartnerMap'));
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
