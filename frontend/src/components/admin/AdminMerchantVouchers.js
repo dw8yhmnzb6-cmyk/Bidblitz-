@@ -420,54 +420,55 @@ const AdminMerchantVouchers = () => {
         </div>
       )}
 
-      {/* Vouchers List */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 bg-gray-50">
-          <h3 className="font-semibold text-gray-800">Alle Händler-Gutscheine ({vouchers.length})</h3>
-        </div>
-        
-        {loading ? (
-          <div className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto"></div>
+      {/* Vouchers Tab */}
+      {activeTab === 'vouchers' && (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="p-4 border-b border-gray-100 bg-gray-50">
+            <h3 className="font-semibold text-gray-800">Alle Händler-Gutscheine ({vouchers.length})</h3>
           </div>
-        ) : vouchers.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            <Ticket className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-            <p>Noch keine Händler-Gutscheine erstellt</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-100">
-            {vouchers.map((voucher) => (
-              <div key={voucher.id} className="p-4 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                      <Ticket className="w-5 h-5 text-amber-600" />
+          
+          {loading ? (
+            <div className="p-8 text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto"></div>
+            </div>
+          ) : vouchers.length === 0 ? (
+            <div className="p-8 text-center text-gray-500">
+              <Ticket className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+              <p>Noch keine Händler-Gutscheine erstellt</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {vouchers.map((voucher) => (
+                <div key={voucher.id} className="p-4 hover:bg-gray-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <Ticket className="w-5 h-5 text-amber-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">{voucher.name}</p>
+                        <p className="text-sm text-gray-500">{voucher.partner_name}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-800">{voucher.name}</p>
-                      <p className="text-sm text-gray-500">{voucher.partner_name}</p>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-amber-600">€{voucher.voucher_value}</p>
+                        <p className="text-xs text-gray-400">Aktuell: €{(voucher.current_price || 0).toFixed(2)}</p>
+                      </div>
+                      
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-700">{voucher.total_bids || 0} Gebote</p>
+                        <p className="text-xs text-gray-400">Endet: {formatDate(voucher.end_time)}</p>
+                      </div>
+                      
+                      {getStatusBadge(voucher)}
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-amber-600">€{voucher.voucher_value}</p>
-                      <p className="text-xs text-gray-400">Aktuell: €{(voucher.current_price || 0).toFixed(2)}</p>
-                    </div>
-                    
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-gray-700">{voucher.total_bids || 0} Gebote</p>
-                      <p className="text-xs text-gray-400">Endet: {formatDate(voucher.end_time)}</p>
-                    </div>
-                    
-                    {getStatusBadge(voucher)}
-                  </div>
-                </div>
-                
-                {voucher.winner_name && (
-                  <div className="mt-2 text-sm text-green-600 flex items-center gap-1">
-                    <CheckCircle className="w-4 h-4" />
+                  {voucher.winner_name && (
+                    <div className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                      <CheckCircle className="w-4 h-4" />
                     Gewonnen von: {voucher.winner_name}
                     {voucher.redeemed && <span className="text-gray-500 ml-2">(Eingelöst: {formatDate(voucher.redeemed_at)})</span>}
                   </div>
