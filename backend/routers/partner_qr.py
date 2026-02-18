@@ -52,16 +52,16 @@ async def generate_partner_qr(
     partner_id = partner.get("id")
     partner_name = partner.get("name", "Partner")
     
-    # Build target URL based on type
+    # Build target URL based on type - use short URL format for landing page
     base_url = "https://bidblitz.ae"
     if qr_type == "profile":
-        target_url = f"{base_url}/partner/{partner_id}"
+        target_url = f"{base_url}/p/{partner_id}"
     elif qr_type == "vouchers":
-        target_url = f"{base_url}/vouchers?partner={partner_id}"
+        target_url = f"{base_url}/p/{partner_id}#vouchers"
     elif qr_type == "menu":
-        target_url = f"{base_url}/partner/{partner_id}/menu"
+        target_url = f"{base_url}/p/{partner_id}#menu"
     else:
-        target_url = f"{base_url}/partner/{partner_id}"
+        target_url = f"{base_url}/p/{partner_id}"
     
     # Generate QR code
     qr = qrcode.QRCode(
