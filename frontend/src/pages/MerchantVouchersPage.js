@@ -705,8 +705,14 @@ const MerchantVouchersPage = () => {
                       </div>
 
                       <Button
-                        onClick={() => navigate(`/auctions/${voucher.auction_id || voucher.id}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Navigate to auction - use auction_id first, then id
+                          const auctionId = voucher.auction_id || `mv-${voucher.id?.substring(0, 8)}`;
+                          navigate(`/auctions/${auctionId}`);
+                        }}
                         className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                        data-testid={`bid-btn-${voucher.id}`}
                       >
                         <Zap className="w-4 h-4 mr-2" />
                         {t.bidNow}
