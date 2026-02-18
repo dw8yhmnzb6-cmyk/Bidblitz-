@@ -494,6 +494,169 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
     );
   }
   
+  // Credit Score Detail View
+  if (view === 'score' && scoreData) {
+    return (
+      <div className="space-y-4">
+        <button
+          onClick={() => setView('main')}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          {t('back')}
+        </button>
+        
+        {/* Score Header */}
+        <div 
+          className="rounded-2xl p-6 text-white"
+          style={{ background: `linear-gradient(135deg, ${scoreData.tier.color}, ${scoreData.tier.color}dd)` }}
+        >
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-4xl">{scoreData.tier.icon}</span>
+            <div className="text-right">
+              <p className="text-5xl font-bold">{scoreData.score}</p>
+              <p className="text-white/70 text-sm">von 1000 Punkten</p>
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold mb-1">{scoreData.tier.name}</h2>
+          <p className="text-white/80">Stufe {scoreData.tier.name_en}</p>
+          
+          {/* Progress to next tier */}
+          {scoreData.next_tier && (
+            <div className="mt-4 pt-4 border-t border-white/20">
+              <div className="flex justify-between text-sm mb-2">
+                <span>Fortschritt zu {scoreData.next_tier.icon} {scoreData.next_tier.name}</span>
+                <span>{scoreData.next_tier.points_needed} Punkte</span>
+              </div>
+              <div className="h-2 bg-white/30 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-white rounded-full"
+                  style={{ width: `${scoreData.progress_percent}%` }}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        
+        {/* Tier Benefits */}
+        <div className="bg-white rounded-xl border border-gray-200 divide-y">
+          <div className="p-4">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Award className="w-5 h-5 text-orange-500" />
+              Ihre Vorteile
+            </h3>
+          </div>
+          <div className="p-4 flex justify-between">
+            <span className="text-gray-600">{t('maxCredit')}</span>
+            <span className="font-medium">€{scoreData.tier.max_credit}</span>
+          </div>
+          <div className="p-4 flex justify-between">
+            <span className="text-gray-600">{t('yourInterestRate')}</span>
+            <span className="font-medium text-green-600">{scoreData.tier.interest_rate}%</span>
+          </div>
+        </div>
+        
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-green-50 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-green-800">{scoreData.stats.total_credits_completed}</p>
+            <p className="text-xs text-green-600">{t('creditsCompleted')}</p>
+          </div>
+          <div className="bg-blue-50 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-blue-800">{scoreData.stats.total_on_time_payments}</p>
+            <p className="text-xs text-blue-600">{t('onTimePayments')}</p>
+          </div>
+          <div className="bg-red-50 rounded-xl p-4 text-center">
+            <p className="text-2xl font-bold text-red-800">{scoreData.stats.total_late_payments}</p>
+            <p className="text-xs text-red-600">{t('latePayments')}</p>
+          </div>
+        </div>
+        
+        {/* Tips */}
+        {scoreData.tips && scoreData.tips.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-200">
+            <div className="p-4 border-b border-gray-100">
+              <h3 className="font-semibold flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-orange-500" />
+                {t('tipsToImprove')}
+              </h3>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {scoreData.tips.map((tip, idx) => (
+                <div key={idx} className="p-4 flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{tip.title}</p>
+                    <p className="text-sm text-gray-500">{tip.description}</p>
+                  </div>
+                  <span className="text-green-600 font-bold">+{tip.points}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Score History */}
+        {scoreData.history && scoreData.history.length > 0 && (
+          <div className="bg-white rounded-xl border border-gray-200">
+            <div className="p-4 border-b border-gray-100">
+              <h3 className="font-semibold flex items-center gap-2">
+                <Clock className="w-5 h-5 text-orange-500" />
+                {t('scoreHistory')}
+              </h3>
+            </div>
+            <div className="divide-y divide-gray-100 max-h-60 overflow-y-auto">
+              {scoreData.history.slice().reverse().map((entry, idx) => (
+                <div key={idx} className="p-3 flex items-center justify-between text-sm">
+                  <div>
+                    <p className="font-medium">{entry.description}</p>
+                    <p className="text-xs text-gray-400">{formatDate(entry.date)}</p>
+                  </div>
+                  <span className={`font-bold ${entry.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {entry.change >= 0 ? '+' : ''}{entry.change}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* All Tiers Overview */}
+        <div className="bg-white rounded-xl border border-gray-200">
+          <div className="p-4 border-b border-gray-100">
+            <h3 className="font-semibold flex items-center gap-2">
+              <Star className="w-5 h-5 text-orange-500" />
+              Alle Stufen
+            </h3>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {[
+              { icon: '🔴', name: 'Rot', score: '0-300', credit: '€0', interest: '5%', current: scoreData.tier.key === 'red' },
+              { icon: '🟡', name: 'Gelb', score: '301-500', credit: '€500', interest: '5%', current: scoreData.tier.key === 'yellow' },
+              { icon: '🟢', name: 'Grün', score: '501-700', credit: '€1.500', interest: '3%', current: scoreData.tier.key === 'green' },
+              { icon: '⭐', name: 'Gold', score: '701-900', credit: '€2.000', interest: '2%', current: scoreData.tier.key === 'gold' },
+              { icon: '💎', name: 'Diamant', score: '901+', credit: '€2.000', interest: '1.5%', current: scoreData.tier.key === 'diamond' },
+            ].map((tier, idx) => (
+              <div key={idx} className={`p-3 flex items-center justify-between ${tier.current ? 'bg-orange-50' : ''}`}>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">{tier.icon}</span>
+                  <div>
+                    <p className={`font-medium ${tier.current ? 'text-orange-600' : ''}`}>{tier.name}</p>
+                    <p className="text-xs text-gray-400">{tier.score} Punkte</p>
+                  </div>
+                </div>
+                <div className="text-right text-sm">
+                  <p>{tier.credit}</p>
+                  <p className="text-green-600">{tier.interest}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   // Credit Details View
   if (view === 'details' && selectedCredit) {
     const remaining = (selectedCredit.amount + (selectedCredit.total_interest || 0)) - (selectedCredit.amount_repaid || 0);
