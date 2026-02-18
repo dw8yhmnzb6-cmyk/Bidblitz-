@@ -28,6 +28,71 @@ class TransferRequest(BaseModel):
     amount: float
     voucher_ids: Optional[List[str]] = None
 
+
+class CustomerCreditRequest(BaseModel):
+    customer_number: str  # e.g., "BID-123456"
+    amount: float
+    description: Optional[str] = None
+    reference: Optional[str] = None  # External reference (bank transfer ID)
+
+
+# ==================== CUSTOMER NUMBER ENDPOINTS ====================
+
+@router.get("/my-customer-number")
+async def get_my_customer_number(user: dict = Depends(get_current_user)):
+    """Get current user's customer number"""
+    customer_number = user.get("customer_number")
+    
+    # If user doesn't have a customer number yet, generate one
+    if not customer_number:
+        import random
+        while True:
+            number = random.randint(100000, 999999)
+            customer_number = f"BID-{number}"
+            existing = await db.users.find_one({"customer_number": customer_number})
+            if not existing:
+                break
+        
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$set": {"customer_number": customer_number}}
+        )
+    
+    return {
+        "customer_number": customer_number,
+        "name": user.get("name", ""),
+        "email": user.get("email", ""),
+        "info": "Verwenden Sie diese Kundennummer für Überweisungen und Gutschriften"
+    }
+
+
+@router.get("/lookup/{customer_number}")
+async def lookup_customer(customer_number: str):
+    """Public: Look up customer by number (returns limited info for verification)"""
+    customer_number = customer_number.upper().strip()
+    
+    user = await db.users.find_one(
+        {"customer_number": customer_number},
+        {"_id": 0, "customer_number": 1, "name": 1}
+    )
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="Kundennummer nicht gefunden")
+    
+    # Return only name (masked for privacy) and confirmation
+    name = user.get("name", "")
+    if len(name) > 2:
+        masked_name = name[0] + "*" * (len(name) - 2) + name[-1]
+    else:
+        masked_name = name
+    
+    return {
+        "customer_number": customer_number,
+        "name_masked": masked_name,
+        "valid": True
+    }
+
+
 # ==================== USER WALLET ENDPOINTS ====================
 
 @router.get("/wallet")
