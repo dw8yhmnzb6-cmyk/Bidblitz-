@@ -5,40 +5,85 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 18, 2026)
 
-### ✅ Session Update - February 18, 2026 (Session 41) - HÄNDLER-GUTSCHEINE FEATURE ✅
+### ✅ Session Update - February 18, 2026 (Session 41) - HÄNDLER-GUTSCHEINE SYSTEM ✅
 
-#### Feature: Händler-Gutscheine auf Startseite ✅
+#### Feature: Neues Händler-Gutscheine System ✅
 
 **Anforderung:** 
-1. "Wie funktioniert es?" und Willkommensbonus-Banner entfernen
-2. Neuer "Händler-Gutscheine" Bereich auf der Startseite für Restaurant/Bar-Gutscheine
+1. Alte VoucherAuctionsSection von Startseite entfernen
+2. Neue eigene Seite für Händler-Gutscheine erstellen
+3. Admin erstellt Gutscheine für Händler
+4. Nutzer können auf Händler klicken und deren Gutscheine sehen/ersteigern
 
 **Implementiert:**
-1. **Entfernte Elemente:**
-   - ❌ WelcomeBonusBanner (entfernt aus App.js)
-   - ❌ HowItWorksFloatingButton (entfernt aus App.js)
-   - ❌ "Wie funktioniert's" Sektion in BidBlitzPay (entfernt)
+1. **Neue Seite: /haendler-gutscheine**
+   - Zeigt alle Partner/Händler mit Filter (Restaurant, Bar, Café, Einzelhandel, Wellness)
+   - Suchfunktion nach Händlernamen/Stadt
+   - "So funktioniert's" Anleitung (3 Schritte)
+   - Klick auf Händler → zeigt dessen Gutscheine
 
-2. **Neue Komponente: VoucherAuctionsSection**
-   - Neue Datei: `/app/frontend/src/components/VoucherAuctionsSection.js`
-   - Position: Nach "Entdecke alle Features" Banner auf der Startseite
-   - Zeigt: 4 aktive Gutschein-Auktionen (Restaurant, Bar, Café, Wellness etc.)
-   - Kategorien mit Icons: 🍽️ Restaurant, 🍷 Bar, ☕ Café, 🛍️ Einzelhandel, ✨ Wellness
-   - Ersparnisanzeige: Zeigt %-Ersparnis gegenüber Gutscheinwert
-   - Demo-Fallback: Wenn keine echten Daten vorhanden
+2. **Händler-Detail-Ansicht:**
+   - Händler-Header mit Logo, Name, Adresse, Kontakt
+   - Liste der verfügbaren Gutschein-Auktionen
+   - Gutschein-Karten mit Wert, aktuellem Preis, Ersparnis, Countdown
+   - "Jetzt bieten" Button führt zur Auktion
 
-3. **Backend Endpoint:**
-   - `GET /api/voucher-auctions/active` - Gibt alle aktiven Gutschein-Auktionen zurück
-   - Aggregiert Gutscheine aus: is_free_auction, restaurant_voucher, voucher category
+3. **Admin Panel:**
+   - Neuer Tab "Händler-Gutscheine" unter "Gutscheine & Codes"
+   - Partner-Auswahl mit Suche
+   - Formular: Name, Wert, Beschreibung, Startpreis, Dauer
+   - Liste aller erstellten Gutschein-Auktionen mit Status
 
-**Test-Ergebnisse (iteration_72.json):**
-- Backend: 100% 
+4. **Backend API:**
+   - `GET /api/merchant-vouchers/merchants` - Alle Partner
+   - `GET /api/merchant-vouchers/merchant/{id}` - Partner-Details
+   - `GET /api/merchant-vouchers/merchant/{id}/vouchers` - Partner-Gutscheine
+   - `POST /api/merchant-vouchers/admin/create` - Gutschein erstellen
+
+**Test-Ergebnisse (iteration_73.json):**
+- Backend: 100% (8/8 Tests)
 - Frontend: 100%
-- Echte Gutschein-Daten werden korrekt angezeigt
+
+**Dateien:**
+- `/app/frontend/src/pages/MerchantVouchersPage.js`
+- `/app/frontend/src/components/admin/AdminMerchantVouchers.js`
+- `/app/backend/routers/merchant_vouchers.py`
 
 ---
 
-### ✅ Session Update - February 18, 2026 (Session 41) - ADMIN MENÜ REDESIGN ✅
+### ✅ WISE INTEGRATION - STATUS ✅
+
+**Die Wise-Integration ist bereits vollständig implementiert!**
+
+**Implementierte Features:**
+1. **Partner-Seite:**
+   - Bankkonto (IBAN) verbinden
+   - Auszahlungen anfordern
+   - Transfer-Status prüfen
+   - Auszahlungsverlauf
+
+2. **Admin-Seite:**
+   - Alle ausstehenden Auszahlungen sehen
+   - Einzelne Auszahlung initiieren
+   - Batch-Auszahlungen für mehrere Partner
+
+3. **Automatik:**
+   - Wenn `WISE_API_TOKEN` und `WISE_PROFILE_ID` konfiguriert → Automatische Überweisungen
+   - Wenn nicht konfiguriert → Manuelle Auszahlungen (`pending_manual`)
+
+**Benötigte Umgebungsvariablen für Automatik:**
+```
+WISE_API_TOKEN=your_wise_api_token
+WISE_PROFILE_ID=your_profile_id
+WISE_SANDBOX_MODE=false  # oder true für Tests
+```
+
+**Dateien:**
+- `/app/backend/routers/wise_payouts.py`
+- `/app/backend/services/wise_service.py`
+- `/app/frontend/src/components/admin/AdminWisePayouts.js`
+
+---
 
 #### Feature: Kategorisiertes Admin Panel Menü ✅
 
