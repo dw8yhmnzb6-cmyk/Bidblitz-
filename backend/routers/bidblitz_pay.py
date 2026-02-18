@@ -197,6 +197,168 @@ async def get_main_balance(user: dict = Depends(get_current_user)):
         "email": user_data.get("email", "")
     }
 
+# ==================== PEER-TO-PEER TRANSFER ====================
+
+class P2PTransferRequest(BaseModel):
+    recipient_email: str
+    amount: float
+    message: Optional[str] = None
+
+@router.post("/send-money")
+async def send_money_to_user(data: P2PTransferRequest, user: dict = Depends(get_current_user)):
+    """Send BidBlitz balance to another user"""
+    sender_id = user["id"]
+    
+    if data.amount <= 0:
+        raise HTTPException(status_code=400, detail="Betrag muss größer als 0 sein")
+    
+    if data.amount < 1:
+        raise HTTPException(status_code=400, detail="Mindestbetrag: €1")
+    
+    # Find recipient
+    recipient = await db.users.find_one(
+        {"email": data.recipient_email.lower()},
+        {"_id": 0, "id": 1, "name": 1, "email": 1}
+    )
+    if not recipient:
+        raise HTTPException(status_code=404, detail="Empfänger nicht gefunden")
+    
+    if recipient["id"] == sender_id:
+        raise HTTPException(status_code=400, detail="Sie können nicht an sich selbst senden")
+    
+    # Check sender balance
+    sender_data = await db.users.find_one({"id": sender_id}, {"_id": 0, "bidblitz_balance": 1, "name": 1})
+    sender_balance = sender_data.get("bidblitz_balance", 0) if sender_data else 0
+    
+    if sender_balance < data.amount:
+        raise HTTPException(status_code=400, detail="Nicht genug Guthaben")
+    
+    # Deduct from sender
+    await db.users.update_one(
+        {"id": sender_id},
+        {"$inc": {"bidblitz_balance": -data.amount}}
+    )
+    
+    # Add to recipient
+    await db.users.update_one(
+        {"id": recipient["id"]},
+        {"$inc": {"bidblitz_balance": data.amount}}
+    )
+    
+    # Create transfer record
+    transfer_id = str(uuid.uuid4())
+    transfer_doc = {
+        "id": transfer_id,
+        "sender_id": sender_id,
+        "sender_name": sender_data.get("name", ""),
+        "recipient_id": recipient["id"],
+        "recipient_name": recipient.get("name", ""),
+        "recipient_email": recipient["email"],
+        "amount": data.amount,
+        "message": data.message,
+        "type": "p2p_transfer",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.wallet_transfers.insert_one(transfer_doc)
+    
+    logger.info(f"💸 P2P Transfer: {sender_id} -> {recipient['id']}: €{data.amount}")
+    
+    return {
+        "success": True,
+        "transfer_id": transfer_id,
+        "amount": data.amount,
+        "recipient": recipient.get("name", recipient["email"]),
+        "new_balance": sender_balance - data.amount,
+        "message": f"€{data.amount:.2f} an {recipient.get('name', recipient['email'])} gesendet"
+    }
+
+@router.get("/transfer-history")
+async def get_transfer_history(user: dict = Depends(get_current_user), limit: int = 50):
+    """Get user's P2P transfer history (sent and received)"""
+    user_id = user["id"]
+    
+    # Get sent transfers
+    sent = await db.wallet_transfers.find(
+        {"sender_id": user_id, "type": "p2p_transfer"},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Get received transfers
+    received = await db.wallet_transfers.find(
+        {"recipient_id": user_id, "type": "p2p_transfer"},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Combine and sort
+    all_transfers = []
+    for t in sent:
+        t["direction"] = "sent"
+        all_transfers.append(t)
+    for t in received:
+        t["direction"] = "received"
+        all_transfers.append(t)
+    
+    all_transfers.sort(key=lambda x: x.get("created_at", ""), reverse=True)
+    
+    return {
+        "transfers": all_transfers[:limit],
+        "total_sent": sum(t["amount"] for t in sent),
+        "total_received": sum(t["amount"] for t in received)
+    }
+
+# ==================== CASHBACK SYSTEM ====================
+
+@router.get("/cashback-balance")
+async def get_cashback_balance(user: dict = Depends(get_current_user)):
+    """Get user's accumulated cashback"""
+    user_id = user["id"]
+    
+    user_data = await db.users.find_one(
+        {"id": user_id},
+        {"_id": 0, "cashback_balance": 1, "cashback_history": 1}
+    )
+    
+    return {
+        "cashback_balance": user_data.get("cashback_balance", 0) if user_data else 0,
+        "pending_cashback": 0  # Future: pending cashback from recent transactions
+    }
+
+@router.post("/redeem-cashback")
+async def redeem_cashback(user: dict = Depends(get_current_user)):
+    """Convert cashback to BidBlitz balance"""
+    user_id = user["id"]
+    
+    user_data = await db.users.find_one({"id": user_id}, {"_id": 0, "cashback_balance": 1})
+    cashback = user_data.get("cashback_balance", 0) if user_data else 0
+    
+    if cashback < 5:
+        raise HTTPException(status_code=400, detail="Mindestens €5 Cashback erforderlich")
+    
+    # Transfer cashback to BidBlitz balance
+    await db.users.update_one(
+        {"id": user_id},
+        {
+            "$inc": {"bidblitz_balance": cashback},
+            "$set": {"cashback_balance": 0}
+        }
+    )
+    
+    # Log redemption
+    redemption_doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "amount": cashback,
+        "type": "cashback_redemption",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.cashback_redemptions.insert_one(redemption_doc)
+    
+    return {
+        "success": True,
+        "redeemed_amount": cashback,
+        "message": f"€{cashback:.2f} Cashback in BidBlitz Guthaben umgewandelt"
+    }
+
 # ==================== PARTNER PAYMENT ENDPOINTS ====================
 
 async def get_current_partner(token: str):
