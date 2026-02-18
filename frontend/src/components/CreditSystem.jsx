@@ -901,12 +901,63 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
   // Main View
   return (
     <div className="space-y-4">
+      {/* Credit Score Card */}
+      {scoreData && (
+        <div 
+          className="rounded-xl p-4 cursor-pointer hover:shadow-md transition-shadow"
+          style={{ 
+            background: `linear-gradient(135deg, ${scoreData.tier.color}20, ${scoreData.tier.color}10)`,
+            borderColor: scoreData.tier.color,
+            borderWidth: '1px'
+          }}
+          onClick={() => setView('score')}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl">{scoreData.tier.icon}</span>
+              <div>
+                <p className="font-bold text-lg">{t('creditScore')}</p>
+                <p className="text-sm opacity-70">{scoreData.tier.name}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-3xl font-bold" style={{ color: scoreData.tier.color }}>{scoreData.score}</p>
+              <p className="text-xs opacity-70">von 1000</p>
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="h-2 bg-white/50 rounded-full overflow-hidden mb-2">
+            <div 
+              className="h-full rounded-full transition-all duration-500"
+              style={{ 
+                width: `${(scoreData.score / 1000) * 100}%`,
+                backgroundColor: scoreData.tier.color 
+              }}
+            />
+          </div>
+          
+          <div className="flex justify-between text-xs">
+            <span>Max. Kredit: €{scoreData.tier.max_credit}</span>
+            <span>Zinsen: {scoreData.tier.interest_rate}%</span>
+            {scoreData.next_tier && (
+              <span className="flex items-center gap-1">
+                <TrendingUp className="w-3 h-3" />
+                {scoreData.next_tier.points_needed} bis {scoreData.next_tier.icon}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Eligibility Card */}
       {eligibility && (
-        <div className={`rounded-xl p-4 ${eligibility.eligible ? 'bg-green-50 border border-green-200' : 'bg-yellow-50 border border-yellow-200'}`}>
+        <div className={`rounded-xl p-4 ${eligibility.eligible ? 'bg-green-50 border border-green-200' : eligibility.score_eligible === false ? 'bg-red-50 border border-red-200' : 'bg-yellow-50 border border-yellow-200'}`}>
           <div className="flex items-center gap-3">
             {eligibility.eligible ? (
               <CheckCircle className="w-8 h-8 text-green-600" />
+            ) : eligibility.score_eligible === false ? (
+              <XCircle className="w-8 h-8 text-red-600" />
             ) : (
               <AlertCircle className="w-8 h-8 text-yellow-600" />
             )}
@@ -917,7 +968,8 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
               <p className="text-sm text-gray-600">
                 {!eligibility.is_verified && t('verificationRequired')}
                 {eligibility.has_open_credit && t('openCreditExists')}
-                {eligibility.eligible && `€${eligibility.min_amount} - €${eligibility.max_amount}`}
+                {eligibility.score_eligible === false && t('scoreTooLow')}
+                {eligibility.eligible && `€${eligibility.min_amount} - €${eligibility.max_amount} • ${eligibility.interest_rate}% Zinsen`}
               </p>
             </div>
             {eligibility.eligible && (
@@ -936,13 +988,13 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-blue-50 rounded-xl p-4 text-center">
           <Percent className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-          <p className="text-sm font-medium text-blue-800">2-5%</p>
-          <p className="text-xs text-blue-600">{t('perMonth')}</p>
+          <p className="text-sm font-medium text-blue-800">{eligibility?.interest_rate || '2-5'}%</p>
+          <p className="text-xs text-blue-600">{t('yourInterestRate')}</p>
         </div>
         <div className="bg-green-50 rounded-xl p-4 text-center">
-          <Calendar className="w-6 h-6 text-green-600 mx-auto mb-2" />
-          <p className="text-sm font-medium text-green-800">3-6 Mon</p>
-          <p className="text-xs text-green-600">{t('flexibleRepayment')}</p>
+          <Euro className="w-6 h-6 text-green-600 mx-auto mb-2" />
+          <p className="text-sm font-medium text-green-800">€{eligibility?.max_amount || 2000}</p>
+          <p className="text-xs text-green-600">{t('maxCredit')}</p>
         </div>
       </div>
       
