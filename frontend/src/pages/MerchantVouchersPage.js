@@ -238,6 +238,13 @@ const MerchantVouchersPage = () => {
   if (selectedMerchant) {
     const category = selectedMerchant.business_type || 'other';
     const colorClass = categoryColors[category] || categoryColors.other;
+    const isPremium = selectedMerchant.is_premium;
+    const isVerified = selectedMerchant.is_verified;
+    const photos = selectedMerchant.photos || [];
+    const openingHours = selectedMerchant.opening_hours || {};
+    const specialties = selectedMerchant.specialties || [];
+    const paymentMethods = selectedMerchant.payment_methods || [];
+    const socialMedia = selectedMerchant.social_media || {};
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 pt-20 pb-12">
@@ -252,32 +259,181 @@ const MerchantVouchersPage = () => {
             {t.back}
           </Button>
 
+          {/* Premium Badge */}
+          {isPremium && (
+            <div className="mb-4 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-xl p-3 flex items-center gap-2 text-white">
+              <Crown className="w-5 h-5" />
+              <span className="font-bold">{t.premium || 'Premium Partner'}</span>
+            </div>
+          )}
+
           {/* Merchant Header */}
-          <div className={`bg-gradient-to-r ${colorClass} rounded-2xl p-6 mb-6 text-white`}>
+          <div className={`bg-gradient-to-r ${colorClass} rounded-2xl p-6 mb-6 text-white relative overflow-hidden`}>
+            {/* Premium Ribbon */}
+            {isPremium && (
+              <div className="absolute top-4 right-4 bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                <Crown className="w-3 h-3" />
+                PREMIUM
+              </div>
+            )}
+            
             <div className="flex items-start gap-4">
-              <div className="w-20 h-20 bg-white/20 rounded-xl flex items-center justify-center">
+              <div className="w-24 h-24 bg-white/20 rounded-xl flex items-center justify-center overflow-hidden">
                 {selectedMerchant.logo_url ? (
-                  <img src={selectedMerchant.logo_url} alt={selectedMerchant.business_name} className="w-16 h-16 rounded-lg object-cover" />
+                  <img src={selectedMerchant.logo_url} alt={selectedMerchant.business_name} className="w-full h-full object-cover" />
                 ) : (
-                  categoryIcons[category] || <Store className="w-10 h-10" />
+                  categoryIcons[category] || <Store className="w-12 h-12" />
                 )}
               </div>
               <div className="flex-1">
-                <h1 className="text-2xl font-bold">{selectedMerchant.business_name}</h1>
-                <p className="text-white/80 text-sm flex items-center gap-1 mt-1">
-                  <MapPin className="w-4 h-4" />
-                  {selectedMerchant.city}, {selectedMerchant.address}
-                </p>
-                {selectedMerchant.phone && (
-                  <p className="text-white/80 text-sm flex items-center gap-1 mt-1">
-                    <Phone className="w-4 h-4" />
-                    {selectedMerchant.phone}
-                  </p>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl font-bold">{selectedMerchant.business_name}</h1>
+                  {isVerified && (
+                    <CheckCircle className="w-5 h-5 text-green-300" title={t.verified} />
+                  )}
+                </div>
+                
+                {/* Rating */}
+                {selectedMerchant.rating > 0 && (
+                  <div className="flex items-center gap-1 mt-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`w-4 h-4 ${i < selectedMerchant.rating ? 'text-yellow-300 fill-yellow-300' : 'text-white/30'}`} />
+                    ))}
+                    <span className="text-white/80 text-sm ml-1">({selectedMerchant.review_count || 0} {t.reviews})</span>
+                  </div>
                 )}
+                
+                <p className="text-white/80 text-sm flex items-center gap-1 mt-2">
+                  <MapPin className="w-4 h-4" />
+                  {selectedMerchant.address}, {selectedMerchant.city}
+                </p>
+                
+                {/* Contact Info */}
+                <div className="flex flex-wrap gap-3 mt-3">
+                  {selectedMerchant.phone && (
+                    <a href={`tel:${selectedMerchant.phone}`} className="text-white/90 text-sm flex items-center gap-1 hover:text-white">
+                      <Phone className="w-4 h-4" />
+                      {selectedMerchant.phone}
+                    </a>
+                  )}
+                  {selectedMerchant.website && (
+                    <a href={selectedMerchant.website} target="_blank" rel="noopener noreferrer" className="text-white/90 text-sm flex items-center gap-1 hover:text-white">
+                      <Globe className="w-4 h-4" />
+                      {t.website}
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                  {selectedMerchant.email && (
+                    <a href={`mailto:${selectedMerchant.email}`} className="text-white/90 text-sm flex items-center gap-1 hover:text-white">
+                      <Mail className="w-4 h-4" />
+                      E-Mail
+                    </a>
+                  )}
+                </div>
               </div>
               <div className="text-right">
                 <div className="bg-white/20 rounded-lg px-3 py-1">
                   <span className="text-sm font-medium">{vouchers.length} {t.vouchers}</span>
+                </div>
+              </div>
+            </div>
+            
+            {selectedMerchant.description && (
+              <p className="mt-4 text-white/90 text-sm">{selectedMerchant.description}</p>
+            )}
+            
+            {/* Social Media Links */}
+            {(socialMedia.instagram || socialMedia.facebook) && (
+              <div className="flex gap-2 mt-4">
+                {socialMedia.instagram && (
+                  <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">
+                    <Instagram className="w-5 h-5" />
+                  </a>
+                )}
+                {socialMedia.facebook && (
+                  <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Photo Gallery */}
+          {photos.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                <Camera className="w-5 h-5 text-amber-500" />
+                {t.gallery || 'Galerie'}
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {photos.slice(0, 4).map((photo, idx) => (
+                  <div key={idx} className="aspect-video rounded-lg overflow-hidden bg-gray-200">
+                    <img src={photo} alt={`${selectedMerchant.business_name} ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {/* Opening Hours */}
+            {Object.keys(openingHours).length > 0 && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                <h3 className="font-bold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-amber-500" />
+                  {t.openingHours || 'Öffnungszeiten'}
+                </h3>
+                <div className="space-y-1 text-sm">
+                  {['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].map(day => (
+                    <div key={day} className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-400 capitalize">{t[day] || day}</span>
+                      <span className="text-gray-800 dark:text-gray-200">{openingHours[day] || t.closed || 'Geschlossen'}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Specialties & Payment */}
+            <div className="space-y-4">
+              {/* Specialties */}
+              {specialties.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                  <h3 className="font-bold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                    <Star className="w-5 h-5 text-amber-500" />
+                    {t.specialties || 'Spezialitäten'}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {specialties.map((spec, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm">{spec}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Payment Methods */}
+              {paymentMethods.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+                  <h3 className="font-bold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+                    <CreditCard className="w-5 h-5 text-amber-500" />
+                    {t.paymentMethods || 'Zahlungsarten'}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {paymentMethods.map((method, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm">{method}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Vouchers Grid */}
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+            <Ticket className="w-5 h-5 text-amber-500" />
+            {t.availableVouchers}
                 </div>
               </div>
             </div>
