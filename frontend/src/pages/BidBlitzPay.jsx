@@ -323,7 +323,7 @@ const BidBlitzPay = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
-  const [view, setView] = useState('wallet'); // wallet, qr, history, topup, security
+  const [view, setView] = useState('wallet'); // wallet, qr, history, topup, security, send, request
   const [language, setLanguage] = useState(() => localStorage.getItem('bidblitz_language') || 'de');
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [mainBalance, setMainBalance] = useState(0);
@@ -337,6 +337,13 @@ const BidBlitzPay = () => {
   const [sendMessage, setSendMessage] = useState('');
   const [sendingMoney, setSendingMoney] = useState(false);
   const [transfers, setTransfers] = useState([]);
+  
+  // Request Money states
+  const [requestAmount, setRequestAmount] = useState('');
+  const [requestDescription, setRequestDescription] = useState('');
+  const [requestQR, setRequestQR] = useState(null);
+  const [creatingRequest, setCreatingRequest] = useState(false);
+  const [myRequests, setMyRequests] = useState([]);
 
   const token = localStorage.getItem('token') || sessionStorage.getItem('token') || localStorage.getItem('bidblitz_token');
   
