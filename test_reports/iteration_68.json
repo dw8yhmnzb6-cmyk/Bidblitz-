@@ -1,0 +1,139 @@
+{
+  "summary": "Staff Kundennummer (Staff Number) feature fully tested. All backend APIs (10/10 tests) and frontend UI features verified successfully. Staff can now login with auto-generated Kundennummer instead of email.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend_api_tests": {
+      "status": "PASS",
+      "total_tests": 10,
+      "passed": 10,
+      "failed": 0,
+      "test_file": "/app/backend/tests/test_staff_kundennummer.py",
+      "junit_report": "/app/test_reports/pytest/pytest_staff_kundennummer.xml",
+      "tests_run": [
+        "test_partner_login_success - PASS",
+        "test_partner_login_invalid_credentials - PASS",
+        "test_create_staff_generates_kundennummer - PASS",
+        "test_staff_list_shows_kundennummer - PASS",
+        "test_staff_login_with_kundennummer - PASS (WI-008-001)",
+        "test_staff_login_invalid_kundennummer - PASS (401 returned)",
+        "test_staff_login_wrong_password - PASS (401 returned)",
+        "test_staff_login_endpoint_exists - PASS",
+        "test_staff_login_requires_staff_number - PASS (422 for missing field)",
+        "test_kundennummer_format_pattern - PASS (XX-XXX-XXX format verified)"
+      ]
+    },
+    "frontend_ui_tests": {
+      "status": "PASS",
+      "features_verified": {
+        "partner_login": {
+          "status": "PASS",
+          "credentials": "wise-test@partner.com / Test123!"
+        },
+        "staff_tab": {
+          "status": "PASS",
+          "elements_found": [
+            "Mitarbeiter tab in navigation",
+            "Staff creation form with Name, Password, Role fields",
+            "Info text: 'Eine eindeutige Kundennummer wird automatisch für die Anmeldung generiert'",
+            "Mitarbeiter erstellen button",
+            "Mitarbeiter-Liste showing staff with Kundennummer"
+          ]
+        },
+        "staff_creation_modal": {
+          "status": "PASS",
+          "elements_found": [
+            "Success modal: 'Mitarbeiter-Konto erstellt!'",
+            "Kundennummer (Login-ID) display: WI-008-003",
+            "Kopieren button for Kundennummer",
+            "Name and Password display",
+            "Info text: 'Mitarbeiter kann sich mit der Kundennummer und dem Passwort oben anmelden'"
+          ]
+        },
+        "staff_list": {
+          "status": "PASS",
+          "elements_found": [
+            "Staff items with Kundennummer displayed (WI-008-001, WI-008-002, etc.)",
+            "Copy button for each Kundennummer",
+            "Role badges (Theke/Admin)",
+            "Status badges (Aktiv)",
+            "Edit and Delete buttons"
+          ]
+        },
+        "staff_login_form": {
+          "status": "PASS",
+          "elements_found": [
+            "Admin-Login / Mitarbeiter-Login toggle buttons",
+            "Kundennummer label (instead of E-Mail)",
+            "Hash icon (#) instead of Mail icon",
+            "Text input type (not email)",
+            "Placeholder: 'z.B. PR-001-001'",
+            "Helper text: 'Geben Sie die Kundennummer ein, die Sie von Ihrem Arbeitgeber erhalten haben'",
+            "Info text: 'Theken-Mitarbeiter Login - Eingeschränkter Zugang nur für Scanner und Zahlungsfunktionen'"
+          ]
+        },
+        "staff_login_success": {
+          "status": "PASS",
+          "credentials": "WI-008-001 / staff123",
+          "result": "Logged in as 'Test Mitarbeiter' with Scanner/Pay view (counter role)"
+        }
+      }
+    }
+  },
+  "features_verified": {
+    "partner_login_with_email": "PASS - wise-test@partner.com / Test123!",
+    "staff_creation_auto_kundennummer": "PASS - Generated WI-008-003",
+    "kundennummer_format": "PASS - Format: PARTNER_PREFIX-PARTNER_NUM-STAFF_NUM (e.g., WI-008-001)",
+    "staff_login_with_kundennummer": "PASS - WI-008-001 / staff123",
+    "staff_login_form_shows_kundennummer_field": "PASS - Label, Hash icon, text input, helper text",
+    "staff_list_shows_kundennummer": "PASS - Each staff shows their Kundennummer",
+    "copy_button_for_kundennummer": "PASS - Works in modal and list",
+    "success_modal_after_creation": "PASS - Shows Kundennummer and password"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_staff_kundennummer.py",
+    "/app/test_reports/pytest/pytest_staff_kundennummer.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Staff Kundennummer feature implemented correctly",
+    "Backend: POST /api/partner-portal/staff/create generates staff_number automatically",
+    "Backend: POST /api/partner-portal/staff/login accepts staff_number instead of email",
+    "Frontend: Login form shows 'Kundennummer' field with Hash icon for staff login",
+    "Frontend: Staff creation modal displays generated Kundennummer with copy button",
+    "Frontend: Staff list shows Kundennummer for each staff member",
+    "Kundennummer format: PARTNER_PREFIX-PARTNER_NUM-STAFF_NUM (e.g., WI-008-001)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_staff_kundennummer.py"
+  ],
+  "success_rate": {
+    "backend": "100% (10/10 tests passed)",
+    "frontend": "100% (all UI features verified)"
+  },
+  "test_credentials": {
+    "partner": {
+      "email": "wise-test@partner.com",
+      "password": "Test123!"
+    },
+    "staff": {
+      "staff_number": "WI-008-001",
+      "password": "staff123"
+    }
+  },
+  "seed_data_creation": "Created test staff 'Test Mitarbeiter UI' with Kundennummer WI-008-003 during testing",
+  "mocked_apis": {
+    "has_mocked_apis": false,
+    "mocked_apis_list": []
+  },
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Staff Kundennummer feature fully implemented. Staff members can now login using auto-generated Kundennummer (format: XX-XXX-XXX) instead of email. Test staff WI-008-001 with password 'staff123' available for testing. Partner 'wise-test@partner.com' has multiple staff members with Kundennummern WI-008-001, WI-008-002, WI-008-003."
+}
