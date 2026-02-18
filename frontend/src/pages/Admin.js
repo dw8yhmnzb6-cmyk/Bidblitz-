@@ -1738,6 +1738,11 @@ export default function Admin() {
               language={language}
             />
           )}
+
+          {/* Wallet Top-up Tab */}
+          {activeTab === 'wallet-topup' && (
+            <AdminWalletTopup token={token} t={t} />
+          )}
         </main>
       </div>
       
