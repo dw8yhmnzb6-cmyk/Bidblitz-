@@ -358,6 +358,8 @@ const BidBlitzPay = () => {
   const [scannerActive, setScannerActive] = useState(false);
   const [scannedRequest, setScannedRequest] = useState(null);
   const [payingRequest, setPayingRequest] = useState(false);
+  const [manualRequestId, setManualRequestId] = useState('');
+  const [loadingManualRequest, setLoadingManualRequest] = useState(false);
   const scannerRef = useRef(null);
   const html5QrCodeRef = useRef(null);
 
