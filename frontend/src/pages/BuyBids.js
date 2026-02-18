@@ -307,6 +307,40 @@ export default function BuyBids() {
   return (
     <div className="min-h-screen pt-24 pb-12 px-4" data-testid="buy-bids-page">
       <div className="max-w-6xl mx-auto">
+        {/* Wallet Balance Banner - Shows if user has balance */}
+        {isAuthenticated && (
+          <div className="mb-6 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-4 shadow-lg">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white/20 rounded-xl">
+                  <Wallet className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <p className="text-white/80 text-sm">{texts.yourBalance || 'Ihr Guthaben'}</p>
+                  <p className="text-white text-2xl font-bold">€{walletBalance.toFixed(2)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {walletBalance > 0 && (
+                  <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm">
+                    {texts.useBalance || 'Mit Guthaben bezahlen'}
+                  </span>
+                )}
+                <Link to="/bidblitz-pay">
+                  <Button 
+                    variant="outline" 
+                    className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+                  >
+                    <Wallet className="w-4 h-4 mr-1" />
+                    {texts.bidBlitzPay || 'BidBlitz Pay'}
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 mb-6">
