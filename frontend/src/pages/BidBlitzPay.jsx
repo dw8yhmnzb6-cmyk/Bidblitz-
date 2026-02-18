@@ -609,6 +609,23 @@ const BidBlitzPay = () => {
     }
   }, [token]);
 
+  const fetchCustomerNumber = useCallback(async () => {
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/my-customer-number`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setCustomerNumber(data.customer_number);
+      }
+    } catch (error) {
+      console.error('Error fetching customer number:', error);
+    }
+  }, [token]);
+
   // Fetch transactions - MUST be defined before other functions that use it
   const fetchTransactions = useCallback(async () => {
     if (!token) return;
