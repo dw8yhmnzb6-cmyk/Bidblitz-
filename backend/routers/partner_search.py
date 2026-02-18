@@ -58,7 +58,7 @@ async def find_nearby_partners(data: LocationSearch):
     """Find partners within a radius of the given location"""
     # Get all partners with coordinates
     query = {
-        "is_active": True,
+        "status": "approved",
         "latitude": {"$exists": True, "$ne": None},
         "longitude": {"$exists": True, "$ne": None}
     }
