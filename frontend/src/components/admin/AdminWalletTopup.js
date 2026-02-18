@@ -41,7 +41,7 @@ export default function AdminWalletTopup({ token, t }) {
   // Fetch merchants list
   const fetchMerchants = useCallback(async () => {
     try {
-      const response = await axios.get(`${API}/api/partner-portal/admin/partners`, {
+      const response = await axios.get(`${API}/api/partner-portal/admin/all-partners`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Filter only approved partners
