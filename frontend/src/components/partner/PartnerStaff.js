@@ -110,16 +110,6 @@ const PartnerStaff = ({ token, language, t }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
-              <Input
-                type="email"
-                value={newStaff.email}
-                onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
-                placeholder="staff@example.com"
-                required
-              />
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('password')}</label>
               <Input
                 type="password"
@@ -139,6 +129,18 @@ const PartnerStaff = ({ token, language, t }) => {
                 <option value="counter">{t('counter')} ({language === 'en' ? 'Scanner & Pay only' : 'Nur Scanner & Pay'})</option>
                 <option value="admin">{t('admin')} ({language === 'en' ? 'Full access' : 'Voller Zugang'})</option>
               </select>
+            </div>
+            <div className="flex items-center gap-2 mt-6">
+              <input
+                type="checkbox"
+                id="save-login"
+                checked={newStaff.save_login}
+                onChange={(e) => setNewStaff({...newStaff, save_login: e.target.checked})}
+                className="w-4 h-4 text-amber-500 border-gray-300 rounded focus:ring-amber-500"
+              />
+              <label htmlFor="save-login" className="text-sm text-gray-700">
+                {language === 'en' ? 'Save login credentials' : 'Login-Daten speichern'}
+              </label>
             </div>
           </div>
           <Button type="submit" className="bg-amber-500 hover:bg-amber-600">
