@@ -326,6 +326,181 @@ async def get_transfer_history(user: dict = Depends(get_current_user), limit: in
         "total_received": sum(t["amount"] for t in received)
     }
 
+# ==================== REQUEST MONEY ====================
+
+class PaymentRequestCreate(BaseModel):
+    amount: float
+    description: Optional[str] = None
+    expires_minutes: int = 60
+
+@router.post("/request-money")
+async def create_payment_request(data: PaymentRequestCreate, user: dict = Depends(get_current_user)):
+    """Create a payment request that others can pay via QR code"""
+    user_id = user["id"]
+    
+    if data.amount <= 0:
+        raise HTTPException(status_code=400, detail="Betrag muss größer als 0 sein")
+    
+    # Get user name
+    user_data = await db.users.find_one({"id": user_id}, {"_id": 0, "name": 1, "email": 1})
+    
+    # Create request
+    request_id = str(uuid.uuid4())[:8].upper()
+    request_doc = {
+        "id": request_id,
+        "requester_id": user_id,
+        "requester_name": user_data.get("name", user_data.get("email", "")),
+        "amount": data.amount,
+        "description": data.description,
+        "status": "pending",  # pending, paid, expired, cancelled
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=data.expires_minutes)).isoformat(),
+        "paid_by": None,
+        "paid_at": None
+    }
+    await db.payment_requests.insert_one(request_doc)
+    
+    # Generate QR data
+    qr_data = f"BIDBLITZ-REQ:{request_id}"
+    
+    # Generate QR code image
+    qr = qrcode.QRCode(version=1, box_size=10, border=4)
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    return {
+        "request_id": request_id,
+        "amount": data.amount,
+        "description": data.description,
+        "qr_code": f"data:image/png;base64,{qr_base64}",
+        "qr_data": qr_data,
+        "expires_at": request_doc["expires_at"],
+        "status": "pending"
+    }
+
+@router.get("/request-money/{request_id}")
+async def get_payment_request(request_id: str, user: dict = Depends(get_current_user)):
+    """Get details of a payment request"""
+    request = await db.payment_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Zahlungsanforderung nicht gefunden")
+    
+    # Check if expired
+    if request["status"] == "pending":
+        expires_at = datetime.fromisoformat(request["expires_at"].replace("Z", "+00:00"))
+        if datetime.now(timezone.utc) > expires_at:
+            await db.payment_requests.update_one({"id": request_id}, {"$set": {"status": "expired"}})
+            request["status"] = "expired"
+    
+    return request
+
+@router.post("/pay-request/{request_id}")
+async def pay_payment_request(request_id: str, user: dict = Depends(get_current_user)):
+    """Pay a payment request"""
+    payer_id = user["id"]
+    
+    # Get request
+    request = await db.payment_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Zahlungsanforderung nicht gefunden")
+    
+    # Check status
+    if request["status"] != "pending":
+        raise HTTPException(status_code=400, detail=f"Zahlungsanforderung ist bereits {request['status']}")
+    
+    # Check expiry
+    expires_at = datetime.fromisoformat(request["expires_at"].replace("Z", "+00:00"))
+    if datetime.now(timezone.utc) > expires_at:
+        await db.payment_requests.update_one({"id": request_id}, {"$set": {"status": "expired"}})
+        raise HTTPException(status_code=400, detail="Zahlungsanforderung ist abgelaufen")
+    
+    # Check not paying yourself
+    if payer_id == request["requester_id"]:
+        raise HTTPException(status_code=400, detail="Sie können nicht Ihre eigene Anforderung bezahlen")
+    
+    # Check payer balance
+    payer_data = await db.users.find_one({"id": payer_id}, {"_id": 0, "bidblitz_balance": 1, "name": 1})
+    payer_balance = payer_data.get("bidblitz_balance", 0) if payer_data else 0
+    
+    if payer_balance < request["amount"]:
+        raise HTTPException(status_code=400, detail="Nicht genug Guthaben")
+    
+    # Process payment
+    # Deduct from payer
+    await db.users.update_one(
+        {"id": payer_id},
+        {"$inc": {"bidblitz_balance": -request["amount"]}}
+    )
+    
+    # Add to requester
+    await db.users.update_one(
+        {"id": request["requester_id"]},
+        {"$inc": {"bidblitz_balance": request["amount"]}}
+    )
+    
+    # Update request status
+    await db.payment_requests.update_one(
+        {"id": request_id},
+        {
+            "$set": {
+                "status": "paid",
+                "paid_by": payer_id,
+                "paid_by_name": payer_data.get("name", ""),
+                "paid_at": datetime.now(timezone.utc).isoformat()
+            }
+        }
+    )
+    
+    # Create transfer record
+    transfer_doc = {
+        "id": str(uuid.uuid4()),
+        "sender_id": payer_id,
+        "sender_name": payer_data.get("name", ""),
+        "recipient_id": request["requester_id"],
+        "recipient_name": request["requester_name"],
+        "amount": request["amount"],
+        "message": f"Zahlung für: {request.get('description', 'Zahlungsanforderung')}",
+        "type": "payment_request",
+        "request_id": request_id,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.wallet_transfers.insert_one(transfer_doc)
+    
+    logger.info(f"💰 Payment request {request_id} paid: {payer_id} -> {request['requester_id']}: €{request['amount']}")
+    
+    return {
+        "success": True,
+        "amount": request["amount"],
+        "paid_to": request["requester_name"],
+        "new_balance": payer_balance - request["amount"],
+        "message": f"€{request['amount']:.2f} an {request['requester_name']} bezahlt"
+    }
+
+@router.get("/my-payment-requests")
+async def get_my_payment_requests(user: dict = Depends(get_current_user), limit: int = 20):
+    """Get user's payment requests (sent requests)"""
+    user_id = user["id"]
+    
+    requests = await db.payment_requests.find(
+        {"requester_id": user_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(limit)
+    
+    # Update expired statuses
+    now = datetime.now(timezone.utc)
+    for req in requests:
+        if req["status"] == "pending":
+            expires_at = datetime.fromisoformat(req["expires_at"].replace("Z", "+00:00"))
+            if now > expires_at:
+                req["status"] = "expired"
+    
+    return {"requests": requests}
+
 # ==================== CASHBACK SYSTEM ====================
 
 @router.get("/cashback-balance")
