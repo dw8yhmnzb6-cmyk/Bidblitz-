@@ -2724,7 +2724,7 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate }) {
             </div>
           </div>
           <Button 
-            onClick={() => setPaymentSuccess(null)}
+            onClick={resetFlow}
             className="mt-4 bg-green-500 hover:bg-green-600"
           >
             Weitere Zahlung
@@ -2732,22 +2732,104 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate }) {
         </div>
       )}
 
-      {/* Scanner */}
-      {!paymentSuccess && !customerData && (
+      {/* Step 1: Enter Amount FIRST */}
+      {!paymentSuccess && step === 'amount' && (
         <div className="bg-white rounded-xl p-6 shadow-sm">
           <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <QrCode className="w-5 h-5 text-amber-500" />
-            Kunden-QR scannen
+            <Euro className="w-5 h-5 text-amber-500" />
+            1. Zahlungsbetrag eingeben
           </h3>
           
-          <div id="bidblitz-pay-scanner" className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black" />
-          
-          {!scanning ? (
-            <Button onClick={startScanner} className="w-full mt-4 bg-amber-500 hover:bg-amber-600">
-              <Camera className="w-4 h-4 mr-2" />
-              Scanner starten
+          <div className="space-y-4">
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xl">€</span>
+              <Input
+                type="number"
+                value={paymentAmount}
+                onChange={(e) => setPaymentAmount(e.target.value)}
+                placeholder="0.00"
+                className="pl-10 text-3xl h-16 font-bold text-center"
+                step="0.01"
+                min="0.01"
+                autoFocus
+              />
+            </div>
+            
+            {/* Quick Amounts */}
+            <div className="grid grid-cols-4 gap-2">
+              {[5, 10, 20, 50].map((amt) => (
+                <button
+                  key={amt}
+                  onClick={() => setPaymentAmount(String(amt))}
+                  className={`py-3 rounded-lg border text-lg font-medium transition-all ${
+                    parseFloat(paymentAmount) === amt
+                      ? 'border-amber-500 bg-amber-50 text-amber-700'
+                      : 'border-gray-200 hover:border-amber-300'
+                  }`}
+                >
+                  €{amt}
+                </button>
+              ))}
+            </div>
+            
+            <Button 
+              onClick={proceedToScan}
+              className="w-full h-14 bg-amber-500 hover:bg-amber-600 text-lg"
+              disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
+            >
+              <QrCode className="w-5 h-5 mr-2" />
+              Weiter zum Scannen
             </Button>
-          ) : (
+          </div>
+        </div>
+      )}
+
+      {/* Step 2: Scan QR (Camera auto-starts) */}
+      {!paymentSuccess && step === 'scan' && (
+        <div className="bg-white rounded-xl p-6 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-gray-800 flex items-center gap-2">
+              <Camera className="w-5 h-5 text-amber-500" />
+              2. Kunden-QR scannen
+            </h3>
+            <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-medium">
+              €{parseFloat(paymentAmount).toFixed(2)}
+            </div>
+          </div>
+          
+          <div id="bidblitz-pay-scanner" className="w-full max-w-sm mx-auto rounded-lg overflow-hidden bg-black min-h-[250px]" />
+          
+          {scanning && (
+            <p className="text-center text-sm text-gray-500 mt-2 animate-pulse">
+              Scannen aktiv - bitte Kunden-QR zeigen...
+            </p>
+          )}
+          
+          <div className="flex gap-2 mt-4">
+            <Button onClick={() => setStep('amount')} variant="outline" className="flex-1">
+              Zurück
+            </Button>
+            <Button onClick={stopScanner} variant="outline" className="flex-1">
+              <X className="w-4 h-4 mr-2" />
+              Scanner beenden
+            </Button>
+          </div>
+          
+          {/* Manual Input */}
+          <div className="mt-6 pt-6 border-t">
+            <p className="text-sm text-gray-500 mb-3">Oder QR-Code manuell eingeben:</p>
+            <form onSubmit={handleManualInput} className="flex gap-2">
+              <Input
+                value={manualQR}
+                onChange={(e) => setManualQR(e.target.value)}
+                placeholder="BIDBLITZ-PAY:xxxxx"
+                className="flex-1"
+              />
+              <Button type="submit">Prüfen</Button>
+            </form>
+          </div>
+        </div>
+      )}
             <Button onClick={stopScanner} variant="outline" className="w-full mt-4">
               <X className="w-4 h-4 mr-2" />
               Scanner beenden
