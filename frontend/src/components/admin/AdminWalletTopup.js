@@ -109,7 +109,8 @@ export default function AdminWalletTopup({ token, t }) {
         `${API}/api/admin/wallet-topup/topup`,
         {
           user_id: selectedUser.id,
-          amount: amount
+          amount: amount,
+          merchant_id: selectedMerchant?.id || null
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -124,6 +125,9 @@ export default function AdminWalletTopup({ token, t }) {
       if (data.first_topup_bonus > 0) {
         message += ` (+€${data.first_topup_bonus.toFixed(2)} Erstaufladungsbonus)`;
       }
+      if (data.merchant_commission > 0) {
+        message += ` | Händler: +€${data.merchant_commission.toFixed(2)}`;
+      }
       toast.success(message);
       
       // Update UI
@@ -132,6 +136,7 @@ export default function AdminWalletTopup({ token, t }) {
         bidblitz_balance: data.new_balance
       });
       setTopUpAmount('');
+      setSelectedMerchant(null);
       fetchStats();
       
     } catch (error) {
@@ -141,6 +146,13 @@ export default function AdminWalletTopup({ token, t }) {
       setProcessing(false);
     }
   };
+
+  // Filter merchants by search query
+  const filteredMerchants = merchants.filter(m => 
+    m.company_name?.toLowerCase().includes(merchantSearchQuery.toLowerCase()) ||
+    m.business_name?.toLowerCase().includes(merchantSearchQuery.toLowerCase()) ||
+    m.email?.toLowerCase().includes(merchantSearchQuery.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
