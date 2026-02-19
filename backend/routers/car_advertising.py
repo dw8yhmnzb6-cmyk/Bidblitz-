@@ -46,7 +46,6 @@ class ApplicationResponse(BaseModel):
 @router.post("/apply")
 async def apply_for_car_advertising(application: CarAdvertisingApplication):
     """Submit a car advertising application"""
-    db = get_db()
     
     # Check if this email already has an application
     existing = await db.car_advertising.find_one({
