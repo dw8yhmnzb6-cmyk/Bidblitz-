@@ -348,6 +348,7 @@ function AppContent() {
           <Route path="/influencer-login" element={<InfluencerDashboard />} />
           <Route path="/influencer-dashboard" element={<InfluencerDashboard />} />
           <Route path="/influencer-werden" element={<InfluencerBecome />} />
+          <Route path="/auto-werbung" element={<CarAdvertising />} />
           {/* Manager Pages */}
           <Route path="/manager" element={<ManagerDashboard />} />
           <Route path="/manager-login" element={<ManagerDashboard />} />
