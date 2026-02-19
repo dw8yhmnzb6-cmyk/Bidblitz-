@@ -120,7 +120,7 @@ const BidBlitzPay = () => {
 
   // Fetch user data for security settings
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchLocalUser = async () => {
       if (!token) return;
       try {
         const response = await fetch(`${API}/api/user/profile`, {
@@ -128,13 +128,13 @@ const BidBlitzPay = () => {
         });
         if (response.ok) {
           const data = await response.json();
-          setUser(data);
+          setLocalUser(data);
         }
       } catch (error) {
         console.error('Error fetching user:', error);
       }
     };
-    fetchUser();
+    fetchLocalUser();
   }, [token]);
 
   const fetchWallet = useCallback(async () => {
