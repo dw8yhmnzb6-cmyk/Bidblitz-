@@ -1365,6 +1365,14 @@ export default function PartnerPortal() {
             />
           )}
 
+          {/* Deposit Commissions View - Earnings from customer deposits */}
+          {view === 'commissions' && (
+            <PartnerDepositCommissions 
+              token={token}
+              language={language}
+            />
+          )}
+
           {/* Transfers View - Partner-to-Partner Money Transfers */}
           {view === 'transfers' && (
             <PartnerTransfer 
