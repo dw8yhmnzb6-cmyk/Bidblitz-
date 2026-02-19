@@ -124,7 +124,13 @@ export const translations = {
       priceNote: "* UVP = Vergleichspreis",
       pleaseLogin: "Bitte anmelden um zu bieten",
       bidPlaced: "Gebot platziert!",
-      error: "Fehler"
+      error: "Fehler",
+      depositBonus: "Bonus auf Einzahlungen",
+      depositBonusDesc: "Bis zu 20% Bonus + 5% Zinsen p.a.",
+      getBonusNow: "Jetzt Bonus sichern →",
+      merchantVouchers: "Händler-Gutscheine",
+      merchantVouchersDesc: "Ersteigere Gutscheine bei lokalen Partnern!",
+      freeBidsGratis: "Gratis-Gebote"
     },
     auctionCard: {
       liveNow: "LIVE JETZT", comingSoon: "DEMNÄCHST", ended: "BEENDET",
