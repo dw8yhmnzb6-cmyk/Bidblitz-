@@ -470,11 +470,11 @@ const BidBlitzPay = () => {
         fetchWallet();
         fetchTransferHistory();
       } else {
-        toast.error(data.detail || 'Fehler beim Senden');
+        toast.error(data.detail || t('sendError'));
       }
     } catch (error) {
       console.error('Send money error:', error);
-      toast.error('Fehler beim Senden');
+      toast.error(t('sendError'));
     } finally {
       setSendingMoney(false);
     }
