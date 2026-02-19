@@ -21,6 +21,7 @@ export const walletTranslations = {
     mainAccount: 'Hauptkonto',
     availableOnMain: 'Verfügbar auf Hauptkonto',
     topUp: 'Aufladen',
+    bonusOffers: 'Bonus',
     directTopUp: 'Direkt aufladen',
     directTopUpDesc: 'Guthaben direkt mit Karte aufladen',
     payWithCard: 'Mit Karte bezahlen',
