@@ -786,11 +786,11 @@ const BidBlitzPay = () => {
         setShowQR(true);
         setView('qr');
       } else {
-        toast.error('Error generating QR code');
+        toast.error(t('errorLoading'));
       }
     } catch (error) {
       console.error('Error generating QR:', error);
-      toast.error('Error generating QR code');
+      toast.error(t('errorLoading'));
     }
   };
 
