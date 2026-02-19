@@ -1163,6 +1163,36 @@ const BidBlitzPay = () => {
         {/* Send Money View */}
         {view === 'send' && (
           <div className="space-y-6">
+            {/* Schnellüberweisung - Letzter Empfänger */}
+            {lastRecipient && (
+              <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl shadow-lg p-4 border border-amber-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center">
+                      <RefreshCw className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-amber-600 font-medium">
+                        {language === 'de' ? 'Letzte Überweisung' : 'Last Transfer'}
+                      </p>
+                      <p className="font-bold text-gray-800">{lastRecipient.email}</p>
+                      <p className="text-xs text-gray-500">
+                        {language === 'de' ? 'Zuletzt:' : 'Last:'} €{lastRecipient.lastAmount?.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={useLastRecipient}
+                    className="bg-amber-500 hover:bg-amber-600 text-white text-sm px-4"
+                    data-testid="use-last-recipient-btn"
+                  >
+                    {language === 'de' ? 'Übernehmen' : 'Use'}
+                  </Button>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <ArrowUpRight className="w-5 h-5 text-amber-500" />
