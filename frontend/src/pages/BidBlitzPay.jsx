@@ -928,6 +928,15 @@ const BidBlitzPay = () => {
             {t('topUp')}
           </button>
           <button
+            onClick={() => setView('bonus')}
+            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              view === 'bonus' ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Gift className="w-4 h-4 inline mr-1" />
+            {t('bonusOffers') || 'Bonus'}
+          </button>
+          <button
             onClick={() => { setView('send'); fetchTransferHistory(); }}
             className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
               view === 'send' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
