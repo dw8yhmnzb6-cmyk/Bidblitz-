@@ -35,7 +35,8 @@ const translations = {
     gotIt: 'Verstanden!',
     clickToTry: 'Klicke zum Ausprobieren',
     completed: 'Tour abgeschlossen!',
-    reward: 'Du hast 10 Gratis-Gebote erhalten!'
+    reward: 'Du hast 10 Gratis-Gebote erhalten!',
+    dontShowAgain: 'Nicht mehr anzeigen'
   },
   en: {
     welcome: 'Welcome to BidBlitz!',
@@ -59,7 +60,8 @@ const translations = {
     gotIt: 'Got it!',
     clickToTry: 'Click to try',
     completed: 'Tour completed!',
-    reward: 'You received 10 free bids!'
+    reward: 'You received 10 free bids!',
+    dontShowAgain: 'Don\'t show again'
   },
   tr: {
     welcome: 'BidBlitz\'e Hoş Geldiniz!',
