@@ -259,14 +259,25 @@ async def make_deposit(
     
     await db.customer_deposits.insert_one(deposit_doc)
     
-    # Credit bonus to customer immediately
-    total_credit = data.amount + bonus
+    # CORRECT LOGIC:
+    # 1. SUBTRACT deposit amount from wallet (money is now locked)
+    # 2. Credit bonus as FREE BIDS (not balance)
+    # 3. When deposit matures, ADD principal + interest back to wallet
     
-    # Update user's main balance
+    # Check if user has enough balance
+    user_data = await db.users.find_one({"id": user_id}, {"_id": 0, "balance": 1, "bidblitz_balance": 1})
+    current_balance = user_data.get("bidblitz_balance", user_data.get("balance", 0)) if user_data else 0
+    
+    if current_balance < data.amount:
+        # Remove the deposit record we just created
+        await db.customer_deposits.delete_one({"id": deposit_id})
+        raise HTTPException(status_code=400, detail=f"Nicht genug Guthaben. Verfügbar: €{current_balance:.2f}")
+    
+    # SUBTRACT deposit amount from user's balance (money is locked)
     await db.users.update_one(
         {"id": user_id},
         {
-            "$inc": {"balance": total_credit, "bidblitz_balance": total_credit},
+            "$inc": {"balance": -data.amount, "bidblitz_balance": -data.amount},
             "$push": {
                 "deposit_history": {
                     "deposit_id": deposit_id,
@@ -278,19 +289,20 @@ async def make_deposit(
         }
     )
     
-    # Also update BidBlitz Pay wallet (for UI display)
-    existing_wallet = await db.bidblitz_wallets.find_one({"user_id": user_id})
-    if existing_wallet:
-        await db.bidblitz_wallets.update_one(
-            {"user_id": user_id},
-            {"$inc": {"universal_balance": total_credit}}
+    # Also SUBTRACT from BidBlitz Pay wallet
+    await db.bidblitz_wallets.update_one(
+        {"user_id": user_id},
+        {"$inc": {"universal_balance": -data.amount}},
+        upsert=True
+    )
+    
+    # Credit bonus as FREE BIDS (not balance!) - this is the reward for depositing
+    bonus_bids = int(bonus)  # Convert bonus € to bid count
+    if bonus_bids > 0:
+        await db.users.update_one(
+            {"id": user_id},
+            {"$inc": {"bids_balance": bonus_bids}}
         )
-    else:
-        await db.bidblitz_wallets.insert_one({
-            "user_id": user_id,
-            "universal_balance": total_credit,
-            "created_at": datetime.now(timezone.utc).isoformat()
-        })
     
     # Credit partner commission if applicable
     if data.partner_id and partner_commission > 0:
