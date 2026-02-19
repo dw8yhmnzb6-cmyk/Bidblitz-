@@ -1543,7 +1543,7 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate, t }
   const proceedToScan = () => {
     const amount = parseFloat(paymentAmount);
     if (!amount || amount <= 0) {
-      toast.error("Bitte gültigen Betrag eingeben");
+      toast.error(t('enterValidAmount') || "Please enter a valid amount");
       return;
     }
     setStep('scan');
@@ -1552,12 +1552,12 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate, t }
   const processPayment = async () => {
     const amount = parseFloat(paymentAmount);
     if (!amount || amount <= 0) {
-      toast.error("Bitte gültigen Betrag eingeben");
+      toast.error(t('enterValidAmount') || "Please enter a valid amount");
       return;
     }
     
     if (amount > (customerData?.available_balance?.total || 0)) {
-      toast.error("Nicht genug Guthaben beim Kunden");
+      toast.error(t('customerInsufficientBalance') || "Customer has insufficient balance");
       return;
     }
     
@@ -1572,10 +1572,10 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate, t }
       setCustomerData(null);
       setPaymentAmount('');
       setStep('amount');
-      toast.success(`Zahlung von €${amount.toFixed(2)} erfolgreich!`);
+      toast.success(`${t('paymentSuccess') || 'Payment successful'}: €${amount.toFixed(2)}`);
     } catch (error) {
       console.error("Payment error:", error);
-      toast.error(error.response?.data?.detail || "Zahlung fehlgeschlagen");
+      toast.error(error.response?.data?.detail || t('paymentFailed') || "Payment failed");
     } finally {
       setProcessing(false);
     }
