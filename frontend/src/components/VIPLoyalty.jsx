@@ -102,9 +102,9 @@ const VIPLoyalty = ({ token, language = 'de' }) => {
     
     try {
       const [statusRes, tiersRes, leaderboardRes] = await Promise.all([
-        fetch(`${API}/api/loyalty/status`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${API}/api/loyalty/tiers`),
-        fetch(`${API}/api/loyalty/leaderboard?period=month`, { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API}/api/vip-loyalty/status`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API}/api/vip-loyalty/tiers`),
+        fetch(`${API}/api/vip-loyalty/leaderboard?period=month`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       if (statusRes.ok) {
