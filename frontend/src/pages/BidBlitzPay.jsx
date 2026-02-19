@@ -282,7 +282,7 @@ const BidBlitzPay = () => {
       
       if (response.ok) {
         const data = await response.json();
-        toast.success(`€${amount.toFixed(2)} auf Hauptkonto übertragen!`);
+        toast.success(`€${amount.toFixed(2)} ${t('transferToMain')}!`);
         setMainBalance(data.new_main_balance);
         setTopUpAmount('');
         setView('wallet');
