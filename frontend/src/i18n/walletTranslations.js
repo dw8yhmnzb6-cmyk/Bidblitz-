@@ -354,8 +354,8 @@ export const walletTranslations = {
     or: 'or',
     cancel: 'Cancel',
     descriptionPlaceholder: 'e.g. Splitting dinner',
-    recipientPlaceholder: 'Customer ID or Email',
-    recipientHint: 'Enter recipient customer ID or email',
+    recipientPlaceholder: 'BID-XXXXXX or P-XXXXX or Email',
+    recipientHint: 'Customer ID (BID-XXXXXX), Partner ID (P-XXXXX) or email',
     messagePlaceholder: 'Message to recipient...',
     
     errorLoading: 'Error loading',
