@@ -790,7 +790,35 @@ export const translations = {
     completed: 'Përfunduar',
     processing: 'Duke u procesuar',
     pendingStatus: 'Në pritje',
-    iban: 'IBAN'
+    iban: 'IBAN',
+    // BidBlitz Pay translations
+    customerPayments: 'Pranoni pagesat e klientëve',
+    paymentSuccessful: 'Pagesa e suksesshme!',
+    transactionId: 'ID e transaksionit',
+    youReceive: 'Ju merrni',
+    commissionLabel: 'Komisioni',
+    anotherPayment: 'Pagesë tjetër',
+    enterAmount: '1. Vendosni shumën',
+    proceedToScan: 'Vazhdo me skanimin',
+    scanCustomerCode: '2. Skanoni kodin e klientit',
+    orEnterManually: 'ose vendosni manualisht',
+    customerCode: 'Kodi i klientit',
+    validate: 'Kontrollo',
+    confirmPayment: '3. Konfirmoni pagesën',
+    customer: 'Klienti',
+    customerBalance: 'Bilanci i klientit',
+    chargeCustomer: 'Ngarko klientin',
+    howItWorks: 'Si funksionon BidBlitz Pay:',
+    step1Pay: '1. Klienti ngarkon kredit në aplikacionin BidBlitz',
+    step2Pay: '2. Klienti tregon kodin QR në caktuar tuaj',
+    step3Pay: '3. Ju skanoni kodin dhe kërkoni shumën',
+    step4Pay: '4. Para transferohen menjëherë në llogarinë tuaj',
+    myVouchers: 'Kuponët e mi',
+    noVouchers: 'Nuk ka kuponë ende',
+    createVoucher: 'Krijo kupon',
+    transfers: 'Transfertat',
+    marketing: 'Marketing',
+    ratings: 'Vlerësimet'
   }
 };
 
