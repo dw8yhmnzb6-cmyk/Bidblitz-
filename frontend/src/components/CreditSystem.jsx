@@ -770,8 +770,8 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
               {scoreData.tips.map((tip, idx) => (
                 <div key={idx} className="p-4 flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{tip.title}</p>
-                    <p className="text-sm text-gray-500">{tip.description}</p>
+                    <p className="font-medium">{t(tip.key) || tip.title_de || tip.title}</p>
+                    <p className="text-sm text-gray-500">{t(tip.key + 'Desc') || tip.description_de || tip.description}</p>
                   </div>
                   <span className="text-green-600 font-bold">+{tip.points}</span>
                 </div>
@@ -793,7 +793,7 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
               {scoreData.history.slice().reverse().map((entry, idx) => (
                 <div key={idx} className="p-3 flex items-center justify-between text-sm">
                   <div>
-                    <p className="font-medium">{entry.description}</p>
+                    <p className="font-medium">{t(entry.event_key) || entry.description_de || entry.description}</p>
                     <p className="text-xs text-gray-400">{formatDate(entry.date)}</p>
                   </div>
                   <span className={`font-bold ${entry.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
