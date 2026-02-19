@@ -31,6 +31,15 @@ export const walletTranslations = {
     successTransfer: 'Erfolgreich übertragen',
     processing: 'Wird verarbeitet...',
     
+    // Transfer Balance (NEW)
+    transferBalance: 'Guthaben übertragen',
+    toBidBlitzPay: 'Auf BidBlitz Pay',
+    toMainAccount: 'Auf Hauptkonto',
+    fromHere: 'Von hier',
+    bidblitzPay: 'BidBlitz Pay',
+    noBalanceMain: 'Kein Guthaben auf Hauptkonto verfügbar',
+    noBalanceWallet: 'Kein BidBlitz Pay Guthaben verfügbar',
+    
     // Send Money
     sendMoney: 'Geld senden',
     recipientId: 'Empfänger (Kundennummer oder E-Mail)',
