@@ -748,14 +748,14 @@ const PaymentHistory = ({ token, language = 'de' }) => {
                       tx.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
                       'bg-gray-100 text-gray-600'
                     }`}>
-                      {tx.status || 'completed'}
+                      {t(tx.status || 'completed')}
                     </span>
                   </div>
                 </div>
                 
                 {tx.reference && (
                   <p className="mt-2 text-xs text-gray-400 ml-13">
-                    Referenz: {tx.reference}
+                    {t('reference')}: {tx.reference}
                   </p>
                 )}
               </div>
