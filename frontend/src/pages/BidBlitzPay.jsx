@@ -353,7 +353,7 @@ const BidBlitzPay = () => {
     const pollInterval = 2000; // 2 seconds
 
     if (attempts >= maxAttempts) {
-      toast.error('Zahlungsstatus konnte nicht abgerufen werden. Bitte überprüfen Sie Ihr Guthaben.');
+      toast.error(t('paymentStatusError'));
       return;
     }
 
@@ -366,7 +366,7 @@ const BidBlitzPay = () => {
       const data = await response.json();
       
       if (data.payment_status === 'paid' && data.wallet_credited) {
-        toast.success(data.message || 'Zahlung erfolgreich! Guthaben wurde gutgeschrieben.');
+        toast.success(`${t('paymentSuccessful')}! ${t('paymentCredited')}`);
         fetchWallet();
         fetchTransactions();
         // Refresh user balance in navbar
@@ -377,7 +377,7 @@ const BidBlitzPay = () => {
         window.history.replaceState({}, document.title, window.location.pathname);
         return;
       } else if (data.status === 'expired') {
-        toast.error('Zahlungssitzung abgelaufen. Bitte erneut versuchen.');
+        toast.error(t('sessionExpired'));
         window.history.replaceState({}, document.title, window.location.pathname);
         return;
       }
