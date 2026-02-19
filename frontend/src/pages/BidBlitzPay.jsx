@@ -1212,7 +1212,7 @@ const BidBlitzPay = () => {
                     data-testid="recipient-email-input"
                   />
                   <p className="text-xs text-gray-400 mt-1">
-                    {language === 'de' ? 'Geben Sie die Kundennummer oder E-Mail des Empfängers ein' : 'Enter recipient customer ID or email'}
+                    {t('recipientHint')}
                   </p>
                 </div>
                 
@@ -1244,7 +1244,7 @@ const BidBlitzPay = () => {
                     type="text"
                     value={sendMessage}
                     onChange={(e) => setSendMessage(e.target.value)}
-                    placeholder={language === 'de' ? 'Nachricht an Empfänger...' : 'Message to recipient...'}
+                    placeholder={t('messagePlaceholder')}
                     className="w-full"
                     data-testid="send-message-input"
                   />
