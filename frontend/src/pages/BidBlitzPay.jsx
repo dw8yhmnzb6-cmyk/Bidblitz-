@@ -537,7 +537,7 @@ const BidBlitzPay = () => {
             await stopScanner();
             await fetchRequestDetails(requestId);
           } else {
-            toast.error(language === 'de' ? 'Ungültiger QR-Code' : 'Invalid QR code');
+            toast.error(t('invalidQRCode'));
           }
         },
         () => {}
@@ -547,9 +547,9 @@ const BidBlitzPay = () => {
     } catch (err) {
       console.error('Scanner error:', err);
       if (err.name === 'NotAllowedError') {
-        toast.error(language === 'de' ? 'Kamerazugriff verweigert' : 'Camera access denied');
+        toast.error(t('cameraAccessDenied'));
       } else {
-        toast.error(language === 'de' ? 'Kamera konnte nicht gestartet werden' : 'Could not start camera');
+        toast.error(t('cameraStartError'));
       }
     }
   };
@@ -575,7 +575,7 @@ const BidBlitzPay = () => {
       if (response.ok) {
         const data = await response.json();
         if (data.status !== 'pending') {
-          toast.error(language === 'de' ? 'Diese Anforderung ist nicht mehr gültig' : 'This request is no longer valid');
+          toast.error(t('requestNoLongerValid'));
           return;
         }
         setScannedRequest(data);
