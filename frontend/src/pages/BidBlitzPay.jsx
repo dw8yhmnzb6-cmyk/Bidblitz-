@@ -707,7 +707,7 @@ const BidBlitzPay = () => {
       }
     } catch (error) {
       console.error('Fetch request error:', error);
-      toast.error('Fehler beim Laden der Anforderung');
+      toast.error(t('errorLoadingRequest'));
     }
   };
 
