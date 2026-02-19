@@ -228,10 +228,12 @@ class CarAdvertisingApplication(BaseModel):
     car_year: str
     car_color: str
     license_plate: str
+    country: Optional[str] = None
     city: str
     km_per_month: str
     parking_location: Optional[str] = None
     additional_info: Optional[str] = None
+    photos: Optional[list] = None
     user_id: Optional[str] = None
 
 
