@@ -1688,7 +1688,7 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate }) {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-gray-800 flex items-center gap-2">
               <Camera className="w-5 h-5 text-amber-500" />
-              2. Kunden-QR scannen
+              {t('scanCustomerCode')}
             </h3>
             <div className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-sm font-medium">
               €{parseFloat(paymentAmount).toFixed(2)}
@@ -1699,23 +1699,23 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate }) {
           
           {scanning && (
             <p className="text-center text-sm text-gray-500 mt-2 animate-pulse">
-              Scannen aktiv - bitte Kunden-QR zeigen...
+              {t('scanning') || 'Scanning...'}
             </p>
           )}
           
           <div className="flex gap-2 mt-4">
             <Button onClick={() => setStep('amount')} variant="outline" className="flex-1">
-              Zurück
+              {t('back') || 'Back'}
             </Button>
             <Button onClick={stopScanner} variant="outline" className="flex-1">
               <X className="w-4 h-4 mr-2" />
-              Scanner beenden
+              {t('stopScanner') || 'Stop scanner'}
             </Button>
           </div>
           
           {/* Manual Input */}
           <div className="mt-6 pt-6 border-t">
-            <p className="text-sm text-gray-500 mb-3">Oder QR-Code manuell eingeben:</p>
+            <p className="text-sm text-gray-500 mb-3">{t('orEnterManually')}:</p>
             <form onSubmit={handleManualInput} className="flex gap-2">
               <Input
                 value={manualQR}
@@ -1723,7 +1723,7 @@ function BidBlitzPayPartner({ token, partnerId, partnerName, commissionRate }) {
                 placeholder="BIDBLITZ-PAY:xxxxx"
                 className="flex-1"
               />
-              <Button type="submit">Prüfen</Button>
+              <Button type="submit">{t('validate')}</Button>
             </form>
           </div>
         </div>
