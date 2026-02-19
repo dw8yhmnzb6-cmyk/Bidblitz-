@@ -219,6 +219,9 @@ from routers.deposit_offers import router as deposit_offers_router
 # NEW: Referral & Notifications System
 from routers.referral_notifications import router as referral_router
 
+# NEW: Digital Payment API for External Integrations (POS Systems like Edeka)
+from routers.digital_api import router as digital_api_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
 
