@@ -469,6 +469,85 @@ const BidBlitzPay = () => {
     }
   }, [token]);
 
+  // Fetch saved recipients
+  const fetchSavedRecipients = useCallback(async () => {
+    if (!token) return;
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/saved-recipients`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSavedRecipients(data.recipients || []);
+      }
+    } catch (error) {
+      console.error('Saved recipients error:', error);
+    }
+  }, [token]);
+
+  // Save a new recipient with nickname
+  const saveRecipientWithNickname = async () => {
+    if (!lastSuccessfulRecipient || !saveNickname.trim()) {
+      toast.error(language === 'de' ? 'Bitte Namen eingeben' : 'Please enter a name');
+      return;
+    }
+    
+    setSavingRecipient(true);
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/saved-recipients`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          recipient_identifier: lastSuccessfulRecipient.email,
+          nickname: saveNickname.trim()
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast.success(data.message || (language === 'de' ? 'Empfänger gespeichert!' : 'Recipient saved!'));
+        setShowSaveDialog(false);
+        setSaveNickname('');
+        setLastSuccessfulRecipient(null);
+        fetchSavedRecipients();
+      } else {
+        toast.error(data.detail || 'Error');
+      }
+    } catch (error) {
+      console.error('Save recipient error:', error);
+      toast.error(language === 'de' ? 'Fehler beim Speichern' : 'Error saving');
+    } finally {
+      setSavingRecipient(false);
+    }
+  };
+
+  // Delete a saved recipient
+  const deleteSavedRecipient = async (recipientId) => {
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/saved-recipients/${recipientId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        toast.success(language === 'de' ? 'Empfänger gelöscht' : 'Recipient deleted');
+        fetchSavedRecipients();
+      }
+    } catch (error) {
+      console.error('Delete recipient error:', error);
+    }
+  };
+
+  // Select a saved recipient
+  const selectSavedRecipient = (recipient) => {
+    setRecipientEmail(recipient.recipient_customer_number || recipient.recipient_email);
+    toast.success(`${recipient.nickname} ${language === 'de' ? 'ausgewählt' : 'selected'}`);
+  };
+
   // Request Money functions
   const createPaymentRequest = async (e) => {
     e.preventDefault();
