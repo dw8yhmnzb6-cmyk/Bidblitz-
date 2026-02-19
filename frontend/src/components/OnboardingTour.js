@@ -85,7 +85,8 @@ const translations = {
     gotIt: 'Anladım!',
     clickToTry: 'Denemek için tıklayın',
     completed: 'Tur tamamlandı!',
-    reward: '10 ücretsiz teklif aldınız!'
+    reward: '10 ücretsiz teklif aldınız!',
+    dontShowAgain: 'Bir daha gösterme'
   },
   sq: {
     welcome: 'Mirë se vini në BidBlitz!',
