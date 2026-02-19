@@ -1270,6 +1270,7 @@ export default function PartnerPortal() {
               ...(userRole === 'admin' ? [
                 { id: 'vouchers', label: t('vouchers'), icon: Ticket },
                 { id: 'budget', label: 'Guthaben', icon: Wallet },
+                { id: 'commissions', label: language === 'de' ? 'Provisionen' : 'Commissions', icon: Gift },
                 { id: 'transfers', label: language === 'de' ? 'Überweisungen' : 'Transfers', icon: Send },
                 { id: 'statistics', label: t('statistics'), icon: TrendingUp },
                 { id: 'payouts', label: t('payouts'), icon: Euro },
