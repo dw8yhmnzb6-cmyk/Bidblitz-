@@ -668,7 +668,7 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
           <div className="p-4">
             <h3 className="font-semibold flex items-center gap-2">
               <Award className="w-5 h-5 text-orange-500" />
-              Ihre Vorteile
+              {t('yourBenefits')}
             </h3>
           </div>
           <div className="p-4 flex justify-between">
