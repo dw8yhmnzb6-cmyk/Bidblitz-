@@ -5,6 +5,48 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 19, 2026)
 
+### ✅ Session Update - February 19, 2026 (Session 55) - MULTIPLE FIXES ✅
+
+#### 1. Homepage-Banner Fix (P1) ✅
+- **Problem:** Deposit-Bonus-Banner und FlashBonusPromo wurden auf der Homepage nicht angezeigt
+- **Root Cause:** Die Komponenten waren in `Home.js` implementiert, aber die Startseite (`/`) rendert `Auctions.js`
+- **Lösung:** Banner-Komponenten in `/app/frontend/src/pages/Auctions.js` eingefügt
+- **Ergebnis:** Beide Banner sind jetzt prominent auf der Startseite sichtbar
+
+#### 2. E-Mail-Benachrichtigung für Zinszahlung (P1) ✅
+- **Änderungen:**
+  - Neue Funktion `send_interest_payout_notification()` in `/app/backend/utils/email.py`
+  - CRON-Endpoint `/api/deposit-offers/calculate-interest` erweitert mit `send_emails` Parameter
+  - Konsolidiert Zinszahlungen pro Kunde und sendet informative E-Mails
+- **Testing:** Backend-API getestet - funktioniert korrekt
+
+#### 3. Sprachpersistenz Fix (P2) ✅
+- **Problem:** Verschiedene Seiten verwendeten unterschiedliche localStorage-Keys (`language`, `partner_language`, `bidblitz_language`)
+- **Lösung:** Alle Komponenten verwenden jetzt einheitlich den Key `language`
+- **Geänderte Dateien:**
+  - `/app/frontend/src/pages/PartnerPortal.js`
+  - `/app/frontend/src/pages/BidBlitzPay.jsx`
+
+#### 4. i18n-Audit - Teilweise ✅
+- **Änderungen:**
+  - Fehlende Übersetzungs-Keys zu `walletTranslations.js` hinzugefügt (de, en)
+  - Hardcodierte deutsche Strings in `BidBlitzPay.jsx` durch `t()` ersetzt
+  - Neue Keys: `paymentStatusError`, `paymentCredited`, `sessionExpired`, `freeBids`, `save`, `errorSaving`, `errorLoadingRequest`
+
+#### 5. Footer-Design-Verbesserung ✅
+- **Problem:** Footer sah unprofessionell aus mit Emoji-Icons (🚗, 🏪)
+- **Lösung:** Emojis durch Lucide-Icons ersetzt (Car, Store, Users, etc.)
+- **Geänderte Datei:** `/app/frontend/src/components/Footer.js`
+
+#### 6. Guthaben-Update-Bug Fix ✅
+- **Problem:** Nach Einzahlung wurde das Guthaben nicht im UI aktualisiert
+- **Lösung:** `refreshUser()` wird jetzt nach allen Balance-ändernden Operationen aufgerufen
+- **Geänderte Dateien:**
+  - `/app/frontend/src/pages/DepositOffers.js`
+  - `/app/frontend/src/pages/BidBlitzPay.jsx`
+
+---
+
 ### ✅ Session Update - February 19, 2026 (Session 54) - BUG FIX ✅
 
 #### P0 Bug Fix: Daily Login Reward UI Update ✅
