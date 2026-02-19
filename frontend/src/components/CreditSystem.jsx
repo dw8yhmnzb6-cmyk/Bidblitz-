@@ -991,7 +991,7 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    {m} Mon
+                    {m} {t('months')}
                   </button>
                 ))}
               </div>
