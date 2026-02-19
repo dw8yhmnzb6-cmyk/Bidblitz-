@@ -5,7 +5,32 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 19, 2026)
 
-### ✅ Session Update - February 19, 2026 (Session 50) - ÜBERSETZUNGEN KOMPLETT ✅
+### ✅ Session Update - February 19, 2026 (Session 50) - HÄNDLER-ÜBERWEISUNGEN ✅
+
+#### Neues Feature: Partner-zu-Partner Überweisungen ✅
+
+**Backend implementiert:**
+- `/api/partner-transfer/balance` - Guthaben abrufen
+- `/api/partner-transfer/send` - Geld an andere Partner senden
+- `/api/partner-transfer/history` - Überweisungsverlauf
+- `/api/partner-transfer/search-partner` - Partner suchen
+- `/api/partner-transfer/last-recipient` - Schnellüberweisung
+
+**Frontend implementiert:**
+- Neue Komponente `PartnerTransfer.jsx` mit:
+  - Guthaben-Anzeige mit Partnernummer
+  - "Geld senden" Formular mit Partnersuche
+  - "Letzte Überweisung" Schnellauswahl
+  - Überweisungsverlauf mit Richtung (gesendet/empfangen)
+- Im Partner-Portal als neuer Tab "Überweisungen" integriert
+
+**Übersetzungen:** de, en, sq, tr, ar
+
+**Test-Status:** ✅ API getestet, Screenshot bestätigt UI
+
+---
+
+### ✅ Albanische Übersetzungen Komplett (Früher in dieser Session) ✅
 
 #### BidBlitz Pay Übersetzungen vollständig korrigiert ✅
 
