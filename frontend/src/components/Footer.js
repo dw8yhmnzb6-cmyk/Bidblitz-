@@ -13,6 +13,7 @@ const footerTexts = {
     login: 'Anmelden',
     extras: 'Extras',
     becomeInfluencer: 'Influencer werden',
+    carAdvertising: 'Auto-Werbung (€50/Mo)',
     influencerLogin: 'Influencer Login',
     wholesale: 'Großkunden (B2B)',
     vipMembership: 'VIP Mitgliedschaft',
