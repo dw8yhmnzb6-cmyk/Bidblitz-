@@ -249,6 +249,9 @@ export const Footer = () => {
               <Link to="/influencer-werden" className="text-hot-pink hover:text-hot-pink-hover transition-colors font-body text-sm">
                 {ft.becomeInfluencer}
               </Link>
+              <Link to="/auto-werbung" className="text-orange-400 hover:text-orange-300 transition-colors font-body text-sm flex items-center gap-1">
+                🚗 {ft.carAdvertising}
+              </Link>
               <Link to="/influencer-login" className="text-gray-400 hover:text-acid transition-colors font-body text-sm">
                 {ft.influencerLogin}
               </Link>
