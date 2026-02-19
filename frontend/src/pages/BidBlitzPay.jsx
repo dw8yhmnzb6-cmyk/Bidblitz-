@@ -1432,7 +1432,7 @@ const BidBlitzPay = () => {
                       </div>
                       <div className="relative flex justify-center text-sm">
                         <span className="px-2 bg-white text-gray-500">
-                          {language === 'de' ? 'oder' : language === 'ar' ? 'أو' : 'or'}
+                          {t('or')}
                         </span>
                       </div>
                     </div>
@@ -1440,7 +1440,7 @@ const BidBlitzPay = () => {
                     <form onSubmit={handleManualRequestLoad} className="space-y-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {language === 'de' ? 'Anforderungs-ID manuell eingeben' : language === 'ar' ? 'أدخل معرف الطلب يدويًا' : 'Enter Request ID manually'}
+                          {t('enterRequestIdManually')}
                         </label>
                         <Input
                           type="text"
@@ -1462,7 +1462,7 @@ const BidBlitzPay = () => {
                         ) : (
                           <CheckCircle className="w-4 h-4 mr-2" />
                         )}
-                        {language === 'de' ? 'ID laden' : language === 'ar' ? 'تحميل المعرف' : 'Load ID'}
+                        {t('loadId')}
                       </Button>
                     </form>
                   </div>
