@@ -763,7 +763,8 @@ const BidBlitzPay = () => {
     fetchTransactions();
     fetchMainBalance();
     fetchCustomerNumber();
-  }, [fetchWallet, fetchTransactions, fetchMainBalance, fetchCustomerNumber]);
+    fetchSavedRecipients();
+  }, [fetchWallet, fetchTransactions, fetchMainBalance, fetchCustomerNumber, fetchSavedRecipients]);
 
   useEffect(() => {
     localStorage.setItem('bidblitz_language', language);
