@@ -19,13 +19,36 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
   - `/app/frontend/src/pages/BidBlitzPay.jsx` (Import + Bonus View)
   - `/app/frontend/src/i18n/walletTranslations.js` (bonusOffers Key)
 
+#### Alle empfohlenen Features implementiert ✅
+1. **Empfehlungsprogramm (Referral):**
+   - Backend: `/app/backend/routers/referral_notifications.py`
+   - Frontend: `/app/frontend/src/components/ReferralProgram.jsx`
+   - Wallet "Einladen"-Tab mit Code (REF-XXXXXX), Copy/Share, Stats
+   - €10 Bonus für Empfehler und Neukunde
+   
+2. **Flash Bonus Promotions:**
+   - Backend: GET `/api/referral/active-promotions` mit Countdown
+   - Frontend: `/app/frontend/src/components/FlashBonusPromo.jsx`
+   - 25% Extra-Bonus für 24h (zeitlich begrenzt)
+   
+3. **Partner Provisions-Dashboard:**
+   - Frontend: `/app/frontend/src/components/partner/PartnerDepositCommissions.jsx`
+   - Partner Portal "Provisionen"-Tab
+   - Zeigt verdiente Provisionen aus Kundeneinzahlungen
+   
+4. **Benachrichtigungssystem:**
+   - Backend: POST `/api/referral/check-maturing-deposits` (CRON Job)
+   - Frontend: `/app/frontend/src/components/NotificationCenter.jsx`
+   - E-Mail-Benachrichtigung bei Einlagen-Fälligkeit
+
+- **Testing:** Backend 100%, Frontend 90% (iteration_86.json)
+
 #### Homepage Deposit Bonus Banner ⚠️ (Hot-Reload-Problem)
 - **Task:** Deposit-Bonus-Banner zur Homepage hinzugefügt
 - **Status:** Code implementiert, aber Hot-Reload lädt alte Version
 - **Änderungen:**
-  - `/app/frontend/src/components/DepositBonusBanner.jsx` (NEU)
-  - `/app/frontend/src/pages/Home.js` (Import + Banner an oberster Stelle)
-- **Nächster Schritt:** Vollständiger Re-Deploy erforderlich, um das Banner sichtbar zu machen
+  - `/app/frontend/src/pages/Home.js` (FlashBonusPromo + statisches Banner)
+- **Nächster Schritt:** Vollständiger Re-Deploy erforderlich
 
 ---
 
