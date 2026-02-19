@@ -354,12 +354,17 @@ async def update_application_status(
     status: str = Query(...),
     admin_note: Optional[str] = None
 ):
-    """Update application status (admin only)"""
+    """Update application status (admin only) and send email notification"""
     
     
     valid_statuses = ["pending", "approved", "active", "rejected"]
     if status not in valid_statuses:
         raise HTTPException(status_code=400, detail="Ungültiger Status")
+    
+    # Get the application first to have access to user details
+    application = await db.car_advertising.find_one({"email": email.lower()})
+    if not application:
+        raise HTTPException(status_code=404, detail="Anmeldung nicht gefunden")
     
     update_data = {
         "status": status,
@@ -380,7 +385,24 @@ async def update_application_status(
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Anmeldung nicht gefunden")
     
-    return {"success": True, "message": f"Status auf {status} aktualisiert"}
+    # Send email notification based on status
+    car_model = f"{application.get('car_brand', '')} {application.get('car_model', '')}".strip()
+    user_name = application.get('name', 'Kunde')
+    user_email = application.get('email', '')
+    
+    email_result = None
+    if status == "approved":
+        email_result = await send_car_advertising_approval_email(user_email, user_name, car_model)
+    elif status == "rejected":
+        email_result = await send_car_advertising_rejection_email(user_email, user_name, admin_note)
+    elif status == "active":
+        email_result = await send_car_advertising_activation_email(user_email, user_name, car_model)
+    
+    return {
+        "success": True, 
+        "message": f"Status auf {status} aktualisiert",
+        "email_sent": email_result.get("status") if email_result else None
+    }
 
 
 @router.post("/process-monthly-payouts")
