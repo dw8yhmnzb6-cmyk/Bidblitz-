@@ -632,7 +632,10 @@ export default function Home() {
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #87CEEB 0%, #5BA3C6 100%)' }} data-testid="home-page">
       <div className="max-w-6xl mx-auto px-4 py-6">
         
-        {/* Deposit Bonus Banner - Prominent Position (Top) */}
+        {/* Flash Bonus Promotion - Time-limited offers */}
+        <FlashBonusPromo language={mappedLang} className="mb-4" />
+
+        {/* Deposit Bonus Banner - Prominent Position */}
         <div 
           className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 p-6 mb-6 cursor-pointer"
           data-testid="deposit-bonus-banner"
@@ -646,24 +649,24 @@ export default function Home() {
               <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                 <Trophy className="w-8 h-8 text-white" />
                 <h2 className="text-2xl md:text-3xl font-bold text-white">
-                  Bonus auf Einzahlungen
+                  {mappedLang === 'de' ? 'Bonus auf Einzahlungen' : 'Deposit Bonus'}
                 </h2>
               </div>
               <p className="text-white/90 text-lg mb-4 flex items-center justify-center md:justify-start gap-2">
                 <TrendingUp className="w-5 h-5" />
-                Bis zu 20% Bonus + 5% Zinsen p.a.
+                {mappedLang === 'de' ? 'Bis zu 20% Bonus + 5% Zinsen p.a.' : 'Up to 20% Bonus + 5% Interest p.a.'}
               </p>
               <button
                 className="bg-white text-orange-600 hover:bg-orange-50 font-bold text-lg px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
                 data-testid="deposit-bonus-cta"
               >
-                Jetzt Bonus sichern →
+                {mappedLang === 'de' ? 'Jetzt Bonus sichern →' : 'Get Bonus Now →'}
               </button>
             </div>
             
             <div className="flex gap-3">
               {[{b:'5%',i:'2%'},{b:'10%',i:'3%'},{b:'15%',i:'4%'},{b:'20%',i:'5%',vip:true}].map((o, i) => (
-                <div key={i} className={`bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center min-w-[70px] ${o.vip ? 'ring-2 ring-yellow-300' : ''}`}>
+                <div key={i} className={`relative bg-white/20 backdrop-blur-sm rounded-xl p-3 text-center min-w-[70px] ${o.vip ? 'ring-2 ring-yellow-300' : ''}`}>
                   {o.vip && <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-yellow-400 text-orange-800 text-[10px] font-bold px-2 py-0.5 rounded-full">VIP</div>}
                   <div className="text-2xl font-black text-white">{o.b}</div>
                   <div className="text-xs text-white/80">Bonus</div>
