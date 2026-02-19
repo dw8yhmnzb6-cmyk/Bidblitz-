@@ -178,7 +178,7 @@ const badgeColors = {
 
 const DepositOffers = ({ partnerId = null }) => {
   const { language, mappedLanguage } = useLanguage();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, refreshUser } = useAuth();
   const langKey = mappedLanguage || language;
   const t = translations[langKey] || translations.de;
   
