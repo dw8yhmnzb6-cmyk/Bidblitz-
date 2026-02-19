@@ -22,7 +22,7 @@ const translations = {
     availableBalance: 'Verfügbares Guthaben',
     sendMoney: 'Geld senden',
     recipient: 'Empfänger',
-    recipientPlaceholder: 'Partnernummer oder E-Mail',
+    recipientPlaceholder: 'Partnernummer (P-XXXXX) oder E-Mail',
     amount: 'Betrag',
     message: 'Nachricht (optional)',
     messagePlaceholder: 'z.B. Für gemeinsame Werbung',
@@ -33,7 +33,7 @@ const translations = {
     received: 'Empfangen',
     noTransfers: 'Noch keine Überweisungen',
     searchPartner: 'Partner suchen',
-    searchPlaceholder: 'Name, E-Mail oder Partnernummer',
+    searchPlaceholder: 'Firmenname, E-Mail oder Partnernummer',
     lastTransfer: 'Letzte Überweisung',
     useRecipient: 'Übernehmen',
     recipientLoaded: 'Empfänger übernommen!',
@@ -47,7 +47,9 @@ const translations = {
     partnerNumber: 'Partnernummer',
     searchResults: 'Suchergebnisse',
     noResults: 'Keine Partner gefunden',
-    selectRecipient: 'Empfänger auswählen'
+    selectRecipient: 'Empfänger auswählen',
+    customerIdError: 'Nur Partner-Überweisungen möglich (keine Kunden-IDs)',
+    searchByName: 'Nach Firmenname suchen'
   },
   en: {
     title: 'Partner Transfers',
@@ -55,7 +57,7 @@ const translations = {
     availableBalance: 'Available Balance',
     sendMoney: 'Send Money',
     recipient: 'Recipient',
-    recipientPlaceholder: 'Partner number or email',
+    recipientPlaceholder: 'Partner number (P-XXXXX) or email',
     amount: 'Amount',
     message: 'Message (optional)',
     messagePlaceholder: 'e.g. For joint advertising',
@@ -66,7 +68,7 @@ const translations = {
     received: 'Received',
     noTransfers: 'No transfers yet',
     searchPartner: 'Search Partner',
-    searchPlaceholder: 'Name, email or partner number',
+    searchPlaceholder: 'Company name, email or partner number',
     lastTransfer: 'Last Transfer',
     useRecipient: 'Use',
     recipientLoaded: 'Recipient loaded!',
@@ -80,7 +82,9 @@ const translations = {
     partnerNumber: 'Partner Number',
     searchResults: 'Search Results',
     noResults: 'No partners found',
-    selectRecipient: 'Select recipient'
+    selectRecipient: 'Select recipient',
+    customerIdError: 'Only partner transfers allowed (no customer IDs)',
+    searchByName: 'Search by company name'
   },
   sq: {
     title: 'Transfertat e Partnerëve',
@@ -88,7 +92,7 @@ const translations = {
     availableBalance: 'Bilanci i Disponueshëm',
     sendMoney: 'Dërgo Para',
     recipient: 'Marrësi',
-    recipientPlaceholder: 'Numri i partnerit ose email',
+    recipientPlaceholder: 'Numri i partnerit (P-XXXXX) ose email',
     amount: 'Shuma',
     message: 'Mesazhi (opsional)',
     messagePlaceholder: 'p.sh. Për reklamim të përbashkët',
@@ -99,7 +103,7 @@ const translations = {
     received: 'Marrë',
     noTransfers: 'Nuk ka transferta ende',
     searchPartner: 'Kërko Partner',
-    searchPlaceholder: 'Emri, email ose numri i partnerit',
+    searchPlaceholder: 'Emri i kompanisë, email ose numri i partnerit',
     lastTransfer: 'Transferta e Fundit',
     useRecipient: 'Përdor',
     recipientLoaded: 'Marrësi u ngarkua!',
@@ -113,7 +117,9 @@ const translations = {
     partnerNumber: 'Numri i Partnerit',
     searchResults: 'Rezultatet e Kërkimit',
     noResults: 'Nuk u gjetën partnerë',
-    selectRecipient: 'Zgjedh marrësin'
+    selectRecipient: 'Zgjedh marrësin',
+    customerIdError: 'Vetëm transferta partnerësh (pa ID të klientëve)',
+    searchByName: 'Kërko sipas emrit të kompanisë'
   },
   tr: {
     title: 'Partner Transferleri',
@@ -121,7 +127,7 @@ const translations = {
     availableBalance: 'Mevcut Bakiye',
     sendMoney: 'Para Gönder',
     recipient: 'Alıcı',
-    recipientPlaceholder: 'Partner numarası veya e-posta',
+    recipientPlaceholder: 'Partner numarası (P-XXXXX) veya e-posta',
     amount: 'Tutar',
     message: 'Mesaj (isteğe bağlı)',
     messagePlaceholder: 'örn. Ortak reklam için',
@@ -132,7 +138,7 @@ const translations = {
     received: 'Alınan',
     noTransfers: 'Henüz transfer yok',
     searchPartner: 'Partner Ara',
-    searchPlaceholder: 'İsim, e-posta veya partner numarası',
+    searchPlaceholder: 'Şirket adı, e-posta veya partner numarası',
     lastTransfer: 'Son Transfer',
     useRecipient: 'Kullan',
     recipientLoaded: 'Alıcı yüklendi!',
@@ -146,7 +152,9 @@ const translations = {
     partnerNumber: 'Partner Numarası',
     searchResults: 'Arama Sonuçları',
     noResults: 'Partner bulunamadı',
-    selectRecipient: 'Alıcı seç'
+    selectRecipient: 'Alıcı seç',
+    customerIdError: 'Sadece partner transferleri (müşteri ID kabul edilmez)',
+    searchByName: 'Şirket adına göre ara'
   },
   ar: {
     title: 'تحويلات الشركاء',
@@ -154,7 +162,7 @@ const translations = {
     availableBalance: 'الرصيد المتاح',
     sendMoney: 'إرسال الأموال',
     recipient: 'المستلم',
-    recipientPlaceholder: 'رقم الشريك أو البريد الإلكتروني',
+    recipientPlaceholder: 'رقم الشريك (P-XXXXX) أو البريد الإلكتروني',
     amount: 'المبلغ',
     message: 'رسالة (اختياري)',
     messagePlaceholder: 'مثال: للإعلان المشترك',
@@ -165,7 +173,7 @@ const translations = {
     received: 'مستلم',
     noTransfers: 'لا توجد تحويلات بعد',
     searchPartner: 'البحث عن شريك',
-    searchPlaceholder: 'الاسم، البريد الإلكتروني أو رقم الشريك',
+    searchPlaceholder: 'اسم الشركة، البريد الإلكتروني أو رقم الشريك',
     lastTransfer: 'آخر تحويل',
     useRecipient: 'استخدام',
     recipientLoaded: 'تم تحميل المستلم!',
@@ -179,7 +187,9 @@ const translations = {
     partnerNumber: 'رقم الشريك',
     searchResults: 'نتائج البحث',
     noResults: 'لم يتم العثور على شركاء',
-    selectRecipient: 'اختر المستلم'
+    selectRecipient: 'اختر المستلم',
+    customerIdError: 'تحويلات الشركاء فقط (لا يُقبل معرف العميل)',
+    searchByName: 'البحث باسم الشركة'
   }
 };
 
