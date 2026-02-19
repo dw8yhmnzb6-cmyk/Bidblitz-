@@ -67,6 +67,19 @@ const BidBlitzPay = () => {
   const [sendMessage, setSendMessage] = useState('');
   const [sendingMoney, setSendingMoney] = useState(false);
   const [transfers, setTransfers] = useState([]);
+  const [lastRecipient, setLastRecipient] = useState(null); // Letzte Überweisung speichern
+  
+  // Load last recipient from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('bidblitz_last_recipient');
+    if (saved) {
+      try {
+        setLastRecipient(JSON.parse(saved));
+      } catch (e) {
+        console.error('Error loading last recipient:', e);
+      }
+    }
+  }, []);
   
   // Request Money states
   const [requestAmount, setRequestAmount] = useState('');
