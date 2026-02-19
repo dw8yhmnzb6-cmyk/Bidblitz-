@@ -544,14 +544,9 @@ export default function AdminCarAdvertising({ language = 'de' }) {
             </tbody>
           </table>
         </div>
-        
-        {filteredApps.length === 0 && !loading && (
-          <div className="text-center py-12 text-gray-500">
-            <Car className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p>{t.noApplications}</p>
-          </div>
-        )}
       </div>
+        </>
+      )}
 
       {/* Detail Modal */}
       {selectedApp && (
