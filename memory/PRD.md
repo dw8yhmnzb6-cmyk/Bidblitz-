@@ -5,6 +5,39 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 19, 2026)
 
+### ✅ Session Update - February 19, 2026 (Session 51) - AUTO-WERBUNG FEATURE ✅
+
+#### Neues Feature: Auto-Werbung Programm ✅
+
+**Beschreibung:** Benutzer können €50/Monat passives Einkommen verdienen, indem sie BidBlitz-Werbung auf ihren Autos haben.
+
+**Frontend: `/app/frontend/src/pages/CarAdvertising.js`**
+- Hero-Sektion mit €50/Monat Highlight
+- Statistiken: Monatlich, Aktive Fahrer, Städte, Min. Vertrag
+- 6 Vorteile-Karten (€50 garantiert, kostenlose Folierung, keine Verpflichtungen, etc.)
+- "So funktioniert's" 4-Schritte Prozess
+- Vollständiges Registrierungsformular mit:
+  - Persönliche Daten (Name, E-Mail, Telefon)
+  - Fahrzeugdaten (Marke, Modell, Baujahr, Farbe, Kennzeichen)
+  - Standort (Stadt, km/Monat, Parkort)
+- Voraussetzungen-Liste
+- FAQ-Sektion
+- Übersetzt in: Deutsch, Englisch, Albanisch, Türkisch
+
+**Backend: `/app/backend/routers/car_advertising.py`**
+- `POST /api/car-advertising/apply` - Neue Anmeldung
+- `GET /api/car-advertising/my-application` - Status abfragen
+- `GET /api/car-advertising/all` - Alle Anmeldungen (Admin)
+- `PUT /api/car-advertising/update-status` - Status ändern (Admin)
+- `POST /api/car-advertising/process-monthly-payouts` - Monatliche €50 Auszahlung
+- `GET /api/car-advertising/stats` - Statistiken
+
+**Navigation:**
+- Neue Route: `/auto-werbung`
+- Footer-Link: "🚗 Auto-Werbung (€50/Mo)" unter Extras
+
+---
+
 ### ✅ Session Update - February 19, 2026 (Session 51) - MOBILE UX & I18N FIXES ✅
 
 #### 1. Onboarding Checkbox Redesign ✅
