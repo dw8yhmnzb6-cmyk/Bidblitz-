@@ -250,7 +250,12 @@ const OnboardingTour = () => {
     setIsClosing(true);
     setTimeout(() => {
       setShowTour(false);
+      // Always mark as completed when closing
       localStorage.setItem('bidblitz_onboarding_completed', 'true');
+      // If "don't show again" is checked, set permanent skip
+      if (dontShowAgain) {
+        localStorage.setItem('bidblitz_onboarding_permanent_skip', 'true');
+      }
     }, 300);
   };
 
