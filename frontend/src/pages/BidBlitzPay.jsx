@@ -2003,6 +2003,17 @@ const BidBlitzPay = () => {
             <DepositOffers />
           </div>
         )}
+
+        {/* Referral Program View */}
+        {view === 'referral' && (
+          <div data-testid="referral-program-view">
+            <ReferralProgram 
+              language={language}
+              token={token}
+              onBalanceUpdate={() => { fetchWallet(); fetchTransactions(); }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Save Recipient Dialog */}
