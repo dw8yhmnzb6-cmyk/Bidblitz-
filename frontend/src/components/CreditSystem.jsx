@@ -104,7 +104,18 @@ const translations = {
     yourDocuments: 'Ihre Dokumente',
     allDocumentsRequired: 'Alle Dokumente sind erforderlich',
     holdIdVisible: 'Halten Sie den Ausweis gut sichtbar',
-    clear3MonthStatements: 'Klare Kontoauszüge der letzten 3 Monate'
+    clear3MonthStatements: 'Klare Kontoauszüge der letzten 3 Monate',
+    of: 'von',
+    points: 'Punkte',
+    progressTo: 'Fortschritt zu',
+    yourBenefits: 'Ihre Vorteile',
+    allTiers: 'Alle Stufen',
+    tierRed: 'Rot',
+    tierYellow: 'Gelb',
+    tierGreen: 'Grün',
+    tierGold: 'Gold',
+    tierDiamond: 'Diamant',
+    tier: 'Stufe'
   },
   en: {
     creditSystem: 'Credit System',
