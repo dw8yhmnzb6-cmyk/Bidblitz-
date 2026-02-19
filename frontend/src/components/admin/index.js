@@ -54,4 +54,7 @@ export { default as AdminCarAdvertising } from './AdminCarAdvertising';
 // Jackpot Management
 export { default as AdminJackpot } from './AdminJackpot';
 
+// Partner Credit Management
+export { default as AdminPartnerCredit } from './AdminPartnerCredit';
+
 // All components have been extracted!
