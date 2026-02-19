@@ -486,6 +486,9 @@ app.include_router(universal_transfer_router, prefix="/api")
 # NEW: Deposit Offers & Interest System
 app.include_router(deposit_offers_router, prefix="/api")
 
+# NEW: Referral & Notifications System
+app.include_router(referral_router, prefix="/api")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
