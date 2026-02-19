@@ -35,7 +35,13 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
    - 12+ Achievements mit Punkten und Seltenheitsgrad
    - Neuer "Abzeichen"-Tab im Wallet
 
-- **Testing:** Screenshots verifiziert - alle Tabs und Rangliste funktionieren
+4. **Daily Login Popup:**
+   - Frontend: `/app/frontend/src/components/DailyLoginPopup.jsx`
+   - Erscheint automatisch nach Login wenn Belohnung verfügbar
+   - Zeigt Streak, heutige Belohnung, nächsten Meilenstein
+   - In `App.js` integriert via `DailyLoginPopupWrapper`
+
+- **Testing:** Screenshots verifiziert - alle Tabs, Rangliste und Popup funktionieren
 - **Geänderte Dateien:**
   - `/app/frontend/src/pages/BidBlitzPay.jsx` (Import + Bonus View)
   - `/app/frontend/src/i18n/walletTranslations.js` (bonusOffers Key)
