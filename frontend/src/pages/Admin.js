@@ -45,6 +45,7 @@ import {
   AdminBanners,
   AdminInfluencers,
   AdminCarAdvertising,
+  AdminPartnerCredit,
   AdminWholesale,
   AdminGameConfig,
   AdminDebugReports,
