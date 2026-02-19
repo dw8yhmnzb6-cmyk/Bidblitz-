@@ -399,7 +399,11 @@ const PaymentHistory = ({ token, language = 'de' }) => {
         page: 'Σελίδα',
         of: 'από',
         exportSuccess: 'Επιτυχής εξαγωγή',
-        loading: 'Φόρτωση...'
+        loading: 'Φόρτωση...',
+        completed: 'Ολοκληρώθηκε',
+        pending: 'Εκκρεμεί',
+        failed: 'Απέτυχε',
+        reference: 'Αναφορά'
       },
       sq: {
         title: 'Historiku i Pagesave',
@@ -423,7 +427,11 @@ const PaymentHistory = ({ token, language = 'de' }) => {
         page: 'Faqja',
         of: 'nga',
         exportSuccess: 'Eksporti i suksesshëm',
-        loading: 'Duke ngarkuar...'
+        loading: 'Duke ngarkuar...',
+        completed: 'Përfunduar',
+        pending: 'Në pritje',
+        failed: 'Dështoi',
+        reference: 'Referenca'
       }
     };
     return translations[language]?.[key] || translations.de[key] || key;
