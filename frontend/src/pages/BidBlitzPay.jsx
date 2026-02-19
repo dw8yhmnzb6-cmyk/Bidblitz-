@@ -47,6 +47,7 @@ const languages = [
 ];
 
 const BidBlitzPay = () => {
+  const { user, refreshUser } = useAuth();
   const [wallet, setWallet] = useState(null);
   const [qrCode, setQrCode] = useState(null);
   const [transactions, setTransactions] = useState([]);
