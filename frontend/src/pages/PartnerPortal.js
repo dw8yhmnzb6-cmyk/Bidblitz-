@@ -1323,7 +1323,7 @@ export default function PartnerPortal() {
 
           {/* BidBlitz Pay View - Payment Scanner for Customer QR Codes */}
           {view === 'bidblitz-pay' && (
-            <BidBlitzPayPartner token={token} partnerId={partner?.id} partnerName={partner?.name} commissionRate={partner?.commission_rate || 10} />
+            <BidBlitzPayPartner token={token} partnerId={partner?.id} partnerName={partner?.name} commissionRate={partner?.commission_rate || 10} t={t} />
           )}
           
           {/* Vouchers View - Using PartnerVouchers Component */}
