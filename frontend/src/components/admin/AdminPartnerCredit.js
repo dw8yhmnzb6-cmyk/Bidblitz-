@@ -185,56 +185,56 @@ const AdminPartnerCredit = ({ language = 'de' }) => {
   };
 
   return (
-    <div className="space-y-6" data-testid="admin-partner-credit">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6" data-testid="admin-partner-credit">
+      {/* Header - Mobile optimized */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <CreditCard className="w-7 h-7 text-orange-500" />
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+            <CreditCard className="w-6 h-6 sm:w-7 sm:h-7 text-orange-500" />
             {t('title')}
           </h2>
-          <p className="text-gray-500 mt-1">{t('subtitle')}</p>
+          <p className="text-gray-500 mt-1 text-sm">{t('subtitle')}</p>
         </div>
-        <Button onClick={fetchPartners} variant="outline" size="sm">
+        <Button onClick={fetchPartners} variant="outline" size="sm" className="self-start sm:self-auto">
           <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-5 border border-green-200">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
-              <Euro className="w-6 h-6 text-white" />
+      {/* Stats Cards - 2x2 on mobile, 3 columns on desktop */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-4 sm:p-5 border border-green-200">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Euro className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <div>
-              <p className="text-sm text-green-600">{t('totalCredit')}</p>
-              <p className="text-2xl font-bold text-green-800">€{stats.totalCredit.toFixed(2)}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-orange-50 to-amber-100 rounded-xl p-5 border border-orange-200">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center">
-              <ArrowUpDown className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-sm text-orange-600">{t('totalUsed')}</p>
-              <p className="text-2xl font-bold text-orange-800">€{stats.totalUsed.toFixed(2)}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-green-600 truncate">{t('totalCredit')}</p>
+              <p className="text-lg sm:text-2xl font-bold text-green-800">€{stats.totalCredit.toFixed(2)}</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-5 border border-blue-200">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-              <Users className="w-6 h-6 text-white" />
+        <div className="bg-gradient-to-br from-orange-50 to-amber-100 rounded-xl p-4 sm:p-5 border border-orange-200">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <ArrowUpDown className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <div>
-              <p className="text-sm text-blue-600">{t('partnersWithCredit')}</p>
-              <p className="text-2xl font-bold text-blue-800">{stats.partnersWithCredit}</p>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-orange-600 truncate">{t('totalUsed')}</p>
+              <p className="text-lg sm:text-2xl font-bold text-orange-800">€{stats.totalUsed.toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl p-4 sm:p-5 border border-blue-200 col-span-2 sm:col-span-1">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm text-blue-600 truncate">{t('partnersWithCredit')}</p>
+              <p className="text-lg sm:text-2xl font-bold text-blue-800">{stats.partnersWithCredit}</p>
             </div>
           </div>
         </div>
@@ -253,58 +253,68 @@ const AdminPartnerCredit = ({ language = 'de' }) => {
 
       {/* Partners List */}
       {loading ? (
-        <div className="text-center py-12 text-gray-500">{t('loading')}</div>
+        <div className="text-center py-8 sm:py-12">
+          <RefreshCw className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-2" />
+          <p className="text-gray-500 text-sm">{t('loading')}</p>
+        </div>
       ) : filteredPartners.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">{t('noPartners')}</div>
+        <div className="text-center py-8 sm:py-12 text-gray-500">
+          <Users className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+          <p className="text-sm">{t('noPartners')}</p>
+        </div>
       ) : (
         <div className="bg-white rounded-xl border divide-y">
           {filteredPartners.map((partner) => (
-            <div key={partner.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-                  <Building2 className="w-6 h-6 text-gray-500" />
-                </div>
-                <div>
-                  <p className="font-semibold">{partner.business_name || partner.company_name}</p>
-                  <p className="text-sm text-gray-500">{partner.partner_number}</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-6">
-                {/* Current Credit */}
-                <div className="text-right">
-                  <p className="text-sm text-gray-500">{t('currentCredit')}</p>
-                  <p className={`text-xl font-bold ${(partner.admin_credit || 0) > 0 ? 'text-green-600' : 'text-gray-400'}`}>
-                    €{(partner.admin_credit || 0).toFixed(2)}
-                  </p>
+            <div key={partner.id} className="p-3 sm:p-4 hover:bg-gray-50">
+              {/* Mobile Layout */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-semibold text-sm sm:text-base truncate">{partner.business_name || partner.company_name}</p>
+                    <p className="text-xs sm:text-sm text-gray-500">{partner.partner_number}</p>
+                  </div>
                 </div>
                 
-                {/* Used */}
-                <div className="text-right">
-                  <p className="text-sm text-gray-500">{t('usedCredit')}</p>
-                  <p className="text-lg font-medium text-orange-600">
-                    €{(partner.admin_credit_used || 0).toFixed(2)}
-                  </p>
-                </div>
-                
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    className="bg-green-500 hover:bg-green-600"
-                    onClick={() => openModal(partner, 'add')}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-red-300 text-red-600 hover:bg-red-50"
-                    onClick={() => openModal(partner, 'remove')}
-                    disabled={(partner.admin_credit || 0) <= 0}
-                  >
-                    <Minus className="w-4 h-4" />
-                  </Button>
+                <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 ml-13 sm:ml-0">
+                  {/* Credits Info - Compact on mobile */}
+                  <div className="flex gap-4">
+                    <div className="text-center sm:text-right">
+                      <p className="text-xs text-gray-500">{t('currentCredit')}</p>
+                      <p className={`text-base sm:text-xl font-bold ${(partner.admin_credit || 0) > 0 ? 'text-green-600' : 'text-gray-400'}`}>
+                        €{(partner.admin_credit || 0).toFixed(2)}
+                      </p>
+                    </div>
+                    
+                    <div className="text-center sm:text-right">
+                      <p className="text-xs text-gray-500">{t('usedCredit')}</p>
+                      <p className="text-base sm:text-lg font-medium text-orange-600">
+                        €{(partner.admin_credit_used || 0).toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      className="bg-green-500 hover:bg-green-600 h-8 w-8 sm:h-9 sm:w-9 p-0"
+                      onClick={() => openModal(partner, 'add')}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-red-300 text-red-600 hover:bg-red-50 h-8 w-8 sm:h-9 sm:w-9 p-0"
+                      onClick={() => openModal(partner, 'remove')}
+                      disabled={(partner.admin_credit || 0) <= 0}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
