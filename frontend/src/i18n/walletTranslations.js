@@ -407,6 +407,14 @@ export const walletTranslations = {
     save: 'Save',
     errorSaving: 'Error saving',
     errorLoadingRequest: 'Error loading request',
+    transferFailed: 'Transfer failed',
+    transferToMain: 'Transfer to main account',
+    available: 'Available',
+    paymentCouldNotCreate: 'Could not create payment',
+    paymentChecking: 'Checking payment...',
+    paymentCancelled: 'Payment cancelled',
+    sendError: 'Error sending',
+    fillAllFields: 'Please fill all fields',
     
     // Recipients
     enterName: 'Please enter a name',
