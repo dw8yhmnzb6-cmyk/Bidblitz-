@@ -1619,7 +1619,7 @@ const BidBlitzPay = () => {
               ) : (
                 <div className="text-center py-8 bg-gray-50 rounded-xl">
                   <ArrowDownLeft className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                  <p className="text-gray-500">{language === 'de' ? 'Noch keine Anforderungen' : 'No requests yet'}</p>
+                  <p className="text-gray-500">{t('noRequestsYet')}</p>
                 </div>
               )}
             </div>
