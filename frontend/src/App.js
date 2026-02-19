@@ -206,6 +206,25 @@ const VIPPage = () => {
   return <VIPLoyalty token={token} language={language} />;
 };
 
+// Daily Login Popup Wrapper
+const DailyLoginPopupWrapper = ({ language }) => {
+  const { isAuthenticated, token } = useAuth();
+  
+  const handleRewardClaimed = (data) => {
+    // Optionally refresh user data after claiming reward
+    console.log('Daily reward claimed:', data);
+  };
+  
+  return (
+    <DailyLoginPopup 
+      language={language}
+      token={token}
+      isAuthenticated={isAuthenticated}
+      onRewardClaimed={handleRewardClaimed}
+    />
+  );
+};
+
 function AppContent() {
   const { language, mappedLanguage } = useLanguage();
   const { isDarkMode } = useTheme();
