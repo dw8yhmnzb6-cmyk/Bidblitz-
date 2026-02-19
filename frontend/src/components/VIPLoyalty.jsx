@@ -135,7 +135,7 @@ const VIPLoyalty = ({ token, language = 'de' }) => {
   const claimDailyBonus = async () => {
     setClaiming(true);
     try {
-      const response = await fetch(`${API}/api/loyalty/claim-daily`, {
+      const response = await fetch(`${API}/api/vip-loyalty/claim-daily`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });
