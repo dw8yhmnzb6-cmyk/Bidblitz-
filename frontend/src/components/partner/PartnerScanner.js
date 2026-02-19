@@ -101,11 +101,11 @@ const PartnerScanner = ({ token, fetchDashboard, t }) => {
         partner_token: token
       });
       
-      toast.success(`Gutschein eingelöst: €${scanResult.value}`);
+      toast.success(t('voucherRedeemed') || `Voucher redeemed: €${scanResult.value}`);
       setScanResult(null);
       fetchDashboard();
     } catch (err) {
-      toast.error(err.response?.data?.detail || 'Fehler beim Einlösen');
+      toast.error(err.response?.data?.detail || t('redeemError') || 'Error redeeming voucher');
     } finally {
       setRedeeming(false);
     }
