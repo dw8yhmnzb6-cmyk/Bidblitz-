@@ -428,13 +428,13 @@ function AppContent() {
             </ProtectedRoute>
           } />
           
-          {/* VIP Loyalty - Treueprogramm */}
-          <Route path="/vip" element={
+          {/* VIP Loyalty - Treueprogramm (Punkte sammeln) */}
+          <Route path="/vip-loyalty" element={
             <ProtectedRoute>
               <VIPPage />
             </ProtectedRoute>
           } />
-          <Route path="/vip-programm" element={
+          <Route path="/treuepunkte-vip" element={
             <ProtectedRoute>
               <VIPPage />
             </ProtectedRoute>
