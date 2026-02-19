@@ -1541,7 +1541,7 @@ const BidBlitzPay = () => {
                       type="text"
                       value={requestDescription}
                       onChange={(e) => setRequestDescription(e.target.value)}
-                      placeholder={language === 'de' ? 'z.B. Abendessen teilen' : 'e.g. Splitting dinner'}
+                      placeholder={t('descriptionPlaceholder')}
                       className="w-full"
                       data-testid="request-description-input"
                     />
@@ -1556,7 +1556,7 @@ const BidBlitzPay = () => {
                     {creatingRequest ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        {language === 'de' ? 'Wird erstellt...' : 'Creating...'}
+                        {t('creating')}
                       </>
                     ) : (
                       <>
