@@ -442,7 +442,7 @@ const BidBlitzPay = () => {
     if (lastRecipient) {
       setRecipientEmail(lastRecipient.email);
       setSendMessage(lastRecipient.lastMessage || '');
-      toast.success(language === 'de' ? 'Empfänger übernommen!' : 'Recipient loaded!');
+      toast.success(t('recipientLoaded'));
     }
   };
 
