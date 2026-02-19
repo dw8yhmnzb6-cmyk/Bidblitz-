@@ -199,9 +199,9 @@ export default function PartnerPortal() {
     };
   }, []);
   
-  // Save language preference
+  // Save language preference - use unified 'language' key
   useEffect(() => {
-    localStorage.setItem('partner_language', language);
+    localStorage.setItem('language', language);
   }, [language]);
   
   // Auto-login from saved credentials
