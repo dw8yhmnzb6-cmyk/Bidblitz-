@@ -426,18 +426,22 @@ async def withdraw_deposit(
     created = datetime.fromisoformat(deposit.get("created_at").replace("Z", "+00:00"))
     days_elapsed = (now - created).days
     annual_rate = deposit.get("interest_rate", 0) / 100
-    final_interest = deposit.get("amount", 0) * annual_rate * (days_elapsed / 365)
+    principal = deposit.get("amount", 0)
+    final_interest = principal * annual_rate * (days_elapsed / 365)
     
-    # Credit interest to customer (both balances)
+    # Total payout = Principal + Interest (customer gets their deposit back + earned interest)
+    total_payout = principal + final_interest
+    
+    # Credit principal + interest to customer (both balances)
     await db.users.update_one(
         {"id": user_id},
-        {"$inc": {"balance": final_interest, "bidblitz_balance": final_interest}}
+        {"$inc": {"balance": total_payout, "bidblitz_balance": total_payout}}
     )
     
     # Also update BidBlitz Pay wallet
     await db.bidblitz_wallets.update_one(
         {"user_id": user_id},
-        {"$inc": {"universal_balance": final_interest}},
+        {"$inc": {"universal_balance": total_payout}},
         upsert=True
     )
     
@@ -455,8 +459,10 @@ async def withdraw_deposit(
     
     return {
         "success": True,
+        "principal": round(principal, 2),
         "interest_earned": round(final_interest, 2),
-        "message": f"€{final_interest:.2f} Zinsen gutgeschrieben!"
+        "total_payout": round(total_payout, 2),
+        "message": f"€{principal:.2f} + €{final_interest:.2f} Zinsen = €{total_payout:.2f} gutgeschrieben!"
     }
 
 
