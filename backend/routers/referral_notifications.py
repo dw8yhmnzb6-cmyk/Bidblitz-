@@ -283,7 +283,7 @@ async def check_maturing_deposits(
         raise HTTPException(status_code=403, detail="Unauthorized")
     
     now = datetime.now(timezone.utc)
-    tomorrow = now + timedelta(days=1)
+    # tomorrow calculation removed - using in_three_days
     in_three_days = now + timedelta(days=3)
     
     # Find deposits maturing in next 3 days
