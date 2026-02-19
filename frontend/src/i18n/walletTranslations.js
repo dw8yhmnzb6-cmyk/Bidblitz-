@@ -206,7 +206,20 @@ export const walletTranslations = {
     freeBids: 'Gratis-Gebote',
     save: 'Speichern',
     errorSaving: 'Fehler beim Speichern',
-    errorLoadingRequest: 'Fehler beim Laden der Anforderung'
+    errorLoadingRequest: 'Fehler beim Laden der Anforderung',
+    
+    // Recipients
+    enterName: 'Bitte Namen eingeben',
+    recipientSaved: 'Empfänger gespeichert!',
+    recipientDeleted: 'Empfänger gelöscht',
+    selected: 'ausgewählt',
+    savedRecipients: 'Gespeicherte Empfänger',
+    transferSuccessful: 'Überweisung erfolgreich!',
+    saveFutureTransfers: 'Für zukünftige Überweisungen speichern?',
+    recipient: 'Empfänger',
+    nameForQuickSelect: 'Name für Schnellauswahl',
+    exampleName: 'z.B. Mein Sohn, Meine Tochter',
+    dontSave: 'Nicht speichern'
   },
   
   en: {
