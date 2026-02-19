@@ -2146,7 +2146,7 @@ const BidBlitzPay = () => {
                 ) : (
                   <>
                     <CheckCircle className="w-4 h-4 mr-1" />
-                    {language === 'de' ? 'Speichern' : 'Save'}
+                    {t('save')}
                   </>
                 )}
               </Button>
