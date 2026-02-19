@@ -464,7 +464,8 @@ async def get_partner_deposit_stats(token: str = Query(...)):
 
 @router.post("/calculate-interest")
 async def calculate_daily_interest(
-    admin_key: str = Query(...)
+    admin_key: str = Query(...),
+    send_emails: bool = Query(False, description="Send email notifications to customers")
 ):
     """Daily interest calculation (called by cron job)"""
     # Simple admin key check
@@ -480,6 +481,10 @@ async def calculate_daily_interest(
     ).to_list(10000)
     
     total_interest_accrued = 0
+    emails_sent = 0
+    
+    # Group deposits by customer for email consolidation
+    customer_deposits = {}
     
     for deposit in active_deposits:
         created = datetime.fromisoformat(deposit.get("created_at").replace("Z", "+00:00"))
@@ -499,10 +504,47 @@ async def calculate_daily_interest(
                 "$set": {"last_interest_calc": now.isoformat()}
             }
         )
+        
+        # Group for email
+        customer_id = deposit.get("customer_id")
+        if customer_id not in customer_deposits:
+            customer_deposits[customer_id] = {
+                "total_interest": 0,
+                "deposits": []
+            }
+        customer_deposits[customer_id]["total_interest"] += daily_interest
+        customer_deposits[customer_id]["deposits"].append(deposit)
+    
+    # Send email notifications if enabled
+    if send_emails:
+        for customer_id, data in customer_deposits.items():
+            if data["total_interest"] > 0.0001:  # Only send if meaningful interest
+                try:
+                    # Get customer details
+                    customer = await db.users.find_one(
+                        {"id": customer_id},
+                        {"_id": 0, "email": 1, "name": 1, "balance": 1}
+                    )
+                    if customer and customer.get("email"):
+                        # Use the largest deposit for display
+                        largest_deposit = max(data["deposits"], key=lambda d: d.get("amount", 0))
+                        
+                        await send_interest_payout_notification(
+                            to_email=customer["email"],
+                            user_name=customer.get("name", "Kunde"),
+                            interest_amount=data["total_interest"],
+                            deposit_amount=largest_deposit.get("amount", 0),
+                            interest_rate=largest_deposit.get("interest_rate", 0),
+                            total_balance=customer.get("balance", 0)
+                        )
+                        emails_sent += 1
+                except Exception as e:
+                    print(f"Error sending interest email to {customer_id}: {e}")
     
     return {
         "success": True,
         "deposits_processed": len(active_deposits),
         "total_interest_accrued": round(total_interest_accrued, 2),
+        "emails_sent": emails_sent,
         "calculated_at": now.isoformat()
     }
