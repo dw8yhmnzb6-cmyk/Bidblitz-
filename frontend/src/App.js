@@ -384,6 +384,43 @@ function AppContent() {
               <BidBlitzPay />
             </ProtectedRoute>
           } />
+          
+          {/* Watchlist - Beobachtete Auktionen */}
+          <Route path="/watchlist" element={
+            <ProtectedRoute>
+              <WatchlistPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/beobachtungsliste" element={
+            <ProtectedRoute>
+              <WatchlistPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* Auto-Bid - Automatisches Bieten */}
+          <Route path="/auto-bid" element={
+            <ProtectedRoute>
+              <AutoBidPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/autobieten" element={
+            <ProtectedRoute>
+              <AutoBidPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* VIP Loyalty - Treueprogramm */}
+          <Route path="/vip" element={
+            <ProtectedRoute>
+              <VIPPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/vip-programm" element={
+            <ProtectedRoute>
+              <VIPPage />
+            </ProtectedRoute>
+          } />
+          
           {/* Loyalty & Stats */}
           <Route path="/loyalty" element={
             <ProtectedRoute>
