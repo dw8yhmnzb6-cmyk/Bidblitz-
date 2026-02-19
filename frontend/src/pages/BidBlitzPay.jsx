@@ -17,17 +17,8 @@ import { walletTranslations } from '../i18n/walletTranslations';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
-// Translations
-const translations = {
-  de: {
-    // Navigation & Header
-    wallet: 'Geldbörse',
-    pay: 'Bezahlen',
-    send: 'Senden',
-    history: 'Verlauf',
-    vouchers: 'Gutscheine',
-    security: 'Sicherheit',
-    cashback: 'Cashback',
+// Use centralized translations from external file
+const translations = walletTranslations;
     
     // Balance & Account
     availableBalance: 'Verfügbares Guthaben',
