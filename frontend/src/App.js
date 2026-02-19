@@ -350,6 +350,10 @@ function AppContent() {
           <Route path="/influencer-dashboard" element={<InfluencerDashboard />} />
           <Route path="/influencer-werden" element={<InfluencerBecome />} />
           <Route path="/auto-werbung" element={<CarAdvertising />} />
+          {/* Deposit Offers & Interest */}
+          <Route path="/einzahlen" element={<DepositOffers />} />
+          <Route path="/deposit" element={<DepositOffers />} />
+          <Route path="/bonus" element={<DepositOffers />} />
           {/* Manager Pages */}
           <Route path="/manager" element={<ManagerDashboard />} />
           <Route path="/manager-login" element={<ManagerDashboard />} />
