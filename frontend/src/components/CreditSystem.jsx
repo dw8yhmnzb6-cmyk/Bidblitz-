@@ -188,7 +188,18 @@ const translations = {
     yourDocuments: 'Your Documents',
     allDocumentsRequired: 'All documents are required',
     holdIdVisible: 'Hold ID clearly visible',
-    clear3MonthStatements: 'Clear bank statements from last 3 months'
+    clear3MonthStatements: 'Clear bank statements from last 3 months',
+    of: 'of',
+    points: 'Points',
+    progressTo: 'Progress to',
+    yourBenefits: 'Your Benefits',
+    allTiers: 'All Tiers',
+    tierRed: 'Red',
+    tierYellow: 'Yellow',
+    tierGreen: 'Green',
+    tierGold: 'Gold',
+    tierDiamond: 'Diamond',
+    tier: 'Tier'
   },
   tr: {
     creditSystem: 'Kredi Sistemi', applyForCredit: 'Kredi Başvurusu',
