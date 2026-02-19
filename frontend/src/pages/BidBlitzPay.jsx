@@ -2048,7 +2048,7 @@ const BidBlitzPay = () => {
         {/* Bonus / Deposit Offers View */}
         {view === 'bonus' && (
           <div data-testid="bonus-offers-view">
-            <DepositOffers />
+            <DepositOffers onBalanceChange={fetchWallet} />
           </div>
         )}
 
