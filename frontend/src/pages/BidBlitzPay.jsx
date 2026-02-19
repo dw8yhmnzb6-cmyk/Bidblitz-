@@ -904,7 +904,7 @@ const BidBlitzPay = () => {
                 <div className="flex items-center gap-2 bg-gradient-to-r from-green-400/30 to-emerald-400/30 rounded-xl p-3">
                   <Zap className="w-5 h-5 text-yellow-300" />
                   <div>
-                    <p className="text-white/70 text-xs">{language === 'de' ? 'Gratis-Gebote' : 'Free Bids'}</p>
+                    <p className="text-white/70 text-xs">{t('freeBids')}</p>
                     <p className="font-bold text-lg text-yellow-300" data-testid="free-bids-balance">{authUser.bids_balance}</p>
                   </div>
                 </div>
