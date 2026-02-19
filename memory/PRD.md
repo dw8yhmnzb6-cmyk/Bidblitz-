@@ -19,6 +19,14 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
   - `/app/frontend/src/pages/BidBlitzPay.jsx` (Import + Bonus View)
   - `/app/frontend/src/i18n/walletTranslations.js` (bonusOffers Key)
 
+#### Homepage Deposit Bonus Banner ⚠️ (Hot-Reload-Problem)
+- **Task:** Deposit-Bonus-Banner zur Homepage hinzugefügt
+- **Status:** Code implementiert, aber Hot-Reload lädt alte Version
+- **Änderungen:**
+  - `/app/frontend/src/components/DepositBonusBanner.jsx` (NEU)
+  - `/app/frontend/src/pages/Home.js` (Import + Banner an oberster Stelle)
+- **Nächster Schritt:** Vollständiger Re-Deploy erforderlich, um das Banner sichtbar zu machen
+
 ---
 
 ### ✅ Session Update - February 19, 2026 (Session 52) - COMPLETE ✅
