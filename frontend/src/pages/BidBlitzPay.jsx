@@ -54,8 +54,8 @@ const BidBlitzPay = () => {
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
   const [view, setView] = useState('wallet'); // wallet, qr, history, topup, security, send, request
-  // Use global language from localStorage (same as Navbar)
-  const [language, setLanguage] = useState(() => localStorage.getItem('language') || localStorage.getItem('bidblitz_language') || 'de');
+  // Use global language from localStorage
+  const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'de');
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [mainBalance, setMainBalance] = useState(0);
   const [topUpAmount, setTopUpAmount] = useState('');
