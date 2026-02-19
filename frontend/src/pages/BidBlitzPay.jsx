@@ -409,7 +409,7 @@ const BidBlitzPay = () => {
   const sendMoney = async (e) => {
     e.preventDefault();
     if (!recipientEmail || !sendAmount) {
-      toast.error(t('fillAllFields') || 'Bitte alle Felder ausfüllen');
+      toast.error(t('fillAllFields'));
       return;
     }
     
