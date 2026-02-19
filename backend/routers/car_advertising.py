@@ -14,6 +14,211 @@ from utils.email import send_email
 router = APIRouter(prefix="/car-advertising", tags=["Car Advertising"])
 
 
+# ==================== EMAIL TEMPLATES ====================
+
+async def send_car_advertising_approval_email(to_email: str, name: str, car_model: str):
+    """Send email when car advertising application is approved."""
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff;">
+            <tr>
+                <td style="background:linear-gradient(135deg,#10B981,#059669); padding:30px; text-align:center;">
+                    <h1 style="color:#fff; margin:0; font-size:28px;">🎉 Herzlichen Glückwunsch!</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:30px;">
+                    <p style="font-size:18px; color:#333;">Hallo <strong>{name}</strong>,</p>
+                    <p style="font-size:16px; color:#555;">
+                        Großartige Neuigkeiten! Ihre Bewerbung für das Auto-Werbung Programm wurde <strong style="color:#10B981;">genehmigt</strong>! 🚗
+                    </p>
+                    
+                    <table width="100%" style="background:#f9f9f9; border-radius:10px; padding:20px; margin:20px 0;">
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Fahrzeug:</p>
+                            <p style="margin:5px 0 0; font-size:18px; color:#333; font-weight:bold;">{car_model}</p>
+                        </td></tr>
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Monatliche Vergütung:</p>
+                            <p style="margin:5px 0 0; font-size:28px; color:#10B981; font-weight:bold;">€50,00</p>
+                        </td></tr>
+                    </table>
+                    
+                    <div style="background:#FEF3C7; border-left:4px solid #F59E0B; padding:15px; margin:20px 0; border-radius:0 10px 10px 0;">
+                        <p style="margin:0; font-size:14px; color:#555;">
+                            <strong>Nächste Schritte:</strong><br>
+                            Unser Team wird sich in Kürze mit Ihnen in Verbindung setzen, um einen Termin für die kostenlose Fahrzeugfolierung zu vereinbaren.
+                        </p>
+                    </div>
+                    
+                    <div style="text-align:center; margin-top:30px;">
+                        <a href="https://bidblitz.ae/auto-werbung" 
+                           style="display:inline-block; background:#10B981; color:#fff; padding:15px 30px; 
+                                  text-decoration:none; border-radius:8px; font-weight:bold; font-size:16px;">
+                            Mehr erfahren →
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="background:#1a1a1a; padding:20px; text-align:center;">
+                    <p style="margin:0; color:#888; font-size:12px;">
+                        © 2026 BidBlitz.ae | Auto-Werbung Programm
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=to_email,
+        subject=f"🎉 Auto-Werbung Bewerbung genehmigt - {name}",
+        html_content=html_content
+    )
+
+
+async def send_car_advertising_rejection_email(to_email: str, name: str, reason: Optional[str] = None):
+    """Send email when car advertising application is rejected."""
+    reason_text = f"<p style='font-size:14px; color:#555;'><strong>Grund:</strong> {reason}</p>" if reason else ""
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff;">
+            <tr>
+                <td style="background:linear-gradient(135deg,#6B7280,#4B5563); padding:30px; text-align:center;">
+                    <h1 style="color:#fff; margin:0; font-size:28px;">Auto-Werbung Bewerbung</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:30px;">
+                    <p style="font-size:18px; color:#333;">Hallo <strong>{name}</strong>,</p>
+                    <p style="font-size:16px; color:#555;">
+                        Vielen Dank für Ihr Interesse am Auto-Werbung Programm von BidBlitz.
+                    </p>
+                    <p style="font-size:16px; color:#555;">
+                        Leider können wir Ihre Bewerbung zu diesem Zeitpunkt nicht annehmen.
+                    </p>
+                    
+                    {reason_text}
+                    
+                    <div style="background:#F3F4F6; border-radius:10px; padding:20px; margin:20px 0;">
+                        <p style="margin:0; font-size:14px; color:#555;">
+                            <strong>💡 Mögliche Gründe:</strong>
+                        </p>
+                        <ul style="color:#666; font-size:14px; margin:10px 0 0 0; padding-left:20px;">
+                            <li>Region derzeit nicht verfügbar</li>
+                            <li>Fahrzeugalter über 10 Jahre</li>
+                            <li>Zu geringe monatliche Kilometerleistung</li>
+                        </ul>
+                    </div>
+                    
+                    <p style="font-size:14px; color:#888;">
+                        Sie können sich gerne in Zukunft erneut bewerben, wenn sich Ihre Umstände ändern.
+                    </p>
+                    
+                    <div style="text-align:center; margin-top:30px;">
+                        <a href="mailto:support@bidblitz.ae" 
+                           style="display:inline-block; background:#6B7280; color:#fff; padding:15px 30px; 
+                                  text-decoration:none; border-radius:8px; font-weight:bold; font-size:16px;">
+                            Bei Fragen kontaktieren →
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="background:#1a1a1a; padding:20px; text-align:center;">
+                    <p style="margin:0; color:#888; font-size:12px;">
+                        © 2026 BidBlitz.ae | Auto-Werbung Programm
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=to_email,
+        subject=f"Auto-Werbung Bewerbung - Aktualisierung",
+        html_content=html_content
+    )
+
+
+async def send_car_advertising_activation_email(to_email: str, name: str, car_model: str):
+    """Send email when car advertising contract is activated."""
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff;">
+            <tr>
+                <td style="background:linear-gradient(135deg,#FFD700,#FFA500); padding:30px; text-align:center;">
+                    <h1 style="color:#111; margin:0; font-size:28px;">🚗 Vertrag aktiviert!</h1>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding:30px;">
+                    <p style="font-size:18px; color:#333;">Hallo <strong>{name}</strong>,</p>
+                    <p style="font-size:16px; color:#555;">
+                        Ihr Auto-Werbung Vertrag ist jetzt <strong style="color:#10B981;">aktiv</strong>! 
+                        Ab sofort verdienen Sie <strong>€50 pro Monat</strong>! 💰
+                    </p>
+                    
+                    <table width="100%" style="background:#f9f9f9; border-radius:10px; padding:20px; margin:20px 0;">
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Fahrzeug:</p>
+                            <p style="margin:5px 0 0; font-size:18px; color:#333; font-weight:bold;">{car_model}</p>
+                        </td></tr>
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Monatliche Vergütung:</p>
+                            <p style="margin:5px 0 0; font-size:28px; color:#10B981; font-weight:bold;">€50,00</p>
+                        </td></tr>
+                        <tr><td style="padding:10px;">
+                            <p style="margin:0; font-size:14px; color:#888;">Vertragsbeginn:</p>
+                            <p style="margin:5px 0 0; font-size:18px; color:#333; font-weight:bold;">{datetime.now(timezone.utc).strftime('%d.%m.%Y')}</p>
+                        </td></tr>
+                    </table>
+                    
+                    <div style="background:#ECFDF5; border-left:4px solid #10B981; padding:15px; margin:20px 0; border-radius:0 10px 10px 0;">
+                        <p style="margin:0; font-size:14px; color:#065F46;">
+                            <strong>📅 Auszahlung:</strong><br>
+                            Ihre Vergütung wird automatisch am Ende jedes Monats auf Ihr BidBlitz-Wallet gutgeschrieben.
+                        </p>
+                    </div>
+                    
+                    <p style="font-size:14px; color:#555;">
+                        Vielen Dank, dass Sie BidBlitz auf den Straßen repräsentieren! 🙌
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="background:#1a1a1a; padding:20px; text-align:center;">
+                    <p style="margin:0; color:#888; font-size:12px;">
+                        © 2026 BidBlitz.ae | Auto-Werbung Programm
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=to_email,
+        subject=f"🚗 Auto-Werbung Vertrag aktiviert - €50/Monat ab sofort!",
+        html_content=html_content
+    )
+
+
 class CarAdvertisingApplication(BaseModel):
     name: str
     email: EmailStr
