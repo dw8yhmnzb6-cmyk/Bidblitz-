@@ -1368,7 +1368,7 @@ const BidBlitzPay = () => {
                       onClick={() => setScannedRequest(null)}
                       className="flex-1"
                     >
-                      {language === 'de' ? 'Abbrechen' : 'Cancel'}
+                      {t('cancel')}
                     </Button>
                     <Button
                       onClick={payScannedRequest}
