@@ -114,6 +114,8 @@ const translations = {
     top: 'TOP',
     vip: 'VIP',
     success: 'Deposit successful!',
+    deposited: 'deposited',
+    freeBidsBonus: 'free bids as bonus',
     insufficientFunds: 'Insufficient card balance',
     loginRequired: 'Please login',
     calculator: 'Interest Calculator',
