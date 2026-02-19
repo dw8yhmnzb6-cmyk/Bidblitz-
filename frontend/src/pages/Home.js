@@ -632,6 +632,9 @@ export default function Home() {
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #87CEEB 0%, #5BA3C6 100%)' }} data-testid="home-page">
       <div className="max-w-6xl mx-auto px-4 py-6">
         
+        {/* Deposit Bonus Banner - Prominent Position (Top) */}
+        <DepositBonusBanner language={mappedLang} className="mb-6" />
+        
         {/* Live Winner Ticker - Social Proof */}
         <LiveWinnerTicker />
         
