@@ -288,6 +288,10 @@ const BidBlitzPay = () => {
         setView('wallet');
         fetchWallet();
         fetchTransactions();
+        // Refresh user balance in navbar
+        if (refreshUser) {
+          await refreshUser();
+        }
       } else {
         const error = await response.json();
         toast.error(error.detail || 'Transfer fehlgeschlagen');
