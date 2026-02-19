@@ -140,7 +140,7 @@ export const Navbar = () => {
                 data-testid="nav-manager"
               >
                 <Shield className="w-4 h-4" />
-                Manager
+                {t('nav.manager')}
               </Link>
             )}
           </div>
