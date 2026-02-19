@@ -1007,7 +1007,7 @@ const BidBlitzPay = () => {
             <div className="bg-white rounded-2xl shadow-lg p-6">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <RefreshCw className="w-5 h-5 text-amber-500" />
-                {language === 'de' ? 'Guthaben übertragen' : 'Transfer Balance'}
+                {t('transferBalance')}
               </h2>
               
               {/* Direction Toggle */}
@@ -1021,7 +1021,7 @@ const BidBlitzPay = () => {
                   }`}
                 >
                   <ArrowDownLeft className="w-4 h-4 inline mr-2" />
-                  {language === 'de' ? 'Auf BidBlitz Pay' : 'To BidBlitz Pay'}
+                  {t('toBidBlitzPay')}
                 </button>
                 <button
                   onClick={() => setTransferDirection('toMain')}
@@ -1032,21 +1032,21 @@ const BidBlitzPay = () => {
                   }`}
                 >
                   <ArrowUpRight className="w-4 h-4 inline mr-2" />
-                  {language === 'de' ? 'Auf Hauptkonto' : 'To Main Account'}
+                  {t('toMainAccount')}
                 </button>
               </div>
               
               {/* Balance Display */}
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div className={`rounded-xl p-4 ${transferDirection === 'toWallet' ? 'bg-amber-50 border-2 border-amber-300' : 'bg-gray-50'}`}>
-                  <p className="text-xs text-gray-500 mb-1">Hauptkonto</p>
+                  <p className="text-xs text-gray-500 mb-1">{t('mainAccount')}</p>
                   <p className="text-xl font-bold text-gray-800">€{mainBalance.toFixed(2)}</p>
-                  {transferDirection === 'toWallet' && <p className="text-xs text-amber-600 mt-1">↓ Von hier</p>}
+                  {transferDirection === 'toWallet' && <p className="text-xs text-amber-600 mt-1">↓ {t('fromHere')}</p>}
                 </div>
                 <div className={`rounded-xl p-4 ${transferDirection === 'toMain' ? 'bg-green-50 border-2 border-green-300' : 'bg-gray-50'}`}>
-                  <p className="text-xs text-gray-500 mb-1">BidBlitz Pay</p>
+                  <p className="text-xs text-gray-500 mb-1">{t('bidblitzPay')}</p>
                   <p className="text-xl font-bold text-gray-800">€{(wallet?.wallet?.total_value || 0).toFixed(2)}</p>
-                  {transferDirection === 'toMain' && <p className="text-xs text-green-600 mt-1">↓ Von hier</p>}
+                  {transferDirection === 'toMain' && <p className="text-xs text-green-600 mt-1">↓ {t('fromHere')}</p>}
                 </div>
               </div>
               
