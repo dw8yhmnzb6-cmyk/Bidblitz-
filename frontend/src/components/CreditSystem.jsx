@@ -349,7 +349,9 @@ const translations = {
     tierGreen: 'Jeshile',
     tierGold: 'Artë',
     tierDiamond: 'Diamant',
-    tier: 'Niveli'
+    tier: 'Niveli',
+    walletBalanceLabel: 'Bilanci i Portofolit',
+    months: 'Muaj'
   }
 };
 
