@@ -185,8 +185,8 @@ export const walletTranslations = {
     or: 'oder',
     cancel: 'Abbrechen',
     descriptionPlaceholder: 'z.B. Abendessen teilen',
-    recipientPlaceholder: 'Kundennummer oder E-Mail',
-    recipientHint: 'Geben Sie die Kundennummer oder E-Mail des Empfängers ein',
+    recipientPlaceholder: 'BID-XXXXXX oder P-XXXXX oder E-Mail',
+    recipientHint: 'Kundennummer (BID-XXXXXX), Partnernummer (P-XXXXX) oder E-Mail',
     messagePlaceholder: 'Nachricht an Empfänger...',
     
     // Errors
