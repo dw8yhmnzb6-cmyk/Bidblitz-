@@ -5,7 +5,31 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 19, 2026)
 
-### ✅ Session Update - February 19, 2026 (Session 50) - I18N REFACTORING ✅
+### ✅ Session Update - February 19, 2026 (Session 50) - SCHNELLÜBERWEISUNG ✅
+
+#### Neue Feature: Schnellüberweisung / Quick Transfer ✅
+
+**Implementiert:**
+- Nach erfolgreicher Überweisung wird der Empfänger in localStorage gespeichert
+- "Letzte Überweisung" Karte erscheint im "Senden" Tab mit:
+  - E-Mail des letzten Empfängers
+  - Letzter überwiesener Betrag
+  - "Übernehmen" Button zum Wiederverwenden
+- Ein Klick auf "Übernehmen" füllt das Empfängerfeld automatisch aus
+- Benutzer muss nur noch den gewünschten Betrag eingeben
+
+**Geänderte Dateien:**
+- `/app/frontend/src/pages/BidBlitzPay.jsx`:
+  - State `lastRecipient` hinzugefügt (Zeilen 68-78)
+  - `sendMoney()` speichert Empfänger nach Erfolg (Zeilen 420-428)
+  - `useLastRecipient()` Funktion zum Übernehmen (Zeilen 450-457)
+  - UI-Komponente "Letzte Überweisung" (Zeilen 1166-1198)
+
+**Test-Status:** ✅ Screenshot bestätigt Funktionalität
+
+---
+
+### ✅ I18N REFACTORING (Früher in dieser Session) ✅
 
 #### Internationalisierung: BidBlitzPay.jsx Refactoring ✅
 
