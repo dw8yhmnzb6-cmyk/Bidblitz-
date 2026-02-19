@@ -551,7 +551,7 @@ const BidBlitzPay = () => {
         setLastSuccessfulRecipient(null);
         fetchSavedRecipients();
       } else {
-        toast.error(data.detail || 'Error');
+        toast.error(data.detail || t('errorSaving'));
       }
     } catch (error) {
       console.error('Save recipient error:', error);
