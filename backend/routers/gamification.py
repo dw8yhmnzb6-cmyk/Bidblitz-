@@ -585,3 +585,373 @@ __all__ = [
     'ACHIEVEMENTS',
     'STREAK_REWARDS'
 ]
+
+
+# ==================== MONTHLY LEADERBOARD ====================
+
+LEADERBOARD_PRIZES = {
+    1: {"free_bids": 50, "bonus": 25, "badge": "monthly_champion", "title_de": "Bieter des Monats", "title_en": "Bidder of the Month"},
+    2: {"free_bids": 30, "bonus": 15, "badge": "silver_bidder", "title_de": "Silber-Bieter", "title_en": "Silver Bidder"},
+    3: {"free_bids": 15, "bonus": 10, "badge": "bronze_bidder", "title_de": "Bronze-Bieter", "title_en": "Bronze Bidder"},
+}
+
+
+@router.get("/leaderboard")
+async def get_monthly_leaderboard(
+    month: Optional[int] = None,
+    year: Optional[int] = None,
+    limit: int = 10,
+    language: str = "de"
+):
+    """Get top bidders for a specific month"""
+    from fastapi import Query
+    now = datetime.now(timezone.utc)
+    target_month = month or now.month
+    target_year = year or now.year
+    
+    # Calculate date range
+    start_date = datetime(target_year, target_month, 1, tzinfo=timezone.utc)
+    if target_month == 12:
+        end_date = datetime(target_year + 1, 1, 1, tzinfo=timezone.utc)
+    else:
+        end_date = datetime(target_year, target_month + 1, 1, tzinfo=timezone.utc)
+    
+    # Aggregate bids by user
+    pipeline = [
+        {
+            "$match": {
+                "created_at": {
+                    "$gte": start_date.isoformat(),
+                    "$lt": end_date.isoformat()
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$user_id",
+                "total_bids": {"$sum": 1},
+                "auctions_participated": {"$addToSet": "$auction_id"}
+            }
+        },
+        {
+            "$project": {
+                "user_id": "$_id",
+                "total_bids": 1,
+                "auctions_count": {"$size": "$auctions_participated"},
+                "_id": 0
+            }
+        },
+        {"$sort": {"total_bids": -1}},
+        {"$limit": limit}
+    ]
+    
+    leaderboard_data = await db.bids.aggregate(pipeline).to_list(limit)
+    
+    # Enrich with user data
+    leaderboard = []
+    for i, entry in enumerate(leaderboard_data):
+        user_id = entry.get("user_id")
+        user = await db.users.find_one(
+            {"id": user_id},
+            {"_id": 0, "username": 1, "avatar": 1, "customer_number": 1}
+        )
+        
+        rank = i + 1
+        prize = LEADERBOARD_PRIZES.get(rank, {})
+        
+        leaderboard.append({
+            "rank": rank,
+            "user_id": user_id,
+            "username": user.get("username", "Anonymous") if user else "Anonymous",
+            "avatar": user.get("avatar") if user else None,
+            "total_bids": entry.get("total_bids", 0),
+            "auctions_count": entry.get("auctions_count", 0),
+            "prize": prize if prize else None,
+            "is_winner": rank <= 3
+        })
+    
+    month_names_de = ["Januar", "Februar", "März", "April", "Mai", "Juni", 
+                     "Juli", "August", "September", "Oktober", "November", "Dezember"]
+    month_names_en = ["January", "February", "March", "April", "May", "June",
+                     "July", "August", "September", "October", "November", "December"]
+    
+    return {
+        "month": target_month,
+        "year": target_year,
+        "month_name": month_names_de[target_month - 1] if language == "de" else month_names_en[target_month - 1],
+        "leaderboard": leaderboard,
+        "prizes": [
+            {
+                "rank": k,
+                "free_bids": v["free_bids"],
+                "bonus": v["bonus"],
+                "title": v[f"title_{language}"]
+            }
+            for k, v in LEADERBOARD_PRIZES.items()
+        ]
+    }
+
+
+@router.get("/leaderboard/my-rank")
+async def get_my_leaderboard_rank(user: dict = Depends(get_current_user)):
+    """Get current user's rank in the monthly leaderboard"""
+    now = datetime.now(timezone.utc)
+    user_id = user.get("id")
+    
+    # Calculate date range for current month
+    start_date = datetime(now.year, now.month, 1, tzinfo=timezone.utc)
+    if now.month == 12:
+        end_date = datetime(now.year + 1, 1, 1, tzinfo=timezone.utc)
+    else:
+        end_date = datetime(now.year, now.month + 1, 1, tzinfo=timezone.utc)
+    
+    # Get user's bid count
+    user_bids = await db.bids.count_documents({
+        "user_id": user_id,
+        "created_at": {
+            "$gte": start_date.isoformat(),
+            "$lt": end_date.isoformat()
+        }
+    })
+    
+    # Count users with more bids
+    pipeline = [
+        {
+            "$match": {
+                "created_at": {
+                    "$gte": start_date.isoformat(),
+                    "$lt": end_date.isoformat()
+                }
+            }
+        },
+        {
+            "$group": {
+                "_id": "$user_id",
+                "total_bids": {"$sum": 1}
+            }
+        },
+        {
+            "$match": {
+                "total_bids": {"$gt": user_bids}
+            }
+        },
+        {"$count": "users_ahead"}
+    ]
+    
+    result = await db.bids.aggregate(pipeline).to_list(1)
+    users_ahead = result[0]["users_ahead"] if result else 0
+    rank = users_ahead + 1
+    
+    return {
+        "rank": rank,
+        "total_bids": user_bids,
+        "month": now.month,
+        "year": now.year,
+        "is_top_10": rank <= 10,
+        "is_prize_position": rank <= 3,
+        "potential_prize": LEADERBOARD_PRIZES.get(rank) if rank <= 3 else None
+    }
+
+
+# ==================== DAILY LOGIN REWARDS ====================
+
+LOGIN_REWARDS = {
+    1: {"free_bids": 1, "bonus": 0, "badge": None},
+    2: {"free_bids": 2, "bonus": 0, "badge": None},
+    3: {"free_bids": 5, "bonus": 0, "badge": None},
+    4: {"free_bids": 3, "bonus": 0, "badge": None},
+    5: {"free_bids": 4, "bonus": 0, "badge": None},
+    6: {"free_bids": 5, "bonus": 0, "badge": None},
+    7: {"free_bids": 10, "bonus": 5, "badge": "daily_login_7"},
+    14: {"free_bids": 15, "bonus": 10, "badge": "two_week_streak"},
+    30: {"free_bids": 25, "bonus": 20, "badge": "monthly_streak", "vip_days": 7},
+}
+
+
+@router.post("/daily-login")
+async def claim_daily_login_reward(user: dict = Depends(get_current_user)):
+    """Claim daily login reward and update streak"""
+    user_id = user.get("id")
+    now = datetime.now(timezone.utc)
+    today = now.date()
+    
+    # Get user's login streak data
+    streak_data = await db.login_streaks.find_one({"user_id": user_id}, {"_id": 0})
+    
+    if not streak_data:
+        streak_data = {
+            "user_id": user_id,
+            "current_streak": 0,
+            "longest_streak": 0,
+            "last_login_date": None,
+            "total_rewards_claimed": 0
+        }
+    
+    last_login = streak_data.get("last_login_date")
+    current_streak = streak_data.get("current_streak", 0)
+    
+    # Check if already claimed today
+    if last_login:
+        last_login_date = datetime.fromisoformat(last_login.replace("Z", "+00:00")).date()
+        if last_login_date == today:
+            return {
+                "already_claimed": True,
+                "current_streak": current_streak,
+                "message_de": "Du hast deine tägliche Belohnung bereits abgeholt!",
+                "message_en": "You've already claimed your daily reward!"
+            }
+        
+        yesterday = today - timedelta(days=1)
+        if last_login_date == yesterday:
+            current_streak += 1
+        else:
+            current_streak = 1
+    else:
+        current_streak = 1
+    
+    # Determine reward
+    reward_key = current_streak
+    if current_streak > 30:
+        reward_key = ((current_streak - 1) % 30) + 1
+    
+    reward = LOGIN_REWARDS.get(reward_key)
+    if not reward:
+        for tier in sorted(LOGIN_REWARDS.keys(), reverse=True):
+            if current_streak >= tier:
+                reward = LOGIN_REWARDS[tier]
+                break
+        if not reward:
+            reward = LOGIN_REWARDS[1]
+    
+    # Apply rewards
+    free_bids = reward.get("free_bids", 0)
+    bonus = reward.get("bonus", 0)
+    badge = reward.get("badge")
+    vip_days = reward.get("vip_days", 0)
+    
+    update_fields = {}
+    if free_bids > 0:
+        update_fields["bids_balance"] = free_bids
+    if bonus > 0:
+        update_fields["balance"] = bonus
+    
+    if update_fields:
+        await db.users.update_one({"id": user_id}, {"$inc": update_fields})
+    
+    # Award VIP if applicable
+    if vip_days > 0:
+        vip_until = now + timedelta(days=vip_days)
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": {"vip_until": vip_until.isoformat(), "is_vip": True}}
+        )
+    
+    # Award badge if applicable
+    new_badge = None
+    if badge:
+        new_badge = await grant_achievement_with_reward(user_id, badge)
+    
+    # Update streak data
+    longest_streak = max(streak_data.get("longest_streak", 0), current_streak)
+    
+    await db.login_streaks.update_one(
+        {"user_id": user_id},
+        {
+            "$set": {
+                "current_streak": current_streak,
+                "longest_streak": longest_streak,
+                "last_login_date": now.isoformat(),
+                "updated_at": now.isoformat()
+            },
+            "$inc": {"total_rewards_claimed": 1}
+        },
+        upsert=True
+    )
+    
+    # Calculate next milestone
+    next_milestone = None
+    for tier in sorted(LOGIN_REWARDS.keys()):
+        if tier > current_streak:
+            next_milestone = {
+                "day": tier,
+                "days_remaining": tier - current_streak,
+                "reward": LOGIN_REWARDS[tier]
+            }
+            break
+    
+    return {
+        "success": True,
+        "already_claimed": False,
+        "current_streak": current_streak,
+        "longest_streak": longest_streak,
+        "reward": {
+            "free_bids": free_bids,
+            "bonus": bonus,
+            "vip_days": vip_days
+        },
+        "new_badge": new_badge,
+        "next_milestone": next_milestone,
+        "message_de": f"Tag {current_streak}! Du erhältst {free_bids} Gratis-Gebote" + (f" + €{bonus} Bonus!" if bonus else "!"),
+        "message_en": f"Day {current_streak}! You receive {free_bids} free bids" + (f" + €{bonus} bonus!" if bonus else "!")
+    }
+
+
+@router.get("/login-streak")
+async def get_login_streak(user: dict = Depends(get_current_user)):
+    """Get user's current login streak status"""
+    user_id = user.get("id")
+    now = datetime.now(timezone.utc)
+    today = now.date()
+    
+    streak_data = await db.login_streaks.find_one({"user_id": user_id}, {"_id": 0})
+    
+    if not streak_data:
+        return {
+            "current_streak": 0,
+            "longest_streak": 0,
+            "can_claim": True,
+            "next_reward": LOGIN_REWARDS[1],
+            "upcoming_milestones": [
+                {"day": k, "days_remaining": k, "reward": v}
+                for k, v in sorted(LOGIN_REWARDS.items())[:3]
+            ]
+        }
+    
+    current_streak = streak_data.get("current_streak", 0)
+    last_login = streak_data.get("last_login_date")
+    
+    can_claim = True
+    streak_valid = True
+    
+    if last_login:
+        last_login_date = datetime.fromisoformat(last_login.replace("Z", "+00:00")).date()
+        if last_login_date == today:
+            can_claim = False
+        elif last_login_date < today - timedelta(days=1):
+            streak_valid = False
+    
+    next_day = current_streak + 1 if streak_valid else 1
+    next_reward = LOGIN_REWARDS.get(next_day, LOGIN_REWARDS[1])
+    
+    upcoming_milestones = []
+    for tier in sorted(LOGIN_REWARDS.keys()):
+        if tier > current_streak:
+            upcoming_milestones.append({
+                "day": tier,
+                "days_remaining": tier - current_streak,
+                "reward": LOGIN_REWARDS[tier]
+            })
+            if len(upcoming_milestones) >= 3:
+                break
+    
+    return {
+        "current_streak": current_streak if streak_valid else 0,
+        "longest_streak": streak_data.get("longest_streak", 0),
+        "can_claim": can_claim,
+        "streak_valid": streak_valid,
+        "total_rewards_claimed": streak_data.get("total_rewards_claimed", 0),
+        "next_reward": next_reward,
+        "upcoming_milestones": upcoming_milestones,
+        "last_login_date": last_login
+    }
+
