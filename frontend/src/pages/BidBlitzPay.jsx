@@ -803,7 +803,7 @@ const BidBlitzPay = () => {
   }, [fetchWallet, fetchTransactions, fetchMainBalance, fetchCustomerNumber, fetchSavedRecipients]);
 
   useEffect(() => {
-    localStorage.setItem('bidblitz_language', language);
+    localStorage.setItem('language', language);
   }, [language]);
 
   // Auto-refresh QR code every 4 minutes
