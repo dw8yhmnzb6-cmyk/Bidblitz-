@@ -697,3 +697,176 @@ async def api_documentation():
             "verification": "Create HMAC-SHA256 of 'timestamp.payload' using your secret key"
         }
     }
+
+
+# ==================== CUSTOMER CHECKOUT (App-side) ====================
+
+@router.get("/checkout/{payment_id}")
+async def get_checkout_details(payment_id: str):
+    """
+    Get payment details for customer checkout page (public endpoint).
+    
+    This is called when a customer opens the checkout URL in their BidBlitz app.
+    """
+    payment = await db.digital_payments.find_one(
+        {"id": payment_id},
+        {"_id": 0, "webhook_url": 0, "api_key_id": 0}
+    )
+    
+    if not payment:
+        raise HTTPException(status_code=404, detail="Zahlung nicht gefunden")
+    
+    # Check if expired
+    if payment.get("status") == "pending":
+        expires_at = datetime.fromisoformat(payment["expires_at"].replace("Z", "+00:00"))
+        if datetime.now(timezone.utc) > expires_at:
+            await db.digital_payments.update_one(
+                {"id": payment_id},
+                {"$set": {"status": "expired"}}
+            )
+            payment["status"] = "expired"
+    
+    # Get merchant info
+    api_key = await db.api_keys.find_one(
+        {"id": payment.get("api_key_id")},
+        {"_id": 0, "name": 1}
+    )
+    
+    return {
+        "payment_id": payment_id,
+        "merchant_name": payment.get("api_key_name", api_key.get("name") if api_key else "Händler"),
+        "amount": payment.get("amount"),
+        "currency": payment.get("currency", "EUR"),
+        "description": payment.get("description"),
+        "reference": payment.get("reference"),
+        "status": payment.get("status"),
+        "created_at": payment.get("created_at"),
+        "expires_at": payment.get("expires_at")
+    }
+
+
+@router.post("/checkout/{payment_id}/confirm")
+async def confirm_checkout_payment(
+    payment_id: str,
+    user_id: str = None,
+    pin: str = None
+):
+    """
+    Customer confirms payment from their BidBlitz wallet.
+    
+    This deducts from the customer's BidBlitz Pay balance.
+    In production, this would require user authentication.
+    """
+    # Get payment
+    payment = await db.digital_payments.find_one(
+        {"id": payment_id},
+        {"_id": 0}
+    )
+    
+    if not payment:
+        raise HTTPException(status_code=404, detail="Zahlung nicht gefunden")
+    
+    if payment.get("status") != "pending":
+        raise HTTPException(status_code=400, detail=f"Zahlung kann nicht abgeschlossen werden (Status: {payment['status']})")
+    
+    # Check expiry
+    expires_at = datetime.fromisoformat(payment["expires_at"].replace("Z", "+00:00"))
+    if datetime.now(timezone.utc) > expires_at:
+        await db.digital_payments.update_one(
+            {"id": payment_id},
+            {"$set": {"status": "expired"}}
+        )
+        raise HTTPException(status_code=400, detail="Zahlung ist abgelaufen")
+    
+    amount = payment.get("amount", 0)
+    
+    # If customer_id is set, verify and use their balance
+    customer_id = payment.get("customer_id") or user_id
+    
+    if customer_id:
+        # Find customer by customer_number (BID-XXXXXX) or user_id
+        if customer_id.startswith("BID-"):
+            user = await db.users.find_one(
+                {"customer_number": customer_id},
+                {"_id": 0, "id": 1, "bidblitz_balance": 1, "balance": 1, "name": 1}
+            )
+        else:
+            user = await db.users.find_one(
+                {"id": customer_id},
+                {"_id": 0, "id": 1, "bidblitz_balance": 1, "balance": 1, "name": 1}
+            )
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="Kunde nicht gefunden")
+        
+        # Check balance
+        user_balance = user.get("bidblitz_balance", user.get("balance", 0))
+        if user_balance < amount:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Nicht genug Guthaben. Verfügbar: €{user_balance:.2f}, Benötigt: €{amount:.2f}"
+            )
+        
+        # Deduct from user balance
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$inc": {"bidblitz_balance": -amount, "balance": -amount}}
+        )
+        
+        # Also update wallet
+        await db.bidblitz_wallets.update_one(
+            {"user_id": user["id"]},
+            {"$inc": {"universal_balance": -amount}},
+            upsert=True
+        )
+    
+    now = datetime.now(timezone.utc)
+    
+    # Mark payment as completed
+    await db.digital_payments.update_one(
+        {"id": payment_id},
+        {"$set": {
+            "status": "completed",
+            "paid_at": now.isoformat(),
+            "paid_by": customer_id
+        }}
+    )
+    
+    # Get API key for webhook and stats
+    api_key = await db.api_keys.find_one(
+        {"id": payment.get("api_key_id")},
+        {"_id": 0}
+    )
+    
+    if api_key:
+        # Update API key volume
+        await db.api_keys.update_one(
+            {"id": api_key["id"]},
+            {"$inc": {"total_volume": amount}}
+        )
+        
+        # Send webhook
+        webhook_url = payment.get("webhook_url") or api_key.get("webhook_url")
+        if webhook_url:
+            await send_webhook(
+                url=webhook_url,
+                event="payment.completed",
+                data={
+                    "payment_id": payment_id,
+                    "reference": payment.get("reference"),
+                    "amount": amount,
+                    "currency": payment.get("currency", "EUR"),
+                    "paid_at": now.isoformat(),
+                    "paid_by": customer_id
+                },
+                secret=api_key.get("secret", "")
+            )
+    
+    return {
+        "success": True,
+        "payment_id": payment_id,
+        "amount": amount,
+        "status": "completed",
+        "paid_at": now.isoformat(),
+        "message": f"Zahlung von €{amount:.2f} erfolgreich!"
+    }
