@@ -353,7 +353,8 @@ const translations = {
     tierDiamond: 'Diamant',
     tier: 'Niveli',
     walletBalanceLabel: 'Bilanci i Portofolit',
-    months: 'Muaj'
+    months: 'Muaj',
+    until: 'deri në'
   }
 };
 
