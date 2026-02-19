@@ -245,11 +245,11 @@ const BidBlitzPay = () => {
         }
       } else {
         const error = await response.json();
-        toast.error(error.detail || 'Transfer failed');
+        toast.error(error.detail || t('transferFailed'));
       }
     } catch (error) {
       console.error('Error transferring:', error);
-      toast.error('Transfer failed');
+      toast.error(t('transferFailed'));
     } finally {
       setTransferring(false);
     }
