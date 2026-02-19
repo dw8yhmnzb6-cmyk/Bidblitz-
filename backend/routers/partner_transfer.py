@@ -44,6 +44,7 @@ async def get_partner_by_token(token: str):
 
 async def get_partner_collection(partner_id: str):
     """Get the correct collection for a partner"""
+    db = get_db()
     if await db.partner_accounts.find_one({"id": partner_id}):
         return db.partner_accounts
     return db.restaurant_accounts
