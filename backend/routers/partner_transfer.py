@@ -88,6 +88,14 @@ async def send_to_partner(data: TransferRequest, token: str = Query(...)):
     if not sender:
         raise HTTPException(status_code=401, detail="Ungültiger Token")
     
+    # VALIDATION: Check if user entered a customer ID (BID-XXXXXX format)
+    identifier = data.recipient_identifier.strip().upper()
+    if identifier.startswith("BID-"):
+        raise HTTPException(
+            status_code=400,
+            detail="Sie können nur an andere Partner überweisen. Kunden-IDs (BID-XXXXXX) werden hier nicht unterstützt. Bitte verwenden Sie eine Partnernummer (P-XXXXX) oder E-Mail-Adresse."
+        )
+    
     # Check sender's balance
     sender_balance = sender.get("pending_payout", 0)
     if sender_balance < data.amount:
@@ -115,7 +123,10 @@ async def send_to_partner(data: TransferRequest, token: str = Query(...)):
         }, {"_id": 0})
     
     if not recipient:
-        raise HTTPException(status_code=404, detail="Empfänger nicht gefunden")
+        raise HTTPException(
+            status_code=404, 
+            detail="Empfänger nicht gefunden. Bitte suchen Sie nach dem Partner über den Namen, die E-Mail oder die Partnernummer (P-XXXXX)."
+        )
     
     # Cannot send to self
     if recipient.get("id") == sender.get("id"):
