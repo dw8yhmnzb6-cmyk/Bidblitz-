@@ -339,12 +339,12 @@ async def make_deposit(
         "deposit_id": deposit_id,
         "amount": data.amount,
         "bonus": bonus,
-        "total_credited": total_credit,
+        "bonus_bids": int(bonus),  # Bonus as free bids
         "interest_rate": interest_rate,
         "estimated_interest": estimated_interest,
         "unlock_date": unlock_date.isoformat(),
         "partner_commission": partner_commission,
-        "message": f"€{data.amount:.2f} + €{bonus:.2f} Bonus gutgeschrieben!"
+        "message": f"€{data.amount:.2f} eingezahlt! +{int(bonus)} Gratis-Gebote als Bonus!"
     }
 
 
