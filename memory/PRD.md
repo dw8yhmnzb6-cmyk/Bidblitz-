@@ -5,6 +5,27 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 19, 2026)
 
+### ✅ Session Update - February 19, 2026 (Session 52) - COMPLETE ✅
+
+#### 1. Cookie-Banner Übersetzung Fix ✅
+- **Problem:** Cookie-Banner zeigte immer Deutsch unabhängig von ausgewählter Sprache
+- **Lösung:** Verbesserte Sprachzuordnung in `CookieConsent.js` mit lokalem Language-Mapping
+- **Getestet:** Deutsch und Albanisch Screenshots bestätigen korrekte Übersetzungen
+
+#### 2. E-Mail-Benachrichtigungen für Auto-Werbung ✅
+- **Implementiert in:** `/app/backend/routers/car_advertising.py`
+- **Neue E-Mail-Templates:**
+  - `send_car_advertising_approval_email()` - Bei Genehmigung
+  - `send_car_advertising_rejection_email()` - Bei Ablehnung (mit optionalem Grund)
+  - `send_car_advertising_activation_email()` - Bei Vertragsaktivierung
+- **Status-Updates senden automatisch E-Mails** an Bewerber
+
+#### Geänderte Dateien:
+- `/app/frontend/src/components/CookieConsent.js` (Übersetzungslogik verbessert)
+- `/app/backend/routers/car_advertising.py` (E-Mail-Integration)
+
+---
+
 ### ✅ Session Update - February 19, 2026 (Session 51) - COMPLETE ✅
 
 #### 1. Auto-Werbung Feature ✅
