@@ -12,6 +12,7 @@ from typing import Optional, List
 import uuid
 from config import db
 from utils.auth import get_current_user
+from utils.email import send_interest_payout_notification
 
 router = APIRouter(prefix="/deposit-offers", tags=["Deposit Offers"])
 
