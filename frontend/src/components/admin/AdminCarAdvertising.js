@@ -288,45 +288,46 @@ export default function AdminCarAdvertising({ language = 'de' }) {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header - Mobile optimized */}
+      <div className="flex flex-col gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-            <Car className="w-8 h-8 text-orange-500" />
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 flex items-center gap-2 sm:gap-3">
+            <Car className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
             {t.title}
           </h1>
-          <p className="text-gray-500">{t.subtitle}</p>
+          <p className="text-sm text-gray-500">{t.subtitle}</p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={fetchData} variant="outline" className="gap-2">
-            <RefreshCw className="w-4 h-4" />
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={fetchData} variant="outline" className="gap-2 text-sm h-9" size="sm">
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             {t.refresh}
           </Button>
-          <Button onClick={processPayouts} className="bg-green-500 hover:bg-green-600 gap-2">
+          <Button onClick={processPayouts} className="bg-green-500 hover:bg-green-600 gap-2 text-sm h-9" size="sm">
             <Euro className="w-4 h-4" />
-            {t.actions.processPayouts}
+            <span className="hidden sm:inline">{t.actions.processPayouts}</span>
+            <span className="sm:hidden">Monatszahlung</span>
           </Button>
         </div>
       </div>
 
-      {/* Stats */}
+      {/* Stats - 2x3 grid on mobile, 6 columns on desktop */}
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
           {[
             { key: 'total', value: stats.total, icon: Users, color: 'bg-gray-100 text-gray-600' },
             { key: 'pending', value: stats.pending, icon: Clock, color: 'bg-amber-100 text-amber-600' },
             { key: 'approved', value: stats.approved, icon: Check, color: 'bg-blue-100 text-blue-600' },
             { key: 'active', value: stats.active, icon: CheckCircle, color: 'bg-green-100 text-green-600' },
             { key: 'rejected', value: stats.rejected, icon: XCircle, color: 'bg-red-100 text-red-600' },
-            { key: 'totalPaid', value: `€${stats.total_paid_out}`, icon: Euro, color: 'bg-emerald-100 text-emerald-600' }
+            { key: 'totalPaid', value: `€${stats.total_paid_out || 0}`, icon: Euro, color: 'bg-emerald-100 text-emerald-600' }
           ].map((stat) => (
-            <div key={stat.key} className="bg-white rounded-xl p-4 shadow-sm">
-              <div className={`w-10 h-10 rounded-lg ${stat.color} flex items-center justify-center mb-2`}>
-                <stat.icon className="w-5 h-5" />
+            <div key={stat.key} className="bg-white rounded-xl p-3 sm:p-4 shadow-sm">
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${stat.color} flex items-center justify-center mb-2`}>
+                <stat.icon className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
-              <p className="text-sm text-gray-500">{t.stats[stat.key]}</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">{stat.value}</p>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{t.stats[stat.key]}</p>
             </div>
           ))}
         </div>
