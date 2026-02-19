@@ -2129,7 +2129,13 @@ export const translations = {
       pleaseLogin: "Ju lutem hyni",
       bidPlaced: "Oferta u vendos!",
       error: "Gabim",
-      ended: "Përfundoi"
+      ended: "Përfundoi",
+      depositBonus: "Bonus Depozitimi",
+      depositBonusDesc: "Deri në 20% Bonus + 5% Interes në vit",
+      getBonusNow: "Merr Bonusin Tani →",
+      merchantVouchers: "Kuponë Tregtarësh",
+      merchantVouchersDesc: "Ofertoni për kuponë nga partnerët lokal!",
+      freeBidsGratis: "Oferta Falas"
     },
     auctionCard: {
       liveNow: "LIVE TANI", comingSoon: "SË SHPEJTI", ended: "PËRFUNDOI",
@@ -2454,7 +2460,13 @@ export const translations = {
       pleaseLogin: "Ju lutem hyni",
       bidPlaced: "Oferta u vendos!",
       error: "Gabim",
-      ended: "Përfundoi"
+      ended: "Përfundoi",
+      depositBonus: "Bonus Depozitimi",
+      depositBonusDesc: "Deri në 20% Bonus + 5% Interes në vit",
+      getBonusNow: "Merr Bonusin Tani →",
+      merchantVouchers: "Kuponë Tregtarësh",
+      merchantVouchersDesc: "Ofertoni për kuponë nga partnerët lokal!",
+      freeBidsGratis: "Oferta Falas"
     },
     auctionCard: {
       liveNow: "LIVE TANI", comingSoon: "SË SHPEJTI", ended: "PËRFUNDOI",
