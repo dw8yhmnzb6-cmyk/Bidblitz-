@@ -2110,7 +2110,64 @@ export const walletTranslations = {
     insufficientFunds: 'Fonde të pamjaftueshme',
     invalidAmount: 'Shumë e pavlefshme',
     paymentFailed: 'Pagesa dështoi',
-    paymentSuccessful: 'Pagesa e suksesshme'
+    paymentSuccessful: 'Pagesa e suksesshme',
+    
+    // Transfer Balance
+    transferBalance: 'Transfero Bilancin',
+    toBidBlitzPay: 'Në BidBlitz Pay',
+    toMainAccount: 'Në Llogarinë Kryesore',
+    fromHere: 'Nga këtu',
+    bidblitzPay: 'BidBlitz Pay',
+    noBalanceMain: 'Nuk ka bilanc në llogarinë kryesore',
+    noBalanceWallet: 'Nuk ka bilanc në BidBlitz Pay',
+    
+    // Additional Keys
+    yourCustomerNumber: 'Numri Juaj i Klientit',
+    customerNumberCopied: 'Numri i klientit u kopjua!',
+    minAmount: 'Shuma minimale: €5',
+    maxAmount: 'Shuma maksimale: €500',
+    minMaxInfo: 'Min: €5 | Max: €500',
+    redirectingStripe: 'Duke u ridrejtuar në Stripe...',
+    securePaymentStripe: '🔒 Pagesë e sigurt përmes Stripe',
+    transferToBidBlitzPay: 'Transfero në BidBlitz Pay',
+    transferToMainAccount: 'Transfero në Llogarinë Kryesore',
+    all: 'TË GJITHA',
+    
+    // Last Transfer / Quick Send
+    lastTransfer: 'Transferta e Fundit',
+    lastAmount: 'E fundit',
+    useRecipient: 'Përdor',
+    recipientLoaded: 'Marrësi u ngarkua!',
+    enterValidAmount: 'Ju lutem vendosni shumë të vlefshme',
+    
+    // Request Money Additional
+    requestCreated: 'Kërkesa për pagesë u krijua!',
+    invalidQRCode: 'Kod QR i pavlefshëm',
+    cameraAccessDenied: 'Qasja në kamerë u refuzua',
+    cameraStartError: 'Kamera nuk mund të nisej',
+    requestNoLongerValid: 'Kjo kërkesë nuk është më e vlefshme',
+    enterRequestIdManually: 'Vendos ID e kërkesës manualisht',
+    loadId: 'Ngarko ID',
+    creating: 'Duke krijuar...',
+    noRequestsYet: 'Ende nuk ka kërkesa',
+    or: 'ose',
+    cancel: 'Anulo',
+    descriptionPlaceholder: 'p.sh. Ndarja e darkës',
+    recipientPlaceholder: 'Numri i klientit ose Email',
+    recipientHint: 'Vendos numrin e klientit ose email të marrësit',
+    messagePlaceholder: 'Mesazh për marrësin...',
+    
+    // Payment History
+    paymentHistory: 'Historiku i Pagesave',
+    allTransactionsOverview: 'Të gjitha transaksionet në një vështrim',
+    filter: 'Filtro',
+    all: 'Të gjitha',
+    deposits: 'Depozita',
+    withdrawals: 'Tërheqje',
+    credits: 'Kredi',
+    creditRepayment: 'Ripagim Kredie',
+    completed: 'Përfunduar',
+    fillAllFields: 'Ju lutem plotësoni të gjitha fushat'
   }
 };
 
