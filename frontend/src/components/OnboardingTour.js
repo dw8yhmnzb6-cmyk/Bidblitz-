@@ -490,7 +490,7 @@ const OnboardingTour = () => {
           )}
           
           {/* Interactive Demo */}
-          {steps[currentStep].hasDemo && <StepDemo step={currentStep} />}
+          {steps[currentStep].hasDemo && <StepDemo step={currentStep} language={langKey} />}
           
           {/* Free bids badge on last step */}
           {currentStep === 3 && (
