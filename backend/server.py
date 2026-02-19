@@ -210,6 +210,9 @@ from routers.cashback_system import router as cashback_router
 from routers.auto_bid import auto_bid_router
 from routers.watchlist import watchlist_router
 
+# NEW: Universal Transfer System (Partner↔Kunde, Kunde↔Kunde, Partner↔Partner)
+from routers.universal_transfer import router as universal_transfer_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended
 
