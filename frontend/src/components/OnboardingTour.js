@@ -216,6 +216,7 @@ const OnboardingTour = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isClosing, setIsClosing] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
 
   // Check if user should see onboarding
   useEffect(() => {
