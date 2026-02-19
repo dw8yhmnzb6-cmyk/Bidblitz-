@@ -15,9 +15,9 @@ from dependencies import get_current_user
 router = APIRouter(prefix="/referrals", tags=["Referrals"])
 
 # Configuration
-REFERRER_REWARD = 20  # Bids for the referrer
-REFEREE_REWARD = 10   # Bids for the new user
-MIN_PURCHASE_FOR_REWARD = 10  # Minimum purchase to trigger reward
+REFERRER_REWARD = 10.0  # €10 Euro for the referrer
+REFEREE_REWARD = 5  # 5 Free Bids for the new user
+MIN_DEPOSIT_FOR_REWARD = 5.0  # Minimum €5 deposit to trigger reward
 REFERRAL_EXPIRY_DAYS = 30  # Link expires after 30 days
 
 
