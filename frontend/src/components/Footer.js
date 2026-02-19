@@ -281,18 +281,19 @@ export const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-white font-heading font-bold uppercase tracking-wider text-sm">{ft.features || 'Features'}</h4>
             <nav className="flex flex-col gap-2">
-              <Link to="/deal-radar" className="text-cyber hover:text-cyber-hover transition-colors font-body text-sm flex items-center gap-1">
-                <Radar className="w-3 h-3" />
+              <Link to="/deal-radar" className="text-gray-400 hover:text-white transition-colors font-body text-sm flex items-center gap-2">
+                <Radar className="w-3.5 h-3.5" />
                 {ft.dealRadar || 'Deal Radar'}
               </Link>
-              <Link to="/vip-auctions" className="text-hot-pink hover:text-hot-pink-hover transition-colors font-body text-sm flex items-center gap-1">
-                <Crown className="w-3 h-3" />
+              <Link to="/vip-auctions" className="text-gray-400 hover:text-white transition-colors font-body text-sm flex items-center gap-2">
+                <Crown className="w-3.5 h-3.5" />
                 {ft.vipMembership || t('nav.vipAuctions') || 'VIP Auktionen'}
               </Link>
-              <Link to="/winners" className="text-gray-400 hover:text-acid transition-colors font-body text-sm">
+              <Link to="/winners" className="text-gray-400 hover:text-white transition-colors font-body text-sm flex items-center gap-2">
+                <Award className="w-3.5 h-3.5" />
                 {ft.winners}
               </Link>
-              <Link to="/leaderboard" className="text-gray-400 hover:text-acid transition-colors font-body text-sm">
+              <Link to="/leaderboard" className="text-gray-400 hover:text-white transition-colors font-body text-sm">
                 {ft.leaderboard || t('nav.leaderboard')}
               </Link>
             </nav>
