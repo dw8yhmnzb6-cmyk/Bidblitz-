@@ -55,7 +55,8 @@ const footerTexts = {
     terms: 'Terms & Conditions',
     contact: 'Contact',
     allRights: 'All rights reserved',
-    leaderboard: 'Leaderboard'
+    leaderboard: 'Leaderboard',
+    carAdvertising: 'Car Advertising (€50/Mo)'
   },
   sq: {
     description: 'Platforma kryesore e ankandeve penny në Dubai. Ofroni për produkte premium dhe kurseni deri në 95%!',
@@ -66,6 +67,7 @@ const footerTexts = {
     login: 'Hyr',
     extras: 'Ekstra',
     becomeInfluencer: 'Bëhu Influencer',
+    carAdvertising: 'Reklamë në Makinë (€50/Muaj)',
     influencerLogin: 'Hyrja e Influencer',
     wholesale: 'Klientë B2B',
     vipMembership: 'Anëtarësim VIP',
