@@ -68,6 +68,8 @@ async def get_transfer_balance(token: str = Query(...)):
 @router.post("/send", response_model=TransferResponse)
 async def send_to_partner(data: TransferRequest, token: str = Query(...)):
     """Send money to another partner"""
+    db = get_db()
+    
     # Get sender
     sender = await get_partner_by_token(token)
     if not sender:
@@ -157,6 +159,8 @@ async def get_transfer_history(
     limit: int = Query(20, ge=1, le=100)
 ):
     """Get partner's transfer history"""
+    db = get_db()
+    
     partner = await get_partner_by_token(token)
     if not partner:
         raise HTTPException(status_code=401, detail="Ungültiger Token")
@@ -196,6 +200,8 @@ async def search_partner(
     token: str = Query(...)
 ):
     """Search for a partner by name, email or partner number"""
+    db = get_db()
+    
     partner = await get_partner_by_token(token)
     if not partner:
         raise HTTPException(status_code=401, detail="Ungültiger Token")
@@ -239,6 +245,8 @@ async def search_partner(
 @router.get("/last-recipient")
 async def get_last_recipient(token: str = Query(...)):
     """Get the last transfer recipient for quick re-send"""
+    db = get_db()
+    
     partner = await get_partner_by_token(token)
     if not partner:
         raise HTTPException(status_code=401, detail="Ungültiger Token")
