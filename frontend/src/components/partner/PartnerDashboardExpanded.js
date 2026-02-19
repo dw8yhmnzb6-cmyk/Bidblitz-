@@ -414,7 +414,7 @@ export default function PartnerDashboardExpanded({
               <div className="mt-3 p-2 bg-red-100 rounded-lg">
                 <p className="text-xs text-red-700 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
-                  Budget erschöpft - Bitte aufladen
+                  {t.budgetExhausted} - {t.pleaseTopUp}
                 </p>
               </div>
             )}
