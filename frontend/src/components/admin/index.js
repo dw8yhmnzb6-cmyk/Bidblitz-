@@ -48,6 +48,9 @@ export { AdminPromoCodes } from './AdminPromoCodes';
 // Manager Management
 export { AdminManagers } from './AdminManagers';
 
+// Car Advertising
+export { default as AdminCarAdvertising } from './AdminCarAdvertising';
+
 // Jackpot Management
 export { default as AdminJackpot } from './AdminJackpot';
 
