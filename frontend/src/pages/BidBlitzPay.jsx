@@ -615,11 +615,11 @@ const BidBlitzPay = () => {
         fetchMyRequests();
         toast.success(t('requestCreated'));
       } else {
-        toast.error(data.detail || 'Error creating request');
+        toast.error(data.detail || t('errorLoadingRequest'));
       }
     } catch (error) {
       console.error('Request money error:', error);
-      toast.error('Error creating request');
+      toast.error(t('errorLoadingRequest'));
     } finally {
       setCreatingRequest(false);
     }
