@@ -39,6 +39,19 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
   - `PartnerScanner.js`: Alle Texte verwenden jetzt `t()` Funktion
   - `partnerTranslations.js`: Albanische Übersetzungen erheblich erweitert (80+ neue Keys)
 
+#### 5. Credit System i18n Fixes ✅
+- **Problem:** Tipps und History-Events waren auf Deutsch hardcoded im Backend
+- **Lösung:**
+  - `/app/backend/routers/credit_system.py`: Übersetzungskeys statt hardcodierter Texte
+  - `CreditSystem.jsx`: Erweiterte Übersetzungen für Tips und History-Events
+  - Neue Keys: `tipPayOnTime`, `tipPayEarly`, `tipFullRepay`, `tipUseRegularly`, `accountCreated`, etc.
+  - Vollständige Übersetzungen für: de, en, sq, tr, ar
+
+#### 6. Wallet/BidBlitzPay i18n Fix ✅
+- **Problem:** BidBlitzPay verwendete `bidblitz_language` statt globaler `language`
+- **Lösung:** BidBlitzPay.jsx verwendet jetzt `localStorage.getItem('language')` für konsistente Sprachauswahl
+- **Getestet:** Wallet-Seite zeigt korrekt Albanisch an
+
 #### Geänderte Dateien:
 - `/app/frontend/src/components/CookieConsent.js` (Übersetzungslogik verbessert)
 - `/app/backend/routers/car_advertising.py` (E-Mail-Integration, Fotos & Land)
@@ -46,6 +59,9 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - `/app/frontend/src/pages/PartnerPortal.js` (Fehlermeldungen übersetzt)
 - `/app/frontend/src/components/partner/PartnerScanner.js` (Texte übersetzt)
 - `/app/frontend/src/components/partner/partnerTranslations.js` (80+ neue albanische Keys)
+- `/app/backend/routers/credit_system.py` (Übersetzungskeys für Tips/History)
+- `/app/frontend/src/components/CreditSystem.jsx` (Erweiterte i18n für Tips/History)
+- `/app/frontend/src/pages/BidBlitzPay.jsx` (Globale Sprachauswahl)
 
 ---
 
