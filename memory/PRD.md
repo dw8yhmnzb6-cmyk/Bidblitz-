@@ -3564,3 +3564,40 @@ Externe Unternehmen wie Edeka können BidBlitz Pay als Zahlungsmethode an ihren 
 **API-Key-Format:** `bbz_XXXXXXXXXXXX` (48 Zeichen)
 **Webhook-Signatur:** HMAC-SHA256 mit `X-BidBlitz-Signature` Header
 
+
+---
+
+### ✅ Admin Dashboard für Digital Payment API ✅
+
+**Implementiert:** Admin-Dashboard zur Verwaltung der Digital Payment API
+
+**Neue Datei:**
+- `/app/frontend/src/components/admin/AdminDigitalPayments.js`
+
+**Features:**
+1. **Übersicht-Tab:**
+   - Anzahl API-Keys
+   - Aktive Keys
+   - Gesamtanfragen
+   - Gesamtvolumen
+   - Liste aktiver Händler
+
+2. **API-Keys-Tab:**
+   - Neuen API-Key erstellen
+   - API-Key und Secret anzeigen (einmalig)
+   - Webhook-URL konfigurieren
+   - API-Key widerrufen
+   - Statistiken pro Key
+
+3. **Zahlungen-Tab:**
+   - Zahlungsübersicht pro Händler
+   - Volumen-Statistiken
+
+4. **Dokumentation-Tab:**
+   - API-Endpoints Referenz
+   - Beispiel-Code
+   - Webhook-Events
+   - Link zur vollständigen Dokumentation
+
+**Zugang:** Admin Panel → Finanzen → Digital API
+
