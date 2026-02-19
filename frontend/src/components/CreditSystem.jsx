@@ -1275,7 +1275,7 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
                 {eligibility.blocking_reason === 'active_credit_exists' && t('activeCreditExists')}
                 {eligibility.blocking_reason === 'pending_application' && t('pendingApplication')}
                 {eligibility.blocking_reason === 'score_too_low' && t('scoreTooLow')}
-                {eligibility.eligible && `€${eligibility.min_amount} - €${eligibility.max_amount} • ${eligibility.interest_rate}% Zinsen`}
+                {eligibility.eligible && `€${eligibility.min_amount} - €${eligibility.max_amount} • ${eligibility.interest_rate}% ${t('interestRange')}`}
               </p>
             </div>
             {eligibility.eligible && (
