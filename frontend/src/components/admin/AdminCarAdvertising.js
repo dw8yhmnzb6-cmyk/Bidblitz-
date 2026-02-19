@@ -348,7 +348,7 @@ export default function AdminCarAdvertising({ language = 'de' }) {
             </Button>
           ))}
         </div>
-        <div className="relative flex-1 max-w-sm">
+        <div className="relative flex-1 max-w-full sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
             value={search}
@@ -359,65 +359,146 @@ export default function AdminCarAdvertising({ language = 'de' }) {
         </div>
       </div>
 
-      {/* Applications Table */}
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.applicant}</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.vehicle}</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.city}</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.kmMonth}</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.status}</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.date}</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.actions}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filteredApps.map((app, idx) => (
-                <tr key={idx} className="hover:bg-gray-50">
-                  <td className="px-4 py-3">
-                    <div>
-                      <p className="font-medium text-gray-800">{app.name}</p>
-                      <p className="text-sm text-gray-500 flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {app.email}
-                      </p>
-                      <p className="text-sm text-gray-500 flex items-center gap-1">
-                        <Phone className="w-3 h-3" />
-                        {app.phone}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
+      {/* Loading State */}
+      {loading && (
+        <div className="text-center py-8 sm:py-12">
+          <RefreshCw className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-2" />
+          <p className="text-gray-500 text-sm">Laden...</p>
+        </div>
+      )}
+
+      {/* No Applications */}
+      {!loading && filteredApps.length === 0 && (
+        <div className="text-center py-8 sm:py-12">
+          <Car className="w-12 h-12 text-gray-300 mx-auto mb-2" />
+          <p className="text-gray-500 text-sm">{t.noApplications}</p>
+        </div>
+      )}
+
+      {/* Applications - Card view on mobile, Table on desktop */}
+      {!loading && filteredApps.length > 0 && (
+        <>
+          {/* Mobile Card View */}
+          <div className="block sm:hidden space-y-3">
+            {filteredApps.map((app, idx) => (
+              <div key={idx} className="bg-white rounded-xl p-4 shadow-sm">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div>
+                    <p className="font-semibold text-gray-800">{app.name}</p>
+                    <p className="text-xs text-gray-500">{app.email}</p>
+                  </div>
+                  <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
+                    {getStatusIcon(app.status)}
+                    {t.filters[app.status]}
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                  <div>
+                    <p className="text-gray-500 text-xs">Fahrzeug</p>
                     <p className="font-medium">{app.car_brand} {app.car_model}</p>
-                    <p className="text-sm text-gray-500">{app.car_year} • {app.car_color}</p>
-                    <p className="text-sm font-mono text-orange-600">{app.license_plate}</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="flex items-center gap-1 text-gray-700">
-                      <MapPin className="w-4 h-4 text-gray-400" />
-                      {app.city}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="font-medium">{app.km_per_month}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
-                      {getStatusIcon(app.status)}
-                      {t.filters[app.status]}
-                    </span>
-                    {app.status === 'active' && app.total_earned > 0 && (
-                      <p className="text-xs text-green-600 mt-1">€{app.total_earned} verdient</p>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="text-sm text-gray-500">
-                      {new Date(app.created_at).toLocaleDateString()}
-                    </span>
-                  </td>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-xs">Stadt</p>
+                    <p>{app.city}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-xs">km/Monat</p>
+                    <p>{app.km_per_month}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-500 text-xs">Kennzeichen</p>
+                    <p className="font-mono text-orange-600">{app.license_plate}</p>
+                  </div>
+                </div>
+                
+                {/* Mobile Actions */}
+                <div className="flex gap-2 pt-2 border-t">
+                  {app.status === 'pending' && (
+                    <>
+                      <Button size="sm" className="flex-1 bg-green-500 hover:bg-green-600 h-8 text-xs" onClick={() => updateStatus(app.email, 'approved')}>
+                        <Check className="w-3 h-3 mr-1" />
+                        {t.actions.approve}
+                      </Button>
+                      <Button size="sm" variant="outline" className="flex-1 border-red-300 text-red-600 hover:bg-red-50 h-8 text-xs" onClick={() => updateStatus(app.email, 'rejected')}>
+                        <X className="w-3 h-3 mr-1" />
+                        {t.actions.reject}
+                      </Button>
+                    </>
+                  )}
+                  {app.status === 'approved' && (
+                    <Button size="sm" className="flex-1 bg-blue-500 hover:bg-blue-600 h-8 text-xs" onClick={() => updateStatus(app.email, 'active')}>
+                      <CheckCircle className="w-3 h-3 mr-1" />
+                      {t.actions.activate}
+                    </Button>
+                  )}
+                  <Button size="sm" variant="outline" className="h-8 text-xs" onClick={() => setSelectedApp(app)}>
+                    <Eye className="w-3 h-3" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden sm:block bg-white rounded-xl shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.applicant}</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.vehicle}</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.city}</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.kmMonth}</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.status}</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.date}</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">{t.table.actions}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filteredApps.map((app, idx) => (
+                    <tr key={idx} className="hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        <div>
+                          <p className="font-medium text-gray-800">{app.name}</p>
+                          <p className="text-sm text-gray-500 flex items-center gap-1">
+                            <Mail className="w-3 h-3" />
+                            {app.email}
+                          </p>
+                          <p className="text-sm text-gray-500 flex items-center gap-1">
+                            <Phone className="w-3 h-3" />
+                            {app.phone}
+                          </p>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <p className="font-medium">{app.car_brand} {app.car_model}</p>
+                        <p className="text-sm text-gray-500">{app.car_year} • {app.car_color}</p>
+                        <p className="text-sm font-mono text-orange-600">{app.license_plate}</p>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="flex items-center gap-1 text-gray-700">
+                          <MapPin className="w-4 h-4 text-gray-400" />
+                          {app.city}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="font-medium">{app.km_per_month}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(app.status)}`}>
+                          {getStatusIcon(app.status)}
+                          {t.filters[app.status]}
+                        </span>
+                        {app.status === 'active' && app.total_earned > 0 && (
+                          <p className="text-xs text-green-600 mt-1">€{app.total_earned} verdient</p>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="text-sm text-gray-500">
+                          {new Date(app.created_at).toLocaleDateString()}
+                        </span>
+                      </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       {app.status === 'pending' && (
