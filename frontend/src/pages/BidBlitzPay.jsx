@@ -545,7 +545,7 @@ const BidBlitzPay = () => {
       const data = await response.json();
       
       if (response.ok) {
-        toast.success(data.message || (language === 'de' ? 'Empfänger gespeichert!' : 'Recipient saved!'));
+        toast.success(data.message || t('recipientSaved'));
         setShowSaveDialog(false);
         setSaveNickname('');
         setLastSuccessfulRecipient(null);
