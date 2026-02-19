@@ -570,7 +570,7 @@ const BidBlitzPay = () => {
       });
       
       if (response.ok) {
-        toast.success(language === 'de' ? 'Empfänger gelöscht' : 'Recipient deleted');
+        toast.success(t('recipientDeleted'));
         fetchSavedRecipients();
       }
     } catch (error) {
