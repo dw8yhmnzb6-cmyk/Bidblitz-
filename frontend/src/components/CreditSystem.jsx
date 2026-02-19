@@ -1127,7 +1127,7 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
                 </div>
                 <div>
                   <p className="text-white/70 text-sm">{t('repaymentMonths')}</p>
-                  <p className="text-2xl font-bold">{months} Mon</p>
+                  <p className="text-2xl font-bold">{months} {t('months')}</p>
                 </div>
               </div>
             </div>
