@@ -639,12 +639,12 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
             <span className="text-4xl">{scoreData.tier.icon}</span>
             <div className="text-right">
               <p className="text-5xl font-bold">{scoreData.score}</p>
-              <p className="text-white/70 text-sm">von 1000 Punkten</p>
+              <p className="text-white/70 text-sm">{t('of')} 1000 {t('points')}</p>
             </div>
           </div>
           
           <h2 className="text-2xl font-bold mb-1">{scoreData.tier.name}</h2>
-          <p className="text-white/80">Stufe {scoreData.tier.name_en}</p>
+          <p className="text-white/80">{t('tier')} {scoreData.tier.name_en}</p>
           
           {/* Progress to next tier */}
           {scoreData.next_tier && (
