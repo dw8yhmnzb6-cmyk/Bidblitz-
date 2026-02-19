@@ -468,7 +468,13 @@ export const translations = {
       priceNote: "* RRP = Retail price",
       pleaseLogin: "Please login to bid",
       bidPlaced: "Bid placed!",
-      error: "Error"
+      error: "Error",
+      depositBonus: "Deposit Bonus",
+      depositBonusDesc: "Up to 20% Bonus + 5% Interest p.a.",
+      getBonusNow: "Get Bonus Now →",
+      merchantVouchers: "Merchant Vouchers",
+      merchantVouchersDesc: "Bid on vouchers from local partners!",
+      freeBidsGratis: "Free Bids"
     },
     auctionCard: {
       liveNow: "LIVE NOW", comingSoon: "COMING SOON", ended: "ENDED",
