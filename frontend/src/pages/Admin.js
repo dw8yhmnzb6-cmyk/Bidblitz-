@@ -1183,6 +1183,7 @@ export default function Admin() {
         { id: 'staff', label: 'Mitarbeiter', icon: <UserPlus className="w-5 h-5" /> },
         { id: 'wholesale', label: 'Großkunden', icon: <Building2 className="w-5 h-5" /> },
         { id: 'influencers', label: 'Influencer', icon: <Star className="w-5 h-5" /> },
+        { id: 'car-advertising', label: 'Auto-Werbung', icon: <Car className="w-5 h-5" /> },
       ]
     },
     {
