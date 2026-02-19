@@ -2035,6 +2035,26 @@ const BidBlitzPay = () => {
             />
           </div>
         )}
+
+        {/* Achievements View */}
+        {view === 'achievements' && (
+          <div data-testid="achievements-view">
+            <AchievementsPage 
+              language={language}
+              token={token}
+            />
+          </div>
+        )}
+
+        {/* Leaderboard View */}
+        {view === 'leaderboard' && (
+          <div data-testid="leaderboard-view">
+            <MonthlyLeaderboard 
+              language={language}
+              token={token}
+            />
+          </div>
+        )}
       </div>
 
       {/* Save Recipient Dialog */}
