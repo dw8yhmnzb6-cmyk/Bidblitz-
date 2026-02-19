@@ -5,6 +5,33 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 19, 2026)
 
+### ✅ Session Update - February 19, 2026 (Session 51) - BUG-FIX PARTNER TRANSFER ✅
+
+#### Bug behoben: Partner-Transfer mit Kunden-ID blockieren ✅
+
+**Problem:** Partner konnten versuchen, Geld an Kunden-IDs ("BID-XXXXXX") zu senden, was einen unklaren Fehler verursachte.
+
+**Lösung:**
+1. **Backend-Validierung hinzugefügt:**
+   - `/app/backend/routers/partner_transfer.py` - `send()` Endpoint prüft jetzt, ob die Empfänger-ID mit "BID-" beginnt
+   - Bei Kunden-ID: Klare Fehlermeldung auf Deutsch: "Sie können nur an andere Partner überweisen. Kunden-IDs (BID-XXXXXX) werden hier nicht unterstützt. Bitte verwenden Sie eine Partnernummer (P-XXXXX) oder E-Mail-Adresse."
+   - Bei nicht gefundenem Partner: Hilfreiche Fehlermeldung: "Empfänger nicht gefunden. Bitte suchen Sie nach dem Partner über den Namen, die E-Mail oder die Partnernummer (P-XXXXX)."
+
+2. **Frontend-Verbesserungen:**
+   - Platzhalter-Texte aktualisiert: "Partnernummer (P-XXXXX) oder E-Mail"
+   - Suchfeld-Hinweis: "Firmenname, E-Mail oder Partnernummer"
+   - Neue Übersetzungsschlüssel: `customerIdError`, `searchByName`
+
+#### Partner-Suche nach Firmenname ✅
+
+**Status:** War bereits vollständig implementiert und funktioniert einwandfrei.
+- Backend: `/api/partner-transfer/search-partner` sucht bereits nach `business_name`, `company_name`, `email`, und `partner_number`
+- Frontend: Suchfeld zeigt "Suchergebnisse" mit Partner-Details an
+
+**Test-Status:** ✅ Backend-Tests mit curl bestätigen korrekte Validierung und Fehlermeldungen
+
+---
+
 ### ✅ Session Update - February 19, 2026 (Session 50) - HÄNDLER-ÜBERWEISUNGEN ✅
 
 #### Neues Feature: Partner-zu-Partner Überweisungen ✅
