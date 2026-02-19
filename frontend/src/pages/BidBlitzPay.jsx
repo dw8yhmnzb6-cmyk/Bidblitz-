@@ -1263,6 +1263,33 @@ const BidBlitzPay = () => {
         {/* Send Money View */}
         {view === 'send' && (
           <div className="space-y-6">
+            {/* Gespeicherte Empfänger / Saved Recipients */}
+            {savedRecipients.length > 0 && (
+              <div className="bg-white rounded-2xl shadow-lg p-4">
+                <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                  <Gift className="w-4 h-4 text-amber-500" />
+                  {language === 'de' ? 'Gespeicherte Empfänger' : 'Saved Recipients'}
+                </h3>
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {savedRecipients.map((recipient) => (
+                    <button
+                      key={recipient.id}
+                      onClick={() => selectSavedRecipient(recipient)}
+                      className="flex-shrink-0 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-3 hover:border-green-400 hover:shadow-md transition-all min-w-[140px]"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          {recipient.nickname.charAt(0).toUpperCase()}
+                        </div>
+                        <p className="font-bold text-gray-800 text-sm truncate">{recipient.nickname}</p>
+                      </div>
+                      <p className="text-xs text-gray-500 truncate">{recipient.recipient_customer_number || recipient.recipient_email}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Schnellüberweisung - Letzter Empfänger */}
             {lastRecipient && (
               <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl shadow-lg p-4 border border-amber-200">
@@ -1275,7 +1302,7 @@ const BidBlitzPay = () => {
                       <p className="text-xs text-amber-600 font-medium">
                         {t('lastTransfer')}
                       </p>
-                      <p className="font-bold text-gray-800">{lastRecipient.email}</p>
+                      <p className="font-bold text-gray-800">{lastRecipient.name || lastRecipient.email}</p>
                       <p className="text-xs text-gray-500">
                         {t('lastAmount')}: €{lastRecipient.lastAmount?.toFixed(2)}
                       </p>
