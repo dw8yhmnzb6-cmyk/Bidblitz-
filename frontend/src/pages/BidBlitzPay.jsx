@@ -342,7 +342,7 @@ const BidBlitzPay = () => {
       }
     } catch (error) {
       console.error('Stripe checkout error:', error);
-      toast.error('Zahlung konnte nicht erstellt werden');
+      toast.error(t('paymentCouldNotCreate'));
       setProcessingPayment(false);
     }
   };
