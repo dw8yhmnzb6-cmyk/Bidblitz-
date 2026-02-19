@@ -184,6 +184,25 @@ const useMaintenanceCheck = () => {
 
 import { useDeviceTracking } from './hooks/useDeviceTracking';
 
+// Page wrapper components for new features
+const WatchlistPage = () => {
+  const { token } = useAuth();
+  const { language } = useLanguage();
+  return <Watchlist token={token} language={language} />;
+};
+
+const AutoBidPage = () => {
+  const { token } = useAuth();
+  const { language } = useLanguage();
+  return <AutoBid token={token} language={language} />;
+};
+
+const VIPPage = () => {
+  const { token } = useAuth();
+  const { language } = useLanguage();
+  return <VIPLoyalty token={token} language={language} />;
+};
+
 function AppContent() {
   const { language, mappedLanguage } = useLanguage();
   const { isDarkMode } = useTheme();
