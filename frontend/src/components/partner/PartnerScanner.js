@@ -74,7 +74,7 @@ const PartnerScanner = ({ token, fetchDashboard, t }) => {
       setScanResult({
         valid: false,
         code: code,
-        error: err.response?.data?.detail || 'Ungültiger Gutschein'
+        error: err.response?.data?.detail || t('invalidVoucher') || 'Invalid voucher'
       });
     } finally {
       setLoading(false);
