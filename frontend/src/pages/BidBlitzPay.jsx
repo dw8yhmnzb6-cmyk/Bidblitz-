@@ -581,7 +581,7 @@ const BidBlitzPay = () => {
   // Select a saved recipient
   const selectSavedRecipient = (recipient) => {
     setRecipientEmail(recipient.recipient_customer_number || recipient.recipient_email);
-    toast.success(`${recipient.nickname} ${language === 'de' ? 'ausgewählt' : 'selected'}`);
+    toast.success(`${recipient.nickname} ${t('selected')}`);
   };
 
   // Request Money functions
