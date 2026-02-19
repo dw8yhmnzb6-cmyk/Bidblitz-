@@ -185,6 +185,12 @@ export default function PartnerBudget({ token, language = 'de' }) {
       pleaseTopUp: 'Lütfen yükleyin'
     }
   }[language] || {
+    title: 'Guthaben & Auszahlungen',
+    voucherBudget: 'Gutschein-Budget',
+    availableBudget: 'Verfügbares Budget',
+    budgetExhausted: 'Budget erschöpft',
+    pleaseTopUp: 'Bitte aufladen'
+  };
 
   const fetchBudget = useCallback(async () => {
     try {
