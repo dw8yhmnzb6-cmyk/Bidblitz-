@@ -1185,6 +1185,7 @@ export default function Admin() {
         { id: 'wholesale', label: 'Großkunden', icon: <Building2 className="w-5 h-5" /> },
         { id: 'influencers', label: 'Influencer', icon: <Star className="w-5 h-5" /> },
         { id: 'car-advertising', label: 'Auto-Werbung', icon: <Car className="w-5 h-5" /> },
+        { id: 'partner-credit', label: 'Partner-Freibetrag', icon: <CreditCard className="w-5 h-5" /> },
       ]
     },
     {
