@@ -650,8 +650,8 @@ const CreditSystem = ({ language = 'de', walletBalance = 0, onBalanceUpdate }) =
           {scoreData.next_tier && (
             <div className="mt-4 pt-4 border-t border-white/20">
               <div className="flex justify-between text-sm mb-2">
-                <span>Fortschritt zu {scoreData.next_tier.icon} {scoreData.next_tier.name}</span>
-                <span>{scoreData.next_tier.points_needed} Punkte</span>
+                <span>{t('progressTo')} {scoreData.next_tier.icon} {scoreData.next_tier.name}</span>
+                <span>{scoreData.next_tier.points_needed} {t('points')}</span>
               </div>
               <div className="h-2 bg-white/30 rounded-full overflow-hidden">
                 <div 
