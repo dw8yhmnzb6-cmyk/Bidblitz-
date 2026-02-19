@@ -1364,6 +1364,14 @@ export default function PartnerPortal() {
             />
           )}
 
+          {/* Transfers View - Partner-to-Partner Money Transfers */}
+          {view === 'transfers' && (
+            <PartnerTransfer 
+              token={token}
+              language={language}
+            />
+          )}
+
           {/* Marketing View - New Marketing Features */}
           {view === 'marketing' && (
             <div className="space-y-8">
