@@ -3601,3 +3601,33 @@ Externe Unternehmen wie Edeka können BidBlitz Pay als Zahlungsmethode an ihren 
 
 **Zugang:** Admin Panel → Finanzen → Digital API
 
+
+---
+
+### ✅ Mobile UI Fixes & API-Entwickler-Dokumentation ✅
+
+**Behobene Probleme:**
+
+1. **Mobile Admin-Dashboard optimiert:**
+   - `AdminDigitalPayments.js` - 2x2 Grid auf Mobile, responsive Tabs
+   - `AdminPartnerCredit.js` - Bessere Loading-States, Card-Layout auf Mobile
+   - `AdminCarAdvertising.js` - Card-Ansicht auf Mobile statt Tabelle, Loading-Spinner
+
+2. **Persistierender Ladezustand behoben:**
+   - Loading-Spinner mit Animation statt nur "Laden..." Text
+   - Icons bei leerem Zustand für bessere UX
+
+3. **API-Entwickler-Dokumentationsseite (Swagger-ähnlich):**
+   - Neue Seite: `/developers`
+   - Features:
+     - Alle Endpoints dokumentiert
+     - Interaktiver API-Tester
+     - cURL-Beispiele mit Copy-Button
+     - Webhook-Events erklärt
+     - Mobile-optimiert
+   - Neue Datei: `/app/frontend/src/pages/ApiDocs.js`
+
+**Zugang zur Entwickler-Dokumentation:**
+- URL: `/developers` oder `/developer-docs`
+- Öffentlich zugänglich für externe Partner
+
