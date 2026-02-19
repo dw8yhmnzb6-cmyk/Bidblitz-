@@ -14,6 +14,8 @@ import CreditSystem from '../components/CreditSystem';
 import CashbackSystem from '../components/CashbackSystem';
 import PaymentHistory from '../components/PaymentHistory';
 import DepositOffers from './DepositOffers';
+import ReferralProgram from '../components/ReferralProgram';
+import NotificationCenter from '../components/NotificationCenter';
 import { walletTranslations } from '../i18n/walletTranslations';
 
 const API = process.env.REACT_APP_BACKEND_URL;
