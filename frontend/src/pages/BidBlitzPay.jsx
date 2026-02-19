@@ -1333,12 +1333,12 @@ const BidBlitzPay = () => {
         {/* Send Money View */}
         {view === 'send' && (
           <div className="space-y-6">
-            {/* Gespeicherte Empfänger / Saved Recipients */}
+            {/* Saved Recipients */}
             {savedRecipients.length > 0 && (
               <div className="bg-white rounded-2xl shadow-lg p-4">
                 <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
                   <Gift className="w-4 h-4 text-amber-500" />
-                  {language === 'de' ? 'Gespeicherte Empfänger' : 'Saved Recipients'}
+                  {t('savedRecipients')}
                 </h3>
                 <div className="flex gap-2 overflow-x-auto pb-2">
                   {savedRecipients.map((recipient) => (
