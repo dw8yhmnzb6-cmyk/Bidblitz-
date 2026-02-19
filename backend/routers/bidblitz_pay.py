@@ -387,7 +387,7 @@ async def send_money_to_user(data: P2PTransferRequest, user: dict = Depends(get_
     if data.amount < 1:
         raise HTTPException(status_code=400, detail="Mindestbetrag: €1")
     
-    # Find recipient by email OR by user ID (customer number)
+    # Find recipient by email OR by customer number (BID-XXXXXX)
     recipient_input = data.recipient_email.strip()
     recipient = None
     
@@ -398,7 +398,14 @@ async def send_money_to_user(data: P2PTransferRequest, user: dict = Depends(get_
             {"_id": 0, "id": 1, "name": 1, "email": 1}
         )
     
-    # If not found by email, try to find by user ID
+    # If not found by email, try to find by customer_number (BID-XXXXXX format)
+    if not recipient and recipient_input.upper().startswith("BID-"):
+        recipient = await db.users.find_one(
+            {"customer_number": recipient_input.upper()},
+            {"_id": 0, "id": 1, "name": 1, "email": 1}
+        )
+    
+    # If still not found, try to find by user ID (legacy support)
     if not recipient:
         recipient = await db.users.find_one(
             {"id": recipient_input},
