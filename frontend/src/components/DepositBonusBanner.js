@@ -5,7 +5,6 @@
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Gift, TrendingUp, Sparkles, ArrowRight, Percent, Star } from 'lucide-react';
-import { Button } from './ui/button.jsx';
 
 const translations = {
   de: {
@@ -68,16 +67,11 @@ const DepositBonusBanner = memo(({ language = 'de', className = '' }) => {
 
   const handleClick = () => {
     navigate('/pay');
-    // Set a small delay to ensure navigation completes, then trigger bonus tab
-    setTimeout(() => {
-      const bonusBtn = document.querySelector('button[class*="bonus"]');
-      if (bonusBtn) bonusBtn.click();
-    }, 500);
   };
 
   return (
     <div 
-      className={`relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 p-6 mb-6 ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 p-6 ${className}`}
       data-testid="deposit-bonus-banner"
     >
       {/* Background decorations */}
@@ -109,14 +103,14 @@ const DepositBonusBanner = memo(({ language = 'de', className = '' }) => {
           </div>
           
           <div className="mt-4">
-            <Button
+            <button
               onClick={handleClick}
-              className="bg-white text-orange-600 hover:bg-orange-50 font-bold text-lg px-8 py-3 h-auto rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+              className="bg-white text-orange-600 hover:bg-orange-50 font-bold text-lg px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 inline-flex items-center gap-2"
               data-testid="deposit-bonus-cta"
             >
               {t.cta}
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+              <ArrowRight className="w-5 h-5" />
+            </button>
           </div>
         </div>
         
