@@ -378,7 +378,7 @@ class P2PTransferRequest(BaseModel):
 
 @router.post("/send-money")
 async def send_money_to_user(data: P2PTransferRequest, user: dict = Depends(get_current_user)):
-    """Send BidBlitz balance to another user by email or customer ID"""
+    """Send BidBlitz balance to another user (customer or partner) by email, customer ID, or partner number"""
     sender_id = user["id"]
     
     if data.amount <= 0:
@@ -387,46 +387,70 @@ async def send_money_to_user(data: P2PTransferRequest, user: dict = Depends(get_
     if data.amount < 1:
         raise HTTPException(status_code=400, detail="Mindestbetrag: €1")
     
-    # Find recipient by email OR by customer number (BID-XXXXXX)
+    # Find recipient by email, customer number (BID-XXXXXX), or partner number (P-XXXXX)
     recipient_input = data.recipient_email.strip()
     recipient = None
+    recipient_type = "customer"  # Default type
     
-    # First try to find by email
-    if "@" in recipient_input:
+    # Check if it's a partner number (P-XXXXX)
+    if recipient_input.upper().startswith("P-"):
+        partner = await db.partner_accounts.find_one(
+            {"partner_number": recipient_input.upper(), "status": "approved"},
+            {"_id": 0, "id": 1, "business_name": 1, "company_name": 1, "email": 1, "partner_number": 1}
+        )
+        if not partner:
+            partner = await db.restaurant_accounts.find_one(
+                {"partner_number": recipient_input.upper(), "status": "approved"},
+                {"_id": 0, "id": 1, "business_name": 1, "company_name": 1, "email": 1, "partner_number": 1}
+            )
+        if partner:
+            recipient = {
+                "id": partner.get("id"),
+                "name": partner.get("business_name", partner.get("company_name", "")),
+                "email": partner.get("email", ""),
+                "partner_number": partner.get("partner_number", "")
+            }
+            recipient_type = "partner"
+    
+    # First try to find by email (customer)
+    if not recipient and "@" in recipient_input:
         recipient = await db.users.find_one(
             {"email": recipient_input.lower()},
-            {"_id": 0, "id": 1, "name": 1, "email": 1}
+            {"_id": 0, "id": 1, "name": 1, "email": 1, "customer_number": 1}
         )
     
     # If not found by email, try to find by customer_number (BID-XXXXXX format)
     if not recipient and recipient_input.upper().startswith("BID-"):
         recipient = await db.users.find_one(
             {"customer_number": recipient_input.upper()},
-            {"_id": 0, "id": 1, "name": 1, "email": 1}
+            {"_id": 0, "id": 1, "name": 1, "email": 1, "customer_number": 1}
         )
     
     # If still not found, try to find by user ID (legacy support)
     if not recipient:
         recipient = await db.users.find_one(
             {"id": recipient_input},
-            {"_id": 0, "id": 1, "name": 1, "email": 1}
+            {"_id": 0, "id": 1, "name": 1, "email": 1, "customer_number": 1}
         )
     
     # Also try case-insensitive ID search
     if not recipient:
         recipient = await db.users.find_one(
             {"id": {"$regex": f"^{recipient_input}$", "$options": "i"}},
-            {"_id": 0, "id": 1, "name": 1, "email": 1}
+            {"_id": 0, "id": 1, "name": 1, "email": 1, "customer_number": 1}
         )
     
     if not recipient:
-        raise HTTPException(status_code=404, detail="Empfänger nicht gefunden. Bitte Kundennummer oder E-Mail überprüfen.")
+        raise HTTPException(
+            status_code=404, 
+            detail="Empfänger nicht gefunden. Verwenden Sie Kundennummer (BID-XXXXXX), Partnernummer (P-XXXXX) oder E-Mail."
+        )
     
-    if recipient["id"] == sender_id:
+    if recipient_type == "customer" and recipient["id"] == sender_id:
         raise HTTPException(status_code=400, detail="Sie können nicht an sich selbst senden")
     
     # Check sender balance
-    sender_data = await db.users.find_one({"id": sender_id}, {"_id": 0, "bidblitz_balance": 1, "name": 1})
+    sender_data = await db.users.find_one({"id": sender_id}, {"_id": 0, "bidblitz_balance": 1, "name": 1, "customer_number": 1})
     sender_balance = sender_data.get("bidblitz_balance", 0) if sender_data else 0
     
     if sender_balance < data.amount:
@@ -438,11 +462,20 @@ async def send_money_to_user(data: P2PTransferRequest, user: dict = Depends(get_
         {"$inc": {"bidblitz_balance": -data.amount}}
     )
     
-    # Add to recipient
-    await db.users.update_one(
-        {"id": recipient["id"]},
-        {"$inc": {"bidblitz_balance": data.amount}}
-    )
+    # Add to recipient (customer or partner)
+    if recipient_type == "partner":
+        # Credit partner's pending payout
+        collection = db.partner_accounts if await db.partner_accounts.find_one({"id": recipient["id"]}) else db.restaurant_accounts
+        await collection.update_one(
+            {"id": recipient["id"]},
+            {"$inc": {"pending_payout": data.amount, "total_earned": data.amount}}
+        )
+    else:
+        # Credit customer's bidblitz_balance
+        await db.users.update_one(
+            {"id": recipient["id"]},
+            {"$inc": {"bidblitz_balance": data.amount}}
+        )
     
     # Create transfer record
     transfer_id = str(uuid.uuid4())
@@ -450,25 +483,29 @@ async def send_money_to_user(data: P2PTransferRequest, user: dict = Depends(get_
         "id": transfer_id,
         "sender_id": sender_id,
         "sender_name": sender_data.get("name", ""),
+        "sender_customer_number": sender_data.get("customer_number", ""),
         "recipient_id": recipient["id"],
         "recipient_name": recipient.get("name", ""),
-        "recipient_email": recipient["email"],
+        "recipient_email": recipient.get("email", ""),
+        "recipient_type": recipient_type,
+        "recipient_number": recipient.get("customer_number", recipient.get("partner_number", "")),
         "amount": data.amount,
         "message": data.message,
-        "type": "p2p_transfer",
+        "type": "p2p_transfer" if recipient_type == "customer" else "customer_to_partner",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
     await db.wallet_transfers.insert_one(transfer_doc)
     
-    logger.info(f"💸 P2P Transfer: {sender_id} -> {recipient['id']}: €{data.amount}")
+    logger.info(f"💸 Transfer: {sender_id} -> {recipient['id']} ({recipient_type}): €{data.amount}")
     
     return {
         "success": True,
         "transfer_id": transfer_id,
         "amount": data.amount,
-        "recipient": recipient.get("name", recipient["email"]),
+        "recipient": recipient.get("name", recipient.get("email", "")),
+        "recipient_type": recipient_type,
         "new_balance": sender_balance - data.amount,
-        "message": f"€{data.amount:.2f} an {recipient.get('name', recipient['email'])} gesendet"
+        "message": f"€{data.amount:.2f} an {recipient.get('name', recipient.get('email', ''))} gesendet"
     }
 
 @router.get("/transfer-history")
