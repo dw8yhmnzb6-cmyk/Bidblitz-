@@ -1109,7 +1109,7 @@ const BidBlitzPay = () => {
                         : 'border-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                   >
-                    {language === 'de' ? 'ALLES' : 'ALL'} (€{(transferDirection === 'toWallet' ? mainBalance : (wallet?.wallet?.total_value || 0)).toFixed(2)})
+                    {t('all')} (€{(transferDirection === 'toWallet' ? mainBalance : (wallet?.wallet?.total_value || 0)).toFixed(2)})
                   </button>
                 </div>
                 
@@ -1137,8 +1137,8 @@ const BidBlitzPay = () => {
                       <ArrowUpRight className="w-5 h-5 mr-2" />
                     )}
                     {transferDirection === 'toWallet' 
-                      ? (language === 'de' ? 'Auf BidBlitz Pay übertragen' : 'Transfer to BidBlitz Pay')
-                      : (language === 'de' ? 'Auf Hauptkonto übertragen' : 'Transfer to Main Account')
+                      ? t('transferToBidBlitzPay')
+                      : t('transferToMainAccount')
                     }
                   </>
                 )}
@@ -1147,8 +1147,8 @@ const BidBlitzPay = () => {
                 {(transferDirection === 'toWallet' ? mainBalance : (wallet?.wallet?.total_value || 0)) === 0 && (
                   <p className="text-center text-sm text-red-500 mt-2">
                     {transferDirection === 'toWallet'
-                      ? (language === 'de' ? 'Kein Guthaben auf Hauptkonto verfügbar' : 'No balance available on main account')
-                      : (language === 'de' ? 'Kein BidBlitz Pay Guthaben verfügbar' : 'No BidBlitz Pay balance available')
+                      ? t('noBalanceMain')
+                      : t('noBalanceWallet')
                     }
                   </p>
                 )}
