@@ -176,7 +176,7 @@ const badgeColors = {
   gold: 'bg-gradient-to-r from-yellow-400 to-amber-500'
 };
 
-const DepositOffers = ({ partnerId = null }) => {
+const DepositOffers = ({ partnerId = null, onBalanceChange = null }) => {
   const { language, mappedLanguage } = useLanguage();
   const { isAuthenticated, user, refreshUser } = useAuth();
   const langKey = mappedLanguage || language;
