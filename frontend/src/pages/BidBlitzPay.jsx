@@ -437,6 +437,15 @@ const BidBlitzPay = () => {
     }
   };
 
+  // Schnellüberweisung - letzten Empfänger auswählen
+  const useLastRecipient = () => {
+    if (lastRecipient) {
+      setRecipientEmail(lastRecipient.email);
+      setSendMessage(lastRecipient.lastMessage || '');
+      toast.success(language === 'de' ? 'Empfänger übernommen!' : 'Recipient loaded!');
+    }
+  };
+
   // Fetch transfer history
   const fetchTransferHistory = useCallback(async () => {
     if (!token) return;
