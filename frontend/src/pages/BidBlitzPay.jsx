@@ -779,25 +779,23 @@ const BidBlitzPay = () => {
             {customerNumber && (
               <div className="mt-4 pt-3 border-t border-white/20">
                 <p className="text-white/70 text-xs mb-1">
-                  {language === 'de' ? 'Ihre Kundennummer' : 'Your Customer Number'}
+                  {t('yourCustomerNumber')}
                 </p>
                 <div className="flex items-center gap-2">
                   <p className="font-mono text-lg font-bold tracking-wider">{customerNumber}</p>
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(customerNumber);
-                      toast.success(language === 'de' ? 'Kundennummer kopiert!' : 'Customer number copied!');
+                      toast.success(t('customerNumberCopied'));
                     }}
                     className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
-                    title={language === 'de' ? 'Kopieren' : 'Copy'}
+                    title={t('copyToClipboard')}
                   >
                     <Copy className="w-4 h-4" />
                   </button>
                 </div>
                 <p className="text-white/50 text-xs mt-1">
-                  {language === 'de' 
-                    ? 'Für Überweisungen als Verwendungszweck angeben' 
-                    : 'Use as reference for bank transfers'}
+                  {t('forBankTransfers')}
                 </p>
               </div>
             )}
