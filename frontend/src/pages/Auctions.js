@@ -11,9 +11,10 @@ import { LastChanceSection } from '../components/LastChanceAuctions';
 import { TopBidderBadge } from '../components/TopBidderLeaderboard';
 import ExitIntentPopup from '../components/ExitIntentPopup';
 import WinnerGalleryHome from '../components/WinnerGalleryHome';
+import FlashBonusPromo from '../components/FlashBonusPromo';
 import { 
   Timer, Flame, TrendingUp, Users, Zap, Award, Gift, Shield, Star, Crown, Clock, 
-  ChevronRight, CheckCircle, Eye, Gavel, ArrowRight, Sparkles, UserPlus, Mail, Lock
+  ChevronRight, CheckCircle, Eye, Gavel, ArrowRight, Sparkles, UserPlus, Mail, Lock, Trophy
 } from 'lucide-react';
 // Note: LiveTimer, LivePrice, ProductInfo, ActivityIndex, TrustBadges are defined locally for this page
 
