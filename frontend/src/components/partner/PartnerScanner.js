@@ -39,7 +39,7 @@ const PartnerScanner = ({ token, fetchDashboard, t }) => {
         () => {} // Ignore errors during scanning
       );
     } catch (err) {
-      toast.error('Kamera konnte nicht gestartet werden');
+      toast.error(t('cameraAccessError') || 'Camera could not be started');
       setScanning(false);
     }
   };
