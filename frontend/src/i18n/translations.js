@@ -2000,7 +2000,7 @@ export const translations = {
     common: { loading: "लोड हो रहा है...", error: "त्रुटि", success: "सफलता", save: "सेव करें", cancel: "रद्द करें" }
   },
   sq: {
-    nav: { language: "Gjuha", auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave", howItWorks: "Si funksionon", vip: "Anëtarësimi VIP", faq: "FAQ", contact: "Kontakt", giftCards: "Kartat Dhuratë", vipAuctions: "Ankandet VIP", leaderboard: "Renditja", luckyWheel: "Rrota e Fatit" },
+    nav: { language: "Gjuha", auctions: "Ankandet", buyBids: "Bli Oferta", dashboard: "Paneli", admin: "Admin", login: "Hyr", register: "Regjistrohu", logout: "Dil", bids: "Oferta", winners: "Fituesit", inviteFriends: "Fto miq", wishlist: "Lista e dëshirave", howItWorks: "Si funksionon", vip: "Anëtarësimi VIP", faq: "FAQ", contact: "Kontakt", giftCards: "Kartat Dhuratë", vipAuctions: "Ankandet VIP", leaderboard: "Renditja", luckyWheel: "Rrota e Fatit", manager: "Menaxher", influencer: "Influencer", wallet: "Portofoli", user: "Përdorues", lightMode: "Modaliteti i Ndritshëm", darkMode: "Modaliteti i Errët" },
     home: {
       badge: "10 oferta falas me regjistrim",
       heroTitle1: "Fito",
