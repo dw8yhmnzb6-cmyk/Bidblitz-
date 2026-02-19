@@ -461,6 +461,10 @@ app.include_router(credit_router, prefix="/api")
 # Cashback System
 app.include_router(cashback_router, prefix="/api")
 
+# Auto-Bid and Watchlist
+app.include_router(auto_bid_router, prefix="/api")
+app.include_router(watchlist_router, prefix="/api")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
