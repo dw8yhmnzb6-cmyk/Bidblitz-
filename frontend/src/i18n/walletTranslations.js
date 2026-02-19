@@ -185,6 +185,15 @@ export const walletTranslations = {
     enterAmount: 'Enter amount',
     successTransfer: 'Successfully transferred',
     processing: 'Processing...',
+    // Transfer Balance (NEW)
+    transferBalance: 'Transfer Balance',
+    toBidBlitzPay: 'To BidBlitz Pay',
+    toMainAccount: 'To Main Account',
+    fromHere: 'From here',
+    bidblitzPay: 'BidBlitz Pay',
+    noBalanceMain: 'No balance available on main account',
+    noBalanceWallet: 'No BidBlitz Pay balance available',
+    // Send Money
     sendMoney: 'Send Money',
     recipientId: 'Recipient (Customer ID or Email)',
     recipientEmail: 'Recipient Email',
