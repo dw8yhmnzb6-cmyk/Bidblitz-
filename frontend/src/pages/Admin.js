@@ -1728,6 +1728,11 @@ export default function Admin() {
             <AdminCreditManagement />
           )}
 
+          {/* Digital Payment API Tab */}
+          {activeTab === 'digital-api' && (
+            <AdminDigitalPayments />
+          )}
+
           {/* Merchant Vouchers Tab */}
           {activeTab === 'merchant-vouchers' && (
             <AdminMerchantVouchers />
