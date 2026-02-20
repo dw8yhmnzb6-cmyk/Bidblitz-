@@ -1423,6 +1423,28 @@ async def topup_customer_card(
             merchant_name=api_key.get("name", "Händler")
         )
     
+    # Award cashback (1% of transaction amount)
+    cashback_awarded = None
+    try:
+        user_id = str(user.get("_id", user.get("id", user.get("email"))))
+        enterprise_id = api_key.get("enterprise_id")
+        branch_id = api_key.get("branch_id")
+        
+        cashback_record = await award_cashback(
+            user_id=user_id,
+            amount=data.amount,
+            transaction_type="topup",
+            merchant_name=api_key.get("name", "Händler"),
+            enterprise_id=enterprise_id,
+            branch_id=branch_id,
+            reference=topup_id
+        )
+        if cashback_record:
+            cashback_awarded = cashback_record["amount"]
+    except Exception as e:
+        # Don't fail the transaction if cashback fails
+        print(f"Cashback error: {e}")
+    
     # Calculate next tier info
     new_volume = monthly_volume + data.amount
     next_tier = None
