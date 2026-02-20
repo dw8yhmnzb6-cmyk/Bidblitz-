@@ -7,7 +7,7 @@ import {
   Building2, Key, Users, BarChart3, Download, Store, Plus, Settings,
   ChevronRight, LogOut, Check, X, RefreshCw, FileText, TrendingUp,
   Calendar, Euro, ShoppingBag, Gift, Percent, Eye, EyeOff, Copy,
-  Trash2, ToggleLeft, ToggleRight, Search, Filter
+  Trash2, ToggleLeft, ToggleRight, Search, Filter, Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -36,11 +36,14 @@ export default function EnterprisePortal() {
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [promotions, setPromotions] = useState([]);
+  const [cashbackStats, setCashbackStats] = useState(null);
   
   // Modal state
   const [showBranchModal, setShowBranchModal] = useState(false);
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
+  const [showPromoModal, setShowPromoModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   
   // Report filters
