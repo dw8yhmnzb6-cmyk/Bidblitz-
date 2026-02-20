@@ -9,60 +9,49 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 #### Bug Fix 1: Fehler-Toast bei Filialen-Erstellung ✅
 - **Problem:** Beim Erstellen einer neuen Filiale im Enterprise Portal erschien eine rote "Fehler"-Meldung, obwohl die Filiale erfolgreich erstellt wurde.
-- **Ursache:** Das Frontend-Formular sendete leere Strings (`""`) für optionale Felder wie `manager_email`. Pydantics `EmailStr`-Validierung lehnt leere Strings ab (422 Validation Error).
-- **Lösung:**
-  - Das `BranchForm`-Komponente filtert jetzt leere Strings vor dem Absenden heraus
-  - Verbesserte Fehlerbehandlung in `handleCreateBranch` zeigt spezifische Validierungsfehler
-- **Dateien geändert:** `/app/frontend/src/pages/EnterprisePortal.js`
+- **Lösung:** Das `BranchForm`-Komponente filtert jetzt leere Strings vor dem Absenden heraus.
 
 #### Bug Fix 2: Filialleiter-Anmeldung ✅
-- **Problem:** Filialleiter (Branch Manager) konnten sich nicht im Enterprise Portal anmelden.
-- **Ursache:** Der `/api/enterprise/login`-Endpoint unterstützte nur Enterprise-Admin-Konten, nicht Enterprise-Benutzer.
-- **Lösung:** Der Login-Endpoint wurde erweitert, um beide Kontotypen zu unterstützen:
-  1. Zuerst wird nach Enterprise-Admin gesucht
-  2. Falls nicht gefunden, wird nach Enterprise-Benutzer gesucht
-- **Dateien geändert:** `/app/backend/routers/enterprise_portal.py`
+- **Problem:** Filialleiter konnten sich nicht anmelden.
+- **Lösung:** Der Login-Endpoint wurde erweitert, um beide Kontotypen zu unterstützen.
 
 #### Neues Feature 1: Automatisches System Health Check ✅
-- **Beschreibung:** Ein automatisches Testsystem, das täglich Tests durchführt, Probleme anzeigt und automatisch behebt.
-- **Features:**
-  - Tägliche automatische Systemprüfung um 3:00 Uhr UTC
-  - Prüft: Database, Enterprise Logins, Expired Sessions, Orphaned Data, Pending Payouts
-  - Admin-Dashboard mit Statistiken und Report-Verlauf
-  - Automatische Problemfixes (behebbare Probleme werden markiert)
-  - "Jetzt prüfen"-Button für manuelle Prüfung
-  - Report-Cleanup-Funktion
-- **API-Endpoints:**
-  - `GET /api/health/run` - Health Check ausführen
-  - `GET /api/health/stats` - Statistiken abrufen
-  - `GET /api/health/reports` - Reports auflisten
-  - `POST /api/health/fix/{report_id}` - Probleme automatisch beheben
-- **Neue Dateien:**
-  - `/app/backend/routers/health_check.py`
-  - `/app/frontend/src/components/admin/AdminSystemHealth.js`
+- Tägliche automatische Systemprüfung um 3:00 Uhr UTC
+- Admin-Dashboard: Admin Panel → System → System Health
 
 #### Neues Feature 2: Monatliche Provisionsberichte per E-Mail ✅
-- **Beschreibung:** Automatischer Versand von Provisionsberichten an Händler am 1. jedes Monats.
+- Automatischer Versand am 1. jedes Monats um 8:00 UTC
+- Manuell über "Bericht senden" Button im Enterprise Portal → Berichte
+
+#### Neues Feature 3: Produkt-Analyse Dashboard ✅
+- **Beschreibung:** Ein umfassendes Analyse-System, das trackt, welche Produkte Kunden am meisten interessieren.
 - **Features:**
-  - Automatischer Versand am 1. jedes Monats um 8:00 Uhr UTC
-  - Detaillierter HTML-E-Mail-Bericht mit:
-    - Gesamtumsatz und Transaktionen
-    - Provisions-Aufschlüsselung (Gutschein, Eigenzahlung, Cashback)
-    - Vergleich zum Vormonat
-    - Filial-Übersicht
-    - Auszahlungsstatus
-  - Manueller Versand über "Bericht senden" Button im Enterprise Portal
-  - Admin kann alle Berichte auf einmal versenden
+  - Automatisches Tracking von Produktansichten
+  - Tracking von Benutzerinteraktionen (Teilen, Bieten, Wishlist)
+  - Statistik-Übersicht: Aufrufe heute/Woche, beliebteste Kategorie
+  - 4 Ansichten: Top Produkte, Trending, Interesse-Score, Kategorien
+  - Trending-Berechnung (heute vs. letzte Woche)
+  - Interest-Score basierend auf Aufrufen, Geboten, Wishlist, Shares
+  - Filter nach Zeitraum (heute, Woche, Monat, gesamt)
+
 - **API-Endpoints:**
-  - `GET /api/enterprise/reports/commission-preview` - Bericht-Vorschau
-  - `POST /api/enterprise/reports/send-commission-report` - Bericht senden
-  - `GET /api/enterprise/reports/history` - Berichts-Historie
-  - `POST /api/enterprise/reports/admin/send-all-reports` - Alle Berichte senden
+  - `POST /api/analytics/product-view` - Produktansicht tracken
+  - `POST /api/analytics/product-interaction` - Interaktion tracken
+  - `GET /api/analytics/overview` - Dashboard-Übersicht
+  - `GET /api/analytics/top-products` - Meistgesehene Produkte
+  - `GET /api/analytics/trending` - Trending-Produkte
+  - `GET /api/analytics/interest-score` - Interesse-Ranking
+  - `GET /api/analytics/category-stats` - Kategorie-Statistiken
+  - `GET /api/analytics/product/{id}/stats` - Einzelprodukt-Analyse
+
 - **Neue Dateien:**
-  - `/app/backend/routers/enterprise_reports.py`
+  - `/app/backend/routers/product_analytics.py`
+  - `/app/frontend/src/components/admin/AdminProductAnalytics.js`
+
 - **Geänderte Dateien:**
-  - `/app/backend/utils/email.py` - Neue E-Mail-Template-Funktion
-  - `/app/frontend/src/pages/EnterprisePortal.js` - Neuer "E-Mail Bericht" Button
+  - `/app/frontend/src/pages/AuctionDetail.js` - Tracking hinzugefügt
+
+- **Zugriff:** Admin Panel → Auktionen → Produkt-Analyse
 
 ---
 
