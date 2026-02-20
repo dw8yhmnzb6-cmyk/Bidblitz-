@@ -5,6 +5,24 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 20, 2026)
 
+### ✅ BUG FIX - February 20, 2026 (Session 61) - FILIALE ERSTELLEN BUG ✅
+
+**Problem:** Beim Erstellen einer neuen Filiale im Enterprise Portal erschien eine rote "Fehler"-Meldung, obwohl die Filiale erfolgreich erstellt wurde.
+
+**Ursache:** Das Frontend-Formular sendete leere Strings (`""`) für optionale Felder wie `manager_email`. Da `EmailStr` in Pydantic leere Strings nicht akzeptiert (422 Validation Error), schlug die Anfrage fehl.
+
+**Lösung:**
+1. Das `BranchForm`-Komponente filtert jetzt leere Strings vor dem Absenden heraus
+2. Verbesserte Fehlerbehandlung in `handleCreateBranch` zeigt spezifische Validierungsfehler
+3. Entfernte nicht verwendete `manager_name` und `manager_email` aus dem Formular-State
+
+**Dateien geändert:**
+- `/app/frontend/src/pages/EnterprisePortal.js` (Zeilen 2210-2213 & 1317-1333)
+
+**Test:** Desktop + Mobile - Beide funktionieren korrekt mit grüner Erfolgsmeldung
+
+---
+
 ### ✅ Session Update - February 20, 2026 (Session 60) - ENTERPRISE PORTAL + SEPA PAYOUTS ✅
 
 #### Enterprise Portal V3 + SEPA-Auszahlungen - VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET ✅
