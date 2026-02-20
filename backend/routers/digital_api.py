@@ -1213,9 +1213,19 @@ async def scan_and_pay(
     
     # Mark token as used
     await db.customer_payment_tokens.update_one(
-        {"token": data.payment_token},
+        {"token": payment_token},
         {"$set": {"used": True, "used_at": datetime.now(timezone.utc).isoformat()}}
     )
+    
+    # Calculate commissions
+    platform_commission_rate = api_key.get("platform_commission", 0.5)  # Default 0.5%
+    customer_cashback_rate = api_key.get("customer_cashback", 0.0)  # Default 0%
+    
+    platform_fee = round(data.amount * (platform_commission_rate / 100), 2)
+    customer_cashback = round(data.amount * (customer_cashback_rate / 100), 2)
+    
+    # Net amount to merchant = amount - platform_fee
+    merchant_net = data.amount - platform_fee
     
     # Deduct from user balance
     await db.users.update_one(
@@ -1230,16 +1240,44 @@ async def scan_and_pay(
         upsert=True
     )
     
+    # Give customer cashback if configured
+    if customer_cashback > 0:
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$inc": {"bidblitz_balance": customer_cashback, "balance": customer_cashback}}
+        )
+        await db.bidblitz_wallets.update_one(
+            {"user_id": user["id"]},
+            {"$inc": {"universal_balance": customer_cashback}},
+            upsert=True
+        )
+    
+    # Record platform commission
+    if platform_fee > 0:
+        await db.platform_commissions.insert_one({
+            "id": f"comm_{uuid.uuid4().hex[:16]}",
+            "type": "scan_pay",
+            "api_key_id": api_key["id"],
+            "api_key_name": api_key["name"],
+            "payment_amount": data.amount,
+            "commission_rate": platform_commission_rate,
+            "commission_amount": platform_fee,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+    
     now = datetime.now(timezone.utc)
     payment_id = f"scan_{uuid.uuid4().hex[:16]}"
     
-    # Record the payment
+    # Record the payment with commission details
     await db.digital_payments.insert_one({
         "id": payment_id,
         "type": "scan_pay",
         "api_key_id": api_key["id"],
         "api_key_name": api_key["name"],
         "amount": data.amount,
+        "platform_fee": platform_fee,
+        "merchant_net": merchant_net,
+        "customer_cashback": customer_cashback,
         "currency": "EUR",
         "reference": f"SCAN-{now.strftime('%Y%m%d%H%M%S')}",
         "customer_id": user["id"],
