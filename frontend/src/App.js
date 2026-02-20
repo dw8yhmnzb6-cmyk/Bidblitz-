@@ -403,6 +403,17 @@ function AppContent() {
               <MyPaymentQR />
             </ProtectedRoute>
           } />
+          {/* Wallet Card */}
+          <Route path="/wallet-card" element={
+            <ProtectedRoute>
+              <WalletCard />
+            </ProtectedRoute>
+          } />
+          <Route path="/meine-karte" element={
+            <ProtectedRoute>
+              <WalletCard />
+            </ProtectedRoute>
+          } />
           {/* New Public Pages */}
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/faq" element={<FAQ />} />
