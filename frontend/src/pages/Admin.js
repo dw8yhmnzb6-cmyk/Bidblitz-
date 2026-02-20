@@ -1736,6 +1736,11 @@ export default function Admin() {
             <AdminDigitalPayments />
           )}
 
+          {/* Enterprise Management Tab (Großhändler) */}
+          {activeTab === 'enterprise' && (
+            <AdminEnterpriseManagement />
+          )}
+
           {/* Merchant Vouchers Tab */}
           {activeTab === 'merchant-vouchers' && (
             <AdminMerchantVouchers />
