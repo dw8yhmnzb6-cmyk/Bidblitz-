@@ -539,28 +539,175 @@ export default function POSKiosk() {
 
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center p-4">
-        {/* Payment Entry Mode */}
-        {!currentPayment && (
-          <div className="w-full max-w-md">
-            {/* Amount Display */}
-            <div className="bg-gray-800 rounded-2xl p-6 mb-4 text-center">
-              <p className="text-gray-400 text-sm mb-2">Betrag</p>
-              <div className="flex items-center justify-center">
-                <span className="text-4xl sm:text-5xl lg:text-6xl text-gray-500 mr-2">€</span>
-                <span className="text-5xl sm:text-6xl lg:text-7xl font-bold tabular-nums">
-                  {amount}
-                </span>
-              </div>
+        {/* Mode Toggle - Only show when no active payment/topup */}
+        {!currentPayment && !topupResult && (
+          <div className="w-full max-w-lg">
+            {/* Mode Toggle Buttons */}
+            <div className="bg-gray-800 rounded-2xl p-2 flex gap-2 mb-4">
+              <button
+                onClick={() => { setMode('payment'); setAmount('0.00'); setCustomerNumber(''); }}
+                className={`flex-1 py-4 px-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 ${
+                  mode === 'payment' 
+                    ? 'bg-orange-500 text-white' 
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                }`}
+              >
+                <Euro className="w-6 h-6" />
+                Zahlung
+              </button>
+              <button
+                onClick={() => { setMode('topup'); setAmount('0.00'); setCustomerNumber(''); }}
+                className={`flex-1 py-4 px-4 rounded-xl font-bold text-lg transition-all flex items-center justify-center gap-2 ${
+                  mode === 'topup' 
+                    ? 'bg-green-500 text-white' 
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                }`}
+              >
+                <CreditCard className="w-6 h-6" />
+                Aufladen
+              </button>
             </div>
 
-            {/* Numpad */}
-            <Numpad
-              onInput={handleNumpadInput}
-              onClear={handleClear}
-              onBackspace={handleBackspace}
-              onSubmit={createPayment}
-              disabled={loading || parseFloat(amount) <= 0}
-            />
+            {/* Payment Mode */}
+            {mode === 'payment' && (
+              <>
+                {/* Amount Display */}
+                <div className="bg-gray-800 rounded-2xl p-6 mb-4 text-center">
+                  <p className="text-gray-400 text-sm mb-2">Betrag</p>
+                  <div className="flex items-center justify-center">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl text-gray-500 mr-2">€</span>
+                    <span className="text-5xl sm:text-6xl lg:text-7xl font-bold tabular-nums">
+                      {amount}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Numpad */}
+                <Numpad
+                  onInput={handleNumpadInput}
+                  onClear={handleClear}
+                  onBackspace={handleBackspace}
+                  onSubmit={createPayment}
+                  disabled={loading || parseFloat(amount) <= 0}
+                />
+              </>
+            )}
+
+            {/* Top-up Mode */}
+            {mode === 'topup' && (
+              <>
+                {/* Customer Number Input */}
+                <div className="bg-gray-800 rounded-2xl p-4 mb-4">
+                  <p className="text-gray-400 text-sm mb-2">Kundennummer</p>
+                  <input
+                    type="text"
+                    value={customerNumber}
+                    onChange={(e) => setCustomerNumber(e.target.value.toUpperCase())}
+                    placeholder="BID-XXXXXX"
+                    className="w-full px-4 py-4 bg-gray-900 border border-gray-700 rounded-xl font-mono text-2xl text-center focus:ring-2 focus:ring-green-500"
+                  />
+                </div>
+
+                {/* Amount Display */}
+                <div className="bg-gray-800 rounded-2xl p-6 mb-4 text-center">
+                  <p className="text-gray-400 text-sm mb-2">Aufladebetrag</p>
+                  <div className="flex items-center justify-center">
+                    <span className="text-4xl sm:text-5xl lg:text-6xl text-gray-500 mr-2">€</span>
+                    <span className="text-5xl sm:text-6xl lg:text-7xl font-bold tabular-nums">
+                      {amount}
+                    </span>
+                  </div>
+                  
+                  {/* Bonus Preview */}
+                  {parseFloat(amount) >= 20 && (
+                    <div className="mt-4 bg-green-900/30 border border-green-700 rounded-xl p-3">
+                      <div className="flex items-center justify-between text-lg">
+                        <span className="text-green-400">Kunde erhält:</span>
+                        <span className="text-green-400 font-bold text-2xl">
+                          €{(parseFloat(amount) + calculateBonus(amount)).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-green-500 mt-1">
+                        <span>Bonus:</span>
+                        <span>+€{calculateBonus(amount).toFixed(2)}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Quick Amount Buttons */}
+                <div className="grid grid-cols-4 gap-2 mb-4">
+                  {[20, 50, 100, 200].map(val => (
+                    <button
+                      key={val}
+                      onClick={() => setAmount(val.toString())}
+                      className={`py-3 rounded-xl font-bold text-lg transition-colors ${
+                        amount === val.toString()
+                          ? 'bg-green-500 text-white'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                    >
+                      €{val}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Commission Info */}
+                <div className="bg-gray-700/50 rounded-xl p-3 text-sm mb-4">
+                  <div className="flex justify-between items-center text-gray-400">
+                    <span>📊 Ihr Umsatz:</span>
+                    <span className="text-white font-semibold">€{merchantVolume.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-gray-400 mt-1">
+                    <span>💰 Ihre Provision:</span>
+                    <span className="text-white font-semibold">{getCommissionRate(merchantVolume + (parseFloat(amount) || 0))}%</span>
+                  </div>
+                </div>
+
+                {/* Numpad for Top-up */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'].map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => key === '⌫' ? handleBackspace() : handleNumpadInput(key)}
+                      disabled={loading}
+                      className={`h-14 sm:h-16 text-xl sm:text-2xl font-bold rounded-xl transition-all active:scale-95 ${
+                        key === '⌫' 
+                          ? 'bg-red-100 text-red-600 hover:bg-red-200' 
+                          : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+                      } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {key === '⌫' ? <Delete className="w-5 h-5 mx-auto" /> : key}
+                    </button>
+                  ))}
+                  <button
+                    onClick={handleClear}
+                    disabled={loading}
+                    className="h-14 sm:h-16 text-lg font-bold rounded-xl bg-gray-200 text-gray-600 hover:bg-gray-300 transition-all active:scale-95"
+                  >
+                    C
+                  </button>
+                  <button
+                    onClick={processTopup}
+                    disabled={loading || parseFloat(amount) < 5 || !customerNumber.trim()}
+                    className={`col-span-2 h-14 sm:h-16 text-lg font-bold rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2 ${
+                      parseFloat(amount) >= 5 && customerNumber.trim()
+                        ? 'bg-green-500 text-white hover:bg-green-600' 
+                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    }`}
+                  >
+                    {loading ? (
+                      <RefreshCw className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        Aufladen
+                      </>
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
