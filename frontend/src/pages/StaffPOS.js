@@ -1568,17 +1568,57 @@ export default function StaffPOS() {
           </div>
           
           <div className="flex items-center gap-2">
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setShowLanguages(!showLanguages)}
+                className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 transition-colors flex items-center gap-1"
+                title={t.close || 'Sprache'}
+                data-testid="language-selector-btn"
+              >
+                <Globe className="w-5 h-5" />
+                <span className="text-lg">{languages.find(l => l.code === language)?.flag || '🇩🇪'}</span>
+              </button>
+              
+              {showLanguages && (
+                <div className="absolute right-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 p-2 min-w-[200px] max-h-[400px] overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-1">
+                    {languages.map(lang => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setShowLanguages(false);
+                        }}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all ${
+                          language === lang.code
+                            ? 'bg-amber-500 text-white'
+                            : 'hover:bg-slate-700 text-slate-300'
+                        }`}
+                        data-testid={`lang-${lang.code}`}
+                      >
+                        <span className="text-xl">{lang.flag}</span>
+                        <span className="text-sm truncate">{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
             <button
               onClick={() => setShowHistory(true)}
               className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 transition-colors"
-              title="Verlauf"
+              title={t.transactionHistory || 'Verlauf'}
+              data-testid="history-btn"
             >
               <History className="w-5 h-5" />
             </button>
             <button
               onClick={handleLogout}
               className="p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 transition-colors"
-              title="Abmelden"
+              title={t.logout || 'Abmelden'}
+              data-testid="logout-btn"
             >
               <LogOut className="w-5 h-5" />
             </button>
