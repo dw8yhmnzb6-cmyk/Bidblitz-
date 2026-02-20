@@ -31,7 +31,7 @@ const playSound = (type) => {
 export default function POSTerminal() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('pos_api_key') || '');
   const [merchantName, setMerchantName] = useState('');
-  const [merchantCommission, setMerchantCommission] = useState(2.0);
+  const [merchantVolume, setMerchantVolume] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -50,10 +50,20 @@ export default function POSTerminal() {
   const [customerNumber, setCustomerNumber] = useState('');
   const [topupResult, setTopupResult] = useState(null);
   const [bonusTiers] = useState([
+    { min: 200, bonus: 12.00, label: '€200+ → +€12' },
     { min: 100, bonus: 5.00, label: '€100+ → +€5' },
     { min: 50, bonus: 2.00, label: '€50+ → +€2' },
     { min: 20, bonus: 0.50, label: '€20+ → +€0,50' }
   ]);
+  
+  // Commission tiers (automatic based on volume)
+  const getCommissionRate = (volume) => {
+    if (volume >= 10000) return 2.0;
+    if (volume >= 5000) return 1.5;
+    if (volume >= 2000) return 1.0;
+    if (volume >= 500) return 0.5;
+    return 0;
+  };
   
   // Settings
   const [soundEnabled, setSoundEnabled] = useState(true);
