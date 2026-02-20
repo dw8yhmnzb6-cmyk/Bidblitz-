@@ -67,32 +67,33 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - **Hardware-Empfehlungen:** Honeywell Voyager, Zebra DS2208, Datalogic QuickScan
 
 #### 7. Händler-Provisions-System (KORRIGIERT) ✅
-- **Neues Modell:** Händler bekommt Provision (nicht BidBlitz)
-- **Händler-Provision:** 1% - 10% pro Aufladung (Standard: 2%)
-- **Kunden-Bonus (gestaffelt):**
-  - €100+ aufladen → **+€5 Bonus** (Kunde bekommt €105)
-  - €50+ aufladen → **+€2 Bonus** (Kunde bekommt €52)
-  - €20+ aufladen → **+€0,50 Bonus** (Kunde bekommt €20,50)
+- **Automatisches Stufensystem:** Je mehr Umsatz, desto höher die Provision
+- **Händler-Provisions-Staffeln (0% - 2%):**
+  - €10.000+ Umsatz → **2% Provision**
+  - €5.000+ Umsatz → **1.5% Provision**
+  - €2.000+ Umsatz → **1% Provision**
+  - €500+ Umsatz → **0.5% Provision**
+  - Start → **0% Provision**
+- **Kunden-Bonus-Staffeln (je mehr aufgeladen, desto mehr Bonus):**
+  - €200+ aufladen → **+€12 Bonus (6%)**
+  - €100+ aufladen → **+€5 Bonus (5%)**
+  - €50+ aufladen → **+€2 Bonus (4%)**
+  - €20+ aufladen → **+€0,50 Bonus (2.5%)**
 - **API-Endpoint:** `POST /api/digital/topup`
-  - Händler scannt Kunden-QR oder gibt Kundennummer ein
-  - Kunde zahlt bar, bekommt Guthaben + Bonus
-  - Händler verdient Provision
+- **Info-Endpoint:** `GET /api/digital/topup/bonus-info`
 - **Collections:**
-  - `digital_payments` - Alle Aufladungen
+  - `digital_payments` - Alle Aufladungen mit Provisions-Details
   - `merchant_commissions` - Händler-Provisionen
 
 #### 8. POS-Terminal mit Auflade-Funktion ✅
 - **Zwei Modi:**
-  - 🔶 **Zahlung annehmen** - Kunde bezahlt mit BidBlitz-Guthaben (QR-Code)
-  - ➕ **Karte aufladen** - Kunde lädt Guthaben auf (Kundennummer eingeben)
+  - 🔶 **Zahlung annehmen** - Kunde bezahlt mit BidBlitz-Guthaben
+  - ➕ **Karte aufladen** - Kunde lädt Guthaben auf
 - **Auflade-Features:**
-  - Kundennummer-Eingabe (BID-XXXXXX)
-  - Schnellwahl-Buttons: €20, €50, €100, €200
-  - Live-Bonus-Vorschau: "Kunde erhält: €52.00 | Bonus: +€2.00"
-  - Händler-Provisions-Anzeige: "Ihre Provision: 2% = €1.00"
-  - Erfolgsbestätigung mit Aufschlüsselung
-- **Route:** `/pos`
-- **Datei:** `/app/frontend/src/pages/POSTerminal.js`
+  - Live-Bonus-Vorschau: "Kunde erhält: €105.00 | Bonus: +€5.00"
+  - Automatische Provisions-Anzeige basierend auf Umsatz
+  - Fortschritt zur nächsten Stufe: "Noch €500 bis 0.5%"
+  - Erfolgsbestätigung mit vollständiger Aufschlüsselung
 
 ---
 
