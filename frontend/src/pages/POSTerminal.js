@@ -367,12 +367,40 @@ export default function POSTerminal() {
       <div className="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Input & QR Code */}
         <div className="space-y-6">
-          {/* New Payment Form */}
-          {!currentPayment && (
+          {/* Mode Toggle - Only show when no active payment */}
+          {!currentPayment && !topupResult && (
+            <div className="bg-gray-800 rounded-2xl p-2 flex gap-2">
+              <button
+                onClick={() => setMode('payment')}
+                className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${
+                  mode === 'payment' 
+                    ? 'bg-orange-500 text-white' 
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                }`}
+              >
+                <Euro className="w-5 h-5" />
+                Zahlung annehmen
+              </button>
+              <button
+                onClick={() => setMode('topup')}
+                className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${
+                  mode === 'topup' 
+                    ? 'bg-green-500 text-white' 
+                    : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                }`}
+              >
+                <Plus className="w-5 h-5" />
+                Karte aufladen
+              </button>
+            </div>
+          )}
+
+          {/* Payment Mode */}
+          {mode === 'payment' && !currentPayment && (
             <div className="bg-gray-800 rounded-2xl p-6">
               <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                <Plus className="w-5 h-5 text-orange-500" />
-                Neue Zahlung
+                <Euro className="w-5 h-5 text-orange-500" />
+                Zahlung erstellen
               </h2>
 
               <div className="space-y-4">
@@ -437,6 +465,148 @@ export default function POSTerminal() {
                   )}
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* Top-up Mode */}
+          {mode === 'topup' && !topupResult && (
+            <div className="bg-gray-800 rounded-2xl p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Plus className="w-5 h-5 text-green-500" />
+                Karte aufladen
+              </h2>
+
+              <div className="space-y-4">
+                {/* Customer Number */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Kundennummer</label>
+                  <input
+                    type="text"
+                    value={customerNumber}
+                    onChange={(e) => setCustomerNumber(e.target.value.toUpperCase())}
+                    placeholder="BID-XXXXXX"
+                    className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl font-mono text-lg focus:ring-2 focus:ring-green-500"
+                    autoFocus
+                  />
+                </div>
+
+                {/* Amount - Large */}
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Aufladebetrag (EUR)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-gray-500">€</span>
+                    <input
+                      type="number"
+                      step="1"
+                      min="5"
+                      max="500"
+                      value={topupAmount}
+                      onChange={(e) => setTopupAmount(e.target.value)}
+                      placeholder="50"
+                      className="w-full pl-12 pr-4 py-4 bg-gray-900 border border-gray-700 rounded-xl text-3xl font-bold focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                {/* Quick amounts */}
+                <div className="grid grid-cols-4 gap-2">
+                  {[20, 50, 100, 200].map(val => (
+                    <button
+                      key={val}
+                      onClick={() => setTopupAmount(val.toString())}
+                      className={`py-2 rounded-lg font-semibold transition-colors ${
+                        topupAmount === val.toString()
+                          ? 'bg-green-500 text-white'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
+                    >
+                      €{val}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Bonus Preview */}
+                {topupAmount && parseFloat(topupAmount) >= 20 && (
+                  <div className="bg-green-900/30 border border-green-700 rounded-xl p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-green-400">Kunde erhält:</p>
+                        <p className="text-2xl font-bold text-green-400">
+                          €{(parseFloat(topupAmount) + calculateBonus(topupAmount)).toFixed(2)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-green-400">Bonus:</p>
+                        <p className="text-xl font-bold text-green-400">+€{calculateBonus(topupAmount).toFixed(2)}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Merchant Commission Info */}
+                <div className="bg-gray-700/50 rounded-lg p-3 text-sm text-gray-400">
+                  <p>💰 Ihre Provision: <span className="text-white font-semibold">{merchantCommission}%</span> = €{topupAmount ? (parseFloat(topupAmount) * merchantCommission / 100).toFixed(2) : '0.00'}</p>
+                </div>
+
+                <button
+                  onClick={processTopup}
+                  disabled={loading || !topupAmount || !customerNumber}
+                  className={`w-full py-4 rounded-xl font-semibold text-lg transition-colors flex items-center justify-center gap-2 ${
+                    topupAmount && customerNumber
+                      ? 'bg-green-500 hover:bg-green-600 text-white'
+                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  }`}
+                >
+                  {loading ? (
+                    <RefreshCw className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <>
+                      <CheckCircle className="w-5 h-5" />
+                      Aufladen
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Top-up Success */}
+          {topupResult && (
+            <div className="bg-gray-800 rounded-2xl p-6">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-2xl font-bold text-green-400 mb-2">Aufladung erfolgreich!</h2>
+                <p className="text-gray-400">{topupResult.customer_name}</p>
+                <p className="text-sm text-gray-500">{topupResult.customer_number}</p>
+              </div>
+
+              <div className="mt-6 space-y-3">
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Aufladebetrag</span>
+                  <span className="text-xl font-bold">€{topupResult.amount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Bonus</span>
+                  <span className="text-xl font-bold text-green-400">+€{topupResult.bonus.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Kunde erhält</span>
+                  <span className="text-2xl font-bold text-green-400">€{topupResult.total_credited.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-gray-400">Ihre Provision</span>
+                  <span className="text-lg font-semibold text-orange-400">€{topupResult.merchant_commission.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setTopupResult(null)}
+                className="w-full mt-6 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-lg transition-colors"
+              >
+                Nächste Aufladung
+              </button>
             </div>
           )}
 
