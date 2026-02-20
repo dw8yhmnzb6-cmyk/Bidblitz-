@@ -6,9 +6,11 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Key, CreditCard, TrendingUp, Store, RefreshCw, Copy,
-  Plus, Trash2, CheckCircle, AlertTriangle, ExternalLink, Webhook
+  Plus, Trash2, CheckCircle, AlertTriangle, ExternalLink, Webhook,
+  BarChart3
 } from 'lucide-react';
 import { toast } from 'sonner';
+import AdminCommissionsDashboard from './AdminCommissionsDashboard';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 const ADMIN_KEY = 'bidblitz-admin-2026';
