@@ -80,6 +80,17 @@ export default function AuctionDetail() {
     const productName = auction?.product?.name || dtl.auctionTitle;
     const text = encodeURIComponent(`🔥 ${dtl.checkoutAuction}: ${productName} - € ${auction?.current_price?.toFixed(2)}!`);
     
+    // Track share interaction
+    if (auction?.product?.id) {
+      axios.post(`${API}/analytics/product-interaction`, {
+        product_id: auction.product.id,
+        auction_id: id,
+        interaction_type: 'share'
+      }, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      }).catch(() => {});
+    }
+    
     const shareUrls = {
       whatsapp: `https://wa.me/?text=${text}%20${url}`,
       telegram: `https://t.me/share/url?url=${url}&text=${text}`,
