@@ -495,6 +495,10 @@ app.include_router(referral_router, prefix="/api")
 # NEW: Digital Payment API for External Integrations (POS Systems)
 app.include_router(digital_api_router, prefix="/api")
 
+# NEW: Enterprise Portal for Large Retailers (Großhändler)
+from routers.enterprise_portal import router as enterprise_portal_router
+app.include_router(enterprise_portal_router, prefix="/api")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
