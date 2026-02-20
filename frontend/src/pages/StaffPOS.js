@@ -1932,7 +1932,7 @@ export default function StaffPOS() {
             <CreditCard className="w-16 h-16 text-blue-400 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">{t.paymentBarcode}</h3>
             <p className="text-slate-400 mb-6">
-              Kunden können mit ihrem Guthaben bezahlen
+              {t.customersPay}
             </p>
             
             <div className="space-y-4">
@@ -1940,18 +1940,20 @@ export default function StaffPOS() {
                 <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-blue-400" />
                 <input
                   type="number"
-                  placeholder="Betrag eingeben"
+                  placeholder={t.enterAmount}
                   className="w-full pl-14 pr-4 py-4 bg-slate-900/50 border border-slate-600 rounded-xl text-white text-2xl font-bold placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   min="0.01"
                   step="0.01"
+                  data-testid="payment-amount-input"
                 />
               </div>
               
               <button
                 className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-3"
+                data-testid="scan-customer-payment-btn"
               >
                 <Scan className="w-6 h-6" />
-                Kunden-Barcode scannen
+                {t.scanCustomer}
               </button>
             </div>
           </div>
@@ -1966,8 +1968,8 @@ export default function StaffPOS() {
           <div className="bg-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
             <div className="p-4 border-b border-slate-700 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-white">Transaktionsverlauf</h2>
-                <p className="text-slate-400 text-sm">{transactionHistory.length} Transaktionen</p>
+                <h2 className="text-xl font-bold text-white">{t.transactionHistory}</h2>
+                <p className="text-slate-400 text-sm">{transactionHistory.length} {t.transactions}</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
