@@ -1540,7 +1540,6 @@ export default function EnterprisePortal() {
                     >
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
-                    </div>
                   </div>
                   
                   <button
