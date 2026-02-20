@@ -1418,24 +1418,40 @@ function Modal({ title, children, onClose }) {
   );
 }
 
+// Shared input styles for better placeholder visibility
+const inputStyles = "w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-800 placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500";
+const selectStyles = "w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-800 focus:ring-2 focus:ring-amber-500 focus:border-amber-500";
+
 // Forms
 function BranchForm({ t, onSubmit, onCancel }) {
   const [form, setForm] = useState({ name: '', city: '', address: '', manager_name: '', manager_email: '', phone: '' });
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSubmit(form); }} className="space-y-4">
-      <input type="text" placeholder={t.branchName} value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required />
-      <div className="grid grid-cols-2 gap-3">
-        <input type="text" placeholder={t.city} value={form.city} onChange={(e) => setForm({...form, city: e.target.value})}
-          className="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" />
-        <input type="tel" placeholder={t.phone} value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})}
-          className="px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" />
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.branchName} *</label>
+        <input type="text" placeholder={t.branchName} value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
+          className={inputStyles} required />
       </div>
-      <input type="text" placeholder={t.address} value={form.address} onChange={(e) => setForm({...form, address: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" />
-      <div className="flex gap-3">
-        <button type="button" onClick={onCancel} className="flex-1 py-3 border border-slate-200 rounded-xl hover:bg-slate-50">{t.cancel}</button>
-        <button type="submit" className="flex-1 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600">{t.save}</button>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">{t.city}</label>
+          <input type="text" placeholder={t.city} value={form.city} onChange={(e) => setForm({...form, city: e.target.value})}
+            className={inputStyles} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">{t.phone}</label>
+          <input type="tel" placeholder={t.phone} value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})}
+            className={inputStyles} />
+        </div>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.address}</label>
+        <input type="text" placeholder={t.address} value={form.address} onChange={(e) => setForm({...form, address: e.target.value})}
+          className={inputStyles} />
+      </div>
+      <div className="flex gap-3 pt-2">
+        <button type="button" onClick={onCancel} className="flex-1 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 font-medium">{t.cancel}</button>
+        <button type="submit" className="flex-1 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 font-medium">{t.save}</button>
       </div>
     </form>
   );
@@ -1445,16 +1461,22 @@ function ApiKeyForm({ t, branches, onSubmit, onCancel }) {
   const [form, setForm] = useState({ name: '', branch_id: '', description: '' });
   return (
     <form onSubmit={(e) => { e.preventDefault(); if (!form.branch_id) { toast.error(t.selectBranch); return; } onSubmit(form); }} className="space-y-4">
-      <select value={form.branch_id} onChange={(e) => setForm({...form, branch_id: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
-        <option value="">{t.selectBranch}...</option>
-        {branches.filter(b => b.is_active).map(b => (<option key={b.id} value={b.id}>{b.name}</option>))}
-      </select>
-      <input type="text" placeholder={t.registerName} value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required />
-      <div className="flex gap-3">
-        <button type="button" onClick={onCancel} className="flex-1 py-3 border border-slate-200 rounded-xl hover:bg-slate-50">{t.cancel}</button>
-        <button type="submit" className="flex-1 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600">{t.save}</button>
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.selectBranch} *</label>
+        <select value={form.branch_id} onChange={(e) => setForm({...form, branch_id: e.target.value})}
+          className={selectStyles} required>
+          <option value="">{t.selectBranch}...</option>
+          {branches.filter(b => b.is_active).map(b => (<option key={b.id} value={b.id}>{b.name}</option>))}
+        </select>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.registerName} *</label>
+        <input type="text" placeholder={t.registerName} value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
+          className={inputStyles} required />
+      </div>
+      <div className="flex gap-3 pt-2">
+        <button type="button" onClick={onCancel} className="flex-1 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 font-medium">{t.cancel}</button>
+        <button type="submit" className="flex-1 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 font-medium">{t.save}</button>
       </div>
     </form>
   );
@@ -1462,31 +1484,56 @@ function ApiKeyForm({ t, branches, onSubmit, onCancel }) {
 
 function UserForm({ t, branches, onSubmit, onCancel }) {
   const [form, setForm] = useState({ name: '', email: '', password: '', role: '', branch_id: '' });
+  
+  // Tax advisor and admin don't need branch selection
+  const needsBranch = form.role && form.role !== 'admin' && form.role !== 'tax_advisor';
+  
   return (
-    <form onSubmit={(e) => { e.preventDefault(); if (form.role !== 'admin' && !form.branch_id) { toast.error(t.selectBranch); return; } onSubmit(form); }} className="space-y-4">
-      <input type="text" placeholder="Name" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required />
-      <input type="email" placeholder={t.email} value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required />
-      <input type="password" placeholder={t.password} value={form.password} onChange={(e) => setForm({...form, password: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required minLength={6} />
-      <select value={form.role} onChange={(e) => setForm({...form, role: e.target.value})}
-        className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
-        <option value="">{t.role}...</option>
-        <option value="admin">{t.admin}</option>
-        <option value="branch_manager">{t.branchManager}</option>
-        <option value="cashier">{t.cashier}</option>
-      </select>
-      {form.role && form.role !== 'admin' && (
-        <select value={form.branch_id} onChange={(e) => setForm({...form, branch_id: e.target.value})}
-          className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500" required>
-          <option value="">{t.selectBranch}...</option>
-          {branches.filter(b => b.is_active).map(b => (<option key={b.id} value={b.id}>{b.name}</option>))}
+    <form onSubmit={(e) => { e.preventDefault(); if (needsBranch && !form.branch_id) { toast.error(t.selectBranch); return; } onSubmit(form); }} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.staffName || 'Name'} *</label>
+        <input type="text" placeholder={t.staffName || 'Name'} value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
+          className={inputStyles} required />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.email} *</label>
+        <input type="email" placeholder={t.email} value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}
+          className={inputStyles} required />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.password} *</label>
+        <input type="password" placeholder={t.password} value={form.password} onChange={(e) => setForm({...form, password: e.target.value})}
+          className={inputStyles} required minLength={6} />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-slate-700 mb-1">{t.role} *</label>
+        <select value={form.role} onChange={(e) => setForm({...form, role: e.target.value})}
+          className={selectStyles} required>
+          <option value="">{t.role}...</option>
+          <option value="admin">{t.admin}</option>
+          <option value="branch_manager">{t.branchManager}</option>
+          <option value="cashier">{t.cashier}</option>
+          <option value="tax_advisor">{t.taxAdvisor} ({t.taxAdvisorDesc})</option>
         </select>
+      </div>
+      {needsBranch && (
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">{t.selectBranch} *</label>
+          <select value={form.branch_id} onChange={(e) => setForm({...form, branch_id: e.target.value})}
+            className={selectStyles} required>
+            <option value="">{t.selectBranch}...</option>
+            {branches.filter(b => b.is_active).map(b => (<option key={b.id} value={b.id}>{b.name}</option>))}
+          </select>
+        </div>
       )}
-      <div className="flex gap-3">
-        <button type="button" onClick={onCancel} className="flex-1 py-3 border border-slate-200 rounded-xl hover:bg-slate-50">{t.cancel}</button>
-        <button type="submit" className="flex-1 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600">{t.save}</button>
+      {form.role === 'tax_advisor' && (
+        <p className="text-sm text-amber-600 bg-amber-50 p-3 rounded-xl">
+          ℹ️ {t.taxAdvisorDesc}
+        </p>
+      )}
+      <div className="flex gap-3 pt-2">
+        <button type="button" onClick={onCancel} className="flex-1 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 font-medium">{t.cancel}</button>
+        <button type="submit" className="flex-1 py-3 bg-amber-500 text-white rounded-xl hover:bg-amber-600 font-medium">{t.save}</button>
       </div>
     </form>
   );
