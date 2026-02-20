@@ -139,7 +139,9 @@ const footerTexts = {
     terms: 'Şartlar ve Koşullar',
     contact: 'İletişim',
     allRights: 'Tüm hakları saklıdır',
-    leaderboard: 'Sıralama'
+    leaderboard: 'Sıralama',
+    merchantPortal: 'Bayi Portalı (Edeka, Rewe...)',
+    posTerminal: 'Kasa Terminali'
   },
   fr: {
     description: 'La principale plateforme d\'enchères au centime à Dubaï. Enchérissez sur des produits premium et économisez jusqu\'à 95%!',
@@ -163,7 +165,9 @@ const footerTexts = {
     terms: 'CGV',
     contact: 'Contact',
     allRights: 'Tous droits réservés',
-    leaderboard: 'Classement'
+    leaderboard: 'Classement',
+    merchantPortal: 'Portail Marchands (Edeka, Rewe...)',
+    posTerminal: 'Terminal de Caisse'
   },
   ar: {
     description: 'منصة المزادات الرائدة في دبي. قدم عروضك على المنتجات المميزة ووفر حتى 95%!',
@@ -188,6 +192,8 @@ const footerTexts = {
     terms: 'الشروط والأحكام',
     contact: 'اتصل بنا',
     allRights: 'جميع الحقوق محفوظة',
+    merchantPortal: 'بوابة التجار (Edeka, Rewe...)',
+    posTerminal: 'محطة الدفع'
     leaderboard: 'قائمة المتصدرين'
   }
 };
