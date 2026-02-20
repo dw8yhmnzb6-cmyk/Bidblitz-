@@ -841,3 +841,190 @@ async def send_topup_notification(
         subject=f"💳 €{total_credited:.2f} Guthaben bei {merchant_name} aufgeladen!",
         html_content=html_content
     )
+
+
+
+# ==================== ENTERPRISE COMMISSION REPORTS ====================
+
+async def send_enterprise_commission_report(
+    to_email: str,
+    company_name: str,
+    report_month: str,
+    report_year: int,
+    total_revenue: float,
+    total_transactions: int,
+    voucher_commission: float,
+    self_pay_commission: float,
+    cashback_paid: float,
+    total_commission: float,
+    pending_payout: float,
+    paid_out: float,
+    previous_month_commission: float = 0,
+    branches_data: list = None
+):
+    """Send monthly commission report to enterprise/wholesaler."""
+    
+    # Calculate change from previous month
+    change_percent = 0
+    change_direction = "→"
+    if previous_month_commission > 0:
+        change_percent = ((total_commission - previous_month_commission) / previous_month_commission) * 100
+        change_direction = "↑" if change_percent > 0 else "↓" if change_percent < 0 else "→"
+    
+    # Generate branches breakdown HTML
+    branches_html = ""
+    if branches_data:
+        branches_html = """
+        <tr>
+            <td style="padding:20px 30px;">
+                <h3 style="color:#333; margin:0 0 15px 0; font-size:18px;">📊 Filial-Übersicht</h3>
+                <table width="100%" cellpadding="8" cellspacing="0" style="border-collapse:collapse; font-size:14px;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="text-align:left; padding:10px; border-bottom:2px solid #dee2e6;">Filiale</th>
+                        <th style="text-align:right; padding:10px; border-bottom:2px solid #dee2e6;">Umsatz</th>
+                        <th style="text-align:right; padding:10px; border-bottom:2px solid #dee2e6;">Trans.</th>
+                        <th style="text-align:right; padding:10px; border-bottom:2px solid #dee2e6;">Provision</th>
+                    </tr>
+        """
+        for branch in branches_data:
+            branches_html += f"""
+                    <tr>
+                        <td style="padding:10px; border-bottom:1px solid #dee2e6;">{branch.get('name', 'Unbekannt')}</td>
+                        <td style="text-align:right; padding:10px; border-bottom:1px solid #dee2e6;">€{branch.get('revenue', 0):.2f}</td>
+                        <td style="text-align:right; padding:10px; border-bottom:1px solid #dee2e6;">{branch.get('transactions', 0)}</td>
+                        <td style="text-align:right; padding:10px; border-bottom:1px solid #dee2e6;">€{branch.get('commission', 0):.2f}</td>
+                    </tr>
+            """
+        branches_html += """
+                </table>
+            </td>
+        </tr>
+        """
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="utf-8"></head>
+    <body style="margin:0; padding:0; font-family:Arial,sans-serif; background-color:#f4f4f4;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+            <!-- Header -->
+            <tr>
+                <td style="background:linear-gradient(135deg,#1a1a2e,#16213e); padding:30px; text-align:center;">
+                    <h1 style="color:#ffffff; margin:0; font-size:24px;">📈 Monatlicher Provisionsbericht</h1>
+                    <p style="color:#a0aec0; margin:10px 0 0 0; font-size:16px;">{report_month} {report_year}</p>
+                </td>
+            </tr>
+            
+            <!-- Company Info -->
+            <tr>
+                <td style="padding:25px 30px; background:#f8f9fa; border-bottom:1px solid #e2e8f0;">
+                    <p style="margin:0; color:#666; font-size:14px;">Händler</p>
+                    <p style="margin:5px 0 0 0; color:#1a1a2e; font-size:20px; font-weight:bold;">{company_name}</p>
+                </td>
+            </tr>
+            
+            <!-- Main Stats -->
+            <tr>
+                <td style="padding:25px 30px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="50%" style="padding:10px;">
+                                <div style="background:#e8f5e9; border-radius:10px; padding:20px; text-align:center;">
+                                    <p style="margin:0; color:#2e7d32; font-size:12px; text-transform:uppercase;">Gesamtumsatz</p>
+                                    <p style="margin:8px 0 0 0; color:#1b5e20; font-size:28px; font-weight:bold;">€{total_revenue:.2f}</p>
+                                </div>
+                            </td>
+                            <td width="50%" style="padding:10px;">
+                                <div style="background:#fff3e0; border-radius:10px; padding:20px; text-align:center;">
+                                    <p style="margin:0; color:#e65100; font-size:12px; text-transform:uppercase;">Transaktionen</p>
+                                    <p style="margin:8px 0 0 0; color:#bf360c; font-size:28px; font-weight:bold;">{total_transactions}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <!-- Commission Breakdown -->
+            <tr>
+                <td style="padding:0 30px 25px 30px;">
+                    <h3 style="color:#333; margin:0 0 15px 0; font-size:18px;">💰 Provisions-Aufschlüsselung</h3>
+                    <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">
+                        <tr style="background:#f8f9fa;">
+                            <td style="padding:12px 15px; border-bottom:1px solid #e2e8f0;">Gutschein-Provision</td>
+                            <td style="padding:12px 15px; border-bottom:1px solid #e2e8f0; text-align:right; font-weight:bold;">€{voucher_commission:.2f}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding:12px 15px; border-bottom:1px solid #e2e8f0;">Eigenzahlung-Provision</td>
+                            <td style="padding:12px 15px; border-bottom:1px solid #e2e8f0; text-align:right; font-weight:bold;">€{self_pay_commission:.2f}</td>
+                        </tr>
+                        <tr style="background:#f8f9fa;">
+                            <td style="padding:12px 15px; border-bottom:1px solid #e2e8f0;">Kunden-Cashback (ausgezahlt)</td>
+                            <td style="padding:12px 15px; border-bottom:1px solid #e2e8f0; text-align:right; color:#e53935;">-€{cashback_paid:.2f}</td>
+                        </tr>
+                        <tr style="background:#1a1a2e;">
+                            <td style="padding:15px; color:#fff; font-weight:bold;">Gesamt-Provision</td>
+                            <td style="padding:15px; text-align:right; color:#4caf50; font-size:20px; font-weight:bold;">€{total_commission:.2f}</td>
+                        </tr>
+                    </table>
+                    
+                    <!-- Change indicator -->
+                    <p style="margin:15px 0 0 0; text-align:center; color:#666; font-size:14px;">
+                        {change_direction} {abs(change_percent):.1f}% im Vergleich zum Vormonat
+                    </p>
+                </td>
+            </tr>
+            
+            {branches_html}
+            
+            <!-- Payout Status -->
+            <tr>
+                <td style="padding:0 30px 25px 30px;">
+                    <h3 style="color:#333; margin:0 0 15px 0; font-size:18px;">💸 Auszahlungsstatus</h3>
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td width="50%" style="padding:10px;">
+                                <div style="background:#e3f2fd; border-radius:10px; padding:15px; text-align:center;">
+                                    <p style="margin:0; color:#1565c0; font-size:12px;">Ausstehend</p>
+                                    <p style="margin:5px 0 0 0; color:#0d47a1; font-size:22px; font-weight:bold;">€{pending_payout:.2f}</p>
+                                </div>
+                            </td>
+                            <td width="50%" style="padding:10px;">
+                                <div style="background:#e8f5e9; border-radius:10px; padding:15px; text-align:center;">
+                                    <p style="margin:0; color:#2e7d32; font-size:12px;">Ausgezahlt (gesamt)</p>
+                                    <p style="margin:5px 0 0 0; color:#1b5e20; font-size:22px; font-weight:bold;">€{paid_out:.2f}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            
+            <!-- Footer -->
+            <tr>
+                <td style="background:#f8f9fa; padding:25px 30px; text-align:center; border-top:1px solid #e2e8f0;">
+                    <p style="margin:0; color:#666; font-size:14px;">
+                        Dieser Bericht wurde automatisch erstellt.<br>
+                        Bei Fragen kontaktieren Sie uns unter support@bidblitz.ae
+                    </p>
+                    <p style="margin:15px 0 0 0;">
+                        <a href="https://bidblitz.ae/enterprise" style="display:inline-block; background:#FFD700; color:#111; padding:12px 30px; border-radius:8px; text-decoration:none; font-weight:bold;">
+                            Zum Händler-Portal →
+                        </a>
+                    </p>
+                </td>
+            </tr>
+        </table>
+        
+        <p style="text-align:center; color:#999; font-size:12px; margin:20px 0;">
+            © {report_year} BidBlitz.ae - Alle Rechte vorbehalten
+        </p>
+    </body>
+    </html>
+    """
+    
+    return await send_email(
+        to_email=to_email,
+        subject=f"📊 Provisionsbericht {report_month} {report_year} - {company_name}",
+        html_content=html_content
+    )
