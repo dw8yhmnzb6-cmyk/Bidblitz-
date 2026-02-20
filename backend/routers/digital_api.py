@@ -1307,6 +1307,8 @@ async def scan_and_pay(
                 "payment_id": payment_id,
                 "type": "scan_pay",
                 "amount": data.amount,
+                "platform_fee": platform_fee,
+                "merchant_net": merchant_net,
                 "currency": "EUR",
                 "customer_number": user.get("customer_number"),
                 "paid_at": now.isoformat()
@@ -1314,14 +1316,20 @@ async def scan_and_pay(
             secret=api_key.get("secret", "")
         )
     
+    # Calculate new balance (after deduction and cashback)
+    new_balance = user_balance - data.amount + customer_cashback
+    
     return {
         "success": True,
         "payment_id": payment_id,
         "amount": data.amount,
+        "platform_fee": platform_fee,
+        "merchant_net": merchant_net,
+        "customer_cashback": customer_cashback,
         "customer_name": user.get("name"),
         "customer_number": user.get("customer_number"),
-        "new_balance": user_balance - data.amount,
-        "message": f"Zahlung von €{data.amount:.2f} erfolgreich!"
+        "new_balance": new_balance,
+        "message": f"Zahlung von €{data.amount:.2f} erfolgreich!" + (f" +€{customer_cashback:.2f} Cashback!" if customer_cashback > 0 else "")
     }
 
 
