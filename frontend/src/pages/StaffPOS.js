@@ -1857,8 +1857,8 @@ export default function StaffPOS() {
                   <Ticket className="w-6 h-6 text-purple-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">Gutschein einlösen</h2>
-                  <p className="text-slate-400 text-sm">Scannen Sie den Gutschein-Barcode</p>
+                  <h2 className="text-xl font-bold text-white">{t.giftcardRedeem}</h2>
+                  <p className="text-slate-400 text-sm">{t.scanGiftcard}</p>
                 </div>
               </div>
 
@@ -1866,9 +1866,10 @@ export default function StaffPOS() {
                 <button
                   onClick={() => setScanMode(true)}
                   className="w-full py-6 bg-purple-500/20 hover:bg-purple-500/30 border-2 border-dashed border-purple-500 rounded-xl text-purple-400 font-medium transition-all flex flex-col items-center justify-center gap-3"
+                  data-testid="scan-giftcard-btn"
                 >
                   <Scan className="w-12 h-12" />
-                  <span className="text-lg">Gutschein-Barcode scannen</span>
+                  <span className="text-lg">{t.scanGiftcard}</span>
                 </button>
               ) : scanMode && !redeemedGiftCard ? (
                 <div className="space-y-3">
@@ -1877,22 +1878,23 @@ export default function StaffPOS() {
                     <input
                       ref={barcodeInputRef}
                       type="text"
-                      placeholder="Warte auf Barcode-Scan..."
+                      placeholder={t.waitingForScan}
                       value={barcodeInput}
                       onChange={(e) => setBarcodeInput(e.target.value)}
                       onKeyDown={handleBarcodeScan}
                       className="w-full pl-14 pr-4 py-4 bg-purple-500/10 border-2 border-purple-500 rounded-xl text-white text-xl placeholder-purple-300/50 focus:ring-0 focus:border-purple-400"
                       autoFocus
+                      data-testid="giftcard-barcode-input"
                     />
                   </div>
                   <p className="text-purple-400 text-sm text-center">
-                    📷 Scanner bereit - Gutschein-Barcode scannen oder Code eingeben + Enter
+                    📷 {t.scannerReady}
                   </p>
                   <button
                     onClick={() => setScanMode(false)}
                     className="w-full py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 text-sm"
                   >
-                    Abbrechen
+                    {t.cancel}
                   </button>
                 </div>
               ) : redeemedGiftCard && (
@@ -1900,12 +1902,12 @@ export default function StaffPOS() {
                   <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4">
                     <div className="flex items-center justify-center gap-2 mb-3">
                       <CheckCircle className="w-8 h-8 text-green-400" />
-                      <span className="text-green-400 text-xl font-bold">Erfolgreich eingelöst!</span>
+                      <span className="text-green-400 text-xl font-bold">{t.redeemSuccess}</span>
                     </div>
                     <div className="space-y-2 text-center">
                       <p className="text-white text-3xl font-bold">€{redeemedGiftCard.amount.toFixed(2)}</p>
                       <p className="text-slate-400">Code: {redeemedGiftCard.barcode}</p>
-                      <p className="text-slate-400">Neues Guthaben: €{redeemedGiftCard.new_balance.toFixed(2)}</p>
+                      <p className="text-slate-400">{t.total}: €{redeemedGiftCard.new_balance.toFixed(2)}</p>
                     </div>
                   </div>
                   <button
@@ -1914,8 +1916,9 @@ export default function StaffPOS() {
                       setScanMode(false);
                     }}
                     className="w-full py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-medium"
+                    data-testid="next-giftcard-btn"
                   >
-                    Nächsten Gutschein einlösen
+                    {t.nextGiftcard}
                   </button>
                 </div>
               )}
@@ -1927,7 +1930,7 @@ export default function StaffPOS() {
         {mode === 'payment' && (
           <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 text-center">
             <CreditCard className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">Zahlung per Barcode</h3>
+            <h3 className="text-xl font-bold text-white mb-2">{t.paymentBarcode}</h3>
             <p className="text-slate-400 mb-6">
               Kunden können mit ihrem Guthaben bezahlen
             </p>
