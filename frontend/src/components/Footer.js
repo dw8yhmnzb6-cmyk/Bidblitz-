@@ -86,7 +86,9 @@ const footerTexts = {
     terms: 'Kushtet',
     contact: 'Kontakti',
     allRights: 'Të gjitha të drejtat e rezervuara',
-    leaderboard: 'Renditja'
+    leaderboard: 'Renditja',
+    merchantPortal: 'Portali i Tregtarëve (Edeka, Rewe...)',
+    posTerminal: 'Terminali i Arkës'
   },
   xk: {
     description: 'Platforma kryesore e ankandeve penny në Dubai. Ofroni për produkte premium dhe kurseni deri në 95%!',
@@ -111,7 +113,9 @@ const footerTexts = {
     terms: 'Kushtet',
     contact: 'Kontakti',
     allRights: 'Të gjitha të drejtat e rezervuara',
-    leaderboard: 'Renditja'
+    leaderboard: 'Renditja',
+    merchantPortal: 'Portali i Tregtarëve (Edeka, Rewe...)',
+    posTerminal: 'Terminali i Arkës'
   },
   tr: {
     description: 'Dubai\'nin önde gelen kuruş açık artırma platformu. Premium ürünlere teklif verin ve %95\'e kadar tasarruf edin!',
