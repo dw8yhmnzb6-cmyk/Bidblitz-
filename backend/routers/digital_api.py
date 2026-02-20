@@ -1082,6 +1082,10 @@ async def scan_and_pay(
     
     Merchant scans the customer's QR code displayed in their BidBlitz app.
     Amount is deducted from customer's wallet instantly.
+    
+    Supports both:
+    - JSON format: {"type": "bidblitz_pay", "token": "cpt_xxx", ...}
+    - Compact format: BIDBLITZ:2.0:cpt_xxx:BID-123456:timestamp
     """
     # Verify API key
     if not x_api_key:
@@ -1095,9 +1099,21 @@ async def scan_and_pay(
     if not api_key:
         raise HTTPException(status_code=401, detail="Invalid or inactive API key")
     
+    # Parse QR code data if provided
+    payment_token = data.payment_token
+    customer_number = data.customer_number
+    
+    if data.qr_data:
+        qr_info = parse_qr_code(data.qr_data)
+        payment_token = qr_info.get("token") or payment_token
+        customer_number = qr_info.get("customer_number") or customer_number
+    
+    if not payment_token:
+        raise HTTPException(status_code=400, detail="payment_token oder qr_data erforderlich")
+    
     # Verify payment token
     token_doc = await db.customer_payment_tokens.find_one(
-        {"token": data.payment_token, "used": False},
+        {"token": payment_token, "used": False},
         {"_id": 0}
     )
     
