@@ -388,13 +388,25 @@ export default function AdminPayouts() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-xs text-gray-500">
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                 <span>
                   {new Date(payout.created_at).toLocaleString('de-DE')}
                 </span>
+                <span className="bg-gray-100 px-2 py-1 rounded">
+                  {getTransferMethodLabel(payout.transfer_method)}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-gray-400">IBAN: {payout.iban?.substring(0, 10)}...</span>
                 {payout.sepa_reference && (
-                  <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                  <span className="font-mono bg-green-100 text-green-700 px-2 py-1 rounded font-medium">
                     {payout.sepa_reference}
+                  </span>
+                )}
+                {payout.wise_transfer_id && (
+                  <span className="font-mono bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">
+                    Wise: {payout.wise_transfer_id}
                   </span>
                 )}
               </div>
