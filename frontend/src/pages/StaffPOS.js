@@ -1480,20 +1480,58 @@ export default function StaffPOS() {
   if (!isLoggedIn) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
+        {/* Language Selector - Top Right */}
+        <div className="absolute top-4 right-4">
+          <div className="relative">
+            <button
+              onClick={() => setShowLanguages(!showLanguages)}
+              className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 transition-colors flex items-center gap-1"
+              data-testid="login-language-selector-btn"
+            >
+              <Globe className="w-5 h-5" />
+              <span className="text-lg">{languages.find(l => l.code === language)?.flag || '🇩🇪'}</span>
+            </button>
+            
+            {showLanguages && (
+              <div className="absolute right-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 p-2 min-w-[280px] max-h-[400px] overflow-y-auto">
+                <div className="grid grid-cols-2 gap-1">
+                  {languages.map(lang => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code);
+                        setShowLanguages(false);
+                      }}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all ${
+                        language === lang.code
+                          ? 'bg-amber-500 text-white'
+                          : 'hover:bg-slate-700 text-slate-300'
+                      }`}
+                    >
+                      <span className="text-xl">{lang.flag}</span>
+                      <span className="text-sm truncate">{lang.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-xl shadow-amber-500/20">
               <Store className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-white">Kassen-Terminal</h1>
-            <p className="text-slate-400 mt-2">Mitarbeiter-Anmeldung</p>
+            <h1 className="text-3xl font-bold text-white">{t.loginTitle}</h1>
+            <p className="text-slate-400 mt-2">{t.loginSubtitle}</p>
           </div>
 
           {/* Login Form */}
           <form onSubmit={handleLogin} className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 shadow-xl space-y-4">
             <div className="space-y-1">
-              <label className="block text-sm text-slate-300">E-Mail</label>
+              <label className="block text-sm text-slate-300">{t.email}</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -1503,12 +1541,13 @@ export default function StaffPOS() {
                   onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
                   className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   required
+                  data-testid="login-email-input"
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <label className="block text-sm text-slate-300">Passwort</label>
+              <label className="block text-sm text-slate-300">{t.password}</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
@@ -1518,6 +1557,7 @@ export default function StaffPOS() {
                   onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
                   className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent"
                   required
+                  data-testid="login-password-input"
                 />
               </div>
             </div>
@@ -1526,13 +1566,14 @@ export default function StaffPOS() {
               type="submit"
               disabled={loading}
               className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-lg rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all disabled:opacity-50 shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2"
+              data-testid="login-submit-btn"
             >
               {loading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
               ) : (
                 <>
                   <LogOut className="w-5 h-5" />
-                  Anmelden
+                  {t.login}
                 </>
               )}
             </button>
@@ -1541,11 +1582,21 @@ export default function StaffPOS() {
           {/* Test Credentials */}
           <div className="mt-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
             <p className="text-slate-400 text-sm text-center">
-              Test-Zugang: <span className="text-amber-400">admin@edeka-test.de</span>
+              {t.testAccess}: <span className="text-amber-400">admin@edeka-test.de</span>
               <br />
-              Passwort: <span className="text-amber-400">EdekaTest2026!</span>
+              {t.password}: <span className="text-amber-400">EdekaTest2026!</span>
             </p>
           </div>
+
+          {/* Händler-Portal Link */}
+          <a 
+            href="/enterprise" 
+            className="mt-4 flex items-center justify-center gap-2 text-slate-400 hover:text-amber-400 transition-colors"
+            data-testid="enterprise-portal-link"
+          >
+            <Store className="w-5 h-5" />
+            <span>Händler-Portal (Edeka, Rewe...)</span>
+          </a>
         </div>
       </div>
     );
