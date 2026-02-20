@@ -369,44 +369,34 @@ export default function AdminDigitalPayments() {
                 {/* Commission Settings */}
                 <div className="bg-gray-50 rounded-lg p-4 space-y-4">
                   <h4 className="font-medium text-gray-900 text-sm flex items-center gap-2">
-                    💰 Provisions-Einstellungen
+                    💰 Händler-Provision
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Plattform-Provision (0,01% - 10%)
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          step="0.01"
-                          min="0.01"
-                          max="10"
-                          value={newKeyPlatformCommission}
-                          onChange={(e) => setNewKeyPlatformCommission(parseFloat(e.target.value) || 0.5)}
-                          className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 text-sm"
-                        />
-                        <span className="text-gray-500 text-sm">%</span>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">Geht an BidBlitz pro Transaktion</p>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Händler-Provision (1% - 10%)
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        step="0.5"
+                        min="1"
+                        max="10"
+                        value={newKeyMerchantCommission}
+                        onChange={(e) => setNewKeyMerchantCommission(parseFloat(e.target.value) || 2.0)}
+                        className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 text-sm"
+                      />
+                      <span className="text-gray-500 text-sm">%</span>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Kunden-Cashback (0% - 2%)
-                      </label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          max="2"
-                          value={newKeyCustomerCashback}
-                          onChange={(e) => setNewKeyCustomerCashback(parseFloat(e.target.value) || 0)}
-                          className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 text-sm"
-                        />
-                        <span className="text-gray-500 text-sm">%</span>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">Bonus für Kunden bei Aufladung</p>
+                    <p className="text-xs text-gray-500 mt-1">Händler verdient diese Provision pro Aufladung</p>
+                  </div>
+                  
+                  {/* Bonus Info */}
+                  <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                    <h5 className="text-sm font-medium text-green-800 mb-2">🎁 Kunden-Bonus (automatisch)</h5>
+                    <div className="text-xs text-green-700 space-y-1">
+                      <p>• €100+ aufladen → <strong>+€5 Bonus</strong></p>
+                      <p>• €50+ aufladen → <strong>+€2 Bonus</strong></p>
+                      <p>• €20+ aufladen → <strong>+€0,50 Bonus</strong></p>
                     </div>
                   </div>
                 </div>
