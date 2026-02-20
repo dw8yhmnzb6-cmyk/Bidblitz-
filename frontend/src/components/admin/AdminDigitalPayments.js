@@ -366,34 +366,31 @@ export default function AdminDigitalPayments() {
                   </div>
                 </div>
                 
-                {/* Commission Settings */}
+                {/* Commission Info - Automatic */}
                 <div className="bg-gray-50 rounded-lg p-4 space-y-4">
                   <h4 className="font-medium text-gray-900 text-sm flex items-center gap-2">
-                    💰 Händler-Provision
+                    📊 Provisionen & Boni (automatisch)
                   </h4>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Händler-Provision (1% - 10%)
-                    </label>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="number"
-                        step="0.5"
-                        min="1"
-                        max="10"
-                        value={newKeyMerchantCommission}
-                        onChange={(e) => setNewKeyMerchantCommission(parseFloat(e.target.value) || 2.0)}
-                        className="flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 text-sm"
-                      />
-                      <span className="text-gray-500 text-sm">%</span>
+                  
+                  {/* Merchant Commission Tiers */}
+                  <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
+                    <h5 className="text-sm font-medium text-orange-800 mb-2">💰 Händler-Provision (0-2%)</h5>
+                    <p className="text-xs text-orange-600 mb-2">Je mehr Umsatz, desto höher die Provision:</p>
+                    <div className="text-xs text-orange-700 space-y-1">
+                      <p>• €10.000+ Umsatz → <strong>2%</strong></p>
+                      <p>• €5.000+ Umsatz → <strong>1.5%</strong></p>
+                      <p>• €2.000+ Umsatz → <strong>1%</strong></p>
+                      <p>• €500+ Umsatz → <strong>0.5%</strong></p>
+                      <p>• Start → <strong>0%</strong></p>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Händler verdient diese Provision pro Aufladung</p>
                   </div>
                   
-                  {/* Bonus Info */}
+                  {/* Customer Bonus Tiers */}
                   <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                    <h5 className="text-sm font-medium text-green-800 mb-2">🎁 Kunden-Bonus (automatisch)</h5>
+                    <h5 className="text-sm font-medium text-green-800 mb-2">🎁 Kunden-Bonus</h5>
+                    <p className="text-xs text-green-600 mb-2">Je mehr aufgeladen, desto mehr Bonus:</p>
                     <div className="text-xs text-green-700 space-y-1">
+                      <p>• €200+ aufladen → <strong>+€12 Bonus</strong></p>
                       <p>• €100+ aufladen → <strong>+€5 Bonus</strong></p>
                       <p>• €50+ aufladen → <strong>+€2 Bonus</strong></p>
                       <p>• €20+ aufladen → <strong>+€0,50 Bonus</strong></p>
