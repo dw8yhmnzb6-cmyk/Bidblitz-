@@ -5,6 +5,63 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 20, 2026)
 
+### ✅ Session Update - February 20, 2026 (Session 58) - ENTERPRISE PORTAL ✅
+
+#### NEW: Großhändler-Portal (Enterprise Portal) ✅
+- **Status:** VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET
+- **Routes:** `/enterprise` und `/grosshaendler`
+- **Test-Account:** `admin@edeka-test.de` / `EdekaTest2026!` (Company: "Edeka Zentrale Test")
+
+**Features:**
+1. **Dashboard Tab:**
+   - Zeitraum-Auswahl: Heute, Woche, Monat, Jahr
+   - 5 Statistik-Karten: Umsatz, Transaktionen, Provision, Bonus ausgegeben, Cashback
+   - Filial-Vergleich (Top 10)
+   - Letzte Transaktionen Tabelle
+
+2. **Filialen Tab:**
+   - Filial-Management (CRUD)
+   - Filial-Karten mit Status (Aktiv/Inaktiv)
+   - API-Keys pro Filiale zählen
+   - Umsatz pro Filiale anzeigen
+
+3. **API-Keys Tab:**
+   - API-Key pro Kasse erstellen
+   - Aktivieren/Deaktivieren Toggle
+   - Secret-Key wird nur einmal angezeigt
+   - Filter nach Filiale
+
+4. **Benutzer Tab:**
+   - Rollen: Administrator, Filialleiter, Kassierer
+   - Branch-Zuweisung für Filialleiter/Kassierer
+   - Zugriffssteuerung basierend auf Rolle
+
+5. **Berichte Tab:**
+   - **CSV Export** (Excel-kompatibel)
+   - **PDF Export** (HTML zum Drucken)
+   - Filterbar nach Zeitraum und Filiale
+   - Vorschau mit Zusammenfassung
+
+**Backend API Endpoints:**
+- `POST /api/enterprise/register` - Unternehmen registrieren
+- `POST /api/enterprise/login` - Login
+- `GET /api/enterprise/me` - Account-Info
+- `POST/GET/PUT/DELETE /api/enterprise/branches` - Filial-Management
+- `POST/GET/PUT/DELETE /api/enterprise/api-keys` - API-Key-Management
+- `POST/GET/PUT/DELETE /api/enterprise/users` - Benutzer-Management
+- `GET /api/enterprise/reports/overview` - Dashboard-Statistiken
+- `GET /api/enterprise/reports/transactions` - Transaktionsliste
+- `GET /api/enterprise/reports/export` - CSV/PDF Export
+- `POST /api/enterprise/admin/approve/{id}` - Account freischalten (Admin)
+
+**Dateien:**
+- `/app/frontend/src/pages/EnterprisePortal.js` (Frontend)
+- `/app/backend/routers/enterprise_portal.py` (Backend)
+
+**Test-Report:** `/app/test_reports/iteration_92.json` - 100% bestanden
+
+---
+
 ### ✅ Session Update - February 20, 2026 (Session 57) - P0, P1, P2 TASKS COMPLETED ✅
 
 #### P0: Quittungs-Download/Teilen Funktion ✅
