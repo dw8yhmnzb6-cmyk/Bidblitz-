@@ -570,42 +570,62 @@ export default function AdminEnterpriseManagement() {
                     <div className="space-y-3">
                       <div className="grid grid-cols-3 gap-3">
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Gutschein-Provision %</label>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">
+                            Gutschein-Provision %
+                            <span className="block text-[10px] text-orange-600 font-normal">Händler → BidBlitz</span>
+                          </label>
                           <input
                             type="number"
-                            step="0.1"
+                            step="0.01"
                             min="0"
                             max="100"
                             value={commissionForm.voucher_commission}
                             onChange={(e) => setCommissionForm({...commissionForm, voucher_commission: parseFloat(e.target.value) || 0})}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            data-testid="voucher-commission-input"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Eigenzahlung-Prov. %</label>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">
+                            Aufladung-Provision %
+                            <span className="block text-[10px] text-blue-600 font-normal">BidBlitz → Händler</span>
+                          </label>
                           <input
                             type="number"
-                            step="0.1"
+                            step="0.01"
                             min="0"
                             max="100"
                             value={commissionForm.self_pay_commission}
                             onChange={(e) => setCommissionForm({...commissionForm, self_pay_commission: parseFloat(e.target.value) || 0})}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            data-testid="selfpay-commission-input"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">Kunden-Cashback %</label>
+                          <label className="block text-xs font-medium text-gray-600 mb-1">
+                            Kunden-Cashback %
+                            <span className="block text-[10px] text-green-600 font-normal">BidBlitz → Kunde</span>
+                          </label>
                           <input
                             type="number"
-                            step="0.1"
+                            step="0.01"
                             min="0"
                             max="100"
                             value={commissionForm.customer_cashback}
                             onChange={(e) => setCommissionForm({...commissionForm, customer_cashback: parseFloat(e.target.value) || 0})}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            data-testid="cashback-input"
                           />
                         </div>
                       </div>
+                      
+                      {/* Provision Explanation */}
+                      <div className="bg-gray-50 rounded-lg p-3 text-xs text-gray-600 space-y-1">
+                        <p><span className="font-semibold text-orange-600">Gutschein:</span> Bei Gutscheinverkauf zahlt der Händler diese % an BidBlitz</p>
+                        <p><span className="font-semibold text-blue-600">Aufladung:</span> Bei Kundenaufladung erhält der Händler diese % von BidBlitz</p>
+                        <p><span className="font-semibold text-green-600">Cashback:</span> Der Kunde erhält diese % als Bonus auf sein Guthaben</p>
+                      </div>
+                      
                       <div className="flex items-center gap-2">
                         <input
                           type="checkbox"
@@ -623,18 +643,21 @@ export default function AdminEnterpriseManagement() {
                     <div className="grid grid-cols-3 gap-3 text-sm">
                       <div className="bg-orange-50 rounded-lg p-2 text-center">
                         <p className="text-xs text-orange-600">Gutschein</p>
+                        <p className="text-[10px] text-orange-500">Händler → BidBlitz</p>
                         <p className="text-lg font-bold text-orange-700">
                           {enterprise.commission_settings?.voucher_commission ?? 5}%
                         </p>
                       </div>
                       <div className="bg-blue-50 rounded-lg p-2 text-center">
-                        <p className="text-xs text-blue-600">Eigenzahlung</p>
+                        <p className="text-xs text-blue-600">Aufladung</p>
+                        <p className="text-[10px] text-blue-500">BidBlitz → Händler</p>
                         <p className="text-lg font-bold text-blue-700">
                           {enterprise.commission_settings?.self_pay_commission ?? 3}%
                         </p>
                       </div>
                       <div className="bg-green-50 rounded-lg p-2 text-center">
                         <p className="text-xs text-green-600">Kunden-Cashback</p>
+                        <p className="text-[10px] text-green-500">BidBlitz → Kunde</p>
                         <p className="text-lg font-bold text-green-700">
                           {enterprise.commission_settings?.customer_cashback ?? 1}%
                         </p>
