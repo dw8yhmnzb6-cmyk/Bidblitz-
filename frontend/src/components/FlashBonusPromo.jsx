@@ -123,7 +123,7 @@ const FlashBonusPromo = ({ language = 'de', className = '' }) => {
 
   return (
     <div 
-      className={`relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-500 p-4 cursor-pointer transform hover:scale-[1.02] transition-all ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-fuchsia-500 p-3 sm:p-4 cursor-pointer transform hover:scale-[1.02] transition-all ${className}`}
       onClick={handleClick}
       data-testid="flash-bonus-promo"
     >
@@ -134,56 +134,58 @@ const FlashBonusPromo = ({ language = 'de', className = '' }) => {
       <div className="absolute top-2 right-2">
         <Sparkles className="w-5 h-5 text-white/50 animate-pulse" />
       </div>
-      <div className="absolute bottom-2 left-2">
+      <div className="absolute bottom-2 left-2 hidden sm:block">
         <Sparkles className="w-4 h-4 text-white/30 animate-pulse" />
       </div>
 
-      <div className="relative z-10 flex items-center justify-between gap-4">
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         {/* Left: Promo Info */}
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-            <Zap className="w-6 h-6 text-white" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+            <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
-          <div>
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="text-xs bg-yellow-400 text-yellow-900 font-bold px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-yellow-400 text-yellow-900 font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
                 {promo.badge || '🔥 FLASH'}
               </span>
             </div>
-            <p className="text-white font-bold text-lg mt-1">
+            <p className="text-white font-bold text-base sm:text-lg mt-1 leading-tight">
               +{promo.bonus_percentage}% {t.extraBonus}
             </p>
-            <p className="text-white/80 text-sm">
+            <p className="text-white/80 text-xs sm:text-sm">
               {t.minDeposit} €{promo.min_deposit}
             </p>
           </div>
         </div>
 
         {/* Right: Countdown + CTA */}
-        <div className="text-right">
-          <p className="text-white/70 text-xs mb-1 flex items-center justify-end gap-1">
-            <Clock className="w-3 h-3" />
-            {t.endsIn}
-          </p>
-          <div className="flex items-center gap-1 justify-end mb-2">
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 min-w-[40px]">
-              <p className="text-white font-bold text-lg">{String(timeLeft.hours).padStart(2, '0')}</p>
-              <p className="text-white/60 text-[10px]">{t.hours}</p>
-            </div>
-            <span className="text-white font-bold">:</span>
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 min-w-[40px]">
-              <p className="text-white font-bold text-lg">{String(timeLeft.minutes).padStart(2, '0')}</p>
-              <p className="text-white/60 text-[10px]">{t.minutes}</p>
-            </div>
-            <span className="text-white font-bold">:</span>
-            <div className="bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 min-w-[40px]">
-              <p className="text-white font-bold text-lg">{String(timeLeft.seconds).padStart(2, '0')}</p>
-              <p className="text-white/60 text-[10px]">{t.seconds}</p>
+        <div className="flex items-center justify-between sm:justify-end sm:flex-col sm:items-end gap-2 sm:gap-0">
+          <div className="flex items-center gap-1">
+            <p className="text-white/70 text-xs flex items-center gap-1 mr-2 sm:mr-0 sm:mb-1">
+              <Clock className="w-3 h-3" />
+              {t.endsIn}
+            </p>
+            <div className="flex items-center gap-1 sm:mb-2">
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-1.5 sm:px-2 py-1 min-w-[32px] sm:min-w-[40px] text-center">
+                <p className="text-white font-bold text-sm sm:text-lg leading-none">{String(timeLeft.hours).padStart(2, '0')}</p>
+                <p className="text-white/60 text-[8px] sm:text-[10px]">{t.hours}</p>
+              </div>
+              <span className="text-white font-bold text-sm sm:text-base">:</span>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-1.5 sm:px-2 py-1 min-w-[32px] sm:min-w-[40px] text-center">
+                <p className="text-white font-bold text-sm sm:text-lg leading-none">{String(timeLeft.minutes).padStart(2, '0')}</p>
+                <p className="text-white/60 text-[8px] sm:text-[10px]">{t.minutes}</p>
+              </div>
+              <span className="text-white font-bold text-sm sm:text-base">:</span>
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-1.5 sm:px-2 py-1 min-w-[32px] sm:min-w-[40px] text-center">
+                <p className="text-white font-bold text-sm sm:text-lg leading-none">{String(timeLeft.seconds).padStart(2, '0')}</p>
+                <p className="text-white/60 text-[8px] sm:text-[10px]">{t.seconds}</p>
+              </div>
             </div>
           </div>
-          <button className="bg-white text-pink-600 font-bold text-sm px-4 py-2 rounded-lg hover:bg-pink-50 transition-colors inline-flex items-center gap-1">
+          <button className="bg-white text-pink-600 font-bold text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg hover:bg-pink-50 transition-colors inline-flex items-center gap-1 whitespace-nowrap flex-shrink-0">
             {t.grabNow}
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
         </div>
       </div>
