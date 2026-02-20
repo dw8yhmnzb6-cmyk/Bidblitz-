@@ -189,27 +189,33 @@ export default function CashbackDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
         <div className="bg-white rounded-xl p-4 shadow-sm border">
-          <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-            <TrendingUp className="w-4 h-4" />
-            Eingelöst
+          <div className="flex items-center justify-between sm:flex-col sm:items-start">
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <TrendingUp className="w-4 h-4" />
+              Eingelöst
+            </div>
+            <p className="text-xl font-bold">€{(balance?.total_redeemed ?? 0).toFixed(2)}</p>
           </div>
-          <p className="text-xl font-bold">€{balance?.total_redeemed?.toFixed(2) || '0.00'}</p>
         </div>
         <div className="bg-white rounded-xl p-4 shadow-sm border">
-          <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-            <Percent className="w-4 h-4" />
-            Cashback-Rate
+          <div className="flex items-center justify-between sm:flex-col sm:items-start">
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <Percent className="w-4 h-4" />
+              Cashback-Rate
+            </div>
+            <p className="text-xl font-bold">{programInfo?.base_rate ?? 1}%</p>
           </div>
-          <p className="text-xl font-bold">{programInfo?.base_rate || 1}%</p>
         </div>
         <div className="bg-white rounded-xl p-4 shadow-sm border">
-          <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-            <Clock className="w-4 h-4" />
-            Gültigkeit
+          <div className="flex items-center justify-between sm:flex-col sm:items-start">
+            <div className="flex items-center gap-2 text-gray-500 text-sm">
+              <Clock className="w-4 h-4" />
+              Gültigkeit
+            </div>
+            <p className="text-xl font-bold">{programInfo?.expiry_months ?? 6} Monate</p>
           </div>
-          <p className="text-xl font-bold">{programInfo?.expiry_months || 6} Monate</p>
         </div>
       </div>
 
