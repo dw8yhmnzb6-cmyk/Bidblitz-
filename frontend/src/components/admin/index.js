@@ -57,4 +57,8 @@ export { default as AdminJackpot } from './AdminJackpot';
 // Partner Credit Management
 export { default as AdminPartnerCredit } from './AdminPartnerCredit';
 
+// Digital Payments & Commissions
+export { default as AdminDigitalPayments } from './AdminDigitalPayments';
+export { default as AdminCommissionsDashboard } from './AdminCommissionsDashboard';
+
 // All components have been extracted!
