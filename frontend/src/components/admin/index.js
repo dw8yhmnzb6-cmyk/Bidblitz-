@@ -24,6 +24,8 @@ export { AdminGameConfig } from './AdminGameConfig';
 export { AdminDebugReports } from './AdminDebugReports';
 export { AdminSystemHealth } from './AdminSystemHealth';
 export { AdminProductAnalytics } from './AdminProductAnalytics';
+export { AdminUserAnalytics } from './AdminUserAnalytics';
+export { AdminRevenueAnalytics } from './AdminRevenueAnalytics';
 
 // Staff Management
 export { default as AdminStaff } from './AdminStaff';
