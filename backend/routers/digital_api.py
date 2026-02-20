@@ -1029,9 +1029,47 @@ async def lookup_customer(
 
 class ScanPayRequest(BaseModel):
     amount: float = Field(..., gt=0, description="Amount to charge")
-    payment_token: str = Field(..., description="Customer's payment token from QR")
+    payment_token: str = Field(None, description="Customer's payment token from QR")
+    qr_data: Optional[str] = Field(None, description="Raw QR code data (JSON or compact format)")
     customer_id: Optional[str] = Field(None, description="Customer user ID")
     customer_number: Optional[str] = Field(None, description="Customer number (BID-XXXXXX)")
+
+
+def parse_qr_code(qr_data: str) -> dict:
+    """
+    Parse QR code data in either JSON or compact format.
+    
+    JSON format: {"type": "bidblitz_pay", "token": "cpt_xxx", ...}
+    Compact format: BIDBLITZ:2.0:cpt_xxx:BID-123456:timestamp
+    """
+    import json
+    
+    # Try JSON format first
+    if qr_data.startswith("{"):
+        try:
+            data = json.loads(qr_data)
+            return {
+                "token": data.get("token"),
+                "customer_number": data.get("customer_number"),
+                "customer_id": data.get("customer_id"),
+                "version": data.get("version", "1.0")
+            }
+        except json.JSONDecodeError:
+            pass
+    
+    # Try compact format: BIDBLITZ:version:token:customer_number:timestamp
+    if qr_data.startswith("BIDBLITZ:"):
+        parts = qr_data.split(":")
+        if len(parts) >= 4:
+            return {
+                "token": parts[2],
+                "customer_number": parts[3] if len(parts) > 3 else None,
+                "expires_timestamp": int(parts[4]) if len(parts) > 4 else None,
+                "version": parts[1]
+            }
+    
+    # Assume it's just a raw token
+    return {"token": qr_data}
 
 
 @router.post("/scan-pay")
