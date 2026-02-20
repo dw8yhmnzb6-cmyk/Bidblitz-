@@ -193,7 +193,7 @@ const footerTexts = {
     contact: 'اتصل بنا',
     allRights: 'جميع الحقوق محفوظة',
     merchantPortal: 'بوابة التجار (Edeka, Rewe...)',
-    posTerminal: 'محطة الدفع'
+    posTerminal: 'محطة الدفع',
     leaderboard: 'قائمة المتصدرين'
   }
 };
