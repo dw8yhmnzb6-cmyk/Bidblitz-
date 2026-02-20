@@ -1003,9 +1003,16 @@ async def export_report(
 
 # ==================== ADMIN ENDPOINTS ====================
 
+class PayoutSettings(BaseModel):
+    iban: Optional[str] = None
+    iban_holder: Optional[str] = None
+    payout_frequency: str = "monthly"  # daily, weekly, monthly, manual
+    iban_mode: str = "admin_entry"  # admin_entry, self_entry
+    min_payout_amount: int = 100
+
 @router.get("/admin/list")
 async def list_all_enterprises(x_admin_key: str = Header(...)):
-    """Admin: Get list of all enterprise accounts."""
+    """Admin: Get list of all enterprise accounts with enriched data."""
     if x_admin_key != "bidblitz-admin-2026":
         raise HTTPException(status_code=403, detail="Ungültiger Admin-Key")
     
@@ -1014,7 +1021,112 @@ async def list_all_enterprises(x_admin_key: str = Header(...)):
         {"_id": 0, "password": 0}
     ).sort("created_at", -1).to_list(100)
     
+    # Enrich with counts and stats
+    for enterprise in enterprises:
+        ent_id = enterprise["id"]
+        
+        # Count branches, api keys, users
+        enterprise["branch_count"] = await db.enterprise_branches.count_documents({"enterprise_id": ent_id})
+        enterprise["api_key_count"] = await db.enterprise_api_keys.count_documents({"enterprise_id": ent_id})
+        enterprise["user_count"] = await db.enterprise_users.count_documents({"enterprise_id": ent_id})
+        
+        # Get payout settings
+        payout = await db.enterprise_payout_settings.find_one(
+            {"enterprise_id": ent_id},
+            {"_id": 0}
+        )
+        enterprise["payout_settings"] = payout or {
+            "iban_mode": "admin_entry",
+            "payout_frequency": "monthly",
+            "min_payout_amount": 100
+        }
+        
+        # Calculate revenue (from transactions via API keys)
+        api_keys = await db.enterprise_api_keys.find(
+            {"enterprise_id": ent_id},
+            {"_id": 0, "api_key": 1}
+        ).to_list(100)
+        
+        key_list = [k["api_key"] for k in api_keys]
+        
+        if key_list:
+            # Sum up topup transactions
+            pipeline = [
+                {"$match": {"api_key": {"$in": key_list}, "type": "topup"}},
+                {"$group": {"_id": None, "total": {"$sum": "$amount"}}}
+            ]
+            result = await db.enterprise_transactions.aggregate(pipeline).to_list(1)
+            enterprise["total_revenue"] = result[0]["total"] if result else 0
+        else:
+            enterprise["total_revenue"] = 0
+        
+        enterprise["pending_commission"] = round(enterprise["total_revenue"] * 0.05, 2)  # 5% commission example
+    
     return {"enterprises": enterprises, "total": len(enterprises)}
+
+
+@router.put("/admin/payout-settings/{enterprise_id}")
+async def update_payout_settings(enterprise_id: str, data: PayoutSettings, x_admin_key: str = Header(...)):
+    """Admin: Update payout settings for an enterprise."""
+    if x_admin_key != "bidblitz-admin-2026":
+        raise HTTPException(status_code=403, detail="Ungültiger Admin-Key")
+    
+    # Verify enterprise exists
+    enterprise = await db.enterprise_accounts.find_one({"id": enterprise_id})
+    if not enterprise:
+        raise HTTPException(status_code=404, detail="Unternehmen nicht gefunden")
+    
+    # Validate IBAN format if provided
+    if data.iban:
+        # Basic IBAN validation (remove spaces, check length)
+        iban_clean = data.iban.replace(" ", "").upper()
+        if len(iban_clean) < 15 or len(iban_clean) > 34:
+            raise HTTPException(status_code=400, detail="Ungültige IBAN-Länge")
+        data.iban = iban_clean
+    
+    now = datetime.now(timezone.utc)
+    
+    settings_data = {
+        "enterprise_id": enterprise_id,
+        "iban": data.iban,
+        "iban_holder": data.iban_holder,
+        "payout_frequency": data.payout_frequency,
+        "iban_mode": data.iban_mode,
+        "min_payout_amount": data.min_payout_amount,
+        "updated_at": now.isoformat(),
+        "updated_by": "admin"
+    }
+    
+    # Upsert settings
+    await db.enterprise_payout_settings.update_one(
+        {"enterprise_id": enterprise_id},
+        {"$set": settings_data, "$setOnInsert": {"created_at": now.isoformat()}},
+        upsert=True
+    )
+    
+    return {"success": True, "message": "Auszahlungseinstellungen gespeichert"}
+
+
+@router.get("/admin/payout-settings/{enterprise_id}")
+async def get_payout_settings(enterprise_id: str, x_admin_key: str = Header(...)):
+    """Admin: Get payout settings for an enterprise."""
+    if x_admin_key != "bidblitz-admin-2026":
+        raise HTTPException(status_code=403, detail="Ungültiger Admin-Key")
+    
+    settings = await db.enterprise_payout_settings.find_one(
+        {"enterprise_id": enterprise_id},
+        {"_id": 0}
+    )
+    
+    if not settings:
+        settings = {
+            "enterprise_id": enterprise_id,
+            "iban_mode": "admin_entry",
+            "payout_frequency": "monthly",
+            "min_payout_amount": 100
+        }
+    
+    return settings
 
 
 @router.get("/admin/pending")
