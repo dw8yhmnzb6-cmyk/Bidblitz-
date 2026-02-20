@@ -1010,6 +1010,12 @@ class PayoutSettings(BaseModel):
     iban_mode: str = "admin_entry"  # admin_entry, self_entry
     min_payout_amount: int = 100
 
+class CommissionSettings(BaseModel):
+    voucher_commission: float = 5.0  # % commission for vouchers
+    self_pay_commission: float = 3.0  # % commission when customer pays directly
+    customer_cashback: float = 1.0  # % cashback to customers
+    is_active: bool = True
+
 @router.get("/admin/list")
 async def list_all_enterprises(x_admin_key: str = Header(...)):
     """Admin: Get list of all enterprise accounts with enriched data."""
