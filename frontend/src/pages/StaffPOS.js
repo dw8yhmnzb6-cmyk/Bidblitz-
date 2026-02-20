@@ -1780,17 +1780,18 @@ export default function StaffPOS() {
                   <Gift className="w-6 h-6 text-green-400" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white">Gutscheinkarte erstellen</h2>
-                  <p className="text-slate-400 text-sm">Verkaufen Sie Gutscheinkarten an Kunden</p>
+                  <h2 className="text-xl font-bold text-white">{t.giftcardCreate}</h2>
+                  <p className="text-slate-400 text-sm">{t.sellGiftcards}</p>
                 </div>
               </div>
 
-              <label className="block text-slate-300 mb-2">Gutscheinwert wählen</label>
+              <label className="block text-slate-300 mb-2">{t.giftcardValue}</label>
               <div className="grid grid-cols-5 gap-2 mb-4">
                 {giftCardAmounts.map(amt => (
                   <button
                     key={amt}
                     onClick={() => setGiftCardAmount(amt.toString())}
+                    data-testid={`giftcard-amt-${amt}`}
                     className={`py-4 rounded-xl font-bold text-lg transition-all ${
                       parseFloat(giftCardAmount) === amt
                         ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
@@ -1807,12 +1808,13 @@ export default function StaffPOS() {
                 <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="number"
-                  placeholder="Oder anderen Betrag eingeben..."
+                  placeholder={t.otherAmount}
                   value={giftCardAmount}
                   onChange={(e) => setGiftCardAmount(e.target.value)}
                   className="w-full pl-12 pr-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   min="10"
                   max="500"
+                  data-testid="giftcard-custom-amount"
                 />
               </div>
 
@@ -1820,13 +1822,14 @@ export default function StaffPOS() {
                 onClick={createGiftCard}
                 disabled={loading || !giftCardAmount || parseFloat(giftCardAmount) < 10}
                 className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold text-lg rounded-xl hover:from-green-600 hover:to-emerald-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-500/30 flex items-center justify-center gap-3"
+                data-testid="create-giftcard-btn"
               >
                 {loading ? (
                   <RefreshCw className="w-6 h-6 animate-spin" />
                 ) : (
                   <>
                     <Plus className="w-6 h-6" />
-                    Gutscheinkarte erstellen
+                    {t.createGiftcard}
                   </>
                 )}
               </button>
@@ -1836,11 +1839,10 @@ export default function StaffPOS() {
             <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
               <h3 className="text-slate-400 text-sm mb-2 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
-                Hinweis
+                Info
               </h3>
               <p className="text-slate-500 text-sm">
-                Nach dem Erstellen wird ein druckbarer Barcode generiert. 
-                Der Kunde kann den Gutschein jederzeit an der Kasse einlösen.
+                {t.giftcardNote}
               </p>
             </div>
           </div>
