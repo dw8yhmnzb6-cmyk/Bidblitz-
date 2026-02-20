@@ -297,6 +297,7 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(day_night_auction_scheduler())
     asyncio.create_task(abandoned_cart_reminder_task())
     asyncio.create_task(daily_health_check_task())  # Daily health checks
+    asyncio.create_task(monthly_commission_report_scheduler())  # Monthly commission reports
     logger.info("BidBlitz.ae server started - Bot only bids when < 10 min remaining. Auto-restart disabled.")
     
     yield
