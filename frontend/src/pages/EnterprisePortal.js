@@ -268,6 +268,12 @@ const enterpriseTranslations = {
     connectionError: 'خطأ في الاتصال',
     savingError: 'خطأ في الحفظ',
     loadingError: 'خطأ في التحميل',
+    commissionSettings: 'إعدادات العمولة',
+    voucherCommission: 'عمولة القسيمة',
+    selfPayCommission: 'عمولة الدفع الذاتي',
+    customerCashback: 'استرداد نقود العميل',
+    commissionRate: 'معدل العمولة',
+    enterpriseSettings: 'إعدادات المؤسسة',
   },
   tr: {
     title: 'Bayi Portalı',
