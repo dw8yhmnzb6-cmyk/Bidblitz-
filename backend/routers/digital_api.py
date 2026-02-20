@@ -1316,9 +1316,18 @@ async def topup_customer_card(
     customer_bonus = calculate_customer_bonus(data.amount)
     total_credit = data.amount + customer_bonus
     
-    # Calculate merchant commission
-    merchant_commission_rate = api_key.get("merchant_commission", 2.0)  # Default 2%
+    # Get merchant's monthly volume for commission calculation
+    monthly_volume = api_key.get("monthly_volume", 0) + api_key.get("total_volume", 0)
+    
+    # Calculate merchant commission based on their volume tier (0-2%)
+    merchant_commission_rate = calculate_merchant_commission(monthly_volume)
     merchant_commission = round(data.amount * (merchant_commission_rate / 100), 2)
+    
+    # Update merchant's total volume
+    await db.api_keys.update_one(
+        {"id": api_key["id"]},
+        {"$inc": {"total_volume": data.amount, "total_requests": 1}}
+    )
     
     # Credit customer account
     await db.users.update_one(
@@ -1347,6 +1356,7 @@ async def topup_customer_card(
         "total_credited": total_credit,
         "merchant_commission": merchant_commission,
         "merchant_commission_rate": merchant_commission_rate,
+        "merchant_volume_at_time": monthly_volume + data.amount,
         "currency": "EUR",
         "reference": f"TOPUP-{now.strftime('%Y%m%d%H%M%S')}",
         "customer_id": user["id"],
@@ -1366,6 +1376,7 @@ async def topup_customer_card(
             "topup_amount": data.amount,
             "commission_rate": merchant_commission_rate,
             "commission_amount": merchant_commission,
+            "merchant_volume": monthly_volume + data.amount,
             "created_at": now.isoformat()
         })
     
