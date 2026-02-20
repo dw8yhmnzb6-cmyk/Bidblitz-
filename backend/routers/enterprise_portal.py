@@ -1589,15 +1589,7 @@ async def get_my_payout_history(authorization: str = Header(...)):
 @router.get("/payouts/my-pending")
 async def get_my_pending_payout(authorization: str = Header(...)):
     """Enterprise: Get own pending payout amount."""
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid token format")
-    
-    token = authorization.replace("Bearer ", "")
-    enterprise = await db.enterprise_accounts.find_one({"token": token}, {"_id": 0})
-    
-    if not enterprise:
-        raise HTTPException(status_code=401, detail="Ungültiger Token")
-    
+    enterprise = await get_enterprise_from_token(authorization)
     ent_id = enterprise["id"]
     
     # Get commission settings
