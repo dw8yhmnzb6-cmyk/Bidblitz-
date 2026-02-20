@@ -400,6 +400,9 @@ function AppContent() {
           <Route path="/kasse" element={<POSKiosk />} />
           <Route path="/kiosk" element={<POSKiosk />} />
           <Route path="/scanner" element={<POSScanner />} />
+          {/* Enterprise Portal for Large Retailers */}
+          <Route path="/enterprise" element={<EnterprisePortal />} />
+          <Route path="/grosshaendler" element={<EnterprisePortal />} />
           {/* Customer Payment QR */}
           <Route path="/mein-qr" element={
             <ProtectedRoute>
