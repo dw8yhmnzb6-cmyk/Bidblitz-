@@ -454,11 +454,81 @@ export default function AdminDigitalPayments() {
                             <span className="truncate">{key.webhook_url}</span>
                           </div>
                         )}
+                        
+                        {/* Commission Info */}
+                        <div className="flex flex-wrap items-center gap-2 text-xs">
+                          <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded">
+                            📊 Provision: {(key.platform_commission || 0.5).toFixed(2)}%
+                          </span>
+                          <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
+                            🎁 Cashback: {(key.customer_cashback || 0).toFixed(2)}%
+                          </span>
+                        </div>
+                        
                         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
                           <span>{key.total_requests || 0} Anfragen</span>
                           <span>€{(key.total_volume || 0).toFixed(2)}</span>
                           <span>{formatDate(key.created_at)}</span>
                         </div>
+                        
+                        {/* Edit Commission */}
+                        {editingKey === key.id ? (
+                          <div className="bg-gray-50 rounded-lg p-3 mt-2 space-y-3">
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <label className="text-xs text-gray-600">Plattform %</label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  min="0.01"
+                                  max="10"
+                                  value={editCommission.platform}
+                                  onChange={(e) => setEditCommission(prev => ({ ...prev, platform: parseFloat(e.target.value) || 0.5 }))}
+                                  className="w-full px-2 py-1 border rounded text-sm"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-xs text-gray-600">Cashback %</label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  min="0"
+                                  max="2"
+                                  value={editCommission.cashback}
+                                  onChange={(e) => setEditCommission(prev => ({ ...prev, cashback: parseFloat(e.target.value) || 0 }))}
+                                  className="w-full px-2 py-1 border rounded text-sm"
+                                />
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => updateCommission(key.id)}
+                                className="px-3 py-1 bg-green-500 text-white rounded text-xs hover:bg-green-600"
+                              >
+                                Speichern
+                              </button>
+                              <button
+                                onClick={() => setEditingKey(null)}
+                                className="px-3 py-1 bg-gray-300 text-gray-700 rounded text-xs hover:bg-gray-400"
+                              >
+                                Abbrechen
+                              </button>
+                            </div>
+                          </div>
+                        ) : key.is_active && (
+                          <button
+                            onClick={() => {
+                              setEditingKey(key.id);
+                              setEditCommission({
+                                platform: key.platform_commission || 0.5,
+                                cashback: key.customer_cashback || 0
+                              });
+                            }}
+                            className="text-xs text-orange-600 hover:text-orange-700 underline"
+                          >
+                            Provisionen bearbeiten
+                          </button>
+                        )}
                       </div>
                       {key.is_active && (
                         <button
