@@ -370,7 +370,8 @@ function AppContent() {
           <Route path="/developers" element={<ApiDocs />} />
           {/* POS Terminal for Merchants */}
           <Route path="/pos" element={<POSTerminal />} />
-          <Route path="/kasse" element={<POSTerminal />} />
+          <Route path="/kasse" element={<POSKiosk />} />
+          <Route path="/kiosk" element={<POSKiosk />} />
           {/* New Public Pages */}
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/faq" element={<FAQ />} />
