@@ -676,9 +676,52 @@ export default function POSTerminal() {
                 </div>
               </div>
 
+              {/* Download & Share Buttons */}
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={() => {
+                    const receipt = generateReceiptText(topupResult, merchantName);
+                    const blob = new Blob([receipt], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `quittung-${topupResult.topup_id}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast.success('Quittung heruntergeladen!');
+                  }}
+                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2"
+                >
+                  <Download className="w-5 h-5" />
+                  Speichern
+                </button>
+                <button
+                  onClick={async () => {
+                    const receipt = generateReceiptText(topupResult, merchantName);
+                    if (navigator.share) {
+                      try {
+                        await navigator.share({
+                          title: 'BidBlitz Aufladung',
+                          text: receipt
+                        });
+                      } catch (e) {
+                        // User cancelled or error
+                      }
+                    } else {
+                      navigator.clipboard.writeText(receipt);
+                      toast.success('Quittung kopiert!');
+                    }
+                  }}
+                  className="flex-1 py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-xl font-semibold flex items-center justify-center gap-2"
+                >
+                  <Share2 className="w-5 h-5" />
+                  Teilen
+                </button>
+              </div>
+
               <button
                 onClick={() => setTopupResult(null)}
-                className="w-full mt-6 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-lg transition-colors"
+                className="w-full mt-4 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-lg transition-colors"
               >
                 Nächste Aufladung
               </button>
