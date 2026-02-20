@@ -247,7 +247,8 @@ async def get_user_segments():
         {"$match": {"created_at": {"$gte": f"{week_ago}T00:00:00"}}},
         {"$group": {"_id": "$user_id"}}
     ]
-    active_week_ids = set(u["_id"] async for u in db.bids.aggregate(active_week_pipeline))
+    active_week_result = await db.bids.aggregate(active_week_pipeline).to_list(100000)
+    active_week_ids = set(u["_id"] for u in active_week_result)
     
     # Get all users who bid in last month (but not last week)
     active_month_pipeline = [
