@@ -575,12 +575,15 @@ export default function AdminEnterpriseManagement() {
                             <span className="block text-[10px] text-orange-600 font-normal">Händler → BidBlitz</span>
                           </label>
                           <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            max="100"
+                            type="text"
+                            inputMode="decimal"
+                            pattern="[0-9]*[.,]?[0-9]*"
+                            placeholder="0.01"
                             value={commissionForm.voucher_commission}
-                            onChange={(e) => setCommissionForm({...commissionForm, voucher_commission: parseFloat(e.target.value) || 0})}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(',', '.');
+                              setCommissionForm({...commissionForm, voucher_commission: val === '' ? '' : parseFloat(val) || 0});
+                            }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             data-testid="voucher-commission-input"
                           />
@@ -591,12 +594,15 @@ export default function AdminEnterpriseManagement() {
                             <span className="block text-[10px] text-blue-600 font-normal">BidBlitz → Händler</span>
                           </label>
                           <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            max="100"
+                            type="text"
+                            inputMode="decimal"
+                            pattern="[0-9]*[.,]?[0-9]*"
+                            placeholder="0.01"
                             value={commissionForm.self_pay_commission}
-                            onChange={(e) => setCommissionForm({...commissionForm, self_pay_commission: parseFloat(e.target.value) || 0})}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(',', '.');
+                              setCommissionForm({...commissionForm, self_pay_commission: val === '' ? '' : parseFloat(val) || 0});
+                            }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             data-testid="selfpay-commission-input"
                           />
@@ -607,12 +613,15 @@ export default function AdminEnterpriseManagement() {
                             <span className="block text-[10px] text-green-600 font-normal">BidBlitz → Kunde</span>
                           </label>
                           <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            max="100"
+                            type="text"
+                            inputMode="decimal"
+                            pattern="[0-9]*[.,]?[0-9]*"
+                            placeholder="0.01"
                             value={commissionForm.customer_cashback}
-                            onChange={(e) => setCommissionForm({...commissionForm, customer_cashback: parseFloat(e.target.value) || 0})}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(',', '.');
+                              setCommissionForm({...commissionForm, customer_cashback: val === '' ? '' : parseFloat(val) || 0});
+                            }}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             data-testid="cashback-input"
                           />
