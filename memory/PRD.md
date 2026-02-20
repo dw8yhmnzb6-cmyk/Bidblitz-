@@ -79,6 +79,21 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - **Automatische Berechnung:** Bei jeder Zahlung werden Provisionen und Cashback automatisch verrechnet
 - **Collection:** `platform_commissions` - Speichert alle Provisionen
 
+#### 8. Provisions-Dashboard ✅
+- **Neuer Tab:** "Provisionen" im Digital Payment API Bereich
+- **Statistik-Karten:**
+  - Provisionen gesamt (mit Ø-Rate pro Transaktion)
+  - Transaktionsvolumen (Anzahl Transaktionen)
+  - Monatsvergleich (dieser vs. letzter Monat mit Wachstum %)
+  - Cashback ausgegeben (an Kunden zurückgegeben)
+- **Top Händler Liste:** Ranking nach Provisions-Einnahmen
+- **Tägliche Übersicht:** Verlauf mit Mini-Balkendiagramm
+- **Zeitraum-Filter:** 7, 14, 30, 60, 90, 180, 365 Tage
+- **Export:** CSV und JSON für Buchhaltung
+- **API-Endpoints:**
+  - `GET /api/digital/commissions/stats` - Statistiken abrufen
+  - `GET /api/digital/commissions/export` - Daten exportieren
+
 ---
 
 ### ✅ Session Update - February 19, 2026 (Session 55) - MULTIPLE FIXES ✅
