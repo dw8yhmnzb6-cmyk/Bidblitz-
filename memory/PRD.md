@@ -5,14 +5,15 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 20, 2026)
 
-### ✅ Session Update - February 20, 2026 (Session 60) - ENTERPRISE PORTAL ERWEITERUNGEN ✅
+### ✅ Session Update - February 20, 2026 (Session 60) - ENTERPRISE PORTAL V3 ✅
 
-#### Enterprise Portal V2 - VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET ✅
+#### Enterprise Portal V3 - VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET ✅
 - **Status:** VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET
 - **Route:** `/enterprise` und `/grosshaendler`
 - **Test-Reports:** 
   - `/app/test_reports/iteration_94.json` - Enterprise Portal Redesign (11/11 Tests)
   - `/app/test_reports/iteration_95.json` - Portal Erweiterungen (6/6 Tests, 100%)
+  - `/app/test_reports/iteration_96.json` - Provisionseinstellungen & Übersetzungen (6/6 Tests, 100%)
 
 **Implementierte Verbesserungen (Teil 1 - Redesign):**
 1. **Persistente Anmeldung ("Angemeldet bleiben")** ✅
@@ -34,7 +35,30 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
    - Benötigt keine Filial-Zuordnung
    - Info-Hinweis im Formular bei Auswahl
 
-7. **Admin-Tab für Großhändler-Verwaltung erweitert:**
+**Implementierte Verbesserungen (Teil 3 - Provisionen & Sprachen):**
+
+7. **Provisionseinstellungen pro Großhändler:** ✅
+   - **Gutschein-Provision (%)** - Provision bei Gutschein-Verkäufen
+   - **Eigenzahlung-Provision (%)** - Provision wenn Kunde selbst zahlt
+   - **Kunden-Cashback (%)** - Cashback für Kunden
+   - Aktivierung/Deaktivierung der Provisionen
+   - Admin-UI im erweiterten Panel
+
+8. **Vollständige Übersetzungen (4 Sprachen):** ✅
+   - 🇩🇪 Deutsch - Alle Texte
+   - 🇬🇧 English - Alle Texte
+   - 🇦🇪 Arabisch - Alle Texte inkl. neue Felder
+   - 🇹🇷 Türkisch - Alle Texte inkl. neue Felder
+   - Neue Felder: commissionSettings, voucherCommission, selfPayCommission, customerCashback, connectionError, etc.
+
+**Neue API-Endpoints (Provisionen):**
+- `GET /api/enterprise/admin/commission-settings/{id}` - Provisionseinstellungen abrufen
+- `PUT /api/enterprise/admin/commission-settings/{id}` - Provisionseinstellungen speichern
+
+**Neue DB-Collection:**
+- `enterprise_commission_settings`: voucher_commission, self_pay_commission, customer_cashback, is_active
+
+9. **Admin-Tab für Großhändler-Verwaltung erweitert:**
    - "Details & Einstellungen" Button für aktive Unternehmen
    - Aufklappbares Panel mit:
      - IBAN-Verwaltungsmodus (Admin verwaltet / Händler gibt ein)
