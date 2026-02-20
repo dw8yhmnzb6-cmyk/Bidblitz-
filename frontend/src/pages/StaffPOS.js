@@ -1703,7 +1703,7 @@ export default function StaffPOS() {
                   <div className="flex items-center justify-between">
                     <span className="text-green-400 flex items-center gap-2">
                       <Gift className="w-5 h-5" />
-                      Kundenbonus
+                      {t.customerBonus}
                     </span>
                     <span className="text-green-400 font-bold text-lg">
                       +€{calculateBonus(parseFloat(amount)).toFixed(2)}
@@ -1715,16 +1715,17 @@ export default function StaffPOS() {
 
             {/* Barcode Scanner */}
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
-              <label className="block text-slate-300 mb-2">Kunden-Barcode scannen</label>
+              <label className="block text-slate-300 mb-2">{t.scanCustomer}</label>
               
               {!scanMode ? (
                 <button
                   onClick={() => setScanMode(true)}
                   disabled={!amount || parseFloat(amount) < 5}
                   className="w-full py-4 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-600 rounded-xl text-white font-medium transition-all flex items-center justify-center gap-3"
+                  data-testid="scan-barcode-btn"
                 >
                   <Scan className="w-6 h-6" />
-                  Barcode scannen
+                  {t.scanBarcode}
                 </button>
               ) : (
                 <div className="space-y-3">
@@ -1733,22 +1734,23 @@ export default function StaffPOS() {
                     <input
                       ref={barcodeInputRef}
                       type="text"
-                      placeholder="Warte auf Barcode-Scan..."
+                      placeholder={t.waitingForScan}
                       value={barcodeInput}
                       onChange={(e) => setBarcodeInput(e.target.value)}
                       onKeyDown={handleBarcodeScan}
                       className="w-full pl-14 pr-4 py-4 bg-amber-500/10 border-2 border-amber-500 rounded-xl text-white text-xl placeholder-amber-300/50 focus:ring-0 focus:border-amber-400 animate-pulse"
                       autoFocus
+                      data-testid="barcode-input"
                     />
                   </div>
                   <p className="text-amber-400 text-sm text-center">
-                    📷 Scanner bereit - Kunden-Barcode scannen oder Nummer eingeben + Enter
+                    📷 {t.scannerReady}
                   </p>
                   <button
                     onClick={() => setScanMode(false)}
                     className="w-full py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 text-sm"
                   >
-                    Abbrechen
+                    {t.cancel}
                   </button>
                 </div>
               )}
@@ -1756,7 +1758,7 @@ export default function StaffPOS() {
 
             {/* Bonus Info */}
             <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
-              <h3 className="text-slate-400 text-sm mb-3">Bonus-Staffelung:</h3>
+              <h3 className="text-slate-400 text-sm mb-3">{t.bonusTiers}:</h3>
               <div className="grid grid-cols-2 gap-2">
                 {bonusTiers.map(tier => (
                   <div key={tier.min} className="flex justify-between text-sm">
