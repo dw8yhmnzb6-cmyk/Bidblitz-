@@ -3786,3 +3786,54 @@ Externe Unternehmen wie Edeka können BidBlitz Pay als Zahlungsmethode an ihren 
    - Erfolgs-Animation
    - Transaktionsverlauf
 
+
+---
+
+### ✅ Mobile Wallet-Karte ✅
+
+**Implementiert:** Digitale Zahlungskarte für Kunden
+
+**URL:** `/wallet-card` oder `/meine-karte`
+
+**Features:**
+1. **Premium Kreditkarten-Design:**
+   - Orange/Rot Gradient
+   - Chip & Contactless-Symbol
+   - Generierte Kartennummer
+   - Karteninhaber Name
+   - Gültigkeitsdatum (2 Jahre)
+   - CVV verdeckt
+   - Kundennummer Badge
+
+2. **Quick Actions:**
+   - Kopieren (Kartennummer)
+   - Teilen (Web Share API)
+   - Download (als Bild via html2canvas)
+
+3. **Wallet-Integration (Vorbereitet):**
+   - Apple Wallet Button (Coming Soon)
+   - Google Wallet Button (Coming Soon)
+   - "Zum Startbildschirm" mit Anleitung
+
+4. **QR-Code:**
+   - Statischer QR mit Kartendaten
+   - Link zu dynamischem QR (/mein-qr)
+
+5. **Sicherheitsinfo:**
+   - Verschlüsselungs-Hinweis
+   - Shield-Icon
+
+**Neue Datei:**
+- `/app/frontend/src/pages/WalletCard.js`
+
+**Verwendete Bibliothek:**
+- `html2canvas` für Screenshot-Download
+
+**Zusammenfassung aller Kunden-Zahlungsseiten:**
+
+| URL | Beschreibung |
+|-----|-------------|
+| `/wallet-card` | Virtuelle Kreditkarte |
+| `/mein-qr` | Dynamischer Zahlungs-QR |
+| `/checkout/{id}` | Zahlung bestätigen |
+
