@@ -68,7 +68,17 @@ async def get_or_create_customer(barcode: str) -> dict:
     # Clean up barcode - remove BID- prefix if present
     clean_barcode = barcode.replace("BID-", "").replace("bid-", "").strip()
     
-    # Try multiple search patterns
+    # PRIORITY 1: Try to find with BID- prefix first (real customers)
+    customer = await db.users.find_one({
+        "customer_number": f"BID-{clean_barcode}",
+        "email": {"$ne": None}  # Real customers have email
+    })
+    
+    if customer:
+        logger.info(f"Found real customer with BID- prefix: {customer.get('customer_number')} ({customer.get('email')})")
+        return customer
+    
+    # PRIORITY 2: Try other search patterns
     customer = await db.users.find_one({
         "$or": [
             {"customer_number": barcode},
@@ -85,13 +95,13 @@ async def get_or_create_customer(barcode: str) -> dict:
         logger.info(f"Found existing customer: {customer.get('customer_number')} for barcode {barcode}")
         return customer
     
-    # Create new customer with this barcode
+    # Create new customer with this barcode (only if not found)
     new_customer = {
         "id": str(uuid.uuid4()),
         "customer_number": f"BID-{clean_barcode}",
         "barcode": clean_barcode,
         "name": f"Kunde {clean_barcode[-4:]}",
-        "balance": 0.0,
+        "bidblitz_balance": 0.0,
         "total_deposits": 0.0,
         "created_at": datetime.now(timezone.utc).isoformat(),
         "created_via": "pos_barcode"
