@@ -517,6 +517,7 @@ const PaymentHistory = ({ token, language = 'de' }) => {
     switch (type) {
       case 'deposit':
       case 'topup':
+      case 'pos_topup':
       case 'bank_transfer_credit':
         return <ArrowDownLeft className="w-4 h-4 text-green-500" />;
       case 'withdrawal':
@@ -536,6 +537,7 @@ const PaymentHistory = ({ token, language = 'de' }) => {
     const labels = {
       deposit: t('deposit'),
       topup: t('deposit'),
+      pos_topup: 'Bareinzahlung',
       bank_transfer_credit: t('transfer'),
       withdrawal: t('withdrawal'),
       payout: t('withdrawal'),
