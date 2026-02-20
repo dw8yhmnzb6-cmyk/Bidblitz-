@@ -1270,6 +1270,7 @@ class TopUpRequest(BaseModel):
 @router.post("/topup")
 async def topup_customer_card(
     data: TopUpRequest,
+    background_tasks: BackgroundTasks,
     x_api_key: str = Header(None, alias="X-API-Key")
 ):
     """
