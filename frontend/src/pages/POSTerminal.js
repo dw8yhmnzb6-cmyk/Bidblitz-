@@ -7,7 +7,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { 
   Store, QrCode, Euro, RefreshCw, CheckCircle, Clock, XCircle,
   Plus, History, Volume2, VolumeX, Printer, Settings, LogOut,
-  AlertTriangle, Wifi, WifiOff
+  AlertTriangle, Wifi, WifiOff, Download, Share2
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -27,6 +27,42 @@ const playSound = (type) => {
     audio.play().catch(() => {});
   } catch (e) {}
 };
+
+// Generate receipt text for download
+const generateReceiptText = (result, merchantName) => {
+  const date = new Date().toLocaleString('de-DE');
+  return `
+═══════════════════════════════════
+        BIDBLITZ AUFLADUNG
+═══════════════════════════════════
+Händler: ${merchantName}
+Datum: ${date}
+
+───────────────────────────────────
+Kunde: ${result.customer_name}
+Kundennummer: ${result.customer_number}
+───────────────────────────────────
+
+Aufladebetrag:     €${result.amount.toFixed(2)}
+Bonus:            +€${result.bonus.toFixed(2)}
+                  ─────────────────
+GUTSCHRIFT:       €${result.total_credited.toFixed(2)}
+
+───────────────────────────────────
+Neues Guthaben:   €${result.new_balance.toFixed(2)}
+───────────────────────────────────
+
+Händler-Provision: €${result.merchant_commission.toFixed(2)}
+                   (${result.merchant_commission_rate || 0}%)
+
+═══════════════════════════════════
+       Vielen Dank!
+       www.bidblitz.ae
+═══════════════════════════════════
+Transaktion: ${result.topup_id}
+`;
+};
+
 
 export default function POSTerminal() {
   const [apiKey, setApiKey] = useState(localStorage.getItem('pos_api_key') || '');
