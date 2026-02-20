@@ -565,6 +565,14 @@ app.include_router(health_check_router)
 from routers.product_analytics import router as product_analytics_router
 app.include_router(product_analytics_router)
 
+# NEW: User Analytics
+from routers.user_analytics import router as user_analytics_router
+app.include_router(user_analytics_router)
+
+# NEW: Revenue Analytics
+from routers.revenue_analytics import router as revenue_analytics_router
+app.include_router(revenue_analytics_router)
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
