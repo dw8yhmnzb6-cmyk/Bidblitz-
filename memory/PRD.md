@@ -5,59 +5,57 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 20, 2026)
 
-### ✅ Session Update - February 20, 2026 (Session 60) - ENTERPRISE PORTAL REDESIGN ✅
+### ✅ Session Update - February 20, 2026 (Session 60) - ENTERPRISE PORTAL ERWEITERUNGEN ✅
 
-#### Enterprise Portal Redesign - VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET ✅
+#### Enterprise Portal V2 - VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET ✅
 - **Status:** VOLLSTÄNDIG IMPLEMENTIERT UND GETESTET
 - **Route:** `/enterprise` und `/grosshaendler`
-- **Test-Report:** `/app/test_reports/iteration_94.json` - 100% bestanden (11/11 Tests)
+- **Test-Reports:** 
+  - `/app/test_reports/iteration_94.json` - Enterprise Portal Redesign (11/11 Tests)
+  - `/app/test_reports/iteration_95.json` - Portal Erweiterungen (6/6 Tests, 100%)
 
-**Implementierte Verbesserungen:**
-1. **Persistente Anmeldung ("Angemeldet bleiben"):**
-   - Checkbox auf dem Login-Formular
-   - Speichert E-Mail in localStorage bei Aktivierung
-   - Token bleibt erhalten für schnelleren Zugriff
+**Implementierte Verbesserungen (Teil 1 - Redesign):**
+1. **Persistente Anmeldung ("Angemeldet bleiben")** ✅
+2. **Visuelles Redesign** (Dark Theme, Orange Akzente) ✅
+3. **Mobile Responsiveness** (Hamburger-Menü, 2-Spalten-Grid) ✅
+4. **Mehrsprachigkeit** (DE 🇩🇪, EN 🇬🇧, AR 🇦🇪, TR 🇹🇷) ✅
 
-2. **Visuelles Redesign:**
-   - Modernes dunkles Theme mit Gradient-Hintergrund (slate-900 bis slate-800)
-   - Orangefarbene Akzentfarben (amber-500, orange-500)
-   - Professionelle Icon-Buttons und Karten
-   - Verbesserte Typografie und Spacing
+**Implementierte Verbesserungen (Teil 2 - Erweiterungen):**
 
-3. **Mobile Responsiveness:**
-   - Hamburger-Menü für mobile Navigation
-   - 2-Spalten-Grid für Statistik-Karten auf mobilen Geräten
-   - Touch-freundliche Buttons und Eingabefelder
-   - Slide-out Menü mit allen 5 Navigations-Tabs
+5. **Formular-Verbesserungen:**
+   - Labels über allen Eingabefeldern (z.B. "Filialname *", "Stadt", "Telefon")
+   - Sichtbare Placeholders mit gutem Kontrast
+   - Weißer Hintergrund mit dunkelgrauer Schrift
+   - Verbesserte Button-Styles
 
-4. **Mehrsprachigkeit (4 Sprachen):**
-   - 🇩🇪 Deutsch (Standard)
-   - 🇬🇧 English
-   - 🇦🇪 العربية (Arabisch)
-   - 🇹🇷 Türkçe (Türkisch)
-   - Sprach-Dropdown im Portal-Header
-   - Alle Labels, Buttons und Texte übersetzt
+6. **Neue Mitarbeiter-Rolle: Steuerberater:**
+   - Rolle: `tax_advisor`
+   - Nur Zugriff auf Berichte und Exporte
+   - Benötigt keine Filial-Zuordnung
+   - Info-Hinweis im Formular bei Auswahl
 
-**Getestete Features:**
-- Login-Seite Design ✅
-- Remember Me Checkbox ✅
-- Login-Funktionalität ✅
-- Dashboard mit 5 Statistik-Karten ✅
-- Navigations-Tabs (Dashboard, Filialen, Kassen & API-Keys, Mitarbeiter, Berichte) ✅
-- Zeitfilter (Heute/Woche/Monat/Jahr) ✅
-- Sprach-Dropdown ✅
-- Sprachumschaltung ✅
-- Mobile Ansicht ✅
-- Filialen-Tab ✅
-- Logout ✅
+7. **Admin-Tab für Großhändler-Verwaltung erweitert:**
+   - "Details & Einstellungen" Button für aktive Unternehmen
+   - Aufklappbares Panel mit:
+     - IBAN-Verwaltungsmodus (Admin verwaltet / Händler gibt ein)
+     - IBAN und Kontoinhaber-Felder
+     - Auszahlungsfrequenz (Täglich/Wöchentlich/Monatlich/Manuell)
+     - Mindestbetrag für Auszahlung
+   - Quick Stats (Filialen, API-Keys, Mitarbeiter)
+   - Umsatz & Provisionen
+
+**Neue API-Endpoints:**
+- `PUT /api/enterprise/admin/payout-settings/{id}` - Auszahlungseinstellungen speichern
+- `GET /api/enterprise/admin/payout-settings/{id}` - Auszahlungseinstellungen abrufen
+- `GET /api/enterprise/admin/list` - Erweitert mit branch_count, user_count, payout_settings
+
+**Neue DB-Collection:**
+- `enterprise_payout_settings`: IBAN, Kontoinhaber, Frequenz, Modus, Mindestbetrag
 
 **Test-Credentials:**
-- E-Mail: `admin@edeka-test.de`
-- Passwort: `EdekaTest2026!`
-
-**Technische Änderungen:**
-- `/app/frontend/src/pages/EnterprisePortal.js` - Komplett neu geschrieben
-- `/app/frontend/src/App.js` - `/enterprise` und `/grosshaendler` zur Popup-Ausnahmeliste hinzugefügt
+- Enterprise: `admin@edeka-test.de` / `EdekaTest2026!`
+- Admin-Key: `bidblitz-admin-2026`
+- Enterprise-ID: `ent_ee2a8554c977`
 
 ---
 
