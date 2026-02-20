@@ -1224,6 +1224,8 @@ export default function Admin() {
         { id: 'bots', label: 'Bot-System', icon: <Bot className="w-5 h-5" /> },
         { id: 'winner-control', label: 'Gewinner-Kontrolle', icon: <Target className="w-5 h-5" /> },
         { id: 'product-analytics', label: 'Produkt-Analyse', icon: <BarChart3 className="w-5 h-5" /> },
+        { id: 'user-analytics', label: 'Benutzer-Analyse', icon: <Users className="w-5 h-5" /> },
+        { id: 'revenue-analytics', label: 'Umsatz-Analyse', icon: <Euro className="w-5 h-5" /> },
       ]
     },
     {
