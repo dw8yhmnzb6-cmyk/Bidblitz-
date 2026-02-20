@@ -198,7 +198,7 @@ export default function AdminPayouts() {
           </div>
           <div>
             <h2 className="font-bold text-lg">SEPA-Auszahlungen</h2>
-            <p className="text-sm text-gray-500">Provisionen an Großhändler auszahlen</p>
+            <p className="text-sm text-gray-500">Provisionen an Großhändler auszahlen (via Wise API)</p>
           </div>
         </div>
         <button 
@@ -207,6 +207,20 @@ export default function AdminPayouts() {
         >
           <RefreshCw className="w-5 h-5 text-gray-600" />
         </button>
+      </div>
+
+      {/* Wise API Info */}
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 text-sm">
+        <div className="flex items-start gap-2">
+          <div className="text-blue-600 text-lg">🌐</div>
+          <div>
+            <p className="text-blue-800 font-medium">Wise Transfer API</p>
+            <p className="text-blue-700 text-xs">
+              Automatische SEPA-Überweisungen werden über die Wise API verarbeitet. 
+              Falls die API nicht verfügbar ist, werden Auszahlungen zur manuellen Bearbeitung markiert.
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Stats */}
