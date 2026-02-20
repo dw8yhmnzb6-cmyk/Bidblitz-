@@ -124,13 +124,25 @@ async def process_topup(data: TopupRequest, authorization: Optional[str] = Heade
         new_balance = current_balance + total_credit
         
         # Update customer bidblitz_balance in users collection
-        await db.users.update_one(
+        update_result = await db.users.update_one(
             {"id": customer["id"]},
             {
                 "$set": {"bidblitz_balance": new_balance},
                 "$inc": {"total_deposits": data.amount}
             }
         )
+        logger.info(f"Update result: matched={update_result.matched_count}, modified={update_result.modified_count}")
+        
+        if update_result.matched_count == 0:
+            # Try with customer_number instead
+            update_result = await db.users.update_one(
+                {"customer_number": customer.get("customer_number")},
+                {
+                    "$set": {"bidblitz_balance": new_balance},
+                    "$inc": {"total_deposits": data.amount}
+                }
+            )
+            logger.info(f"Fallback update result: matched={update_result.matched_count}, modified={update_result.modified_count}")
         
         # Also update bidblitz_wallets collection (universal_balance)
         await db.bidblitz_wallets.update_one(
