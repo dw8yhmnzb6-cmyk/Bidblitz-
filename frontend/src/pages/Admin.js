@@ -16,7 +16,7 @@ import {
   Bot, Play, Target, Calendar, Clock, TrendingUp, Activity, Menu,
   Mail, Send, Eye, Star, Crown, FileText, RotateCcw, Repeat,
   Gift, Trophy, Moon, Wifi, WifiOff, Building2, Percent, CreditCard,
-  Mic, Command, Search, Bug, Wrench, Leaf, Store, Key, Car
+  Mic, Command, Search, Bug, Wrench, Leaf, Store, Key, Car, Banknote
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { 
