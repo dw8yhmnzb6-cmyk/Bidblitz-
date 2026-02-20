@@ -3,7 +3,42 @@
 ## Original Problem Statement
 Create a penny auction website modeled after `dealdash.com` and `snipster.de` with complete visual and functional features.
 
-## Current Status (February 19, 2026)
+## Current Status (February 20, 2026)
+
+### ✅ Session Update - February 20, 2026 (Session 56) - MOBILE UI FIXES ✅
+
+#### 1. Payment History Page Complete ✅
+- **Route:** `/zahlungen` (protected route)
+- **Features:**
+  - Statistik-Karten: Ausgaben gesamt, Diesen Monat, Transaktionen
+  - Transaktionsliste gruppiert nach Datum (Heute, Gestern, Diese Woche, Älter)
+  - Filter: Alle, POS/Kasse, QR-Scan, Checkout, Erstattung
+  - Suchfunktion für Händler oder Referenz
+  - CSV-Download der Zahlungshistorie
+- **Backend:** `GET /api/digital/customer/payments`
+- **Datei:** `/app/frontend/src/pages/PaymentHistory.js`
+
+#### 2. Admin Panel Popup Fix ✅
+- **Problem:** Daily Login Popup blockierte Admin-Seiten
+- **Lösung:** `/admin` und `/developers` zur Popup-Exclusion-Liste hinzugefügt
+- **Datei:** `/app/frontend/src/App.js` (Zeilen 270-290)
+
+#### 3. Mobile UI Fixes für Admin Tabs ✅
+- **Problem:** Abgeschnittene Texte bei Statistik-Karten (z.B. "Gesamt verge..." statt "Gesamt vergeben")
+- **Lösung:**
+  - AdminPartnerCredit: Grid von `grid-cols-2` zu `grid-cols-1` auf Mobile geändert
+  - `truncate` Klasse entfernt für vollständige Textanzeige
+  - Responsive `flex-1` für bessere Platzverteilung
+- **Dateien:**
+  - `/app/frontend/src/components/admin/AdminPartnerCredit.js`
+  - `/app/frontend/src/components/admin/AdminCarAdvertising.js`
+
+#### 4. Testing Status ✅
+- **Test Report:** `/app/test_reports/iteration_90.json`
+- **Ergebnis:** 100% Frontend-Tests bestanden
+- **Getestete Viewports:** 390x844 (Mobile)
+
+---
 
 ### ✅ Session Update - February 19, 2026 (Session 55) - MULTIPLE FIXES ✅
 
