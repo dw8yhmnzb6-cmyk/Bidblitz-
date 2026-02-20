@@ -188,6 +188,10 @@ export default function POSTerminal() {
         setTopupResult(data);
         setTopupAmount('');
         setCustomerNumber('');
+        // Update merchant volume for commission display
+        if (data.merchant_volume) {
+          setMerchantVolume(data.merchant_volume);
+        }
         if (soundEnabled) playSound('success');
         toast.success(`${data.customer_name} hat €${data.total_credited.toFixed(2)} erhalten!`);
         fetchRecentPayments();
