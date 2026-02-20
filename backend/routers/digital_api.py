@@ -926,8 +926,9 @@ async def generate_customer_payment_qr(
         raise HTTPException(status_code=401, detail="User not found")
     
     # Generate payment token
-    payment_token = f"cqr_{uuid.uuid4().hex}"
+    payment_token = f"cpt_{uuid.uuid4().hex}"
     expires_at = datetime.now(timezone.utc) + timedelta(minutes=5)
+    expires_timestamp = int(expires_at.timestamp())
     
     # Store token in database
     await db.customer_payment_tokens.insert_one({
@@ -939,12 +940,30 @@ async def generate_customer_payment_qr(
         "used": False
     })
     
+    customer_number = user.get("customer_number", "")
+    
+    # JSON format for modern systems
+    qr_data_json = {
+        "type": "bidblitz_pay",
+        "version": "2.0",
+        "token": payment_token,
+        "customer_id": user["id"],
+        "customer_number": customer_number,
+        "expires": expires_at.isoformat()
+    }
+    
+    # Compact format for simple scanners: BIDBLITZ:version:token:customer:timestamp
+    qr_data_compact = f"BIDBLITZ:2.0:{payment_token}:{customer_number}:{expires_timestamp}"
+    
     return {
         "payment_token": payment_token,
         "user_id": user["id"],
-        "customer_number": user.get("customer_number"),
+        "customer_number": customer_number,
         "expires_at": expires_at.isoformat(),
-        "valid_for_minutes": 5
+        "valid_for_minutes": 5,
+        # QR code content options
+        "qr_data_json": qr_data_json,
+        "qr_data_compact": qr_data_compact
     }
 
 
