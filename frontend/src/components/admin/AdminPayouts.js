@@ -148,13 +148,23 @@ export default function AdminPayouts() {
         return <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Abgeschlossen</span>;
       case 'pending':
         return <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium flex items-center gap-1"><Clock className="w-3 h-3" /> Ausstehend</span>;
+      case 'pending_manual':
+        return <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full text-xs font-medium flex items-center gap-1"><AlertCircle className="w-3 h-3" /> Manuell</span>;
       case 'processing':
         return <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium flex items-center gap-1"><RefreshCw className="w-3 h-3 animate-spin" /> Verarbeitung</span>;
+      case 'funded':
+        return <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Finanziert</span>;
       case 'failed':
         return <span className="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium flex items-center gap-1"><XCircle className="w-3 h-3" /> Fehlgeschlagen</span>;
       default:
         return <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">{status}</span>;
     }
+  };
+
+  const getTransferMethodLabel = (method) => {
+    if (method === 'wise_api') return '🌐 Wise API';
+    if (method === 'manual') return '📝 Manuell';
+    return method || 'Nicht angegeben';
   };
 
   const getFrequencyLabel = (freq) => {
