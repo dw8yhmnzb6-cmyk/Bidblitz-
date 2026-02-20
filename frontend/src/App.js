@@ -367,6 +367,9 @@ function AppContent() {
           {/* API Documentation for Partners */}
           <Route path="/developer-docs" element={<ApiDocs />} />
           <Route path="/developers" element={<ApiDocs />} />
+          {/* POS Terminal for Merchants */}
+          <Route path="/pos" element={<POSTerminal />} />
+          <Route path="/kasse" element={<POSTerminal />} />
           {/* New Public Pages */}
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/faq" element={<FAQ />} />
