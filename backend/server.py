@@ -577,6 +577,10 @@ app.include_router(revenue_analytics_router)
 from routers.backup_system import router as backup_router
 app.include_router(backup_router)
 
+# POS Terminal Router
+from routers.pos_terminal import router as pos_terminal_router
+app.include_router(pos_terminal_router)
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
