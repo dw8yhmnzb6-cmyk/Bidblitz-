@@ -33,6 +33,16 @@ class APIKeyCreate(BaseModel):
     name: str = Field(..., description="Name for this API key (e.g., 'Production', 'Testing')")
     webhook_url: Optional[str] = Field(None, description="URL for webhook notifications")
     allowed_ips: Optional[List[str]] = Field(None, description="List of allowed IP addresses")
+    # Commission settings
+    platform_commission: float = Field(0.5, ge=0.01, le=10.0, description="Platform commission % (0.01-10%)")
+    customer_cashback: float = Field(0.0, ge=0.0, le=2.0, description="Customer cashback % for top-ups (0-2%)")
+
+class APIKeyUpdate(BaseModel):
+    name: Optional[str] = Field(None, description="Update API key name")
+    webhook_url: Optional[str] = Field(None, description="Update webhook URL")
+    is_active: Optional[bool] = Field(None, description="Enable/disable API key")
+    platform_commission: Optional[float] = Field(None, ge=0.01, le=10.0, description="Platform commission % (0.01-10%)")
+    customer_cashback: Optional[float] = Field(None, ge=0.0, le=2.0, description="Customer cashback % for top-ups (0-2%)")
 
 class PaymentRequest(BaseModel):
     amount: float = Field(..., gt=0, description="Payment amount in EUR")
