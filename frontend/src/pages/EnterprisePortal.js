@@ -2208,9 +2208,19 @@ const selectStyles = "w-full px-4 py-3 bg-white border border-slate-300 rounded-
 
 // Forms
 function BranchForm({ t, onSubmit, onCancel }) {
-  const [form, setForm] = useState({ name: '', city: '', address: '', manager_name: '', manager_email: '', phone: '' });
+  const [form, setForm] = useState({ name: '', city: '', address: '', phone: '' });
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Filter out empty strings to avoid validation errors
+    const cleanedForm = Object.fromEntries(
+      Object.entries(form).filter(([_, v]) => v !== '')
+    );
+    onSubmit(cleanedForm);
+  };
+  
   return (
-    <form onSubmit={(e) => { e.preventDefault(); onSubmit(form); }} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">{t.branchName} *</label>
         <input type="text" placeholder={t.branchName} value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
