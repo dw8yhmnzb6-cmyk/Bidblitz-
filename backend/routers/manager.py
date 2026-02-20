@@ -295,16 +295,23 @@ async def get_all_cities(admin: dict = Depends(get_admin_user)):
 @router.post("/login")
 async def manager_login(data: ManagerLogin):
     """Manager login - supports both direct manager password and user account"""
+    logger.info(f"Manager login attempt for: {data.email}")
+    
     # First try to find manager by email
     manager = await db.managers.find_one({
         "email": data.email.lower(),
         "is_active": {"$ne": False}
     }, {"_id": 0})
     
+    logger.info(f"Manager found: {manager is not None}")
+    
     if manager:
         # Check if manager has own password_hash
+        logger.info(f"Has password_hash: {bool(manager.get('password_hash'))}")
         if manager.get("password_hash"):
-            if verify_password(data.password, manager["password_hash"]):
+            pw_match = verify_password(data.password, manager["password_hash"])
+            logger.info(f"Password match: {pw_match}")
+            if pw_match:
                 # Direct manager login
                 await db.managers.update_one(
                     {"id": manager["id"]},
