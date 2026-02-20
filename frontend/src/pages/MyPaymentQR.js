@@ -225,13 +225,7 @@ export default function MyPaymentQR() {
               <div className="flex flex-col items-center">
                 <div className="bg-white p-4 rounded-2xl border-4 border-orange-100">
                   <QRCodeSVG
-                    value={JSON.stringify({
-                      type: 'bidblitz_pay',
-                      token: qrData.payment_token,
-                      user_id: user.id,
-                      customer_number: user.customer_number,
-                      expires: qrData.expires_at
-                    })}
+                    value={qrData.qr_data_compact || `BIDBLITZ:2.0:${qrData.payment_token}:${qrData.customer_number || ''}:${Math.floor(Date.now()/1000)+300}`}
                     size={220}
                     level="H"
                     includeMargin={true}
@@ -248,9 +242,14 @@ export default function MyPaymentQR() {
                 <div className="mt-4 text-center">
                   <p className="text-xs text-gray-500">Kundennummer</p>
                   <p className="font-mono font-bold text-lg text-gray-900">
-                    {user.customer_number || `BID-${user.id?.slice(-6).toUpperCase()}`}
+                    {qrData.customer_number || user.customer_number || `BID-${user.id?.slice(-6).toUpperCase()}`}
                   </p>
                 </div>
+
+                {/* QR Format Info */}
+                <p className="mt-2 text-xs text-gray-400 text-center">
+                  Kompatibel mit allen Kassen-Scannern
+                </p>
               </div>
             ) : (
               <div className="text-center py-12 text-gray-500">
