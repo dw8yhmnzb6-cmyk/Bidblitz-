@@ -81,20 +81,18 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
   - `digital_payments` - Alle Aufladungen
   - `merchant_commissions` - Händler-Provisionen
 
-#### 8. Provisions-Dashboard ✅
-- **Neuer Tab:** "Provisionen" im Digital Payment API Bereich
-- **Statistik-Karten:**
-  - Provisionen gesamt (mit Ø-Rate pro Transaktion)
-  - Transaktionsvolumen (Anzahl Transaktionen)
-  - Monatsvergleich (dieser vs. letzter Monat mit Wachstum %)
-  - Cashback ausgegeben (an Kunden zurückgegeben)
-- **Top Händler Liste:** Ranking nach Provisions-Einnahmen
-- **Tägliche Übersicht:** Verlauf mit Mini-Balkendiagramm
-- **Zeitraum-Filter:** 7, 14, 30, 60, 90, 180, 365 Tage
-- **Export:** CSV und JSON für Buchhaltung
-- **API-Endpoints:**
-  - `GET /api/digital/commissions/stats` - Statistiken abrufen
-  - `GET /api/digital/commissions/export` - Daten exportieren
+#### 8. POS-Terminal mit Auflade-Funktion ✅
+- **Zwei Modi:**
+  - 🔶 **Zahlung annehmen** - Kunde bezahlt mit BidBlitz-Guthaben (QR-Code)
+  - ➕ **Karte aufladen** - Kunde lädt Guthaben auf (Kundennummer eingeben)
+- **Auflade-Features:**
+  - Kundennummer-Eingabe (BID-XXXXXX)
+  - Schnellwahl-Buttons: €20, €50, €100, €200
+  - Live-Bonus-Vorschau: "Kunde erhält: €52.00 | Bonus: +€2.00"
+  - Händler-Provisions-Anzeige: "Ihre Provision: 2% = €1.00"
+  - Erfolgsbestätigung mit Aufschlüsselung
+- **Route:** `/pos`
+- **Datei:** `/app/frontend/src/pages/POSTerminal.js`
 
 ---
 
