@@ -895,19 +895,35 @@ async def generate_customer_payment_qr(
     This creates a temporary token that can be scanned by merchants.
     The customer shows this QR at checkout.
     """
+    import jwt
+    import os
+    
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authorization required")
     
     token = authorization.replace("Bearer ", "")
     
-    # Verify user token (simplified - in production use proper JWT verification)
+    # Decode JWT token
+    try:
+        secret = os.environ.get("JWT_SECRET", "bidblitz-secret-key-2026")
+        payload = jwt.decode(token, secret, algorithms=["HS256"])
+        user_id = payload.get("user_id")
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid token payload")
+    
+    # Get user from database
     user = await db.users.find_one(
-        {"$or": [{"token": token}, {"id": token}]},
+        {"id": user_id},
         {"_id": 0, "id": 1, "customer_number": 1, "name": 1, "bidblitz_balance": 1, "balance": 1}
     )
     
     if not user:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=401, detail="User not found")
     
     # Generate payment token
     payment_token = f"cqr_{uuid.uuid4().hex}"
