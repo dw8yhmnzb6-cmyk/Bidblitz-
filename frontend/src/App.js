@@ -273,7 +273,9 @@ function AppContent() {
        !window.location.pathname.includes('/scanner') && 
        !window.location.pathname.includes('/checkout/') &&
        !window.location.pathname.includes('/mein-qr') &&
-       !window.location.pathname.includes('/my-qr') && (
+       !window.location.pathname.includes('/my-qr') &&
+       !window.location.pathname.includes('/wallet-card') &&
+       !window.location.pathname.includes('/meine-karte') && (
         <>
           <AbandonedCartReminder language={mappedLanguage || language} />
           <OutbidNotification />
