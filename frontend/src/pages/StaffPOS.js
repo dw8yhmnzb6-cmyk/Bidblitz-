@@ -2041,9 +2041,9 @@ export default function StaffPOS() {
                           <div>
                             <p className="text-white font-bold">€{(tx.amount || 0).toFixed(2)}</p>
                             <p className="text-slate-400 text-sm">
-                              {tx.type === 'pos_topup' || tx.type === 'topup' ? 'Aufladung' :
-                               tx.type === 'gift_card_redemption' ? 'Gutschein eingelöst' :
-                               tx.type === 'payment' ? 'Zahlung' : tx.type}
+                              {tx.type === 'pos_topup' || tx.type === 'topup' ? t.topup :
+                               tx.type === 'gift_card_redemption' ? t.redemption :
+                               tx.type === 'payment' ? t.payment : tx.type}
                               {tx.bonus > 0 && (
                                 <span className="text-green-400 ml-2">+€{tx.bonus.toFixed(2)} Bonus</span>
                               )}
@@ -2062,7 +2062,7 @@ export default function StaffPOS() {
                         </div>
                       </div>
                       {tx.customer_barcode && (
-                        <p className="text-slate-500 text-xs mt-2">Kunde: {tx.customer_barcode}</p>
+                        <p className="text-slate-500 text-xs mt-2">{t.customer}: {tx.customer_barcode}</p>
                       )}
                     </div>
                   ))}
@@ -2070,8 +2070,8 @@ export default function StaffPOS() {
               ) : (
                 <div className="text-center py-12">
                   <History className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-                  <p className="text-slate-400">Keine Transaktionen vorhanden</p>
-                  <p className="text-slate-500 text-sm mt-2">Transaktionen erscheinen hier nach der ersten Aufladung</p>
+                  <p className="text-slate-400">{t.noTransactions}</p>
+                  <p className="text-slate-500 text-sm mt-2">{t.transactionsAppear}</p>
                 </div>
               )}
             </div>
@@ -2084,9 +2084,10 @@ export default function StaffPOS() {
               <button
                 onClick={printTransactionHistory}
                 className="px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg shadow-amber-500/30 flex items-center gap-2"
+                data-testid="print-receipt-btn"
               >
                 <Printer className="w-5 h-5" />
-                Kassenabschluss drucken
+                {t.printReceipt}
               </button>
             </div>
           </div>
