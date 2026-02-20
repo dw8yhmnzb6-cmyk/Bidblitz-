@@ -211,8 +211,7 @@ async def create_api_key(
         "last_used": None,
         "total_requests": 0,
         "total_volume": 0,
-        # Händler-Provision
-        "merchant_commission": data.merchant_commission  # % geht AN den Händler (1-10%)
+        "monthly_volume": 0  # Für Provisions-Berechnung
     }
     
     await db.api_keys.insert_one(key_doc)
@@ -222,7 +221,7 @@ async def create_api_key(
         "api_key": api_key,
         "secret_key": secret_key,
         "webhook_url": data.webhook_url,
-        "merchant_commission": data.merchant_commission,
+        "commission_info": "Provision wird automatisch basierend auf Umsatz berechnet (0-2%)",
         "message": "⚠️ Save these keys now! The secret key will not be shown again."
     }
 
