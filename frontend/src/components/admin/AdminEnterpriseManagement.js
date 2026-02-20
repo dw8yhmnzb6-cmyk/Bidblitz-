@@ -568,80 +568,73 @@ export default function AdminEnterpriseManagement() {
 
                   {editingCommission === enterprise.id ? (
                     <div className="space-y-3">
-                      <div className="grid grid-cols-3 gap-3">
-                        <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="bg-orange-50 rounded-lg p-3">
+                          <label className="block text-sm font-medium text-orange-700 mb-1">
                             Gutschein-Provision %
-                            <span className="block text-[10px] text-orange-600 font-normal">Händler → BidBlitz</span>
                           </label>
+                          <p className="text-xs text-orange-600 mb-2">Händler → BidBlitz</p>
                           <input
                             type="text"
                             inputMode="decimal"
                             pattern="[0-9]*[.,]?[0-9]*"
-                            placeholder="0.01"
+                            placeholder="z.B. 0.01 oder 5"
                             value={commissionForm.voucher_commission}
                             onChange={(e) => {
                               const val = e.target.value.replace(',', '.');
                               setCommissionForm({...commissionForm, voucher_commission: val === '' ? '' : parseFloat(val) || 0});
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            className="w-full px-4 py-3 border-2 border-orange-300 rounded-xl text-lg font-bold text-center focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                             data-testid="voucher-commission-input"
                           />
                         </div>
-                        <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">
+                        <div className="bg-blue-50 rounded-lg p-3">
+                          <label className="block text-sm font-medium text-blue-700 mb-1">
                             Aufladung-Provision %
-                            <span className="block text-[10px] text-blue-600 font-normal">BidBlitz → Händler</span>
                           </label>
+                          <p className="text-xs text-blue-600 mb-2">BidBlitz → Händler</p>
                           <input
                             type="text"
                             inputMode="decimal"
                             pattern="[0-9]*[.,]?[0-9]*"
-                            placeholder="0.01"
+                            placeholder="z.B. 0.01 oder 3"
                             value={commissionForm.self_pay_commission}
                             onChange={(e) => {
                               const val = e.target.value.replace(',', '.');
                               setCommissionForm({...commissionForm, self_pay_commission: val === '' ? '' : parseFloat(val) || 0});
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            className="w-full px-4 py-3 border-2 border-blue-300 rounded-xl text-lg font-bold text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             data-testid="selfpay-commission-input"
                           />
                         </div>
-                        <div>
-                          <label className="block text-xs font-medium text-gray-600 mb-1">
+                        <div className="bg-green-50 rounded-lg p-3">
+                          <label className="block text-sm font-medium text-green-700 mb-1">
                             Kunden-Cashback %
-                            <span className="block text-[10px] text-green-600 font-normal">BidBlitz → Kunde</span>
                           </label>
+                          <p className="text-xs text-green-600 mb-2">BidBlitz → Kunde</p>
                           <input
                             type="text"
                             inputMode="decimal"
                             pattern="[0-9]*[.,]?[0-9]*"
-                            placeholder="0.01"
+                            placeholder="z.B. 0.01 oder 1"
                             value={commissionForm.customer_cashback}
                             onChange={(e) => {
                               const val = e.target.value.replace(',', '.');
                               setCommissionForm({...commissionForm, customer_cashback: val === '' ? '' : parseFloat(val) || 0});
                             }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            className="w-full px-4 py-3 border-2 border-green-300 rounded-xl text-lg font-bold text-center focus:ring-2 focus:ring-green-500 focus:border-green-500"
                             data-testid="cashback-input"
                           />
                         </div>
                       </div>
                       
-                      {/* Provision Explanation */}
-                      <div className="bg-gray-50 rounded-lg p-3 text-xs text-gray-600 space-y-1">
-                        <p><span className="font-semibold text-orange-600">Gutschein:</span> Bei Gutscheinverkauf zahlt der Händler diese % an BidBlitz</p>
-                        <p><span className="font-semibold text-blue-600">Aufladung:</span> Bei Kundenaufladung erhält der Händler diese % von BidBlitz</p>
-                        <p><span className="font-semibold text-green-600">Cashback:</span> Der Kunde erhält diese % als Bonus auf sein Guthaben</p>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-3">
                         <input
                           type="checkbox"
                           id={`commission_active_${enterprise.id}`}
                           checked={commissionForm.is_active}
                           onChange={(e) => setCommissionForm({...commissionForm, is_active: e.target.checked})}
-                          className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                          className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                         />
                         <label htmlFor={`commission_active_${enterprise.id}`} className="text-sm text-gray-700">
                           Provisionen aktiviert
@@ -649,25 +642,25 @@ export default function AdminEnterpriseManagement() {
                       </div>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-3 gap-3 text-sm">
-                      <div className="bg-orange-50 rounded-lg p-2 text-center">
-                        <p className="text-xs text-orange-600">Gutschein</p>
-                        <p className="text-[10px] text-orange-500">Händler → BidBlitz</p>
-                        <p className="text-lg font-bold text-orange-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                      <div className="bg-orange-50 rounded-lg p-3 text-center">
+                        <p className="text-sm font-medium text-orange-600">Gutschein</p>
+                        <p className="text-xs text-orange-500">Händler → BidBlitz</p>
+                        <p className="text-2xl font-bold text-orange-700 mt-1">
                           {enterprise.commission_settings?.voucher_commission ?? 5}%
                         </p>
                       </div>
-                      <div className="bg-blue-50 rounded-lg p-2 text-center">
-                        <p className="text-xs text-blue-600">Aufladung</p>
-                        <p className="text-[10px] text-blue-500">BidBlitz → Händler</p>
-                        <p className="text-lg font-bold text-blue-700">
+                      <div className="bg-blue-50 rounded-lg p-3 text-center">
+                        <p className="text-sm font-medium text-blue-600">Aufladung</p>
+                        <p className="text-xs text-blue-500">BidBlitz → Händler</p>
+                        <p className="text-2xl font-bold text-blue-700 mt-1">
                           {enterprise.commission_settings?.self_pay_commission ?? 3}%
                         </p>
                       </div>
-                      <div className="bg-green-50 rounded-lg p-2 text-center">
-                        <p className="text-xs text-green-600">Kunden-Cashback</p>
-                        <p className="text-[10px] text-green-500">BidBlitz → Kunde</p>
-                        <p className="text-lg font-bold text-green-700">
+                      <div className="bg-green-50 rounded-lg p-3 text-center">
+                        <p className="text-sm font-medium text-green-600">Kunden-Cashback</p>
+                        <p className="text-xs text-green-500">BidBlitz → Kunde</p>
+                        <p className="text-2xl font-bold text-green-700 mt-1">
                           {enterprise.commission_settings?.customer_cashback ?? 1}%
                         </p>
                       </div>
