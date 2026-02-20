@@ -451,11 +451,8 @@ export default function AdminDigitalPayments() {
                         
                         {/* Commission Info */}
                         <div className="flex flex-wrap items-center gap-2 text-xs">
-                          <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded">
-                            📊 Provision: {(key.platform_commission || 0.5).toFixed(2)}%
-                          </span>
                           <span className="px-2 py-1 bg-green-100 text-green-700 rounded">
-                            🎁 Cashback: {(key.customer_cashback || 0).toFixed(2)}%
+                            💰 Händler-Provision: {(key.merchant_commission || 2.0).toFixed(1)}%
                           </span>
                         </div>
                         
@@ -468,31 +465,17 @@ export default function AdminDigitalPayments() {
                         {/* Edit Commission */}
                         {editingKey === key.id ? (
                           <div className="bg-gray-50 rounded-lg p-3 mt-2 space-y-3">
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
-                                <label className="text-xs text-gray-600">Plattform %</label>
-                                <input
-                                  type="number"
-                                  step="0.01"
-                                  min="0.01"
-                                  max="10"
-                                  value={editCommission.platform}
-                                  onChange={(e) => setEditCommission(prev => ({ ...prev, platform: parseFloat(e.target.value) || 0.5 }))}
-                                  className="w-full px-2 py-1 border rounded text-sm"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-xs text-gray-600">Cashback %</label>
-                                <input
-                                  type="number"
-                                  step="0.01"
-                                  min="0"
-                                  max="2"
-                                  value={editCommission.cashback}
-                                  onChange={(e) => setEditCommission(prev => ({ ...prev, cashback: parseFloat(e.target.value) || 0 }))}
-                                  className="w-full px-2 py-1 border rounded text-sm"
-                                />
-                              </div>
+                            <div>
+                              <label className="text-xs text-gray-600">Händler-Provision %</label>
+                              <input
+                                type="number"
+                                step="0.5"
+                                min="1"
+                                max="10"
+                                value={editCommission}
+                                onChange={(e) => setEditCommission(parseFloat(e.target.value) || 2.0)}
+                                className="w-full px-2 py-1 border rounded text-sm"
+                              />
                             </div>
                             <div className="flex gap-2">
                               <button
@@ -513,14 +496,11 @@ export default function AdminDigitalPayments() {
                           <button
                             onClick={() => {
                               setEditingKey(key.id);
-                              setEditCommission({
-                                platform: key.platform_commission || 0.5,
-                                cashback: key.customer_cashback || 0
-                              });
+                              setEditCommission(key.merchant_commission || 2.0);
                             }}
                             className="text-xs text-orange-600 hover:text-orange-700 underline"
                           >
-                            Provisionen bearbeiten
+                            Provision bearbeiten
                           </button>
                         )}
                       </div>
