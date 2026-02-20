@@ -267,7 +267,7 @@ function AppContent() {
       )}
       
       {/* Floating popups - Enabled for user engagement */}
-      {/* Hide popups on POS/Kiosk/Checkout/QR/Wallet pages */}
+      {/* Hide popups on POS/Kiosk/Checkout/QR/Wallet/Admin pages */}
       {!window.location.pathname.includes('/pos') && 
        !window.location.pathname.includes('/kiosk') && 
        !window.location.pathname.includes('/kasse') &&
@@ -278,7 +278,9 @@ function AppContent() {
        !window.location.pathname.includes('/wallet-card') &&
        !window.location.pathname.includes('/meine-karte') &&
        !window.location.pathname.includes('/zahlungen') &&
-       !window.location.pathname.includes('/payment-history') && (
+       !window.location.pathname.includes('/payment-history') &&
+       !window.location.pathname.includes('/admin') &&
+       !window.location.pathname.includes('/developers') && (
         <>
           <AbandonedCartReminder language={mappedLanguage || language} />
           <OutbidNotification />
