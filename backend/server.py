@@ -503,6 +503,10 @@ app.include_router(enterprise_portal_router, prefix="/api")
 from routers.cashback_program import router as cashback_program_router
 app.include_router(cashback_program_router, prefix="/api")
 
+# NEW: Health Check System
+from routers.health_check import router as health_check_router
+app.include_router(health_check_router)
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
