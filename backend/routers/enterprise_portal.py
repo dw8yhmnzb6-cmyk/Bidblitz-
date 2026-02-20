@@ -311,7 +311,7 @@ async def get_enterprise_info(authorization: str = Header(None)):
     api_keys_count = await db.enterprise_api_keys.count_documents({"enterprise_id": enterprise["id"]})
     users_count = await db.enterprise_users.count_documents({"enterprise_id": enterprise["id"]})
     
-    return {
+    result = {
         **enterprise,
         "stats": {
             "branches": branches_count,
@@ -319,6 +319,18 @@ async def get_enterprise_info(authorization: str = Header(None)):
             "users": users_count
         }
     }
+    
+    # If it's a user login, add user-specific info
+    current_user = enterprise.get("current_user")
+    if current_user:
+        result["role"] = current_user.get("role", "user")
+        result["user_name"] = current_user.get("name")
+        result["user_id"] = current_user.get("id")
+        result["branch_id"] = current_user.get("branch_id")
+    else:
+        result["role"] = "admin"
+    
+    return result
 
 
 # ==================== BRANCH MANAGEMENT ====================
