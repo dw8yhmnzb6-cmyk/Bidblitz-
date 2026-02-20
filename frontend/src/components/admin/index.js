@@ -61,4 +61,7 @@ export { default as AdminPartnerCredit } from './AdminPartnerCredit';
 export { default as AdminDigitalPayments } from './AdminDigitalPayments';
 export { default as AdminCommissionsDashboard } from './AdminCommissionsDashboard';
 
+// Enterprise Management (Großhändler)
+export { default as AdminEnterpriseManagement } from './AdminEnterpriseManagement';
+
 // All components have been extracted!
