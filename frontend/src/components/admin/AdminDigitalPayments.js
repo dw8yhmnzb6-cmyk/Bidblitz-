@@ -106,6 +106,33 @@ export default function AdminDigitalPayments() {
     toast.success('Kopiert!');
   };
 
+  const updateCommission = async (keyId) => {
+    try {
+      const res = await fetch(`${API_URL}/api/digital/keys/${keyId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Key': ADMIN_KEY
+        },
+        body: JSON.stringify({
+          platform_commission: editCommission.platform,
+          customer_cashback: editCommission.cashback
+        })
+      });
+
+      if (res.ok) {
+        toast.success('Provisionen aktualisiert!');
+        setEditingKey(null);
+        fetchData();
+      } else {
+        const err = await res.json();
+        toast.error(err.detail || 'Fehler beim Aktualisieren');
+      }
+    } catch (err) {
+      toast.error('Fehler beim Aktualisieren');
+    }
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
     return new Date(dateStr).toLocaleDateString('de-DE');
