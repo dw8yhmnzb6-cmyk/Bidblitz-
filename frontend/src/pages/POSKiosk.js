@@ -783,6 +783,89 @@ export default function POSKiosk() {
             </div>
           </div>
         )}
+
+        {/* Top-up Success Screen */}
+        {topupResult && (
+          <div className="w-full max-w-lg">
+            <div className="bg-gray-800 rounded-2xl p-6 text-center">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-green-400 mb-2">Aufladung erfolgreich!</h2>
+              <p className="text-gray-400">{topupResult.customer_name || 'Kunde'}</p>
+              <p className="text-sm text-gray-500">{topupResult.customer_number}</p>
+
+              <div className="mt-6 space-y-3 text-left">
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Aufladebetrag</span>
+                  <span className="text-xl font-bold">€{topupResult.amount.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Bonus</span>
+                  <span className="text-xl font-bold text-green-400">+€{topupResult.bonus.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Kunde erhält</span>
+                  <span className="text-2xl font-bold text-green-400">€{topupResult.total_credited.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Ihre Provision ({topupResult.merchant_commission_rate || 0}%)</span>
+                  <span className="text-lg font-semibold text-orange-400">€{topupResult.merchant_commission.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {/* Download & Share Buttons */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    const receipt = generateReceiptText(topupResult, merchantName);
+                    const blob = new Blob([receipt], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `quittung-${topupResult.topup_id}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast.success('Quittung heruntergeladen!');
+                  }}
+                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center justify-center gap-2"
+                >
+                  <Download className="w-5 h-5" />
+                  Speichern
+                </button>
+                <button
+                  onClick={async () => {
+                    const receipt = generateReceiptText(topupResult, merchantName);
+                    if (navigator.share) {
+                      try {
+                        await navigator.share({
+                          title: 'BidBlitz Aufladung',
+                          text: receipt
+                        });
+                      } catch (e) {
+                        // User cancelled
+                      }
+                    } else {
+                      navigator.clipboard.writeText(receipt);
+                      toast.success('Quittung kopiert!');
+                    }
+                  }}
+                  className="flex-1 py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-xl font-semibold flex items-center justify-center gap-2"
+                >
+                  <Share2 className="w-5 h-5" />
+                  Teilen
+                </button>
+              </div>
+
+              <button
+                onClick={() => { setTopupResult(null); setMode('topup'); }}
+                className="w-full mt-4 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-bold text-lg transition-colors"
+              >
+                Nächste Aufladung
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* History Sidebar */}
