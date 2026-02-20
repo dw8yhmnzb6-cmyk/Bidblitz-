@@ -66,18 +66,20 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - **Code-Beispiele:** Python, C#/.NET, Java, PHP, cURL/Shell
 - **Hardware-Empfehlungen:** Honeywell Voyager, Zebra DS2208, Datalogic QuickScan
 
-#### 7. Händler-Provisions-System ✅
-- **Plattform-Provision:** 0,01% - 10% (geht an BidBlitz pro Transaktion)
-- **Kunden-Cashback:** 0% - 2% (Bonus für Kunden bei Karten-Aufladung)
-- **API-Endpoints:**
-  - `POST /api/digital/keys/create` - Neuer Key mit Provisionen
-  - `PATCH /api/digital/keys/{id}` - Provisionen bearbeiten
-- **Admin-UI im Dashboard:**
-  - Provisions-Einstellungen beim Erstellen eines API-Keys
-  - "Provisionen bearbeiten" Link bei jedem Händler
-  - Anzeige: 📊 Provision: X.XX% | 🎁 Cashback: X.XX%
-- **Automatische Berechnung:** Bei jeder Zahlung werden Provisionen und Cashback automatisch verrechnet
-- **Collection:** `platform_commissions` - Speichert alle Provisionen
+#### 7. Händler-Provisions-System (KORRIGIERT) ✅
+- **Neues Modell:** Händler bekommt Provision (nicht BidBlitz)
+- **Händler-Provision:** 1% - 10% pro Aufladung (Standard: 2%)
+- **Kunden-Bonus (gestaffelt):**
+  - €100+ aufladen → **+€5 Bonus** (Kunde bekommt €105)
+  - €50+ aufladen → **+€2 Bonus** (Kunde bekommt €52)
+  - €20+ aufladen → **+€0,50 Bonus** (Kunde bekommt €20,50)
+- **API-Endpoint:** `POST /api/digital/topup`
+  - Händler scannt Kunden-QR oder gibt Kundennummer ein
+  - Kunde zahlt bar, bekommt Guthaben + Bonus
+  - Händler verdient Provision
+- **Collections:**
+  - `digital_payments` - Alle Aufladungen
+  - `merchant_commissions` - Händler-Provisionen
 
 #### 8. Provisions-Dashboard ✅
 - **Neuer Tab:** "Provisionen" im Digital Payment API Bereich
