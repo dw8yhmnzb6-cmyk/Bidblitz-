@@ -29,7 +29,9 @@ const footerTexts = {
     terms: 'AGB',
     contact: 'Kontakt',
     allRights: 'Alle Rechte vorbehalten',
-    leaderboard: 'Rangliste'
+    leaderboard: 'Rangliste',
+    merchantPortal: 'Händler-Portal (Edeka, Rewe...)',
+    posTerminal: 'Kassen-Terminal'
   },
   en: {
     description: 'The leading penny auction platform in Dubai. Bid on premium products and save up to 95%!',
@@ -56,7 +58,9 @@ const footerTexts = {
     contact: 'Contact',
     allRights: 'All rights reserved',
     leaderboard: 'Leaderboard',
-    carAdvertising: 'Car Advertising (€50/Mo)'
+    carAdvertising: 'Car Advertising (€50/Mo)',
+    merchantPortal: 'Merchant Portal (Edeka, Rewe...)',
+    posTerminal: 'POS Terminal'
   },
   sq: {
     description: 'Platforma kryesore e ankandeve penny në Dubai. Ofroni për produkte premium dhe kurseni deri në 95%!',
