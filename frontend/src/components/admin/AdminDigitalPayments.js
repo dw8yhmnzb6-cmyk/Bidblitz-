@@ -176,6 +176,7 @@ export default function AdminDigitalPayments() {
       <div className="flex gap-1 sm:gap-2 border-b overflow-x-auto pb-px -mx-4 px-4 sm:mx-0 sm:px-0">
         {[
           { id: 'overview', label: 'Übersicht', icon: TrendingUp },
+          { id: 'commissions', label: 'Provisionen', icon: BarChart3 },
           { id: 'api-keys', label: 'API-Keys', icon: Key },
           { id: 'docs', label: 'Dokumentation', icon: ExternalLink }
         ].map(tab => (
@@ -193,6 +194,11 @@ export default function AdminDigitalPayments() {
           </button>
         ))}
       </div>
+
+      {/* Commissions Tab */}
+      {activeTab === 'commissions' && (
+        <AdminCommissionsDashboard />
+      )}
 
       {/* Overview Tab */}
       {activeTab === 'overview' && (
