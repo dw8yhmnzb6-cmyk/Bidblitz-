@@ -258,10 +258,18 @@ function AppContent() {
       <Navbar />
       
       {/* Floating popups - Enabled for user engagement */}
-      <AbandonedCartReminder language={mappedLanguage || language} />
-      <OutbidNotification />
-      <OnboardingTour />
-      <DailyLoginPopupWrapper language={mappedLanguage || language} />
+      {/* Hide popups on POS/Kiosk pages */}
+      {!window.location.pathname.includes('/pos') && 
+       !window.location.pathname.includes('/kiosk') && 
+       !window.location.pathname.includes('/kasse') && 
+       !window.location.pathname.includes('/checkout/') && (
+        <>
+          <AbandonedCartReminder language={mappedLanguage || language} />
+          <OutbidNotification />
+          <OnboardingTour />
+          <DailyLoginPopupWrapper language={mappedLanguage || language} />
+        </>
+      )}
       {/* HowItWorksFloatingButton removed per user request */}
       {/* <LiveWinnerPopup language={mappedLanguage || language} /> */}
       {/* <LanguageHintBanner /> */}
