@@ -540,6 +540,10 @@ app.include_router(digital_api_router, prefix="/api")
 from routers.enterprise_portal import router as enterprise_portal_router
 app.include_router(enterprise_portal_router, prefix="/api")
 
+# NEW: Enterprise Commission Reports
+from routers.enterprise_reports import router as enterprise_reports_router
+app.include_router(enterprise_reports_router)
+
 # NEW: Cashback Program
 from routers.cashback_program import router as cashback_program_router
 app.include_router(cashback_program_router, prefix="/api")
