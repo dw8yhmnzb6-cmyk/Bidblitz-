@@ -26,6 +26,7 @@ export { AdminSystemHealth } from './AdminSystemHealth';
 export { AdminProductAnalytics } from './AdminProductAnalytics';
 export { AdminUserAnalytics } from './AdminUserAnalytics';
 export { AdminRevenueAnalytics } from './AdminRevenueAnalytics';
+export { AdminBackupSystem } from './AdminBackupSystem';
 
 // Staff Management
 export { default as AdminStaff } from './AdminStaff';
