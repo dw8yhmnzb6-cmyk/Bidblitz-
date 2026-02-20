@@ -10,6 +10,7 @@ Features:
 - Query balance
 - Webhook notifications
 - Transaction history
+- Cashback rewards
 
 API Documentation available at: /api/digital/docs
 """
@@ -24,6 +25,7 @@ import hmac
 import httpx
 from config import db
 from utils.email import send_topup_notification
+from routers.cashback_program import award_cashback, calculate_cashback
 
 router = APIRouter(prefix="/digital", tags=["Digital Payment API"])
 
