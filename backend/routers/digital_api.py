@@ -1462,6 +1462,7 @@ async def topup_customer_card(
         "merchant_commission": merchant_commission,
         "merchant_commission_rate": merchant_commission_rate,
         "merchant_volume": new_volume,
+        "cashback_earned": cashback_awarded,
         "next_tier": {
             "volume_needed": next_tier["min_volume"] - new_volume if next_tier else 0,
             "next_rate": next_tier["rate"] if next_tier else merchant_commission_rate
