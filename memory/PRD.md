@@ -5,6 +5,24 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 20, 2026)
 
+### ✅ Session Update - February 20, 2026 (Session 62) - MOBILE UI BUG FIX ✅
+
+#### Bug Fix: Mobile Responsive UI - Flash Banner & Bottom Content ✅
+- **Problem:** Auf mobilen Geräten wurde der Inhalt des Flash-Bonus-Banners (Countdown-Timer, "Endet in"-Text) rechts abgeschnitten. Zusätzlich wurde der untere Seiteninhalt von der Browser-Navigation verdeckt.
+- **Lösung:** 
+  1. **FlashBonusPromo.jsx:** Vollständig responsives Layout implementiert mit:
+     - Flex-Direction wechselt von `row` (Desktop) zu `column` (Mobile)
+     - Kleinere Schriftgrößen und Abstände auf mobilen Geräten
+     - Timer-Boxen mit mobil-freundlichen Mindestbreiten (`min-w-[32px]` statt `min-w-[40px]`)
+     - Button und Timer auf einer Zeile auf Mobile
+  2. **Auctions.js:** Bottom-Padding (`pb-20`) hinzugefügt, um den Inhalt über der mobilen Browser-Navigation zu halten
+- **Dateien geändert:**
+  - `/app/frontend/src/components/FlashBonusPromo.jsx`
+  - `/app/frontend/src/pages/Auctions.js` (Zeile 1351)
+- **Test:** Mobile Screenshot bestätigt vollständig sichtbares Banner und Footer
+
+---
+
 ### ✅ Session Update - February 20, 2026 (Session 61) - BUG FIXES + NEW FEATURES ✅
 
 #### Bug Fix 1: Fehler-Toast bei Filialen-Erstellung ✅
