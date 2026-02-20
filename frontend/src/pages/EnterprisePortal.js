@@ -1069,9 +1069,22 @@ const languages = [
   { code: 'ko', name: '한국어', flag: '🇰🇷' },
 ];
 
+// Language mapping for aliases
+const langMapping = {
+  ae: 'ar',  // UAE -> Arabic
+  us: 'en',  // US -> English
+  xk: 'sq',  // Kosovo -> Albanian
+};
+
+// Get translated language code
+const getMappedLang = (code) => langMapping[code] || code;
+
 export default function EnterprisePortal() {
   const [lang, setLang] = useState(localStorage.getItem('enterprise_lang') || localStorage.getItem('language') || 'de');
-  const t = enterpriseTranslations[lang] || enterpriseTranslations.de;
+  
+  // Get the mapped language for translations
+  const mappedLang = getMappedLang(lang);
+  const t = enterpriseTranslations[mappedLang] || enterpriseTranslations[lang] || enterpriseTranslations.de;
   
   const [token, setToken] = useState(localStorage.getItem('enterprise_token') || '');
   const [enterprise, setEnterprise] = useState(null);
