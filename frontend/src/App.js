@@ -76,6 +76,7 @@ import POSKiosk from "./pages/POSKiosk";
 import POSScanner from "./pages/POSScanner";
 import MyPaymentQR from "./pages/MyPaymentQR";
 import WalletCard from "./pages/WalletCard";
+import PaymentHistory from "./pages/PaymentHistory";
 import DailyRewardsPage from "./pages/DailyRewardsPage";
 import BattlePassPage from "./pages/BattlePassPage";
 import MysteryBoxPage from "./pages/MysteryBoxPage";
