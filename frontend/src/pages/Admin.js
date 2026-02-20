@@ -1221,6 +1221,7 @@ export default function Admin() {
         { id: 'restaurant-auctions', label: 'Gutschein-Auktionen', icon: <Gavel className="w-5 h-5" /> },
         { id: 'bots', label: 'Bot-System', icon: <Bot className="w-5 h-5" /> },
         { id: 'winner-control', label: 'Gewinner-Kontrolle', icon: <Target className="w-5 h-5" /> },
+        { id: 'product-analytics', label: 'Produkt-Analyse', icon: <BarChart3 className="w-5 h-5" /> },
       ]
     },
     {
