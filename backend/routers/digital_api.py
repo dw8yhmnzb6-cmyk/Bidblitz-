@@ -234,10 +234,9 @@ async def update_api_key(
     x_admin_key: str = Header(..., description="Admin authentication key")
 ):
     """
-    Update API key settings including commission rates.
+    Update API key settings including merchant commission.
     
-    - platform_commission: 0.01% - 10% (goes to BidBlitz)
-    - customer_cashback: 0% - 2% (bonus for customer on top-ups)
+    - merchant_commission: 1% - 10% (goes TO the merchant for processing top-ups)
     """
     if x_admin_key != "bidblitz-admin-2026":
         raise HTTPException(status_code=403, detail="Invalid admin key")
@@ -249,10 +248,8 @@ async def update_api_key(
         update_data["webhook_url"] = data.webhook_url
     if data.is_active is not None:
         update_data["is_active"] = data.is_active
-    if data.platform_commission is not None:
-        update_data["platform_commission"] = data.platform_commission
-    if data.customer_cashback is not None:
-        update_data["customer_cashback"] = data.customer_cashback
+    if data.merchant_commission is not None:
+        update_data["merchant_commission"] = data.merchant_commission
     
     if not update_data:
         raise HTTPException(status_code=400, detail="No update data provided")
