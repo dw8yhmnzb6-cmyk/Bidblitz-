@@ -66,6 +66,19 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - **Code-Beispiele:** Python, C#/.NET, Java, PHP, cURL/Shell
 - **Hardware-Empfehlungen:** Honeywell Voyager, Zebra DS2208, Datalogic QuickScan
 
+#### 7. Händler-Provisions-System ✅
+- **Plattform-Provision:** 0,01% - 10% (geht an BidBlitz pro Transaktion)
+- **Kunden-Cashback:** 0% - 2% (Bonus für Kunden bei Karten-Aufladung)
+- **API-Endpoints:**
+  - `POST /api/digital/keys/create` - Neuer Key mit Provisionen
+  - `PATCH /api/digital/keys/{id}` - Provisionen bearbeiten
+- **Admin-UI im Dashboard:**
+  - Provisions-Einstellungen beim Erstellen eines API-Keys
+  - "Provisionen bearbeiten" Link bei jedem Händler
+  - Anzeige: 📊 Provision: X.XX% | 🎁 Cashback: X.XX%
+- **Automatische Berechnung:** Bei jeder Zahlung werden Provisionen und Cashback automatisch verrechnet
+- **Collection:** `platform_commissions` - Speichert alle Provisionen
+
 ---
 
 ### ✅ Session Update - February 19, 2026 (Session 55) - MULTIPLE FIXES ✅
