@@ -557,9 +557,30 @@ export default function POSTerminal() {
                   </div>
                 )}
 
-                {/* Merchant Commission Info */}
-                <div className="bg-gray-700/50 rounded-lg p-3 text-sm text-gray-400">
-                  <p>💰 Ihre Provision: <span className="text-white font-semibold">{merchantCommission}%</span> = €{topupAmount ? (parseFloat(topupAmount) * merchantCommission / 100).toFixed(2) : '0.00'}</p>
+                {/* Merchant Commission Info - Automatic based on volume */}
+                <div className="bg-gray-700/50 rounded-lg p-3 text-sm space-y-2">
+                  <div className="flex justify-between items-center text-gray-400">
+                    <span>📊 Ihr Umsatz:</span>
+                    <span className="text-white font-semibold">€{merchantVolume.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-gray-400">
+                    <span>💰 Ihre Provision:</span>
+                    <span className="text-white font-semibold">{getCommissionRate(merchantVolume + (parseFloat(topupAmount) || 0))}%</span>
+                  </div>
+                  {topupAmount && (
+                    <div className="flex justify-between items-center text-green-400 pt-1 border-t border-gray-600">
+                      <span>Diese Aufladung:</span>
+                      <span className="font-semibold">€{((parseFloat(topupAmount) || 0) * getCommissionRate(merchantVolume + (parseFloat(topupAmount) || 0)) / 100).toFixed(2)}</span>
+                    </div>
+                  )}
+                  {merchantVolume < 10000 && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {merchantVolume < 500 ? `Noch €${(500 - merchantVolume).toFixed(0)} bis 0.5%` :
+                       merchantVolume < 2000 ? `Noch €${(2000 - merchantVolume).toFixed(0)} bis 1%` :
+                       merchantVolume < 5000 ? `Noch €${(5000 - merchantVolume).toFixed(0)} bis 1.5%` :
+                       `Noch €${(10000 - merchantVolume).toFixed(0)} bis 2%`}
+                    </p>
+                  )}
                 </div>
 
                 <button
@@ -609,9 +630,13 @@ export default function POSTerminal() {
                   <span className="text-gray-400">Kunde erhält</span>
                   <span className="text-2xl font-bold text-green-400">€{topupResult.total_credited.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center py-3">
-                  <span className="text-gray-400">Ihre Provision</span>
+                <div className="flex justify-between items-center py-3 border-b border-gray-700">
+                  <span className="text-gray-400">Ihre Provision ({topupResult.merchant_commission_rate}%)</span>
                   <span className="text-lg font-semibold text-orange-400">€{topupResult.merchant_commission.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-3">
+                  <span className="text-gray-400">Ihr Gesamtumsatz</span>
+                  <span className="text-lg font-semibold text-blue-400">€{(topupResult.merchant_volume || merchantVolume).toFixed(2)}</span>
                 </div>
               </div>
 
