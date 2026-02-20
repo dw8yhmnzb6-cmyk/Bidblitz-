@@ -92,7 +92,7 @@ export default function StaffPOS() {
         const data = JSON.parse(savedStaff);
         setStaff(data);
         setIsLoggedIn(true);
-        fetchTransactionHistory(data.branch_id);
+        fetchTransactionHistory();
       } catch (e) {
         localStorage.removeItem('staff_pos_data');
         localStorage.removeItem('staff_pos_token');
@@ -136,7 +136,7 @@ export default function StaffPOS() {
         localStorage.setItem('staff_pos_data', JSON.stringify(staffData));
         localStorage.setItem('staff_pos_token', data.token);
         toast.success(`Willkommen, ${staffData.name}!`);
-        fetchTransactionHistory(staffData.branch_id);
+        fetchTransactionHistory();
       } else {
         const error = await res.json();
         toast.error(error.detail || 'Login fehlgeschlagen');
@@ -336,7 +336,7 @@ export default function StaffPOS() {
         setShowReceipt(true);
         setAmount('');
         toast.success(`✅ Aufladung erfolgreich! €${amountNum.toFixed(2)} + €${bonus.toFixed(2)} Bonus`);
-        fetchTransactionHistory(staff?.branch_id);
+        fetchTransactionHistory();
       } else {
         const error = await res.json();
         playSound('error');
