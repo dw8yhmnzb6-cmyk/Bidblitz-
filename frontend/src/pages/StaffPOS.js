@@ -1025,11 +1025,19 @@ const generateBarcodeNumber = () => {
   return prefix + random;
 };
 
+// Map language codes to translation keys (for similar languages)
+const languageMap = {
+  ae: 'ar',  // UAE Arabic -> Arabic
+  us: 'en',  // US English -> English
+  xk: 'sq',  // Kosovo -> Albanian (similar)
+};
+
 export default function StaffPOS() {
   // Language state
   const [language, setLanguage] = useState('de');
   const [showLanguages, setShowLanguages] = useState(false);
-  const t = translations[language] || translations.de;
+  const translationKey = languageMap[language] || language;
+  const t = translations[translationKey] || translations.de;
   
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
