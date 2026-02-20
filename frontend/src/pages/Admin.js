@@ -98,6 +98,7 @@ import AdminDigitalPayments from '../components/admin/AdminDigitalPayments';
 
 // Import Enterprise Management
 import AdminEnterpriseManagement from '../components/admin/AdminEnterpriseManagement';
+import AdminPayouts from '../components/admin/AdminPayouts';
 
 // Import Voice Debug Assistant
 import VoiceDebugAssistant from '../components/VoiceDebugAssistant';
