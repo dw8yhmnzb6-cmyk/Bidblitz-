@@ -3686,3 +3686,56 @@ Externe Unternehmen wie Edeka können BidBlitz Pay als Zahlungsmethode an ihren 
 6. POS zeigt "Zahlung erfolgreich!" + Sound
 ```
 
+
+---
+
+### ✅ Tablet-optimierter Kiosk-Modus ✅
+
+**Implementiert:** Vollbild-Kiosk-Modus für dedizierte POS-Tablets
+
+**URL:** `/kiosk` oder `/kasse`
+
+**Features:**
+1. **Vollbild-Design:**
+   - Kein Navbar (versteckt auf POS-Seiten)
+   - Keine Popups (Onboarding, Cart-Reminder, etc.)
+   - Dunkles Theme für Kiosk-Geräte
+
+2. **Touch-optimiertes Numpad:**
+   - Große Tasten (h-24 auf Desktop)
+   - Dezimalpunkt-Unterstützung
+   - Backspace und Clear-Funktion
+   - Tastatur-Shortcuts (1-9, ., Enter, Escape)
+
+3. **QR-Code-Generierung:**
+   - Großer QR-Code für einfaches Scannen
+   - 5 Minuten Gültigkeit
+   - Automatische Statusaktualisierung
+
+4. **Erfolgs-Feedback:**
+   - Bounce-Animation bei erfolgreicher Zahlung
+   - Sound-Benachrichtigung
+   - Auto-Reset nach 5 Sekunden
+
+5. **Seitenleiste:**
+   - Transaktionsverlauf
+   - Tagesstatistiken (Umsatz, Verkäufe)
+
+6. **Toolbar:**
+   - Sound ein/aus
+   - Fullscreen ein/aus (F11)
+   - Verlauf anzeigen
+   - Abmelden
+
+**Neue Datei:**
+- `/app/frontend/src/pages/POSKiosk.js`
+
+**Modifikationen:**
+- `App.js` - Navbar und Popups auf POS-Seiten versteckt
+
+**Ideale Hardware:**
+- iPad (10.9" oder größer)
+- Android Tablets
+- Touchscreen-Monitore
+- Dedizierte POS-Terminals
+
