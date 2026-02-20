@@ -231,6 +231,7 @@ export default function POSKiosk() {
       if (res.ok) {
         const data = await res.json();
         setMerchantName(data.api_key_name || 'Händler');
+        setMerchantVolume(data.total_volume || 0);
         setIsConnected(true);
         localStorage.setItem('pos_api_key', apiKey);
         toast.success(`Verbunden als ${data.api_key_name}`);
