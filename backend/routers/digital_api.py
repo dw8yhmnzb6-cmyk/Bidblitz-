@@ -1405,6 +1405,14 @@ async def topup_customer_card(
             secret=api_key.get("secret", "")
         )
     
+    # Calculate next tier info
+    new_volume = monthly_volume + data.amount
+    next_tier = None
+    for tier in MERCHANT_COMMISSION_TIERS:
+        if new_volume < tier["min_volume"]:
+            next_tier = tier
+            break
+    
     return {
         "success": True,
         "topup_id": topup_id,
@@ -1412,6 +1420,12 @@ async def topup_customer_card(
         "bonus": customer_bonus,
         "total_credited": total_credit,
         "merchant_commission": merchant_commission,
+        "merchant_commission_rate": merchant_commission_rate,
+        "merchant_volume": new_volume,
+        "next_tier": {
+            "volume_needed": next_tier["min_volume"] - new_volume if next_tier else 0,
+            "next_rate": next_tier["rate"] if next_tier else merchant_commission_rate
+        } if next_tier and next_tier["min_volume"] > new_volume else None,
         "customer_name": user.get("name"),
         "customer_number": user.get("customer_number"),
         "new_balance": new_balance,
@@ -1421,12 +1435,20 @@ async def topup_customer_card(
 
 @router.get("/topup/bonus-info")
 async def get_bonus_info():
-    """Get information about the current bonus tiers for top-ups."""
+    """Get information about the current bonus and commission tiers."""
     return {
-        "bonus_tiers": [
-            {"min_amount": 100, "bonus": 5.00, "description": "€100+ aufladen → +€5 Bonus"},
-            {"min_amount": 50, "bonus": 2.00, "description": "€50+ aufladen → +€2 Bonus"},
-            {"min_amount": 20, "bonus": 0.50, "description": "€20+ aufladen → +€0,50 Bonus"},
+        "customer_bonus_tiers": [
+            {"min_amount": 200, "bonus": 12.00, "description": "€200+ aufladen → +€12 Bonus (6%)"},
+            {"min_amount": 100, "bonus": 5.00, "description": "€100+ aufladen → +€5 Bonus (5%)"},
+            {"min_amount": 50, "bonus": 2.00, "description": "€50+ aufladen → +€2 Bonus (4%)"},
+            {"min_amount": 20, "bonus": 0.50, "description": "€20+ aufladen → +€0,50 Bonus (2.5%)"},
+        ],
+        "merchant_commission_tiers": [
+            {"min_volume": 10000, "rate": 2.0, "description": "€10.000+ Umsatz → 2% Provision"},
+            {"min_volume": 5000, "rate": 1.5, "description": "€5.000+ Umsatz → 1.5% Provision"},
+            {"min_volume": 2000, "rate": 1.0, "description": "€2.000+ Umsatz → 1% Provision"},
+            {"min_volume": 500, "rate": 0.5, "description": "€500+ Umsatz → 0.5% Provision"},
+            {"min_volume": 0, "rate": 0.0, "description": "Start → 0% Provision"},
         ],
         "min_topup": 5,
         "max_topup": 500
