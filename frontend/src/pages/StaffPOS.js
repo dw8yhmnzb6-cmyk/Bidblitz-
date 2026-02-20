@@ -1581,7 +1581,7 @@ export default function StaffPOS() {
               </button>
               
               {showLanguages && (
-                <div className="absolute right-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 p-2 min-w-[200px] max-h-[400px] overflow-y-auto">
+                <div className="absolute right-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 p-2 min-w-[280px] max-h-[400px] overflow-y-auto">
                   <div className="grid grid-cols-2 gap-1">
                     {languages.map(lang => (
                       <button
