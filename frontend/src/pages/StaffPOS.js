@@ -2188,42 +2188,152 @@ export default function StaffPOS() {
               )}
             </div>
 
-            {/* Barcode Scanner */}
+            {/* Barcode Scanner mit Kamera */}
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
               <label className="block text-slate-300 mb-2">{t.scanCustomer}</label>
               
               {!scanMode ? (
-                <button
-                  onClick={() => setScanMode(true)}
-                  disabled={!amount || parseFloat(amount) < 5}
-                  className="w-full py-4 bg-slate-700 hover:bg-slate-600 disabled:bg-slate-800 disabled:text-slate-600 rounded-xl text-white font-medium transition-all flex items-center justify-center gap-3"
-                  data-testid="scan-barcode-btn"
-                >
-                  <Scan className="w-6 h-6" />
-                  {t.scanBarcode}
-                </button>
-              ) : (
                 <div className="space-y-3">
-                  <div className="relative">
-                    <Scan className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-amber-400 animate-pulse" />
-                    <input
-                      ref={barcodeInputRef}
-                      type="text"
-                      placeholder={t.waitingForScan}
-                      value={barcodeInput}
-                      onChange={(e) => setBarcodeInput(e.target.value)}
-                      onKeyDown={handleBarcodeScan}
-                      className="w-full pl-14 pr-4 py-4 bg-amber-500/10 border-2 border-amber-500 rounded-xl text-white text-xl placeholder-amber-300/50 focus:ring-0 focus:border-amber-400 animate-pulse"
-                      autoFocus
-                      data-testid="barcode-input"
-                    />
-                  </div>
-                  <p className="text-amber-400 text-sm text-center">
-                    📷 {t.scannerReady}
-                  </p>
+                  {/* Kamera-Scan Button */}
                   <button
-                    onClick={() => setScanMode(false)}
-                    className="w-full py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 text-sm"
+                    onClick={async () => {
+                      if (!amount || parseFloat(amount) < 5) {
+                        toast.error(language === 'de' ? 'Bitte zuerst Betrag eingeben (min. €5)' : 'Please enter amount first (min. €5)');
+                        return;
+                      }
+                      setScanMode(true);
+                      // Automatisch Kamera starten
+                      setTimeout(() => {
+                        startTopupCamera();
+                      }, 300);
+                    }}
+                    disabled={!amount || parseFloat(amount) < 5}
+                    className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-3 shadow-lg shadow-amber-500/30 disabled:shadow-none"
+                    data-testid="scan-barcode-btn"
+                  >
+                    <Camera className="w-6 h-6" />
+                    {language === 'de' ? 'Kunden-Barcode scannen' : 'Scan Customer Barcode'}
+                  </button>
+                  
+                  {/* Manuelle Eingabe Option */}
+                  <button
+                    onClick={() => setScanMode(true)}
+                    disabled={!amount || parseFloat(amount) < 5}
+                    className="w-full py-3 bg-slate-700/50 hover:bg-slate-600/50 disabled:bg-slate-800/50 disabled:text-slate-600 rounded-xl text-slate-300 font-medium transition-all flex items-center justify-center gap-2"
+                    data-testid="manual-barcode-btn"
+                  >
+                    <Scan className="w-5 h-5" />
+                    {language === 'de' ? 'Manuell eingeben' : 'Enter manually'}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Kamera Scanner Ansicht */}
+                  {topupCameraActive && (
+                    <div className="relative">
+                      <div className="bg-slate-900 rounded-xl p-2">
+                        <p className="text-amber-400 text-sm text-center mb-2 animate-pulse">
+                          📷 {language === 'de' ? 'Halten Sie den Kunden-Barcode vor die Kamera...' : 'Hold customer barcode in front of camera...'}
+                        </p>
+                        <div id="topup-scanner" className="w-full h-72 rounded-lg overflow-hidden bg-black"></div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          stopTopupCamera();
+                          setScanMode(false);
+                          setTopupCameraError(null);
+                        }}
+                        className="absolute top-2 right-2 p-2 bg-red-500 rounded-full text-white shadow-lg z-10"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  )}
+                  
+                  {/* Kamera Fehler Anzeige */}
+                  {topupCameraError && (
+                    <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-center">
+                      <p className="text-red-400 text-sm mb-3">{topupCameraError}</p>
+                    </div>
+                  )}
+                  
+                  {/* Fallback Optionen */}
+                  <div className={`${topupCameraActive ? 'mt-4 pt-4 border-t border-slate-700' : ''}`}>
+                    {topupCameraActive && (
+                      <p className="text-slate-500 text-xs text-center mb-3">
+                        {language === 'de' ? 'Kamera funktioniert nicht?' : 'Camera not working?'}
+                      </p>
+                    )}
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      {/* Foto aufnehmen */}
+                      <input
+                        ref={topupFileInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handleTopupPhotoUpload}
+                        className="hidden"
+                        id="topup-photo-input"
+                      />
+                      <label
+                        htmlFor="topup-photo-input"
+                        className="py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                      >
+                        <Camera className="w-5 h-5" />
+                        📸 Foto
+                      </label>
+                      
+                      {/* Kamera starten (wenn nicht aktiv) */}
+                      {!topupCameraActive && (
+                        <button
+                          onClick={startTopupCamera}
+                          className="py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-colors"
+                        >
+                          <Camera className="w-5 h-5" />
+                          Kamera
+                        </button>
+                      )}
+                      
+                      {/* Kamera stoppen (wenn aktiv) */}
+                      {topupCameraActive && (
+                        <button
+                          onClick={stopTopupCamera}
+                          className="py-3 bg-slate-600 hover:bg-slate-500 text-white font-bold rounded-lg flex items-center justify-center gap-2 transition-colors"
+                        >
+                          <X className="w-5 h-5" />
+                          Stop
+                        </button>
+                      )}
+                    </div>
+                    
+                    {/* Manuelle Eingabe */}
+                    <div className="relative">
+                      <Scan className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
+                      <input
+                        ref={barcodeInputRef}
+                        type="text"
+                        placeholder={language === 'de' ? 'Barcode manuell eingeben...' : 'Enter barcode manually...'}
+                        value={barcodeInput}
+                        onChange={(e) => setBarcodeInput(e.target.value)}
+                        onKeyDown={handleBarcodeScan}
+                        className="w-full pl-12 pr-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono"
+                        data-testid="barcode-input"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Hidden scanner element for photo scanning */}
+                  <div id="topup-photo-scanner" style={{ display: 'none' }}></div>
+                  
+                  {/* Abbrechen Button */}
+                  <button
+                    onClick={() => {
+                      stopTopupCamera();
+                      setScanMode(false);
+                      setBarcodeInput('');
+                      setTopupCameraError(null);
+                    }}
+                    className="w-full py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-medium transition-colors"
                   >
                     {t.cancel}
                   </button>
