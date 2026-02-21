@@ -117,8 +117,9 @@ export const Navbar = () => {
             {isAdmin && (
               <Link 
                 to="/admin" 
-                className="text-orange-600 hover:text-orange-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
+                className="text-orange-600 hover:text-orange-700 active:text-orange-800 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base p-2 -m-2 touch-manipulation"
                 data-testid="nav-admin"
+                style={{ WebkitTapHighlightColor: 'rgba(234, 88, 12, 0.2)', touchAction: 'manipulation' }}
               >
                 <Shield className="w-4 h-4" />
                 <span className="hidden xl:inline">{t('nav.admin')}</span>
@@ -127,8 +128,9 @@ export const Navbar = () => {
             {isInfluencer && (
               <Link 
                 to="/influencer-dashboard" 
-                className="text-amber-600 hover:text-amber-700 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base"
+                className="text-amber-600 hover:text-amber-700 active:text-amber-800 transition-colors font-medium flex items-center gap-1 text-sm xl:text-base p-2 -m-2 touch-manipulation"
                 data-testid="nav-influencer"
+                style={{ WebkitTapHighlightColor: 'rgba(245, 158, 11, 0.2)', touchAction: 'manipulation' }}
               >
                 <Star className="w-4 h-4" />
               </Link>
@@ -136,8 +138,9 @@ export const Navbar = () => {
             {isManager && (
               <Link 
                 to="/manager-dashboard" 
-                className="text-purple-600 hover:text-purple-700 transition-colors font-medium flex items-center gap-1"
+                className="text-purple-600 hover:text-purple-700 active:text-purple-800 transition-colors font-medium flex items-center gap-1 p-2 -m-2 touch-manipulation"
                 data-testid="nav-manager"
+                style={{ WebkitTapHighlightColor: 'rgba(147, 51, 234, 0.2)', touchAction: 'manipulation' }}
               >
                 <Shield className="w-4 h-4" />
                 {t('nav.manager')}
