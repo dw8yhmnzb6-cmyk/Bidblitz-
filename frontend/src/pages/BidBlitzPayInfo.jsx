@@ -44,7 +44,7 @@ const BidBlitzPayInfo = () => {
   
   // Live Ticker State
   const [currentSignup, setCurrentSignup] = useState(0);
-  const [viewerCount, setViewerCount] = useState(47);
+  const [viewerCount, setViewerCount] = useState(() => Math.floor(Math.random() * 401) + 400); // Random 400-800
   
   // Lucky Wheel State
   const [showWheel, setShowWheel] = useState(false);
