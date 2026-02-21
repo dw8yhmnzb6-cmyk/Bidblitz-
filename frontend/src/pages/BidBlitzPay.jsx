@@ -142,6 +142,7 @@ const BidBlitzPay = () => {
           stream.getTracks().forEach(track => track.stop());
           localStorage.setItem('bidblitz_camera_permission', 'granted');
           setCameraPermissionGranted(true);
+          setShowCameraHelp(false); // Hilfe-Box ausblenden wenn Berechtigung erteilt
           console.log('✅ Kamera-Berechtigung erteilt');
         } catch (err) {
           console.log('❌ Kamera-Berechtigung verweigert:', err.name);
