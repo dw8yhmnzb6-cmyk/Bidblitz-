@@ -1910,6 +1910,56 @@ export default function StaffPOS() {
                 </div>
               )}
             </div>
+            
+            {/* Stammkunden / Regular Customers */}
+            {savedCustomers.length > 0 && (
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-4 border border-slate-700/50">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-white font-medium flex items-center gap-2">
+                    <Users className="w-5 h-5 text-amber-400" />
+                    {t.regularCustomers}
+                  </h3>
+                  <span className="text-xs text-slate-400">{t.quickSelect}</span>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {savedCustomers.slice(0, 5).map(customer => (
+                    <div 
+                      key={customer.id}
+                      className="flex items-center justify-between bg-slate-700/50 rounded-lg p-3 hover:bg-slate-700 transition-colors group"
+                    >
+                      <button
+                        onClick={() => selectSavedCustomer(customer)}
+                        disabled={!amount || parseFloat(amount) < 5}
+                        className="flex items-center gap-3 flex-1 text-left disabled:opacity-50"
+                        data-testid={`customer-${customer.id}`}
+                      >
+                        <div className="w-10 h-10 bg-amber-500/20 rounded-full flex items-center justify-center text-amber-400 font-bold">
+                          {(customer.nickname || customer.name).charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="text-white font-medium">{customer.nickname || customer.name}</p>
+                          <p className="text-xs text-slate-400">
+                            {customer.barcode} • {new Date(customer.lastTransaction).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </button>
+                      <button
+                        onClick={() => removeSavedCustomer(customer.id)}
+                        className="p-2 text-slate-500 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                        title={t.removeCustomer}
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                {savedCustomers.length > 5 && (
+                  <p className="text-xs text-slate-500 text-center mt-2">
+                    +{savedCustomers.length - 5} {language === 'de' ? 'weitere' : 'more'}
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Bonus Info */}
             <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
