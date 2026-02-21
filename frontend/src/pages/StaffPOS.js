@@ -1063,6 +1063,12 @@ export default function StaffPOS() {
   const [showReceipt, setShowReceipt] = useState(false);
   const [lastReceipt, setLastReceipt] = useState(null);
   const [showGiftCardPrint, setShowGiftCardPrint] = useState(false);
+  
+  // Stammkunden (Saved Customers)
+  const [savedCustomers, setSavedCustomers] = useState([]);
+  const [showSaveCustomerDialog, setShowSaveCustomerDialog] = useState(false);
+  const [customerToSave, setCustomerToSave] = useState(null);
+  const [customerNickname, setCustomerNickname] = useState('');
 
   // Bonus tiers
   const bonusTiers = [
