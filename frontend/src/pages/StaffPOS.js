@@ -2324,10 +2324,34 @@ export default function StaffPOS() {
               </div>
               
               <div className="mt-4 text-sm text-gray-500">
-                <p>Kunde: {lastReceipt.customer_barcode}</p>
+                <p>Kunde: {lastReceipt.customer_name} ({lastReceipt.customer_barcode})</p>
                 <p>Mitarbeiter: {lastReceipt.staff_name}</p>
                 <p>{new Date(lastReceipt.timestamp).toLocaleString('de-DE')}</p>
               </div>
+              
+              {/* Save as Regular Customer Button */}
+              {!savedCustomers.some(c => c.barcode === lastReceipt.customer_barcode) && (
+                <button
+                  onClick={() => {
+                    setCustomerToSave({
+                      barcode: lastReceipt.customer_barcode,
+                      name: lastReceipt.customer_name
+                    });
+                    setShowSaveCustomerDialog(true);
+                  }}
+                  className="mt-4 w-full py-2 bg-amber-100 text-amber-700 font-medium rounded-lg hover:bg-amber-200 transition-colors flex items-center justify-center gap-2"
+                  data-testid="save-customer-btn"
+                >
+                  <Star className="w-4 h-4" />
+                  {t.saveAsRegular}
+                </button>
+              )}
+              {savedCustomers.some(c => c.barcode === lastReceipt.customer_barcode) && (
+                <div className="mt-4 py-2 text-amber-600 flex items-center justify-center gap-2">
+                  <Star className="w-4 h-4 fill-amber-500" />
+                  Stammkunde
+                </div>
+              )}
             </div>
             
             <div className="p-4 bg-gray-50 flex gap-2">
@@ -2343,6 +2367,55 @@ export default function StaffPOS() {
                 className="flex-1 py-3 bg-green-500 text-white font-bold rounded-xl hover:bg-green-600 transition-colors"
               >
                 Fertig
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Save Customer Dialog */}
+      {showSaveCustomerDialog && customerToSave && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl w-full max-w-sm overflow-hidden">
+            <div className="p-6">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="w-8 h-8 text-amber-500" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-900 text-center mb-1">{t.saveCustomer}</h2>
+              <p className="text-gray-500 text-center text-sm mb-4">{customerToSave.name}</p>
+              
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">{t.customerNickname}</label>
+                  <input
+                    type="text"
+                    value={customerNickname}
+                    onChange={(e) => setCustomerNickname(e.target.value)}
+                    placeholder={customerToSave.name}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                    data-testid="customer-nickname-input"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-gray-50 flex gap-2">
+              <button
+                onClick={() => {
+                  setShowSaveCustomerDialog(false);
+                  setCustomerToSave(null);
+                  setCustomerNickname('');
+                }}
+                className="flex-1 py-3 bg-slate-200 text-slate-700 font-medium rounded-xl hover:bg-slate-300 transition-colors"
+              >
+                {t.cancel}
+              </button>
+              <button
+                onClick={() => saveCustomer(customerToSave.barcode, customerToSave.name, customerNickname)}
+                className="flex-1 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-600 transition-colors"
+                data-testid="confirm-save-customer"
+              >
+                {t.saveCustomer}
               </button>
             </div>
           </div>
