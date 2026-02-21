@@ -1323,11 +1323,16 @@ export default function Admin() {
               variant="outline" 
               size="sm"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-800 border-gray-300 px-2 py-1"
+              onTouchEnd={(e) => {
+                e.preventDefault();
+                setMobileMenuOpen(!mobileMenuOpen);
+              }}
+              className="text-gray-800 border-gray-300 px-3 py-2 min-h-[44px] touch-manipulation active:bg-gray-100"
+              style={{ WebkitTapHighlightColor: 'rgba(0,0,0,0.1)', touchAction: 'manipulation' }}
               data-testid="admin-mobile-menu-btn"
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-              <span className="ml-1 text-xs hidden xs:inline">Menü</span>
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <span className="ml-2 text-sm">Menü</span>
             </Button>
           </div>
         </div>
