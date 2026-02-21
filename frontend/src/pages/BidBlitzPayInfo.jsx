@@ -94,8 +94,9 @@ const BidBlitzPayInfo = () => {
     }, 3000);
   };
 
-  // Get translations for the current language
-  const t = getTranslation(language);
+  // Get translations for the current language (use mappedLanguage for proper translation keys)
+  const effectiveLanguage = mappedLanguage || language || 'de';
+  const t = getTranslation(effectiveLanguage);
 
   const features = [
     { icon: Wallet, title: t.feature1Title, desc: t.feature1Desc, color: 'bg-gradient-to-br from-amber-400 to-orange-500' },
