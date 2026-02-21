@@ -8,12 +8,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import Barcode from 'react-barcode';
+import { Html5Qrcode } from 'html5-qrcode';
 import { 
   Store, Euro, RefreshCw, CheckCircle, Clock, XCircle,
   History, Printer, LogOut, User, Lock, CreditCard,
   Wallet, Gift, X, Scan, Tag, Plus, ShoppingCart,
   Ticket, Package, ChevronRight, AlertCircle, Camera, Globe,
-  Star, Users
+  Star, Users, Image as ImageIcon
 } from 'lucide-react';
 import { toast } from 'sonner';
 
