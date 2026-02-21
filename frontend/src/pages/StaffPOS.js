@@ -1402,8 +1402,132 @@ export default function StaffPOS() {
       if (paymentScannerRef.current) {
         paymentScannerRef.current.stop().catch(() => {});
       }
+      if (topupScannerRef.current) {
+        topupScannerRef.current.stop().catch(() => {});
+      }
     };
   }, []);
+  
+  // ==================== TOPUP CAMERA SCANNER (für Kunden-Barcode) ====================
+  
+  // Start camera scanner for topup customer barcode
+  const startTopupCamera = async () => {
+    try {
+      setTopupCameraError(null);
+      setTopupCameraActive(true);
+      
+      // Prüfen ob iOS
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      
+      // Wait for DOM element to render
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Für iOS: Erst Kamera-Berechtigung anfordern
+      if (isIOS) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'environment' } 
+          });
+          stream.getTracks().forEach(track => track.stop());
+          await new Promise(resolve => setTimeout(resolve, 300));
+        } catch (permErr) {
+          console.error('iOS camera permission error:', permErr);
+          setTopupCameraError(language === 'de' 
+            ? 'Kamera-Zugriff verweigert. Bitte erlauben Sie die Kamera in den Browser-Einstellungen.' 
+            : 'Camera access denied. Please allow camera in browser settings.');
+          setTopupCameraActive(false);
+          return;
+        }
+      }
+      
+      const scanner = new Html5Qrcode("topup-scanner");
+      topupScannerRef.current = scanner;
+      
+      await scanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 15,
+          qrbox: { width: 300, height: 200 },
+          aspectRatio: 1.5,
+          formatsToSupport: [
+            0, // QR_CODE
+            4, // CODE_128
+            2, // CODE_39
+            3, // CODE_93
+            10, // EAN_13
+            9, // EAN_8
+            12, // UPC_A
+            11, // UPC_E
+            7, // ITF
+            1, // AZTEC
+            6, // DATA_MATRIX
+            8, // PDF_417
+          ]
+        },
+        (decodedText) => {
+          // Success - barcode scanned
+          console.log('✅ Kunden-Barcode gescannt:', decodedText);
+          playSound('success');
+          toast.success(language === 'de' ? `Barcode erkannt: ${decodedText}` : `Barcode detected: ${decodedText}`);
+          stopTopupCamera();
+          processTopupWithBarcode(decodedText);
+        },
+        (errorMessage) => {
+          // Scan error - ignore (normal während des Scannens)
+        }
+      );
+      
+      console.log('✅ Topup Kamera gestartet');
+      
+    } catch (err) {
+      console.error('Topup Camera error:', err);
+      setTopupCameraError(language === 'de' 
+        ? 'Kamera konnte nicht gestartet werden. Bitte verwenden Sie "Foto aufnehmen" oder geben Sie den Barcode manuell ein.' 
+        : 'Camera could not be started. Please use "Take Photo" or enter barcode manually.');
+      setTopupCameraActive(false);
+    }
+  };
+  
+  // Stop topup camera scanner
+  const stopTopupCamera = async () => {
+    if (topupScannerRef.current) {
+      try {
+        await topupScannerRef.current.stop();
+        topupScannerRef.current = null;
+      } catch (err) {
+        console.error('Error stopping topup scanner:', err);
+      }
+    }
+    setTopupCameraActive(false);
+  };
+  
+  // Handle photo upload for topup barcode scanning (iOS fallback)
+  const handleTopupPhotoUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      const scanner = new Html5Qrcode("topup-photo-scanner");
+      const result = await scanner.scanFile(file, true);
+      
+      if (result) {
+        playSound('success');
+        toast.success(language === 'de' ? `Barcode erkannt: ${result}` : `Barcode detected: ${result}`);
+        processTopupWithBarcode(result);
+      }
+    } catch (err) {
+      playSound('error');
+      toast.error(language === 'de' 
+        ? 'Barcode konnte nicht erkannt werden. Bitte erneut versuchen.' 
+        : 'Barcode could not be recognized. Please try again.');
+    }
+    
+    // Reset file input
+    if (topupFileInputRef.current) {
+      topupFileInputRef.current.value = '';
+    }
+  };
 
   // Login handler
   const handleLogin = async (e) => {
