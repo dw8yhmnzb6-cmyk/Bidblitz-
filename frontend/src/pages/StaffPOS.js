@@ -12,7 +12,8 @@ import {
   Store, Euro, RefreshCw, CheckCircle, Clock, XCircle,
   History, Printer, LogOut, User, Lock, CreditCard,
   Wallet, Gift, X, Scan, Tag, Plus, ShoppingCart,
-  Ticket, Package, ChevronRight, AlertCircle, Camera, Globe
+  Ticket, Package, ChevronRight, AlertCircle, Camera, Globe,
+  Star, Users
 } from 'lucide-react';
 import { toast } from 'sonner';
 
