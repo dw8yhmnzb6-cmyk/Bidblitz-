@@ -1718,45 +1718,6 @@ const BidBlitzPay = () => {
                 )}
               </div>
             )}
-                      <div className="relative flex justify-center text-sm">
-                        <span className="px-2 bg-white text-gray-500">
-                          {t('or')}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <form onSubmit={handleManualRequestLoad} className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          {t('enterRequestIdManually')}
-                        </label>
-                        <Input
-                          type="text"
-                          value={manualRequestId}
-                          onChange={(e) => setManualRequestId(e.target.value.toUpperCase())}
-                          placeholder="z.B. 149F919F"
-                          className="w-full text-center font-mono tracking-wider"
-                          maxLength={12}
-                        />
-                      </div>
-                      <Button
-                        type="submit"
-                        variant="outline"
-                        className="w-full"
-                        disabled={!manualRequestId.trim() || loadingManualRequest}
-                      >
-                        {loadingManualRequest ? (
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        ) : (
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                        )}
-                        {t('loadId')}
-                      </Button>
-                    </form>
-                  </div>
-                )}
-              </div>
-            )}
             
             {/* Create Request Section */}
             {!scannedRequest && !scannerActive && (
