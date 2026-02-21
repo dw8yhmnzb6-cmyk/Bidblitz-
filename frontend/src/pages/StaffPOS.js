@@ -1088,6 +1088,11 @@ export default function StaffPOS() {
   const [showSaveCustomerDialog, setShowSaveCustomerDialog] = useState(false);
   const [customerToSave, setCustomerToSave] = useState(null);
   const [customerNickname, setCustomerNickname] = useState('');
+  
+  // Payment Mode State
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentScanMode, setPaymentScanMode] = useState(false);
+  const [paymentBarcode, setPaymentBarcode] = useState('');
 
   // Bonus tiers
   const bonusTiers = [
