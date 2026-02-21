@@ -1469,6 +1469,9 @@ async def end_auction(auction_id: str, admin: dict = Depends(get_admin_user)):
         }}
     )
     
+    # Invalidate cache after ending
+    invalidate_auctions_cache()
+    
     # Notify winner
     if winner_id and not winner_id.startswith("bot_"):
         await db.users.update_one(
