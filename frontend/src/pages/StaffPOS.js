@@ -1098,12 +1098,91 @@ export default function StaffPOS() {
         setStaff(data);
         setIsLoggedIn(true);
         fetchTransactionHistory();
+        // Load saved customers for this branch
+        loadSavedCustomers(data.branch_id);
       } catch (e) {
         localStorage.removeItem('staff_pos_data');
         localStorage.removeItem('staff_pos_token');
       }
     }
   }, []);
+  
+  // Load saved customers from localStorage
+  const loadSavedCustomers = (branchId) => {
+    try {
+      const saved = localStorage.getItem(`staff_pos_customers_${branchId}`);
+      if (saved) {
+        setSavedCustomers(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('Failed to load saved customers:', e);
+    }
+  };
+  
+  // Save customer to list
+  const saveCustomer = (barcode, name, nickname) => {
+    const branchId = staff?.branch_id;
+    if (!branchId) return;
+    
+    const newCustomer = {
+      id: Date.now().toString(),
+      barcode,
+      name,
+      nickname: nickname || name,
+      savedAt: new Date().toISOString(),
+      lastTransaction: new Date().toISOString()
+    };
+    
+    // Check if customer already exists
+    const existingIndex = savedCustomers.findIndex(c => c.barcode === barcode);
+    let updated;
+    
+    if (existingIndex >= 0) {
+      // Update existing
+      updated = [...savedCustomers];
+      updated[existingIndex] = { ...updated[existingIndex], nickname: nickname || name, lastTransaction: new Date().toISOString() };
+    } else {
+      // Add new
+      updated = [newCustomer, ...savedCustomers];
+    }
+    
+    setSavedCustomers(updated);
+    localStorage.setItem(`staff_pos_customers_${branchId}`, JSON.stringify(updated));
+    toast.success(language === 'de' ? `✅ ${nickname || name} als Stammkunde gespeichert!` : `✅ ${nickname || name} saved as regular customer!`);
+    setShowSaveCustomerDialog(false);
+    setCustomerToSave(null);
+    setCustomerNickname('');
+  };
+  
+  // Remove saved customer
+  const removeSavedCustomer = (customerId) => {
+    const branchId = staff?.branch_id;
+    if (!branchId) return;
+    
+    const updated = savedCustomers.filter(c => c.id !== customerId);
+    setSavedCustomers(updated);
+    localStorage.setItem(`staff_pos_customers_${branchId}`, JSON.stringify(updated));
+    toast.success(language === 'de' ? 'Kunde entfernt' : 'Customer removed');
+  };
+  
+  // Quick select saved customer
+  const selectSavedCustomer = (customer) => {
+    const amountNum = parseFloat(amount);
+    if (!amountNum || amountNum < 5) {
+      toast.error(language === 'de' ? 'Bitte zuerst Betrag eingeben (min. €5)' : 'Please enter amount first (min. €5)');
+      return;
+    }
+    
+    // Process topup directly with the saved customer's barcode
+    processTopupWithBarcode(customer.barcode);
+    
+    // Update last transaction time
+    const updated = savedCustomers.map(c => 
+      c.id === customer.id ? { ...c, lastTransaction: new Date().toISOString() } : c
+    );
+    setSavedCustomers(updated);
+    localStorage.setItem(`staff_pos_customers_${staff?.branch_id}`, JSON.stringify(updated));
+  };
 
   // Auto-focus barcode input when scan mode is active
   useEffect(() => {
