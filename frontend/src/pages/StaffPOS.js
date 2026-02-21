@@ -1098,6 +1098,12 @@ export default function StaffPOS() {
   const [paymentCameraError, setPaymentCameraError] = useState(null);
   const paymentScannerRef = useRef(null);
   const paymentFileInputRef = useRef(null);
+  
+  // Topup Camera Scanner State (für Kunden-Barcode)
+  const [topupCameraActive, setTopupCameraActive] = useState(false);
+  const [topupCameraError, setTopupCameraError] = useState(null);
+  const topupScannerRef = useRef(null);
+  const topupFileInputRef = useRef(null);
 
   // Bonus tiers
   const bonusTiers = [
