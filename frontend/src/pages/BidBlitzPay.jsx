@@ -697,6 +697,11 @@ const BidBlitzPay = () => {
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
       
+      // Wenn Berechtigung bereits erteilt wurde, direkt starten
+      if (cameraPermissionGranted) {
+        console.log('✅ Kamera-Berechtigung bereits erteilt, starte Scanner...');
+      }
+      
       // Erst prüfen ob Kamera verfügbar ist
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         toast.error(t('cameraNotSupported') || 'Kamera wird von diesem Browser nicht unterstützt');
