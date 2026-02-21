@@ -162,7 +162,11 @@ const translations = {
     saveCustomer: 'Save Customer',
     customerNickname: 'Nickname (optional)',
     lastTransaction: 'Last Transaction',
-    removeCustomer: 'Remove'
+    removeCustomer: 'Remove',
+    hardwareScanner: 'Hardware Scanner',
+    hardwareScannerActive: 'Scanner Active',
+    hardwareScannerInfo: 'USB/Bluetooth Scanner ready',
+    waitingForHardwareScan: 'Waiting for hardware scan...'
   },
   tr: {
     loginTitle: 'Kasa Terminali',
