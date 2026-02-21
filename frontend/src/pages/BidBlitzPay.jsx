@@ -1669,6 +1669,11 @@ const BidBlitzPay = () => {
                     <div className="bg-gray-100 rounded-xl p-6 text-center">
                       <Camera className="w-12 h-12 text-gray-400 mx-auto mb-2" />
                       <p className="text-sm text-gray-500">{t('scanRequestQR')}</p>
+                      <p className="text-xs text-gray-400 mt-2">
+                        {language === 'de' 
+                          ? 'Falls die Kamera nicht funktioniert, nutzen Sie die manuelle Eingabe unten' 
+                          : 'If camera doesn\'t work, use manual entry below'}
+                      </p>
                     </div>
                     <Button
                       onClick={startScanner}
@@ -1678,11 +1683,41 @@ const BidBlitzPay = () => {
                       {t('startScanner')}
                     </Button>
                     
-                    {/* Manual ID Entry */}
-                    <div className="relative">
-                      <div className="absolute inset-0 flex items-center">
-                        <div className="w-full border-t border-gray-200" />
+                    {/* Manual ID Entry - More prominent */}
+                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Keyboard className="w-5 h-5 text-amber-600" />
+                        <span className="font-medium text-amber-800">
+                          {language === 'de' ? 'Manuelle Eingabe' : 'Manual Entry'}
+                        </span>
                       </div>
+                      <form onSubmit={handleManualRequestLoad} className="space-y-3">
+                        <Input
+                          type="text"
+                          value={manualRequestId}
+                          onChange={(e) => setManualRequestId(e.target.value.toUpperCase())}
+                          placeholder="z.B. 149F919F"
+                          className="w-full text-center font-mono tracking-wider bg-white"
+                          maxLength={12}
+                        />
+                        <Button
+                          type="submit"
+                          className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+                          disabled={!manualRequestId.trim() || loadingManualRequest}
+                        >
+                          {loadingManualRequest ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <CheckCircle className="w-4 h-4 mr-2" />
+                          )}
+                          {t('loadId') || 'ID laden'}
+                        </Button>
+                      </form>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
                       <div className="relative flex justify-center text-sm">
                         <span className="px-2 bg-white text-gray-500">
                           {t('or')}
