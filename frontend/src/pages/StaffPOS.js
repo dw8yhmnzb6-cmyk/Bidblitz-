@@ -2377,12 +2377,21 @@ export default function StaffPOS() {
                 {/* Camera Scanner */}
                 {paymentCameraActive && (
                   <div className="relative">
-                    <div id="payment-scanner" className="w-full h-48 rounded-xl overflow-hidden bg-black"></div>
+                    <div className="bg-slate-900 rounded-xl p-2">
+                      <p className="text-green-400 text-sm text-center mb-2 animate-pulse">
+                        📷 {language === 'de' ? 'Halten Sie den Barcode vor die Kamera...' : 'Hold barcode in front of camera...'}
+                      </p>
+                      <div id="payment-scanner" className="w-full h-64 rounded-lg overflow-hidden bg-black"></div>
+                    </div>
                     <button
-                      onClick={stopPaymentCamera}
-                      className="absolute top-2 right-2 p-2 bg-red-500 rounded-full text-white"
+                      onClick={() => {
+                        stopPaymentCamera();
+                        setPaymentScanMode(false);
+                        setPaymentCameraError(null);
+                      }}
+                      className="absolute top-2 right-2 p-2 bg-red-500 rounded-full text-white shadow-lg"
                     >
-                      <X className="w-4 h-4" />
+                      <X className="w-5 h-5" />
                     </button>
                   </div>
                 )}
