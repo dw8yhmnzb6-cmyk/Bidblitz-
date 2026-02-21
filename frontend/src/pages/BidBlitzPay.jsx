@@ -1789,29 +1789,44 @@ const BidBlitzPay = () => {
                                 <li>Erlauben Sie die <strong>Kamera</strong></li>
                               </ol>
                             </div>
-                            <div className="flex gap-2 mt-3">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setShowCameraHelp(false)}
-                                className="text-red-600 border-red-300"
-                              >
-                                Verstanden
-                              </Button>
-                              <Button
-                                size="sm"
-                                onClick={() => {
-                                  // Berechtigung zurücksetzen und erneut anfordern
-                                  localStorage.removeItem('bidblitz_camera_permission');
-                                  localStorage.removeItem('bidblitz_camera_asked');
-                                  setCameraPermissionGranted(false);
-                                  setCameraPermissionAsked(false);
-                                  window.location.reload();
-                                }}
-                                className="bg-red-500 hover:bg-red-600 text-white"
-                              >
-                                Neu versuchen
-                              </Button>
+                            <div className="flex flex-col gap-2 mt-3">
+                              {/* Button für iOS Einstellungen */}
+                              {/iPad|iPhone|iPod/.test(navigator.userAgent) && (
+                                <Button
+                                  size="sm"
+                                  onClick={() => {
+                                    // iOS Settings URL - öffnet die Einstellungen
+                                    window.location.href = 'app-settings:';
+                                  }}
+                                  className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                                >
+                                  📱 Zu den Einstellungen
+                                </Button>
+                              )}
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setShowCameraHelp(false)}
+                                  className="text-red-600 border-red-300"
+                                >
+                                  Verstanden
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => {
+                                    // Berechtigung zurücksetzen und erneut anfordern
+                                    localStorage.removeItem('bidblitz_camera_permission');
+                                    localStorage.removeItem('bidblitz_camera_asked');
+                                    setCameraPermissionGranted(false);
+                                    setCameraPermissionAsked(false);
+                                    window.location.reload();
+                                  }}
+                                  className="bg-red-500 hover:bg-red-600 text-white"
+                                >
+                                  Neu versuchen
+                                </Button>
+                              </div>
                             </div>
                           </div>
                         </div>
