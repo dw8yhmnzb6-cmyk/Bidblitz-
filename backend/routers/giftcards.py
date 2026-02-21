@@ -1,6 +1,6 @@
 """Gift Cards Router - Buy and redeem gift cards"""
 from fastapi import APIRouter, HTTPException, Depends
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 import uuid
