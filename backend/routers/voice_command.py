@@ -353,6 +353,67 @@ async def execute_command(action: str, parameters: dict, admin: dict) -> dict:
         logger.info(f"🎤 Voice command: Created {created} auctions by {admin['name']}")
         return {"success": True, "message": f"✅ {created} neue Auktionen erfolgreich erstellt!"}
     
+    elif action == "create_single_auction":
+        # Einzelne Auktion für ein bestimmtes Produkt erstellen
+        name = parameters.get("name", "Premium Produkt")
+        value = parameters.get("value", 1000)
+        category = parameters.get("category", "Sonstiges")
+        duration_days = parameters.get("duration_days", 1)
+        
+        # Auto-Erkennung der Kategorie basierend auf dem Namen
+        name_lower = name.lower()
+        if any(word in name_lower for word in ["auto", "mercedes", "bmw", "audi", "porsche", "vw", "tesla", "fahrzeug", "pkw", "wagen"]):
+            category = "Auto"
+        elif any(word in name_lower for word in ["iphone", "samsung", "laptop", "macbook", "tv", "playstation", "xbox"]):
+            category = "Elektronik"
+        elif any(word in name_lower for word in ["urlaub", "reise", "flug", "hotel"]):
+            category = "Reisen"
+        
+        # Produkt erstellen
+        product = {
+            "id": str(uuid.uuid4()),
+            "name": name,
+            "description": f"Premium {category} - Originalwert EUR {value}",
+            "category": category,
+            "retail_price": value,
+            "bid_price": round(value * 0.6, 2),
+            "image_url": "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800" if category == "Auto" else "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800",
+            "stock": 1,
+            "is_active": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.products.insert_one(product)
+        
+        # Auktion erstellen
+        import random
+        starting_price = round(value * 0.01, 2)  # 1% des Werts
+        starting_price = max(0.01, min(starting_price, 5.00))
+        
+        auction = {
+            "id": str(uuid.uuid4()),
+            "product_id": product["id"],
+            "title": name,
+            "description": f"Premium {category} - Originalwert EUR {value}",
+            "image_url": product["image_url"],
+            "retail_price": value,
+            "current_price": starting_price,
+            "bid_count": 0,
+            "time_remaining": duration_days * 24 * 60 * 60,
+            "end_time": (datetime.now(timezone.utc) + __import__('datetime').timedelta(days=duration_days)).isoformat(),
+            "status": "active",
+            "is_vip_only": False,
+            "category": category,
+            "winner_id": None,
+            "buy_now_price": value,
+            "bot_target_price": round(value * 0.5, 2),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "created_by": admin["id"]
+        }
+        await db.auctions.insert_one(auction)
+        
+        logger.info(f"🎤 Voice command: Created single auction '{name}' (EUR {value}) by {admin['name']}")
+        return {"success": True, "message": f"✅ Auktion '{name}' (EUR {value:,.0f}) erfolgreich erstellt! Kategorie: {category}"}
+    
     elif action == "delete_auctions":
         status = parameters.get("status", "ended")
         older_than_days = parameters.get("older_than_days", 0)
