@@ -1007,15 +1007,30 @@ export default function Auctions() {
   // Fetch data
   const fetchData = useCallback(async () => {
     try {
-      const [auctionsRes, productsRes, aotdRes, endedRes] = await Promise.all([
+      // Optimiert: Auktionen enthalten bereits Produktdaten (product field)
+      // Nur noch 3 API-Aufrufe statt 4
+      const [auctionsRes, aotdRes, endedRes] = await Promise.all([
         axios.get(`${API}/auctions`),
-        axios.get(`${API}/products`),
         axios.get(`${API}/auction-of-the-day`).catch(() => ({ data: null })),
-        axios.get(`${API}/auctions/ended`).catch(() => ({ data: [] })) // Get ended auctions from history
+        axios.get(`${API}/auctions/ended?limit=20`).catch(() => ({ data: [] })) // Limit ended auctions
       ]);
       
+      // Build product map from auctions (each auction has embedded product)
       const prodMap = {};
-      productsRes.data.forEach(p => { prodMap[p.id] = p; });
+      auctionsRes.data.forEach(a => { 
+        if (a.product && a.product.id) {
+          prodMap[a.product.id] = a.product; 
+        }
+        // Fallback: use auction data as product
+        if (a.product_id && !prodMap[a.product_id]) {
+          prodMap[a.product_id] = {
+            id: a.product_id,
+            name: a.title || a.product_name,
+            image_url: a.image_url,
+            retail_price: a.retail_price
+          };
+        }
+      });
       setProducts(prodMap);
       setAuctions(auctionsRes.data);
       setEndedAuctions(endedRes.data || []);
