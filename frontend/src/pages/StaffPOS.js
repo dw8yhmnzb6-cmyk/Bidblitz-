@@ -1404,7 +1404,7 @@ export default function StaffPOS() {
         const data = await res.json();
         playSound('success');
         const bonus = calculateBonus(amountNum);
-        setLastReceipt({
+        const receiptData = {
           type: 'topup',
           customer_barcode: customerBarcode,
           customer_name: data.customer_name || 'Kunde',
@@ -1416,7 +1416,8 @@ export default function StaffPOS() {
           staff_name: staff?.name,
           branch_name: staff?.branch_name,
           transaction_id: data.transaction_id
-        });
+        };
+        setLastReceipt(receiptData);
         setShowReceipt(true);
         setAmount('');
         toast.success(`✅ Aufladung erfolgreich! €${amountNum.toFixed(2)} + €${bonus.toFixed(2)} Bonus`);
