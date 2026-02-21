@@ -5,7 +5,7 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 21, 2026)
 
-### ✅ Session Update - February 21, 2026 (Session 66) - KAMERA-SCANNER FÜR AUFLADUNG ✅
+### ✅ Session Update - February 21, 2026 (Session 66) - KAMERA-SCANNER & HARDWARE-SCANNER ✅
 
 #### StaffPOS.js - Kamera-Barcode-Scanner für Aufladung implementiert ✅
 **Neue Features:**
@@ -15,11 +15,19 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 - **Manuelle Eingabe** als Alternative
 - Identische Funktionalität wie der Zahlungs-Scanner
 
+#### StaffPOS.js - Hardware-Scanner Unterstützung (USB/Bluetooth) ✅
+**Neue Features:**
+- **Hardware-Scanner-Modus** aktivierbar über Button in der Header-Zeile
+- **Grüne Statusleiste** zeigt Scanner-Bereitschaft an
+- **Globaler Keyboard-Listener** erfasst Barcode-Eingaben von Hardware-Scannern
+- **Automatische Verarbeitung** basierend auf aktuellem Modus (Aufladung/Gutschein/Zahlung)
+- **ESC-Taste** zum Deaktivieren des Modus
+
 **Technische Details:**
-- Neue States: `topupCameraActive`, `topupCameraError`, `topupScannerRef`, `topupFileInputRef`
-- Neue Funktionen: `startTopupCamera()`, `stopTopupCamera()`, `handleTopupPhotoUpload()`
-- Scanner-Element: `#topup-scanner`, Photo-Scanner: `#topup-photo-scanner`
-- Unterstützt alle gängigen Barcode-Formate (QR, CODE_128, EAN_13, etc.)
+- Neue States: `hardwareScannerMode`, `hardwareScanBuffer`
+- Hardware-Scanner senden Barcodes als schnelle Tastatureingaben + Enter
+- Intelligente Erkennung: >100ms zwischen Tasten = neuer Scan
+- Auto-Submit nach 150ms Pause (falls Enter nicht kommt)
 
 ---
 
