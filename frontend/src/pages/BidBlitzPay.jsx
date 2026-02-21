@@ -1776,11 +1776,12 @@ const BidBlitzPay = () => {
                             <div className="text-sm text-red-700 space-y-2">
                               <p className="font-medium">📱 iPhone/iPad (Safari):</p>
                               <ol className="list-decimal list-inside ml-2 space-y-1 text-xs">
-                                <li>Öffnen Sie <strong>Einstellungen</strong></li>
-                                <li>Scrollen Sie zu <strong>Safari</strong></li>
-                                <li>Tippen Sie auf <strong>Kamera</strong></li>
-                                <li>Wählen Sie <strong>Erlauben</strong></li>
-                                <li>Aktualisieren Sie diese Seite</li>
+                                <li>Öffnen Sie die <strong>Einstellungen</strong>-App</li>
+                                <li>Scrollen Sie nach unten zu <strong>Apps</strong></li>
+                                <li>Tippen Sie auf <strong>Safari</strong></li>
+                                <li>Unter "Einstellungen für Websites" tippen Sie auf <strong>Kamera</strong></li>
+                                <li>Wählen Sie <strong>Erlauben</strong> oder <strong>Fragen</strong></li>
+                                <li>Kommen Sie zurück und tippen Sie auf <strong>Neu versuchen</strong></li>
                               </ol>
                               <p className="font-medium mt-3">🌐 Andere Browser:</p>
                               <ol className="list-decimal list-inside ml-2 space-y-1 text-xs">
