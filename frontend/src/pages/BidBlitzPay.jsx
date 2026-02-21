@@ -53,9 +53,16 @@ const BidBlitzPay = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
-  const [view, setView] = useState('wallet'); // wallet, qr, history, topup, security, send, request
+  const [view, setView] = useState('wallet'); // wallet, qr, history, topup, security, send, request, contacts
   // Use global language from localStorage
   const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'de');
+  
+  // Add Contact Dialog states
+  const [showAddContactDialog, setShowAddContactDialog] = useState(false);
+  const [newContactId, setNewContactId] = useState('');
+  const [newContactNickname, setNewContactNickname] = useState('');
+  const [addingContact, setAddingContact] = useState(false);
+  const [editingContact, setEditingContact] = useState(null);
   const [showLangMenu, setShowLangMenu] = useState(false);
   const [mainBalance, setMainBalance] = useState(0);
   const [topUpAmount, setTopUpAmount] = useState('');
