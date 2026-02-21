@@ -96,9 +96,10 @@ const BidBlitzPayInfo = () => {
 
   // Get translations for the current language (use mappedLanguage for proper translation keys)
   const effectiveLanguage = mappedLanguage || language || 'de';
-  const t = getTranslation(effectiveLanguage);
+  const t = useMemo(() => getTranslation(effectiveLanguage), [effectiveLanguage]);
 
-  const features = [
+  // Memoized static data
+  const features = useMemo(() => [
     { icon: Wallet, title: t.feature1Title, desc: t.feature1Desc, color: 'bg-gradient-to-br from-amber-400 to-orange-500' },
     { icon: Send, title: t.feature2Title, desc: t.feature2Desc, color: 'bg-gradient-to-br from-green-400 to-emerald-500' },
     { icon: Users, title: t.feature3Title, desc: t.feature3Desc, color: 'bg-gradient-to-br from-blue-400 to-indigo-500' },
