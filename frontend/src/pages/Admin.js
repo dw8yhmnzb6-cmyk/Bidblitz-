@@ -1753,6 +1753,11 @@ export default function Admin() {
           )}
 
           {/* Mystery Box Tab */}
+          {/* Flash Sales Tab */}
+          {activeTab === 'flash-sales' && (
+            <AdminFlashSales />
+          )}
+
           {activeTab === 'mystery-box' && (
             <AdminMysteryBox />
           )}
