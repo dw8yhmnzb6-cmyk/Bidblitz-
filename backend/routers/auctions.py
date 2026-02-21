@@ -1403,6 +1403,9 @@ async def create_auction(auction: AuctionCreate, admin: dict = Depends(get_admin
     
     await db.auctions.insert_one(doc)
     
+    # Invalidate cache so new auction appears immediately
+    invalidate_auctions_cache()
+    
     # Remove _id added by MongoDB before returning
     doc.pop("_id", None)
     
@@ -1435,6 +1438,8 @@ async def update_auction(auction_id: str, auction: AuctionUpdate, admin: dict = 
     
     if updates:
         await db.auctions.update_one({"id": auction_id}, {"$set": updates})
+        # Invalidate cache after update
+        invalidate_auctions_cache()
     
     updated = await db.auctions.find_one({"id": auction_id}, {"_id": 0})
     return updated
