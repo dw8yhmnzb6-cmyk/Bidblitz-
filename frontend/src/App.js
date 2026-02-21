@@ -143,6 +143,7 @@ import BidBlitzPay from "./pages/BidBlitzPay";
 import BidBlitzPayInfo from "./pages/BidBlitzPayInfo";
 import PartnerLanding from "./pages/PartnerLanding";
 import PartnerDirectory from "./pages/PartnerDirectory";
+import PopupManager from "./components/PopupManager";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
