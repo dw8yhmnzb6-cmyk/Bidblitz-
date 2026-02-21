@@ -2786,6 +2786,31 @@ export default function StaffPOS() {
                         📷 {language === 'de' ? 'Halten Sie den Barcode vor die Kamera...' : 'Hold barcode in front of camera...'}
                       </p>
                       <div id="payment-scanner" className="w-full h-64 rounded-lg overflow-hidden bg-black"></div>
+                      
+                      {/* iOS-Hinweis: Foto-Button ist zuverlässiger */}
+                      <div className="mt-3 p-3 bg-amber-500/20 border border-amber-500/50 rounded-lg">
+                        <p className="text-amber-400 text-xs text-center mb-2">
+                          💡 {language === 'de' ? 'Scanner erkennt nicht? Nutze den Foto-Button!' : 'Scanner not detecting? Use the Photo button!'}
+                        </p>
+                        <div className="flex gap-2">
+                          <input
+                            ref={paymentFileInputRef}
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            onChange={handlePaymentPhotoUpload}
+                            className="hidden"
+                            id="payment-photo-input-main"
+                          />
+                          <label
+                            htmlFor="payment-photo-input-main"
+                            className="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-lg"
+                          >
+                            <Camera className="w-6 h-6" />
+                            📸 {language === 'de' ? 'FOTO AUFNEHMEN' : 'TAKE PHOTO'}
+                          </label>
+                        </div>
+                      </div>
                     </div>
                     <button
                       onClick={() => {
