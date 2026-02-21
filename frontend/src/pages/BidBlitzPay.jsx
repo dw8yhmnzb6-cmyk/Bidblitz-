@@ -641,27 +641,46 @@ const BidBlitzPay = () => {
   }, [token]);
 
   // QR Scanner functions
+  const [showCameraHelp, setShowCameraHelp] = useState(false);
+  
   const startScanner = async () => {
     try {
+      // Prüfen ob wir auf iOS sind
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+      
       // Erst prüfen ob Kamera verfügbar ist
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         toast.error(t('cameraNotSupported') || 'Kamera wird von diesem Browser nicht unterstützt');
+        setShowCameraHelp(true);
         return;
       }
       
       // Kamera-Berechtigung anfordern
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        // Auf iOS/Safari müssen wir die Kamera mit minimalen Einstellungen anfordern
+        const constraints = isIOS 
+          ? { video: true }  // iOS braucht einfache Constraints
+          : { video: { facingMode: "environment" } };
+        
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
         // Stream sofort wieder stoppen (war nur für Berechtigung)
         stream.getTracks().forEach(track => track.stop());
       } catch (permErr) {
         console.error('Camera permission error:', permErr);
-        if (permErr.name === 'NotAllowedError' || permErr.name === 'PermissionDeniedError') {
-          toast.error(t('cameraAccessDenied') || 'Kamerazugriff verweigert. Bitte erlauben Sie den Kamerazugriff in Ihren Browsereinstellungen.');
+        
+        // Zeige spezifische Hilfe für iOS
+        if (isIOS || isSafari) {
+          toast.error('Bitte aktivieren Sie die Kamera: Einstellungen → Safari → Kamera → Erlauben', { duration: 6000 });
+          setShowCameraHelp(true);
+        } else if (permErr.name === 'NotAllowedError' || permErr.name === 'PermissionDeniedError') {
+          toast.error('Kamerazugriff verweigert. Bitte erlauben Sie den Kamerazugriff in Ihren Browsereinstellungen.', { duration: 5000 });
+          setShowCameraHelp(true);
         } else if (permErr.name === 'NotFoundError') {
           toast.error('Keine Kamera gefunden');
         } else {
-          toast.error(t('cameraStartError') || 'Kamera konnte nicht gestartet werden');
+          toast.error('Kamera konnte nicht gestartet werden. Nutzen Sie die manuelle Eingabe unten.', { duration: 5000 });
+          setShowCameraHelp(true);
         }
         return;
       }
@@ -671,8 +690,12 @@ const BidBlitzPay = () => {
       
       // Versuche zuerst die Rückkamera
       try {
+        const cameraConfig = isIOS 
+          ? { facingMode: { ideal: "environment" } }  // iOS-freundliche Config
+          : { facingMode: "environment" };
+          
         await html5QrCode.start(
-          { facingMode: "environment" },
+          cameraConfig,
           {
             fps: 10,
             qrbox: { width: 250, height: 250 },
@@ -692,6 +715,7 @@ const BidBlitzPay = () => {
         );
         
         setScannerActive(true);
+        setShowCameraHelp(false);
       } catch (startErr) {
         console.error('Start scanner error, trying alternative camera:', startErr);
         
@@ -715,8 +739,10 @@ const BidBlitzPay = () => {
             () => {}
           );
           setScannerActive(true);
+          setShowCameraHelp(false);
         } catch (fallbackErr) {
           console.error('Fallback camera also failed:', fallbackErr);
+          setShowCameraHelp(true);
           throw fallbackErr;
         }
       }
