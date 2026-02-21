@@ -2306,19 +2306,23 @@ export default function StaffPOS() {
                 </div>
                 
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     const amt = parseFloat(paymentAmount);
                     if (!amt || amt <= 0) {
                       toast.error(language === 'de' ? 'Bitte Betrag eingeben' : 'Please enter amount');
                       return;
                     }
                     setPaymentScanMode(true);
+                    // Automatisch Kamera starten nach kurzer Verzögerung (DOM muss erst rendern)
+                    setTimeout(() => {
+                      startPaymentCamera();
+                    }, 300);
                   }}
                   disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
                   className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   data-testid="scan-customer-payment-btn"
                 >
-                  <Scan className="w-6 h-6" />
+                  <Camera className="w-6 h-6" />
                   {t.scanCustomer}
                 </button>
               </div>
