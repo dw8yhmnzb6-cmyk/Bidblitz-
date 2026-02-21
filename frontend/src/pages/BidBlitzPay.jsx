@@ -637,7 +637,81 @@ const BidBlitzPay = () => {
   // Select a saved recipient
   const selectSavedRecipient = (recipient) => {
     setRecipientEmail(recipient.recipient_customer_number || recipient.recipient_email);
+    setView('send');
     toast.success(`${recipient.nickname} ${t('selected')}`);
+  };
+
+  // Add new contact manually
+  const addContactManually = async () => {
+    if (!newContactId.trim() || !newContactNickname.trim()) {
+      toast.error(language === 'de' ? 'Bitte füllen Sie alle Felder aus' : 'Please fill in all fields');
+      return;
+    }
+    
+    setAddingContact(true);
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/saved-recipients`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          recipient_identifier: newContactId.trim(),
+          nickname: newContactNickname.trim()
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast.success(language === 'de' ? 'Kontakt gespeichert!' : 'Contact saved!');
+        setShowAddContactDialog(false);
+        setNewContactId('');
+        setNewContactNickname('');
+        fetchSavedRecipients();
+      } else {
+        toast.error(data.detail || (language === 'de' ? 'Fehler beim Speichern' : 'Error saving'));
+      }
+    } catch (error) {
+      console.error('Add contact error:', error);
+      toast.error(language === 'de' ? 'Fehler beim Speichern' : 'Error saving');
+    } finally {
+      setAddingContact(false);
+    }
+  };
+
+  // Edit existing contact
+  const updateContact = async () => {
+    if (!editingContact || !editingContact.newNickname?.trim()) {
+      toast.error(language === 'de' ? 'Bitte geben Sie einen Namen ein' : 'Please enter a name');
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/api/bidblitz-pay/saved-recipients/${editingContact.id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nickname: editingContact.newNickname.trim()
+        })
+      });
+      
+      if (response.ok) {
+        toast.success(language === 'de' ? 'Kontakt aktualisiert!' : 'Contact updated!');
+        setEditingContact(null);
+        fetchSavedRecipients();
+      } else {
+        const data = await response.json();
+        toast.error(data.detail || (language === 'de' ? 'Fehler beim Aktualisieren' : 'Error updating'));
+      }
+    } catch (error) {
+      console.error('Update contact error:', error);
+      toast.error(language === 'de' ? 'Fehler beim Aktualisieren' : 'Error updating');
+    }
   };
 
   // Request Money functions
