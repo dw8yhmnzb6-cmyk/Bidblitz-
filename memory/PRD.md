@@ -5,26 +5,40 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 21, 2026)
 
-### ✅ Session Update - February 21, 2026 (Session 64) - AUKTIONEN + VOICE COMMAND FIX ✅
+### ✅ Session Update - February 21, 2026 (Session 64) - AUKTIONEN RESET + BOT-LOGIK + PERFORMANCE ✅
 
-#### Fix 1: Auktionen repariert ✅
-- **Problem:** Auktionen hatten "?" als Titel und identische Endzeiten
-- **Lösung:** 30 neue Auktionen erstellt mit:
+#### Alle Auktionen gelöscht und neu erstellt ✅
+- **40 neue Premium-Auktionen** mit:
   - ✅ Startpreis: €0.01
-  - ✅ Korrekte Produkttitel (iPhone, Samsung, BMW, Mercedes, etc.)
-  - ✅ Verschiedene Endzeiten (10 unterschiedliche Tage)
-- **Kategorien:** Elektronik, Gaming, Auto, Reisen, Luxus, Uhren, VR/Wearables
+  - ✅ Hochwertige Unsplash-Bilder für alle Kategorien
+  - ✅ Verschiedene Endzeiten (1-7 Tage)
+  - ✅ Bot-Zielpreis: €2-5 pro Auktion (randomisiert)
+- **Kategorien:** Elektronik, Gaming, Auto, Reisen, Luxus, Uhren, VR, Audio, TV, Kamera, Haushalt, Smartwatch, Wearables
+- **Premium-Produkte:** iPhone, MacBook, PlayStation, BMW, Mercedes, Porsche, Rolex, Apple Vision Pro, etc.
 
-#### Fix 2: Voice Command "Auto-Aktion" ✅
-- **Problem:** Der Sprachbefehl "Auto-Aktion" wurde nicht korrekt erkannt
-- **Lösung:** GPT-Prompt in `/app/backend/routers/voice_command.py` erweitert:
-  - Neue Trigger-Wörter: "Auto-Aktion", "auto aktion", "Autoauktion", "Auto Auktion"
-  - Standardwert €50.000 für Auto-Auktionen
-  - Robustere natürliche Spracherkennung
-- **Test:** Alle Varianten werden jetzt korrekt als `create_single_auction` erkannt
+#### Bot-Logik verbessert ✅
+- **Phase 1:** Bots bieten bis zum `bot_target_price` (€2-5)
+- **Phase 2:** Pause - echte Nutzer können bieten
+- **Phase 3:** Letzte 2-3 Minuten - Bots bieten wieder (Endspurt)
+- `bot_target_price` wird jetzt als primäres Phase-1-Ziel respektiert
+
+#### Ladezeit optimiert ✅
+- API-Aufrufe reduziert: 4 → 3 (Products-Fetch entfernt)
+- Produkte werden aus eingebetteten Auktionsdaten extrahiert
+- Ended auctions auf 20 limitiert
 
 #### Dateien geändert:
-- `/app/backend/routers/voice_command.py` - Verbesserte "Auto-Aktion" Erkennung
+- `/app/backend/server.py` - Bot-Logik: Phase-1-Target verwendet jetzt `bot_target_price`
+- `/app/frontend/src/pages/Auctions.js` - Optimierte API-Aufrufe (keine separate Products-Anfrage)
+
+---
+
+### ✅ Session Update - February 21, 2026 (Session 64a) - VOICE COMMAND FIX ✅
+
+#### Fix: Voice Command "Auto-Aktion" ✅
+- **Problem:** Der Sprachbefehl "Auto-Aktion" wurde nicht korrekt erkannt
+- **Lösung:** GPT-Prompt in `/app/backend/routers/voice_command.py` erweitert
+- **Test:** Alle Varianten ("Auto-Aktion", "auto aktion", "Autoauktion") werden korrekt erkannt
 
 ---
 
