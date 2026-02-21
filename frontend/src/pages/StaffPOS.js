@@ -1094,6 +1094,10 @@ export default function StaffPOS() {
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentScanMode, setPaymentScanMode] = useState(false);
   const [paymentBarcode, setPaymentBarcode] = useState('');
+  const [paymentCameraActive, setPaymentCameraActive] = useState(false);
+  const [paymentCameraError, setPaymentCameraError] = useState(null);
+  const paymentScannerRef = useRef(null);
+  const paymentFileInputRef = useRef(null);
 
   // Bonus tiers
   const bonusTiers = [
