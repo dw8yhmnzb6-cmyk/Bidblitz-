@@ -501,6 +501,11 @@ function AppContent() {
           <Route path="/bidblitz-pay-info" element={<BidBlitzPayInfo />} />
           <Route path="/pay-info" element={<BidBlitzPayInfo />} />
           {/* BidBlitz Pay - Digital Wallet Payment */}
+          <Route path="/bidblitz-pay" element={
+            <ProtectedRoute>
+              <BidBlitzPay />
+            </ProtectedRoute>
+          } />
           <Route path="/pay" element={
             <ProtectedRoute>
               <BidBlitzPay />
