@@ -1271,6 +1271,92 @@ export default function StaffPOS() {
       setLoading(false);
     }
   };
+  
+  // Start camera scanner for payment
+  const startPaymentCamera = async () => {
+    try {
+      setPaymentCameraError(null);
+      setPaymentCameraActive(true);
+      
+      // Wait for DOM element
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const scanner = new Html5Qrcode("payment-scanner");
+      paymentScannerRef.current = scanner;
+      
+      await scanner.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 150 },
+          aspectRatio: 1.5
+        },
+        (decodedText) => {
+          // Success - barcode scanned
+          playSound('success');
+          stopPaymentCamera();
+          processPayment(decodedText);
+        },
+        (errorMessage) => {
+          // Scan error - ignore
+        }
+      );
+    } catch (err) {
+      console.error('Camera error:', err);
+      setPaymentCameraError(language === 'de' 
+        ? 'Kamera konnte nicht gestartet werden. Bitte verwenden Sie die Foto-Option.' 
+        : 'Camera could not be started. Please use the photo option.');
+      setPaymentCameraActive(false);
+    }
+  };
+  
+  // Stop camera scanner
+  const stopPaymentCamera = async () => {
+    if (paymentScannerRef.current) {
+      try {
+        await paymentScannerRef.current.stop();
+        paymentScannerRef.current = null;
+      } catch (err) {
+        console.error('Error stopping scanner:', err);
+      }
+    }
+    setPaymentCameraActive(false);
+  };
+  
+  // Handle photo upload for barcode scanning (iOS fallback)
+  const handlePaymentPhotoUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    try {
+      const scanner = new Html5Qrcode("payment-photo-scanner");
+      const result = await scanner.scanFile(file, true);
+      
+      if (result) {
+        playSound('success');
+        processPayment(result);
+      }
+    } catch (err) {
+      playSound('error');
+      toast.error(language === 'de' 
+        ? 'Barcode konnte nicht erkannt werden. Bitte erneut versuchen.' 
+        : 'Barcode could not be recognized. Please try again.');
+    }
+    
+    // Reset file input
+    if (paymentFileInputRef.current) {
+      paymentFileInputRef.current.value = '';
+    }
+  };
+  
+  // Cleanup camera on unmount or mode change
+  useEffect(() => {
+    return () => {
+      if (paymentScannerRef.current) {
+        paymentScannerRef.current.stop().catch(() => {});
+      }
+    };
+  }, []);
 
   // Login handler
   const handleLogin = async (e) => {
