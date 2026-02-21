@@ -5,6 +5,30 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 21, 2026)
 
+### ✅ Session Update - February 21, 2026 (Session 65c) - POPUPS & CACHE FIX ✅
+
+#### OnboardingTour & Popup-System komplett überarbeitet ✅
+**Problem:** Onboarding-Popup erschien auf allen Seiten, auch auf StaffPOS, BidBlitzPay, Admin etc.
+
+**Lösung:**
+- Neue Komponente `PopupManager.js` erstellt, die `useLocation` von React Router verwendet
+- Alle Popups (Onboarding, DailyLogin, AbandonedCart, OutbidNotification) werden jetzt zentral verwaltet
+- Ausgeschlossene Seiten: `/pos`, `/kiosk`, `/staff-pos`, `/bidblitz-pay`, `/admin`, `/enterprise`, `/login`, `/register`, `/profile`, `/wallet`, etc.
+- Popups erscheinen nur auf erlaubten Seiten (`/`, `/auctions`)
+
+#### Auction Cache-Invalidierung hinzugefügt ✅
+**Problem:** API und direkte DB-Abfragen zeigten unterschiedliche Daten (Data Source Discrepancy)
+
+**Lösung:**
+- `invalidate_auctions_cache()` Funktion in `/app/backend/routers/auctions.py` hinzugefügt
+- Cache wird automatisch bei create, update, delete und end_auction invalidiert
+- Stellt sicher, dass Änderungen sofort sichtbar sind
+
+#### Route `/bidblitz-pay` hinzugefügt ✅
+- Die Route fehlte, jetzt verweist sie auf `BidBlitzPay` mit ProtectedRoute
+
+---
+
 ### ✅ Session Update - February 21, 2026 (Session 65b) - STAMMKUNDEN FÜR STAFFPOS ✅
 
 #### StaffPOS.js - "Stammkunden speichern" Funktion implementiert ✅
