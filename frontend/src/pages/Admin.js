@@ -1395,11 +1395,16 @@ export default function Admin() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 rounded-lg transition-colors text-sm ${
+                      onTouchEnd={(e) => {
+                        e.preventDefault();
+                        setActiveTab(tab.id);
+                      }}
+                      className={`w-full flex items-center gap-2 lg:gap-3 px-3 lg:px-4 py-2 rounded-lg transition-colors text-sm touch-manipulation ${
                         activeTab === tab.id
                           ? `${category.bgColor} ${category.textColor} font-medium`
-                          : 'text-gray-500 hover:bg-white/50 hover:text-gray-800'
+                          : 'text-gray-500 hover:bg-white/50 hover:text-gray-800 active:bg-white/70'
                       }`}
+                      style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
                       data-testid={`tab-${tab.id}`}
                     >
                       <span className={`flex-shrink-0 ${activeTab === tab.id ? category.textColor : ''}`}>
