@@ -1494,6 +1494,8 @@ async def delete_auction(auction_id: str, admin: dict = Depends(get_admin_user))
     result = await db.auctions.delete_one({"id": auction_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Auction not found")
+    # Invalidate cache after deletion
+    invalidate_auctions_cache()
     return {"message": "Auction deleted"}
 
 @router.put("/admin/auctions/{auction_id}/featured")
@@ -1512,6 +1514,9 @@ async def set_featured_auction(auction_id: str, is_featured: bool = True, admin:
         {"id": auction_id},
         {"$set": {"is_featured": is_featured}}
     )
+    
+    # Invalidate cache
+    invalidate_auctions_cache()
     
     return {
         "message": f"Auktion {'als VIP markiert' if is_featured else 'VIP-Status entfernt'}",
