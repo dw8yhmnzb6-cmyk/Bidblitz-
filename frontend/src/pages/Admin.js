@@ -1349,11 +1349,17 @@ export default function Admin() {
                         setActiveTab(tab.id);
                         setMobileMenuOpen(false);
                       }}
-                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all border ${
+                      onTouchEnd={(e) => {
+                        e.preventDefault();
+                        setActiveTab(tab.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all border touch-manipulation ${
                         activeTab === tab.id
                           ? `${category.bgColor} ${category.textColor} ${category.borderColor} shadow-md scale-105`
-                          : 'bg-white text-gray-600 hover:bg-gray-50 border-gray-100 shadow-sm'
+                          : 'bg-white text-gray-600 hover:bg-gray-50 active:bg-gray-100 border-gray-100 shadow-sm'
                       }`}
+                      style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
                       data-testid={`mobile-tab-${tab.id}`}
                     >
                       <span className={activeTab === tab.id ? category.textColor : 'text-gray-500'}>
