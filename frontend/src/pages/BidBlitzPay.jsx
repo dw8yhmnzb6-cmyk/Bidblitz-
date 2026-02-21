@@ -2025,32 +2025,26 @@ const BidBlitzPay = () => {
                       <p className="text-sm text-gray-500">{t('scanRequestQR')}</p>
                       <p className="text-xs text-gray-400 mt-2">
                         {language === 'de' 
-                          ? 'Falls die Kamera nicht funktioniert, nutzen Sie die manuelle Eingabe unten' 
-                          : 'If camera doesn\'t work, use manual entry below'}
+                          ? 'Wählen Sie eine der Optionen unten zum Scannen' 
+                          : 'Choose one of the options below to scan'}
                       </p>
                     </div>
                     
-                    {/* Camera Scanner Button */}
-                    <Button
-                      onClick={startScanner}
-                      className="w-full bg-blue-500 hover:bg-blue-600 text-white min-h-[48px] touch-manipulation"
-                    >
-                      <Camera className="w-5 h-5 mr-2" />
-                      {t('startScanner')}
-                    </Button>
-                    
-                    {/* iOS Photo Scanner Alternative - WICHTIG für Safari! */}
-                    <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                    {/* iOS Photo Scanner - PRIMÄRE OPTION für iOS */}
+                    <div className="bg-green-50 border-2 border-green-400 rounded-xl p-4 shadow-lg">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-lg">📸</span>
-                        <span className="font-medium text-green-800">
-                          {language === 'de' ? 'Alternative: Foto aufnehmen' : 'Alternative: Take Photo'}
+                        <span className="text-2xl">📸</span>
+                        <span className="font-bold text-green-800 text-lg">
+                          {language === 'de' ? 'Foto aufnehmen' : 'Take Photo'}
+                        </span>
+                        <span className="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full">
+                          {language === 'de' ? 'Empfohlen' : 'Recommended'}
                         </span>
                       </div>
-                      <p className="text-xs text-green-600 mb-3">
+                      <p className="text-sm text-green-600 mb-3">
                         {language === 'de' 
-                          ? 'Funktioniert zuverlässig auf iPhone/iPad!' 
-                          : 'Works reliably on iPhone/iPad!'}
+                          ? '✅ Funktioniert zuverlässig auf iPhone, iPad & Android!' 
+                          : '✅ Works reliably on iPhone, iPad & Android!'}
                       </p>
                       <input
                         ref={fileInputRef}
@@ -2063,17 +2057,32 @@ const BidBlitzPay = () => {
                       />
                       <label
                         htmlFor="photo-scanner-input"
-                        className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg cursor-pointer min-h-[48px] touch-manipulation transition-colors"
+                        className="flex items-center justify-center gap-2 w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-4 rounded-xl cursor-pointer min-h-[56px] touch-manipulation transition-colors shadow-md text-lg"
                       >
-                        <Camera className="w-5 h-5" />
-                        {language === 'de' ? 'QR-Code fotografieren' : 'Photograph QR Code'}
+                        <Camera className="w-6 h-6" />
+                        {language === 'de' ? '📷 Jetzt QR-Code fotografieren' : '📷 Photograph QR Code Now'}
                       </label>
                     </div>
                     
                     {/* Hidden element for photo scan processing */}
                     <div id="qr-reader-hidden" style={{ display: 'none' }}></div>
                     
-                    {/* Manual ID Entry - More prominent */}
+                    {/* Camera Scanner Button - Sekundäre Option */}
+                    <div className="border border-gray-200 rounded-xl p-4 bg-gray-50">
+                      <p className="text-xs text-gray-500 mb-2 text-center">
+                        {language === 'de' ? 'Alternative: Live-Kamera (funktioniert nicht immer)' : 'Alternative: Live camera (may not always work)'}
+                      </p>
+                      <Button
+                        onClick={startScanner}
+                        variant="outline"
+                        className="w-full border-gray-300 text-gray-700 min-h-[48px] touch-manipulation"
+                      >
+                        <Camera className="w-5 h-5 mr-2" />
+                        {t('startScanner')}
+                      </Button>
+                    </div>
+                    
+                    {/* Manual ID Entry */}
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <Keyboard className="w-5 h-5 text-amber-600" />
