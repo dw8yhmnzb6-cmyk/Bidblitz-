@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Shield, Zap, CreditCard, Gift, QrCode, 
   Users, ArrowRight, Check, ChevronDown, ChevronUp,
