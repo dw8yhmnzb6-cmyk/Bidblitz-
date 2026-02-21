@@ -1104,6 +1104,12 @@ export default function StaffPOS() {
   const [topupCameraError, setTopupCameraError] = useState(null);
   const topupScannerRef = useRef(null);
   const topupFileInputRef = useRef(null);
+  
+  // Hardware Scanner State (USB/Bluetooth)
+  const [hardwareScannerMode, setHardwareScannerMode] = useState(false);
+  const [hardwareScanBuffer, setHardwareScanBuffer] = useState('');
+  const hardwareScanTimeoutRef = useRef(null);
+  const lastKeyTimeRef = useRef(0);
 
   // Bonus tiers
   const bonusTiers = [
