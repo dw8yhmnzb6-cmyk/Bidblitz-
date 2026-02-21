@@ -1008,9 +1008,6 @@ async def bot_last_second_bidder():
                         ENDSPURT_TIME = auction_duration  # Immer im "Endspurt"
                         logger.debug(f"🚀 Short auction detected ({auction_duration}s): Aggressive bidding mode for {auction_id[:8]}")
                     
-                    # FALLBACK: Nutze bot_target_price wenn gesetzt
-                    explicit_target = auction.get("bot_target_price")
-                    
                     # Berechne Target basierend auf UVP mit VARIABILITÄT
                     # Faustregel: ~3-8% des UVP als Mindest-Endpreis
                     # PLUS auction-specific offset für natürliche Variation
