@@ -1226,7 +1226,7 @@ export default function StaffPOS() {
     
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/enterprise/pos/payment`, {
+      const res = await fetch(`${API_URL}/api/pos/payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1236,7 +1236,9 @@ export default function StaffPOS() {
           customer_barcode: customerBarcode,
           amount: paymentNum,
           staff_id: staff?.id,
-          branch_id: staff?.branch_id
+          staff_name: staff?.name,
+          branch_id: staff?.branch_id,
+          branch_name: staff?.branch_name
         })
       });
       
@@ -1245,8 +1247,8 @@ export default function StaffPOS() {
         playSound('success');
         toast.success(
           language === 'de' 
-            ? `✅ Zahlung erfolgreich! €${paymentNum.toFixed(2)} von ${data.customer_name || 'Kunde'} abgebucht.`
-            : `✅ Payment successful! €${paymentNum.toFixed(2)} deducted from ${data.customer_name || 'Customer'}.`
+            ? `✅ Zahlung erfolgreich! €${paymentNum.toFixed(2)} von ${data.customer_name || 'Kunde'} abgebucht. Neues Guthaben: €${data.new_balance?.toFixed(2)}`
+            : `✅ Payment successful! €${paymentNum.toFixed(2)} deducted from ${data.customer_name || 'Customer'}. New balance: €${data.new_balance?.toFixed(2)}`
         );
         setPaymentAmount('');
         setPaymentScanMode(false);
