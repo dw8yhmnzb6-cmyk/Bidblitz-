@@ -817,43 +817,6 @@ const BidBlitzPay = () => {
       }
     }
   };
-            {
-              fps: 10,
-              qrbox: { width: 250, height: 250 }
-            },
-            async (decodedText) => {
-              if (decodedText.startsWith("BIDBLITZ-REQ:")) {
-                const requestId = decodedText.replace("BIDBLITZ-REQ:", "");
-                await stopScanner();
-                await fetchRequestDetails(requestId);
-              } else {
-                toast.error(t('invalidQRCode'));
-              }
-            },
-            () => {}
-          );
-          // Erfolg - Berechtigung speichern
-          localStorage.setItem('bidblitz_camera_permission', 'granted');
-          setCameraPermissionGranted(true);
-          setScannerActive(true);
-          setShowCameraHelp(false);
-        } catch (fallbackErr) {
-          console.error('Fallback camera also failed:', fallbackErr);
-          setShowCameraHelp(true);
-          throw fallbackErr;
-        }
-      }
-    } catch (err) {
-      console.error('Scanner error:', err);
-      setShowCameraHelp(true);
-      if (err.name === 'NotAllowedError') {
-        toast.error(t('cameraAccessDenied') || 'Kamerazugriff verweigert');
-        localStorage.setItem('bidblitz_camera_permission', 'denied');
-      } else {
-        toast.error(t('cameraStartError') || 'Kamera konnte nicht gestartet werden. Bitte nutzen Sie die manuelle Eingabe.');
-      }
-    }
-  };
 
   const stopScanner = async () => {
     if (html5QrCodeRef.current) {
