@@ -1361,7 +1361,7 @@ export default function Admin() {
                         setActiveTab(tab.id);
                         setMobileMenuOpen(false);
                       }}
-                      className={`flex flex-col items-center gap-1.5 p-2.5 rounded-xl transition-all border touch-manipulation ${
+                      className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all border touch-manipulation min-h-[70px] ${
                         activeTab === tab.id
                           ? `${category.bgColor} ${category.textColor} ${category.borderColor} shadow-md scale-105`
                           : 'bg-white text-gray-600 hover:bg-gray-50 active:bg-gray-100 border-gray-100 shadow-sm'
@@ -1369,10 +1369,10 @@ export default function Admin() {
                       style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
                       data-testid={`mobile-tab-${tab.id}`}
                     >
-                      <span className={activeTab === tab.id ? category.textColor : 'text-gray-500'}>
+                      <span className={`${activeTab === tab.id ? category.textColor : 'text-gray-500'}`}>
                         {tab.icon}
                       </span>
-                      <span className="text-[9px] xs:text-[10px] font-medium text-center leading-tight line-clamp-2">
+                      <span className="text-[10px] xs:text-[11px] font-medium text-center leading-tight line-clamp-2">
                         {tab.label}
                       </span>
                     </button>
