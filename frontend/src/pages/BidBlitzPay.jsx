@@ -1556,32 +1556,83 @@ const BidBlitzPay = () => {
         {/* Send Money View */}
         {view === 'send' && (
           <div className="space-y-6">
-            {/* Saved Recipients */}
-            {savedRecipients.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-lg p-4">
-                <h3 className="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
-                  <Gift className="w-4 h-4 text-amber-500" />
-                  {t('savedRecipients')}
+            {/* Saved Recipients / Contacts Section */}
+            <div className="bg-white rounded-2xl shadow-lg p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-amber-500" />
+                  {language === 'de' ? 'Gespeicherte Kontakte' : 'Saved Contacts'}
                 </h3>
+                <Button
+                  size="sm"
+                  onClick={() => setShowAddContactDialog(true)}
+                  className="bg-green-500 hover:bg-green-600 text-white text-xs h-8"
+                  data-testid="add-contact-btn"
+                >
+                  <Plus className="w-3 h-3 mr-1" />
+                  {language === 'de' ? 'Neu' : 'Add'}
+                </Button>
+              </div>
+              
+              {savedRecipients.length > 0 ? (
                 <div className="flex gap-2 overflow-x-auto pb-2">
                   {savedRecipients.map((recipient) => (
-                    <button
+                    <div
                       key={recipient.id}
-                      onClick={() => selectSavedRecipient(recipient)}
-                      className="flex-shrink-0 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-3 hover:border-green-400 hover:shadow-md transition-all min-w-[140px]"
+                      className="flex-shrink-0 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-3 hover:border-green-400 hover:shadow-md transition-all min-w-[160px] relative group"
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                          {recipient.nickname.charAt(0).toUpperCase()}
+                      <button
+                        onClick={() => selectSavedRecipient(recipient)}
+                        className="w-full text-left"
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            {recipient.nickname.charAt(0).toUpperCase()}
+                          </div>
+                          <p className="font-bold text-gray-800 text-sm truncate">{recipient.nickname}</p>
                         </div>
-                        <p className="font-bold text-gray-800 text-sm truncate">{recipient.nickname}</p>
+                        <p className="text-xs text-gray-500 truncate">{recipient.recipient_customer_number || recipient.recipient_email}</p>
+                      </button>
+                      {/* Edit/Delete Buttons */}
+                      <div className="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingContact({ ...recipient, newNickname: recipient.nickname });
+                          }}
+                          className="w-6 h-6 bg-blue-100 hover:bg-blue-200 rounded-full flex items-center justify-center"
+                          title={language === 'de' ? 'Bearbeiten' : 'Edit'}
+                        >
+                          <span className="text-xs">✏️</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm(language === 'de' ? `${recipient.nickname} löschen?` : `Delete ${recipient.nickname}?`)) {
+                              deleteSavedRecipient(recipient.id);
+                            }
+                          }}
+                          className="w-6 h-6 bg-red-100 hover:bg-red-200 rounded-full flex items-center justify-center"
+                          title={language === 'de' ? 'Löschen' : 'Delete'}
+                        >
+                          <span className="text-xs">🗑️</span>
+                        </button>
                       </div>
-                      <p className="text-xs text-gray-500 truncate">{recipient.recipient_customer_number || recipient.recipient_email}</p>
-                    </button>
+                    </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="text-center py-6 bg-gray-50 rounded-xl">
+                  <Users className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                  <p className="text-sm text-gray-500">
+                    {language === 'de' ? 'Noch keine Kontakte gespeichert' : 'No contacts saved yet'}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {language === 'de' ? 'Klicken Sie auf "Neu" um einen Kontakt hinzuzufügen' : 'Click "Add" to add a contact'}
+                  </p>
+                </div>
+              )}
+            </div>
 
             {/* Schnellüberweisung - Letzter Empfänger */}
             {lastRecipient && (
