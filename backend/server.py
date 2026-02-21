@@ -296,8 +296,9 @@ async def lifespan(app: FastAPI):
     
     # Startup
     bot_task_running = True
-    # Background tasks - Bot only bids on auctions < 10 minutes remaining
-    asyncio.create_task(bot_last_second_bidder())
+    # Background tasks
+    asyncio.create_task(bot_early_bidder())  # NEU: Bietet früh bis bot_target_price (€2-5)
+    asyncio.create_task(bot_last_second_bidder())  # Bietet in letzten 10 Minuten
     asyncio.create_task(mystery_box_bot_bidder())
     asyncio.create_task(auction_reminder_processor())
     # asyncio.create_task(auction_auto_restart_processor())  # Disabled - auctions have manual end times
@@ -306,7 +307,7 @@ async def lifespan(app: FastAPI):
     asyncio.create_task(abandoned_cart_reminder_task())
     asyncio.create_task(daily_health_check_task())  # Daily health checks
     asyncio.create_task(monthly_commission_report_scheduler())  # Monthly commission reports
-    logger.info("BidBlitz.ae server started - Bot only bids when < 10 min remaining. Auto-restart disabled.")
+    logger.info("BidBlitz.ae server started - Bot Early Bidder + Last Second Bidder aktiv")
     
     yield
     
