@@ -206,7 +206,12 @@ export default function DiscountCardsAdmin() {
       description: card.description || '',
       discount_type: card.discount_type || 'percentage',
       discount_value: card.discount_value || 10,
+      buy_quantity: card.buy_quantity || 2,
+      free_quantity: card.free_quantity || 1,
+      pay_quantity: card.pay_quantity || 2,
       categories: (card.categories || []).join(', '),
+      specific_articles: (card.specific_articles || []).join(', '),
+      article_name: card.article_name || '',
       min_purchase: card.min_purchase || 0,
       max_discount: card.max_discount || '',
       valid_from: card.valid_from || '',
@@ -223,11 +228,20 @@ export default function DiscountCardsAdmin() {
       description: '',
       discount_type: 'percentage',
       discount_value: 10,
+      buy_quantity: 2,
+      free_quantity: 1,
+      pay_quantity: 2,
       categories: '',
+      specific_articles: '',
+      article_name: '',
       min_purchase: 0,
       max_discount: '',
       valid_from: '',
       valid_until: '',
+      applies_to_all: true,
+      is_active: true
+    });
+  };
       applies_to_all: true,
       is_active: true
     });
