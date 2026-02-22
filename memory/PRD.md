@@ -5,30 +5,38 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 22, 2026)
 
-### ✅ Session Update - February 22, 2026 (Session 69) - MOBILE VIEW KOMPLETT ÜBERARBEITET ✅
+### ✅ Session Update - February 22, 2026 (Session 69) - MOBILE VIEW + KUNDEN-FAVORITEN ✅
 
-#### Mobile-First Design für Umsatz-Analyse ✅
+#### 1. Mobile-First Design für alle Admin-Seiten ✅
 
-**Problem:** Die Admin-Seiten waren auf mobilen Geräten stark abgeschnitten und erforderten Landscape-Modus oder Scrollen.
+**Problem:** Admin-Seiten waren auf mobilen Geräten stark abgeschnitten.
 
-**Lösung - Komplett neues Layout:**
-- **Header**: Einzeilig, "Umsatz" + Dropdown + Mini-Refresh-Button
-- **Karten**: 4 Karten in einer Reihe (`grid-cols-4 gap-1 p-1.5`)
-- **Schriftgrößen**: Ultra-kompakt `text-[8px]` für Labels, `text-[10px]` für Werte
-- **Tabs**: Kurze Labels (Übersicht, Pakete, Aukt., Käufer, Conv., Peak)
-- **Charts**: 7 Tage statt 14, kompakte Balken (`h-3`)
-- **Top Käufer**: 5 statt 10 Einträge, kleinere Avatare (`w-5 h-5`)
+**Lösung:**
+- **Admin.js**: `overflow-x-hidden max-w-full` zum Main-Container hinzugefügt
+- **AdminRevenueAnalytics.js**: 4 Karten in einer Reihe, ultra-kompakte Schriftgrößen
+- **AdminWalletTopup.js**: 4 Statistik-Karten, kompakte Boni-Anzeige, optimierte Suche
+
+**Ergebnis:**
+- ✅ Alle Statistiken auf einen Blick sichtbar
+- ✅ Portrait-Modus ohne Scrollen nutzbar
+- ✅ Bottom Navigation vollständig sichtbar
+
+#### 2. Kunden-Schnellauswahl / Favoriten-System ✅
+
+**Feature:** Kunden können als Favoriten gespeichert werden für schnelle Auswahl beim Geld senden.
+
+**Implementation:**
+- **Stern-Button** neben jedem Suchergebnis zum Hinzufügen zu Favoriten
+- **"Gespeicherte Kunden"** Sektion unter dem Suchfeld
+- **LocalStorage** zum Speichern der Favoriten (bis zu 10 Kunden)
+- **X-Button** zum Entfernen aus Favoriten
+- **Ein-Klick-Auswahl** der gespeicherten Kunden
 
 **Geänderte Dateien:**
-- `/app/frontend/src/components/admin/AdminRevenueAnalytics.js` (Komplett überarbeitet)
+- `/app/frontend/src/pages/Admin.js`
+- `/app/frontend/src/components/admin/AdminRevenueAnalytics.js`
+- `/app/frontend/src/components/admin/AdminWalletTopup.js`
 - `/app/frontend/src/components/admin/AdminUserAnalytics.js`
-- `/app/frontend/src/pages/Admin.js` (Header und Padding reduziert)
-
-**Test-Ergebnis:**
-- ✅ Alle 4 Statistik-Karten in einer Reihe sichtbar
-- ✅ Alle 6 Tabs ohne Scrollen sichtbar
-- ✅ Chart und Bottom Navigation vollständig sichtbar
-- ✅ Portrait-Modus ohne Handy-Drehen nutzbar
 
 ---
 
