@@ -897,19 +897,34 @@ async def approve_kyc(data: KYCApproval, admin: dict = Depends(get_current_user)
         )
         logger.info(f"KYC approved for user {data.user_id} by admin {admin.get('email')}")
         message = f"Benutzer {target_user.get('email')} wurde verifiziert"
+        
+        # Send approval email
+        try:
+            await send_kyc_approved_email(target_user["email"], target_user["name"])
+            logger.info(f"✉️ KYC approval email sent to {target_user['email']}")
+        except Exception as e:
+            logger.error(f"Failed to send KYC approval email: {e}")
     else:
         # Reject KYC
+        rejection_reason = data.rejection_reason or "Dokumente nicht akzeptiert"
         await db.users.update_one(
             {"id": data.user_id},
             {"$set": {
                 "kyc_status": "rejected",
                 "kyc_reviewed_at": datetime.now(timezone.utc).isoformat(),
                 "kyc_reviewed_by": admin["id"],
-                "kyc_rejection_reason": data.rejection_reason or "Dokumente nicht akzeptiert"
+                "kyc_rejection_reason": rejection_reason
             }}
         )
-        logger.info(f"KYC rejected for user {data.user_id} by admin {admin.get('email')}: {data.rejection_reason}")
+        logger.info(f"KYC rejected for user {data.user_id} by admin {admin.get('email')}: {rejection_reason}")
         message = f"Benutzer {target_user.get('email')} wurde abgelehnt"
+        
+        # Send rejection email
+        try:
+            await send_kyc_rejected_email(target_user["email"], target_user["name"], rejection_reason)
+            logger.info(f"✉️ KYC rejection email sent to {target_user['email']}")
+        except Exception as e:
+            logger.error(f"Failed to send KYC rejection email: {e}")
     
     return {"success": True, "message": message}
 
