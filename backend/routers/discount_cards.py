@@ -83,6 +83,10 @@ async def create_discount_card(data: DiscountCardCreate, user: dict = Depends(ge
     }
     
     await db.discount_cards.insert_one(card)
+    
+    # Remove MongoDB _id for response
+    card.pop("_id", None)
+    
     logger.info(f"Rabattkarte erstellt: {card['name']} von Admin {user.get('email')}")
     
     return {"success": True, "card": card}
