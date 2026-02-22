@@ -5,7 +5,7 @@ import { Input } from '../components/ui/input';
 import { 
   BarChart3, TrendingUp, Users, CreditCard, Download, RefreshCw,
   Calendar, Euro, Gift, ShoppingCart, Clock, Building2, User,
-  ChevronDown, ChevronUp, FileSpreadsheet, PieChart
+  ChevronDown, ChevronUp, FileSpreadsheet, PieChart, Eye, List
 } from 'lucide-react';
 import { toast } from 'sonner';
 import axios from 'axios';
@@ -16,14 +16,13 @@ export default function BidBlitzPayAnalytics() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
-  const [startDate, setStartDate] = useState(() => {
-    const d = new Date();
-    d.setDate(d.getDate() - 30);
-    return d.toISOString().split('T')[0];
-  });
-  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [expandedSection, setExpandedSection] = useState('overview');
+  const [transactions, setTransactions] = useState([]);
+  const [showAllTransactions, setShowAllTransactions] = useState(true);
+  const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]); // Heute
+  const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]); // Heute
+  const [expandedSection, setExpandedSection] = useState('all'); // Alle Sektionen offen
   const [exporting, setExporting] = useState(false);
+  const [dateRange, setDateRange] = useState('today');
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
