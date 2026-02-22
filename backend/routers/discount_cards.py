@@ -138,13 +138,15 @@ async def get_my_discount_cards(user: dict = Depends(get_current_user)):
     # Finde alle aktiven Karten die für diesen Kunden gelten
     cards = await db.discount_cards.find({
         "is_active": True,
-        "$or": [
-            {"applies_to_all": True},
-            {"specific_customers": user_id}
-        ],
-        "$or": [
-            {"valid_until": None},
-            {"valid_until": {"$gte": now}}
+        "$and": [
+            {"$or": [
+                {"applies_to_all": True},
+                {"specific_customers": user_id}
+            ]},
+            {"$or": [
+                {"valid_until": None},
+                {"valid_until": {"$gte": now}}
+            ]}
         ]
     }, {"_id": 0}).to_list(50)
     
