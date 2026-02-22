@@ -290,16 +290,82 @@ export default function AdminWalletTopup({ token, t }) {
         </div>
       </div>
 
-      {/* Bonus Info Banner - Kompakt */}
+      {/* Bonus Info Banner - Kompakt mit Einstellungen */}
       <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-2 sm:p-4">
-        <h3 className="font-bold text-amber-800 mb-1 sm:mb-2 flex items-center gap-1.5 text-xs sm:text-base">
-          <Gift className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
-          Aktive Boni & Anreize
-        </h3>
+        <div className="flex items-center justify-between mb-1 sm:mb-2">
+          <h3 className="font-bold text-amber-800 flex items-center gap-1.5 text-xs sm:text-base">
+            <Gift className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+            Aktive Boni & Anreize
+          </h3>
+          <button 
+            onClick={() => setShowCommissionSettings(!showCommissionSettings)}
+            className="text-amber-600 hover:text-amber-800 p-1 rounded hover:bg-amber-100 transition-colors"
+            title="Provisionen einstellen"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
+        </div>
+        
+        {/* Settings Panel */}
+        {showCommissionSettings && (
+          <div className="bg-white rounded-lg p-3 mb-2 border border-amber-200">
+            <h4 className="text-sm font-bold text-slate-700 mb-2">Provisionen einstellen</h4>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-slate-500 block mb-1">Kundenbonus (%)</label>
+                <div className="flex gap-1">
+                  <Input 
+                    type="number" 
+                    step="0.1"
+                    min="0"
+                    max="50"
+                    value={editCustomerBonus}
+                    onChange={(e) => setEditCustomerBonus(e.target.value)}
+                    className="h-8 text-sm"
+                  />
+                  <span className="flex items-center text-slate-400">%</span>
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-slate-500 block mb-1">Händlerprovision (%)</label>
+                <div className="flex gap-1">
+                  <Input 
+                    type="number"
+                    step="0.1" 
+                    min="0"
+                    max="50"
+                    value={editMerchantCommission}
+                    onChange={(e) => setEditMerchantCommission(e.target.value)}
+                    className="h-8 text-sm"
+                  />
+                  <span className="flex items-center text-slate-400">%</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <Button 
+                onClick={saveCommissionSettings} 
+                disabled={savingSettings}
+                size="sm"
+                className="bg-green-500 hover:bg-green-600"
+              >
+                {savingSettings ? <RefreshCw className="w-3 h-3 animate-spin" /> : 'Speichern'}
+              </Button>
+              <Button 
+                onClick={() => setShowCommissionSettings(false)} 
+                variant="outline"
+                size="sm"
+              >
+                Abbrechen
+              </Button>
+            </div>
+          </div>
+        )}
+        
         <div className="grid grid-cols-3 gap-1 sm:gap-4 text-[9px] sm:text-sm">
           <div className="flex items-center gap-1">
             <Percent className="w-3 h-3 text-green-600 flex-shrink-0" />
-            <span><strong>2%</strong> Kundenbonus</span>
+            <span><strong>{(commissionSettings.customer_bonus_percent * 100).toFixed(1)}%</strong> Kundenbonus</span>
           </div>
           <div className="flex items-center gap-1">
             <Gift className="w-3 h-3 text-blue-600 flex-shrink-0" />
@@ -307,7 +373,7 @@ export default function AdminWalletTopup({ token, t }) {
           </div>
           <div className="flex items-center gap-1">
             <Trophy className="w-3 h-3 text-amber-600 flex-shrink-0" />
-            <span><strong>2%</strong> Händler</span>
+            <span><strong>{(commissionSettings.merchant_commission_percent * 100).toFixed(1)}%</strong> Händler</span>
           </div>
         </div>
       </div>
