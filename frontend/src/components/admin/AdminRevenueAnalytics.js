@@ -63,54 +63,54 @@ export function AdminRevenueAnalytics({ token }) {
   const formatCurrency = (value) => `€${(value || 0).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Euro className="w-6 h-6 text-green-600" />
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Euro className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
             Umsatz-Analyse
           </h2>
-          <p className="text-gray-500 text-sm mt-1">Einnahmen, Gebotskäufe und Conversion</p>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">Einnahmen, Gebotskäufe und Conversion</p>
         </div>
-        <div className="flex gap-2">
-          <select value={period} onChange={(e) => setPeriod(e.target.value)} className="px-3 py-2 border rounded-lg text-sm">
+        <div className="flex gap-2 w-full sm:w-auto">
+          <select value={period} onChange={(e) => setPeriod(e.target.value)} className="flex-1 sm:flex-none px-3 py-2 border rounded-lg text-sm">
             <option value="week">Diese Woche</option>
             <option value="month">Dieser Monat</option>
             <option value="quarter">Quartal</option>
           </select>
-          <Button onClick={fetchAnalytics} disabled={loading} variant="outline">
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Aktualisieren
+          <Button onClick={fetchAnalytics} disabled={loading} variant="outline" className="whitespace-nowrap">
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline ml-2">Aktualisieren</span>
           </Button>
         </div>
       </div>
 
       {/* Overview Cards */}
       {overview && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-5 text-white">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-3 sm:p-5 text-white">
             <div className="flex justify-between items-start">
-              <Euro className="w-8 h-8 opacity-80" />
+              <Euro className="w-6 h-6 sm:w-8 sm:h-8 opacity-80" />
               <ChangeIndicator value={overview.day_change_percent} />
             </div>
-            <div className="text-3xl font-bold mt-2">{formatCurrency(overview.revenue_today)}</div>
-            <div className="text-green-100 text-sm">Umsatz heute</div>
+            <div className="text-xl sm:text-3xl font-bold mt-2">{formatCurrency(overview.revenue_today)}</div>
+            <div className="text-green-100 text-xs sm:text-sm">Umsatz heute</div>
           </div>
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-5 text-white">
-            <TrendingUp className="w-8 h-8 opacity-80 mb-2" />
-            <div className="text-3xl font-bold">{formatCurrency(overview.revenue_this_week)}</div>
-            <div className="text-blue-100 text-sm">Diese Woche</div>
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-3 sm:p-5 text-white">
+            <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 opacity-80 mb-2" />
+            <div className="text-xl sm:text-3xl font-bold">{formatCurrency(overview.revenue_this_week)}</div>
+            <div className="text-blue-100 text-xs sm:text-sm">Diese Woche</div>
           </div>
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-5 text-white">
-            <BarChart3 className="w-8 h-8 opacity-80 mb-2" />
-            <div className="text-3xl font-bold">{formatCurrency(overview.revenue_this_month)}</div>
-            <div className="text-purple-100 text-sm">Dieser Monat</div>
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-3 sm:p-5 text-white">
+            <BarChart3 className="w-6 h-6 sm:w-8 sm:h-8 opacity-80 mb-2" />
+            <div className="text-xl sm:text-3xl font-bold">{formatCurrency(overview.revenue_this_month)}</div>
+            <div className="text-purple-100 text-xs sm:text-sm">Dieser Monat</div>
           </div>
-          <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-5 text-white">
-            <ShoppingCart className="w-8 h-8 opacity-80 mb-2" />
-            <div className="text-3xl font-bold">{overview.transactions_today}</div>
-            <div className="text-amber-100 text-sm">Transaktionen heute</div>
+          <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-3 sm:p-5 text-white">
+            <ShoppingCart className="w-6 h-6 sm:w-8 sm:h-8 opacity-80 mb-2" />
+            <div className="text-xl sm:text-3xl font-bold">{overview.transactions_today}</div>
+            <div className="text-amber-100 text-xs sm:text-sm">Transaktionen heute</div>
           </div>
         </div>
       )}
