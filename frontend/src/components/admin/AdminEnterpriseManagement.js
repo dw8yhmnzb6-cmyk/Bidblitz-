@@ -466,25 +466,52 @@ export default function AdminEnterpriseManagement() {
                             </div>
                             <div>
                               <label className="block text-xs font-medium text-gray-600 mb-1">Land</label>
-                              <select
-                                value={payoutForm.bank_country}
-                                onChange={(e) => setPayoutForm({...payoutForm, bank_country: e.target.value})}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                              >
-                                <option value="DE">🇩🇪 Deutschland</option>
-                                <option value="AT">🇦🇹 Österreich</option>
-                                <option value="CH">🇨🇭 Schweiz</option>
-                                <option value="NL">🇳🇱 Niederlande</option>
-                                <option value="BE">🇧🇪 Belgien</option>
-                                <option value="FR">🇫🇷 Frankreich</option>
-                                <option value="IT">🇮🇹 Italien</option>
-                                <option value="ES">🇪🇸 Spanien</option>
-                                <option value="PL">🇵🇱 Polen</option>
-                                <option value="GB">🇬🇧 Großbritannien</option>
-                                <option value="US">🇺🇸 USA</option>
-                                <option value="TR">🇹🇷 Türkei</option>
-                                <option value="AE">🇦🇪 VAE</option>
-                              </select>
+                              {payoutForm.bank_country === 'OTHER' ? (
+                                <div className="flex gap-2">
+                                  <input
+                                    type="text"
+                                    value={payoutForm.bank_country_custom || ''}
+                                    onChange={(e) => setPayoutForm({...payoutForm, bank_country_custom: e.target.value.toUpperCase()})}
+                                    placeholder="z.B. XK, MK"
+                                    maxLength={3}
+                                    className="w-20 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => setPayoutForm({...payoutForm, bank_country: 'DE', bank_country_custom: ''})}
+                                    className="px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded text-gray-600"
+                                  >
+                                    Zurück
+                                  </button>
+                                </div>
+                              ) : (
+                                <select
+                                  value={payoutForm.bank_country}
+                                  onChange={(e) => setPayoutForm({...payoutForm, bank_country: e.target.value})}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                >
+                                  <option value="DE">🇩🇪 Deutschland</option>
+                                  <option value="AT">🇦🇹 Österreich</option>
+                                  <option value="CH">🇨🇭 Schweiz</option>
+                                  <option value="NL">🇳🇱 Niederlande</option>
+                                  <option value="BE">🇧🇪 Belgien</option>
+                                  <option value="FR">🇫🇷 Frankreich</option>
+                                  <option value="IT">🇮🇹 Italien</option>
+                                  <option value="ES">🇪🇸 Spanien</option>
+                                  <option value="PL">🇵🇱 Polen</option>
+                                  <option value="GB">🇬🇧 Großbritannien</option>
+                                  <option value="US">🇺🇸 USA</option>
+                                  <option value="TR">🇹🇷 Türkei</option>
+                                  <option value="AE">🇦🇪 VAE</option>
+                                  <option value="XK">🇽🇰 Kosovo</option>
+                                  <option value="AL">🇦🇱 Albanien</option>
+                                  <option value="MK">🇲🇰 Nordmazedonien</option>
+                                  <option value="RS">🇷🇸 Serbien</option>
+                                  <option value="BA">🇧🇦 Bosnien</option>
+                                  <option value="HR">🇭🇷 Kroatien</option>
+                                  <option value="OTHER">✏️ Manuell eingeben...</option>
+                                </select>
+                              )}
                             </div>
                           </div>
                           <div>
