@@ -1321,13 +1321,12 @@ export default function Admin() {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            onTouchEnd={(e) => {
-              e.preventDefault();
+            onClick={(e) => {
+              e.stopPropagation();
               setMobileMenuOpen(!mobileMenuOpen);
             }}
-            className="text-gray-800 border-gray-300 px-2 py-1 min-h-[36px] sm:min-h-[40px] touch-manipulation active:bg-gray-100 text-xs sm:text-sm"
-            style={{ WebkitTapHighlightColor: 'rgba(0,0,0,0.1)', touchAction: 'manipulation' }}
+            className="text-gray-800 border-gray-300 px-2 py-1 min-h-[36px] sm:min-h-[40px] active:bg-gray-100 text-xs sm:text-sm select-none"
+            style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', userSelect: 'none' }}
             data-testid="admin-mobile-menu-btn"
           >
             {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -1337,7 +1336,11 @@ export default function Admin() {
         
         {/* Mobile/Tablet Menu Dropdown - Kategorisiert */}
         {mobileMenuOpen && (
-          <div className="px-2 pb-3 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 max-h-[70vh] overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div 
+            className="px-2 pb-3 bg-gradient-to-b from-cyan-50 to-cyan-100 border-b border-gray-200 max-h-[70vh] overflow-y-auto" 
+            style={{ WebkitOverflowScrolling: 'touch' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             {tabCategories.map((category) => (
               <div key={category.category} className="mb-4">
                 {/* Kategorie-Header */}
