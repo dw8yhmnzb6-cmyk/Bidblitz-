@@ -267,67 +267,39 @@ export function AdminRevenueAnalytics({ token }) {
           </div>
         </div>
       )}
-              })}
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-4 gap-2">
-            <div className="bg-white rounded-lg border p-2 text-center">
-              <div className="text-sm sm:text-lg font-bold text-blue-600">{conversion.conversion_rates?.registration_to_bid}%</div>
-              <div className="text-[8px] sm:text-[10px] text-gray-500">Reg→Bid</div>
-            </div>
-            <div className="bg-white rounded-lg border p-2 text-center">
-              <div className="text-sm sm:text-lg font-bold text-green-600">{conversion.conversion_rates?.bid_to_purchase}%</div>
-              <div className="text-[8px] sm:text-[10px] text-gray-500">Bid→Kauf</div>
-            </div>
-            <div className="bg-white rounded-lg border p-2 text-center">
-              <div className="text-sm sm:text-lg font-bold text-purple-600">{conversion.conversion_rates?.purchase_to_win}%</div>
-              <div className="text-[8px] sm:text-[10px] text-gray-500">Kauf→Win</div>
-            </div>
-            <div className="bg-white rounded-lg border p-2 text-center">
-              <div className="text-sm sm:text-lg font-bold text-amber-600">{conversion.conversion_rates?.overall}%</div>
-              <div className="text-[8px] sm:text-[10px] text-gray-500">Gesamt</div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Timing Tab */}
+      {/* Timing Tab - Kompakt */}
       {activeTab === 'timing' && hourlyData && (
-        <div className="bg-white rounded-xl border shadow-sm p-4 sm:p-6">
-          <h3 className="font-semibold mb-4 flex flex-col sm:flex-row items-start sm:items-center gap-2">
-            <span className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-blue-500" />
-              Umsatz nach Tageszeit
-            </span>
+        <div className="bg-white rounded-lg border p-2 sm:p-4">
+          <h3 className="font-medium text-gray-900 mb-2 text-xs sm:text-sm flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-blue-500" />
+            Peak-Zeiten
             {hourlyData.peak_hour && (
-              <span className="text-xs sm:text-sm text-green-600 bg-green-50 px-2 sm:px-3 py-1 rounded-full">
+              <span className="text-[9px] text-green-600 bg-green-50 px-1.5 py-0.5 rounded ml-auto">
                 Peak: {hourlyData.peak_hour.hour}
               </span>
             )}
           </h3>
-          
-          <div className="grid grid-cols-8 sm:grid-cols-12 gap-1 sm:gap-2">
-            {hourlyData.hourly_breakdown?.map((hour) => {
+          <div className="grid grid-cols-12 gap-0.5">
+            {hourlyData.hourly_breakdown?.slice(0, 12).map((hour) => {
               const maxRev = Math.max(...hourlyData.hourly_breakdown.map(h => h.revenue), 1);
               const height = (hour.revenue / maxRev) * 100;
               const isPeak = hour.hour === hourlyData.peak_hour?.hour;
               return (
                 <div key={hour.hour} className="flex flex-col items-center">
-                  <div className="h-16 sm:h-24 w-full flex items-end justify-center">
+                  <div className="h-10 sm:h-16 w-full flex items-end justify-center">
                     <div 
-                      className={`w-full rounded-t transition-all ${isPeak ? 'bg-green-500' : 'bg-blue-400'}`}
-                      style={{ height: `${Math.max(height, 5)}%` }}
-                      title={`${hour.hour}: ${formatCurrency(hour.revenue)}`}
+                      className={`w-full rounded-t ${isPeak ? 'bg-green-500' : 'bg-blue-400'}`}
+                      style={{ height: `${Math.max(height, 8)}%` }}
                     />
                   </div>
-                  <span className="text-[8px] sm:text-xs text-gray-500 mt-1">{hour.hour.slice(0, 2)}</span>
+                  <span className="text-[6px] sm:text-[8px] text-gray-400">{hour.hour.slice(0, 2)}</span>
                 </div>
               );
             })}
           </div>
-          <div className="text-center text-[10px] sm:text-xs text-gray-400 mt-4">Uhrzeit (UTC)</div>
         </div>
+      )}
       )}
 
       <div className="text-center text-xs text-gray-400">
