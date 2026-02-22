@@ -92,7 +92,7 @@ export default function Login() {
       }
 
       // Login successful
-      const { token, user: userData } = response.data;
+      const { token, user: userData, kyc_required, kyc_message } = response.data;
       
       try {
         localStorage.setItem('token', token);
@@ -106,6 +106,23 @@ export default function Login() {
       }
       
       await refreshUser();
+      
+      // Check if KYC is required
+      if (kyc_required) {
+        if (kyc_message === 'kyc_documents_missing') {
+          toast.info(language === 'de' 
+            ? 'Bitte vervollständigen Sie Ihre Identitätsverifizierung' 
+            : 'Please complete your identity verification');
+        } else if (kyc_message?.startsWith('kyc_rejected:')) {
+          const reason = kyc_message.replace('kyc_rejected:', '');
+          toast.warning(language === 'de' 
+            ? `Ihre Verifizierung wurde abgelehnt: ${reason}. Bitte laden Sie neue Dokumente hoch.` 
+            : `Your verification was rejected: ${reason}. Please upload new documents.`);
+        }
+        navigate('/kyc-verification');
+        return;
+      }
+      
       toast.success(texts.loginSuccess);
       
       // Check user role and redirect accordingly
