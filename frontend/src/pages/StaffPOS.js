@@ -1194,7 +1194,7 @@ export default function StaffPOS() {
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [staff, setStaff] = useState(null);
-  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [loginForm, setLoginForm] = useState({ employee_number: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   
   // Transaction state
