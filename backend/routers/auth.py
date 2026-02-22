@@ -91,6 +91,10 @@ async def register(user: UserCreate, request: Request):
     referral_code = user_id[:8].upper()
     customer_number = await generate_customer_number()
     
+    # Generate email verification token
+    email_verification_token = secrets.token_urlsafe(32)
+    email_verification_expires = (datetime.now(timezone.utc) + timedelta(hours=24)).isoformat()
+    
     new_user = {
         "id": user_id,
         "email": user.email.lower(),
@@ -100,6 +104,10 @@ async def register(user: UserCreate, request: Request):
         "bids_balance": 10,  # Welcome bids
         "is_admin": False,
         "is_blocked": False,
+        # Email verification
+        "email_verified": False,
+        "email_verification_token": email_verification_token,
+        "email_verification_expires": email_verification_expires,
         # KYC Verification - User needs admin approval
         "kyc_status": "pending",  # pending, approved, rejected
         "kyc_id_front": None,  # URL to ID front image
@@ -124,6 +132,13 @@ async def register(user: UserCreate, request: Request):
     }
     
     await db.users.insert_one(new_user)
+    
+    # Send verification email
+    try:
+        await send_verification_email(user.email, user.name, email_verification_token)
+        logger.info(f"✉️ Verification email sent to {user.email}")
+    except Exception as e:
+        logger.error(f"❌ Failed to send verification email: {e}")
     
     # Check if this email is an approved wholesale customer waiting to be linked
     wholesale_customer = await db.wholesale_customers.find_one({"email": user.email.lower(), "user_id": None})
@@ -151,6 +166,8 @@ async def register(user: UserCreate, request: Request):
     
     return {
         "token": token,
+        "email_verification_required": True,
+        "message": "Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail-Adresse.",
         "user": {
             "id": user_id,
             "email": new_user["email"],
