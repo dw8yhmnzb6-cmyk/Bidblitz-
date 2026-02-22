@@ -2305,33 +2305,33 @@ export default function StaffPOS() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Header */}
-      <header className="bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 px-4 py-3">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center">
-              <Store className="w-5 h-5 text-white" />
+      <header className="bg-slate-800/80 backdrop-blur-sm border-b border-slate-700/50 px-3 sm:px-4 py-3">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-shrink">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Store className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
-            <div>
-              <h1 className="text-white font-bold">{staff?.branch_name || 'Kasse'}</h1>
-              <p className="text-slate-400 text-sm">{staff?.name}</p>
+            <div className="min-w-0">
+              <h1 className="text-white font-bold text-sm sm:text-base truncate">{staff?.branch_name || 'Kasse'}</h1>
+              <p className="text-slate-400 text-xs sm:text-sm truncate">{staff?.name}</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* Language Selector */}
             <div className="relative">
               <button
                 onClick={() => setShowLanguages(!showLanguages)}
-                className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 transition-colors flex items-center gap-1"
+                className="p-1.5 sm:p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 transition-colors flex items-center gap-0.5 sm:gap-1"
                 title={t.close || 'Sprache'}
                 data-testid="language-selector-btn"
               >
-                <Globe className="w-5 h-5" />
-                <span className="text-lg">{languages.find(l => l.code === language)?.flag || '🇩🇪'}</span>
+                <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="text-base sm:text-lg">{languages.find(l => l.code === language)?.flag || '🇩🇪'}</span>
               </button>
               
               {showLanguages && (
-                <div className="absolute right-0 top-full mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-50 p-2 min-w-[280px] max-h-[400px] overflow-y-auto">
+                <div className="fixed sm:absolute right-2 sm:right-0 top-14 sm:top-full sm:mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-[100] p-2 w-[calc(100vw-1rem)] sm:w-auto sm:min-w-[280px] max-h-[60vh] sm:max-h-[400px] overflow-y-auto">
                   <div className="grid grid-cols-2 gap-1">
                     {languages.map(lang => (
                       <button
@@ -2340,7 +2340,7 @@ export default function StaffPOS() {
                           setLanguage(lang.code);
                           setShowLanguages(false);
                         }}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-all ${
+                        className={`flex items-center gap-2 px-2 sm:px-3 py-2.5 sm:py-2 rounded-lg text-left transition-all ${
                           language === lang.code
                             ? 'bg-amber-500 text-white'
                             : 'hover:bg-slate-700 text-slate-300'
@@ -2359,7 +2359,7 @@ export default function StaffPOS() {
             {/* Hardware Scanner Toggle */}
             <button
               onClick={() => setHardwareScannerMode(!hardwareScannerMode)}
-              className={`p-2 rounded-lg transition-colors flex items-center gap-1 ${
+              className={`p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-0.5 sm:gap-1 ${
                 hardwareScannerMode 
                   ? 'bg-green-500 text-white animate-pulse' 
                   : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
@@ -2367,29 +2367,37 @@ export default function StaffPOS() {
               title={hardwareScannerMode ? (t.hardwareScannerActive || 'Scanner aktiv') : (t.hardwareScanner || 'Hardware-Scanner')}
               data-testid="hardware-scanner-btn"
             >
-              <Scan className="w-5 h-5" />
-              {hardwareScannerMode && <span className="text-xs font-bold">ON</span>}
+              <Scan className="w-4 h-4 sm:w-5 sm:h-5" />
+              {hardwareScannerMode && <span className="text-[10px] sm:text-xs font-bold">ON</span>}
             </button>
             
             <button
               onClick={() => setShowHistory(true)}
-              className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 transition-colors"
+              className="p-1.5 sm:p-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 transition-colors"
               title={t.transactionHistory || 'Verlauf'}
               data-testid="history-btn"
             >
-              <History className="w-5 h-5" />
+              <History className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={handleLogout}
-              className="p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 transition-colors"
+              className="p-1.5 sm:p-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 transition-colors"
               title={t.logout || 'Abmelden'}
               data-testid="logout-btn"
             >
-              <LogOut className="w-5 h-5" />
+              <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>
       </header>
+      
+      {/* Overlay for language dropdown on mobile */}
+      {showLanguages && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-[90] sm:hidden" 
+          onClick={() => setShowLanguages(false)}
+        />
+      )}
 
       {/* Hardware Scanner Status Bar */}
       {hardwareScannerMode && (
