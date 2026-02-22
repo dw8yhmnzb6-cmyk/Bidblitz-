@@ -477,6 +477,73 @@ export default function BidBlitzPayAnalytics() {
             })}
           </div>
         </CollapsibleSection>
+
+        {/* ALL TRANSACTIONS LIST */}
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 mb-4 overflow-hidden">
+          <div className="flex items-center justify-between p-4 border-b border-slate-700/50">
+            <div className="flex items-center gap-3">
+              <List className="w-5 h-5 text-amber-400" />
+              <span className="font-medium text-white">Alle Transaktionen ({transactions.length})</span>
+            </div>
+            <Button
+              onClick={() => setShowAllTransactions(!showAllTransactions)}
+              variant="ghost"
+              size="sm"
+              className="text-slate-400"
+            >
+              {showAllTransactions ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </Button>
+          </div>
+          
+          {showAllTransactions && (
+            <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+              <table className="w-full text-sm">
+                <thead className="sticky top-0 bg-slate-800">
+                  <tr className="border-b border-slate-700">
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Datum</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Uhrzeit</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Typ</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Kunde</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Kunden-Nr.</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Filiale</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Mitarbeiter</th>
+                    <th className="text-right py-3 px-4 text-slate-400 font-medium">Betrag</th>
+                    <th className="text-right py-3 px-4 text-slate-400 font-medium">Bonus</th>
+                    <th className="text-right py-3 px-4 text-slate-400 font-medium">Rabatt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactions.length === 0 ? (
+                    <tr>
+                      <td colSpan="10" className="py-8 text-center text-slate-400">
+                        Keine Transaktionen in diesem Zeitraum
+                      </td>
+                    </tr>
+                  ) : (
+                    transactions.map((tx, i) => (
+                      <tr key={tx.id || i} className={`border-b border-slate-700/50 hover:bg-slate-700/30 ${i % 2 === 0 ? 'bg-slate-800/30' : ''}`}>
+                        <td className="py-3 px-4 text-white">{formatDate(tx.created_at)}</td>
+                        <td className="py-3 px-4 text-slate-300">{formatTime(tx.created_at)}</td>
+                        <td className="py-3 px-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(tx.type)}`}>
+                            {getTypeLabel(tx.type)}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-white font-medium">{tx.customer_name || '-'}</td>
+                        <td className="py-3 px-4 text-slate-400 font-mono text-xs">{tx.customer_barcode || tx.customer_number || '-'}</td>
+                        <td className="py-3 px-4 text-slate-300">{tx.branch_name || '-'}</td>
+                        <td className="py-3 px-4 text-slate-300">{tx.staff_name || '-'}</td>
+                        <td className="py-3 px-4 text-right font-bold text-amber-400">{formatCurrency(tx.amount)}</td>
+                        <td className="py-3 px-4 text-right text-purple-400">{tx.bonus ? formatCurrency(tx.bonus) : '-'}</td>
+                        <td className="py-3 px-4 text-right text-pink-400">{tx.discount_amount ? formatCurrency(tx.discount_amount) : '-'}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
