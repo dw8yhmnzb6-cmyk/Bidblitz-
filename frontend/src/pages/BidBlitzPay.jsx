@@ -2513,12 +2513,15 @@ const BidBlitzPay = () => {
                     </span>
                   </div>
 
-                  {/* Show/Hide Balance */}
+                  {/* Show/Hide Balance - Use wallet balance for real-time updates */}
                   {!hideBalance && (
                     <div className="bg-amber-50 rounded-xl p-4">
                       <p className="text-xs text-amber-600 mb-2">{t('availableForPayment')}:</p>
                       <p className="text-2xl font-bold text-amber-700">
-                        €{(qrCode.wallet_summary?.total_value || 0).toFixed(2)}
+                        €{(wallet?.universal_balance || 0).toFixed(2)}
+                      </p>
+                      <p className="text-xs text-green-600 mt-1 animate-pulse">
+                        ● Live-Aktualisierung aktiv
                       </p>
                     </div>
                   )}
