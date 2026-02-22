@@ -1197,6 +1197,7 @@ export default function Admin() {
       borderColor: 'border-blue-500/30',
       tabs: [
         { id: 'users', label: 'Kunden', icon: <Users className="w-5 h-5" /> },
+        { id: 'support', label: 'Support', icon: <Headphones className="w-5 h-5" /> },
         { id: 'kyc-management', label: 'KYC-Freischaltung', icon: <Shield className="w-5 h-5" /> },
         { id: 'managers', label: 'Manager', icon: <Building2 className="w-5 h-5" /> },
         { id: 'staff', label: 'Mitarbeiter', icon: <UserPlus className="w-5 h-5" /> },
