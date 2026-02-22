@@ -79,7 +79,14 @@ async def create_discount_card(data: DiscountCardCreate, user: dict = Depends(ge
         "description": data.description,
         "discount_type": data.discount_type,
         "discount_value": data.discount_value,
+        # Für "2+1" oder "3 für 2" Aktionen
+        "buy_quantity": data.buy_quantity,
+        "free_quantity": data.free_quantity,
+        "pay_quantity": data.pay_quantity,
+        # Artikel und Kategorien
         "categories": data.categories or [],
+        "specific_articles": data.specific_articles or [],
+        "article_name": data.article_name,
         "min_purchase": data.min_purchase or 0,
         "max_discount": data.max_discount,
         "valid_from": data.valid_from,
