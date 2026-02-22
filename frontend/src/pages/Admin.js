@@ -1350,21 +1350,17 @@ export default function Admin() {
                   {category.tabs.map((tab) => (
                     <button
                       key={tab.id}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setActiveTab(tab.id);
-                        setMobileMenuOpen(false);
+                        setTimeout(() => setMobileMenuOpen(false), 150);
                       }}
-                      onTouchEnd={(e) => {
-                        e.preventDefault();
-                        setActiveTab(tab.id);
-                        setMobileMenuOpen(false);
-                      }}
-                      className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all border touch-manipulation min-h-[70px] ${
+                      className={`flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl transition-all border min-h-[70px] select-none ${
                         activeTab === tab.id
                           ? `${category.bgColor} ${category.textColor} ${category.borderColor} shadow-md scale-105`
                           : 'bg-white text-gray-600 hover:bg-gray-50 active:bg-gray-100 border-gray-100 shadow-sm'
                       }`}
-                      style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' }}
+                      style={{ WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation', userSelect: 'none' }}
                       data-testid={`mobile-tab-${tab.id}`}
                     >
                       <span className={`${activeTab === tab.id ? category.textColor : 'text-gray-500'}`}>
