@@ -81,6 +81,13 @@ async def setup_bank_account(token: str, data: WiseBankAccountRequest):
     if len(iban) < 15 or len(iban) > 34:
         raise HTTPException(status_code=400, detail="Ungültiges IBAN-Format")
     
+    # Validate BIC/SWIFT if provided (8 or 11 characters)
+    bic_swift = None
+    if data.bic_swift:
+        bic_swift = data.bic_swift.replace(" ", "").upper()
+        if len(bic_swift) not in [8, 11]:
+            raise HTTPException(status_code=400, detail="BIC/SWIFT muss 8 oder 11 Zeichen haben")
+    
     wise_recipient_id = None
     wise_connected = False
     
@@ -98,6 +105,10 @@ async def setup_bank_account(token: str, data: WiseBankAccountRequest):
                     "iban": iban
                 }
             }
+            
+            # Add BIC if provided (needed for some international transfers)
+            if bic_swift:
+                recipient_data["details"]["bic"] = bic_swift
             
             async with httpx.AsyncClient() as client:
                 response = await client.post(
@@ -126,6 +137,9 @@ async def setup_bank_account(token: str, data: WiseBankAccountRequest):
             "wise_account_holder": data.account_holder_name,
             "wise_iban": iban[-4:],  # Last 4 digits for display
             "wise_iban_full": iban,  # Full IBAN for admin processing
+            "wise_bic_swift": bic_swift,  # BIC/SWIFT for international
+            "wise_bank_name": data.bank_name,
+            "wise_bank_country": data.bank_country,
             "wise_currency": data.currency,
             "wise_setup_complete": True,
             "wise_api_connected": wise_connected,
