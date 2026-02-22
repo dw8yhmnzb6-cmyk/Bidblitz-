@@ -450,6 +450,51 @@ export default function AdminEnterpriseManagement() {
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             />
                           </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">BIC / SWIFT</label>
+                              <input
+                                type="text"
+                                value={payoutForm.bic_swift}
+                                onChange={(e) => setPayoutForm({...payoutForm, bic_swift: e.target.value.toUpperCase()})}
+                                placeholder="COBADEFFXXX"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                              />
+                              <p className="text-[10px] text-gray-400 mt-0.5">Für internationale Überweisungen</p>
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">Land</label>
+                              <select
+                                value={payoutForm.bank_country}
+                                onChange={(e) => setPayoutForm({...payoutForm, bank_country: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                              >
+                                <option value="DE">🇩🇪 Deutschland</option>
+                                <option value="AT">🇦🇹 Österreich</option>
+                                <option value="CH">🇨🇭 Schweiz</option>
+                                <option value="NL">🇳🇱 Niederlande</option>
+                                <option value="BE">🇧🇪 Belgien</option>
+                                <option value="FR">🇫🇷 Frankreich</option>
+                                <option value="IT">🇮🇹 Italien</option>
+                                <option value="ES">🇪🇸 Spanien</option>
+                                <option value="PL">🇵🇱 Polen</option>
+                                <option value="GB">🇬🇧 Großbritannien</option>
+                                <option value="US">🇺🇸 USA</option>
+                                <option value="TR">🇹🇷 Türkei</option>
+                                <option value="AE">🇦🇪 VAE</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Bank / Geldinstitut</label>
+                            <input
+                              type="text"
+                              value={payoutForm.bank_name}
+                              onChange={(e) => setPayoutForm({...payoutForm, bank_name: e.target.value})}
+                              placeholder="Commerzbank, Sparkasse, etc."
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            />
+                          </div>
                           <div>
                             <label className="block text-xs font-medium text-gray-600 mb-1">Kontoinhaber</label>
                             <input
@@ -459,6 +504,23 @@ export default function AdminEnterpriseManagement() {
                               placeholder="Firmenname GmbH"
                               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                             />
+                          </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-600 mb-1">Währung</label>
+                              <select
+                                value={payoutForm.currency}
+                                onChange={(e) => setPayoutForm({...payoutForm, currency: e.target.value})}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                              >
+                                <option value="EUR">€ EUR</option>
+                                <option value="USD">$ USD</option>
+                                <option value="GBP">£ GBP</option>
+                                <option value="CHF">CHF</option>
+                                <option value="TRY">₺ TRY</option>
+                                <option value="AED">AED</option>
+                              </select>
+                            </div>
                           </div>
                         </>
                       )}
