@@ -126,7 +126,7 @@ export default function AdminWalletTopup({ token, t }) {
   };
 
   // Fetch merchants list
-  const fetchMerchants = useCallback(async () => {
+  const loadMerchants = useCallback(async () => {
     try {
       const response = await axios.get(`${API}/api/partner-portal/admin/all-partners`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -155,8 +155,8 @@ export default function AdminWalletTopup({ token, t }) {
 
   useEffect(() => {
     fetchStats();
-    fetchMerchants();
-  }, [fetchStats]);
+    loadMerchants();
+  }, [fetchStats, loadMerchants]);
 
   // Search customers
   const searchCustomers = async () => {
