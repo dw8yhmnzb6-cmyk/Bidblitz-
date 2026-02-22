@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { 
   Wallet, Search, Plus, Euro, CheckCircle, Users, 
   Gift, Percent, Trophy, TrendingUp, Crown, AlertCircle,
-  RefreshCw, History, ArrowUpRight, Store, ChevronDown
+  RefreshCw, History, ArrowUpRight, Store, ChevronDown, Star, X
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
