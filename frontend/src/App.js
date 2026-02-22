@@ -812,6 +812,18 @@ function AppContent() {
             </ProtectedRoute>
           } />
           
+          {/* Discount Cards Admin */}
+          <Route path="/admin/discount-cards" element={
+            <ProtectedRoute requireAdmin={true}>
+              <DiscountCardsAdmin />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/rabattkarten" element={
+            <ProtectedRoute requireAdmin={true}>
+              <DiscountCardsAdmin />
+            </ProtectedRoute>
+          } />
+          
           {/* Investor Portal - Public */}
           <Route path="/investor" element={<InvestorPortal />} />
           <Route path="/investoren" element={<InvestorPortal />} />
