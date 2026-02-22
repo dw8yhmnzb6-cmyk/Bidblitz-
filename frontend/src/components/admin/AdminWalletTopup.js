@@ -301,13 +301,60 @@ export default function AdminWalletTopup({ token, t }) {
                         <p className="font-medium text-slate-800">{user.name}</p>
                         <p className="text-xs text-slate-500">{user.email}</p>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-green-600">€{user.bidblitz_balance?.toFixed(2) || '0.00'}</p>
-                        <p className="text-xs text-slate-400">Guthaben</p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToFavorites(user);
+                          }}
+                          className="p-1 hover:bg-yellow-100 rounded"
+                          title="Zu Favoriten hinzufügen"
+                        >
+                          <Star className={`w-4 h-4 ${favoriteCustomers.some(f => f.id === user.id) ? 'fill-yellow-400 text-yellow-400' : 'text-slate-300'}`} />
+                        </button>
+                        <div className="text-right">
+                          <p className="font-bold text-green-600">€{user.bidblitz_balance?.toFixed(2) || '0.00'}</p>
+                          <p className="text-xs text-slate-400">Guthaben</p>
+                        </div>
                       </div>
                     </div>
                   </button>
                 ))}
+              </div>
+            )}
+
+            {/* Favoriten / Gespeicherte Kunden */}
+            {favoriteCustomers.length > 0 && searchResults.length === 0 && (
+              <div className="mt-4">
+                <h3 className="text-sm font-medium text-slate-600 mb-2 flex items-center gap-1.5">
+                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                  Gespeicherte Kunden
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {favoriteCustomers.map((user) => (
+                    <button
+                      key={user.id}
+                      onClick={() => setSelectedUser(user)}
+                      className={`px-3 py-2 rounded-lg border text-sm transition-all flex items-center gap-2 ${
+                        selectedUser?.id === user.id 
+                          ? 'border-green-500 bg-green-50 text-green-700' 
+                          : 'border-slate-200 hover:border-green-300 bg-white text-slate-700'
+                      }`}
+                    >
+                      <span className="font-medium truncate max-w-[120px]">{user.name}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeFromFavorites(user.id);
+                        }}
+                        className="p-0.5 hover:bg-red-100 rounded"
+                        title="Entfernen"
+                      >
+                        <X className="w-3 h-3 text-slate-400 hover:text-red-500" />
+                      </button>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
