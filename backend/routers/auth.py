@@ -342,7 +342,7 @@ async def login(credentials: UserLogin, request: Request):
     
     token = create_token(user["id"], user.get("is_admin", False))
     
-    return {
+    response_data = {
         "token": token,
         "user": {
             "id": user["id"],
@@ -355,6 +355,13 @@ async def login(credentials: UserLogin, request: Request):
             "two_factor_enabled": user.get("two_factor_enabled", False)
         }
     }
+    
+    # Add KYC info if required
+    if kyc_required:
+        response_data["kyc_required"] = True
+        response_data["kyc_message"] = kyc_message
+    
+    return response_data
 
 # ==================== GET CURRENT USER ====================
 
