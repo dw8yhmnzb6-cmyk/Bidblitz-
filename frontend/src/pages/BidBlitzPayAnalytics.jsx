@@ -20,9 +20,17 @@ export default function BidBlitzPayAnalytics() {
   const [showAllTransactions, setShowAllTransactions] = useState(true);
   const [startDate, setStartDate] = useState(() => new Date().toISOString().split('T')[0]); // Heute
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]); // Heute
-  const [expandedSection, setExpandedSection] = useState('all'); // Alle Sektionen offen
+  const [expandedSections, setExpandedSections] = useState(['daily', 'branches', 'staff', 'customers']); // Alle offen
   const [exporting, setExporting] = useState(false);
   const [dateRange, setDateRange] = useState('today');
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => 
+      prev.includes(section) 
+        ? prev.filter(s => s !== section)
+        : [...prev, section]
+    );
+  };
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
