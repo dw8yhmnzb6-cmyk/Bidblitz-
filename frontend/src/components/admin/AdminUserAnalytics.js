@@ -175,17 +175,17 @@ export function AdminUserAnalytics({ token }) {
       {/* Activity Tab */}
       {activeTab === 'activity' && activity && (
         <div className="space-y-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-white rounded-xl border p-5 text-center">
-              <div className="text-3xl font-bold text-blue-600">{activity.total_bids?.toLocaleString()}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-blue-600">{activity.total_bids?.toLocaleString()}</div>
               <div className="text-gray-500 text-sm">Gebote gesamt</div>
             </div>
             <div className="bg-white rounded-xl border p-5 text-center">
-              <div className="text-3xl font-bold text-green-600">{activity.unique_active_users}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-green-600">{activity.unique_active_users}</div>
               <div className="text-gray-500 text-sm">Aktive Benutzer</div>
             </div>
             <div className="bg-white rounded-xl border p-5 text-center">
-              <div className="text-3xl font-bold text-purple-600">{activity.avg_bids_per_user}</div>
+              <div className="text-2xl sm:text-3xl font-bold text-purple-600">{activity.avg_bids_per_user}</div>
               <div className="text-gray-500 text-sm">Ø Gebote/Benutzer</div>
             </div>
           </div>
