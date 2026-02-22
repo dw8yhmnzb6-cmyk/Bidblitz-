@@ -29,6 +29,7 @@ export default function AdminEnterpriseManagement() {
     bic_swift: '',
     bank_name: '',
     bank_country: 'DE',
+    bank_country_custom: '',
     payout_frequency: 'monthly',
     iban_mode: 'admin_entry',
     min_payout_amount: 100,
