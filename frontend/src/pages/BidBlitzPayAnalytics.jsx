@@ -116,6 +116,38 @@ export default function BidBlitzPayAnalytics() {
     return new Intl.NumberFormat('de-DE').format(value || 0);
   };
 
+  const formatTime = (dateStr) => {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    return d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('de-DE');
+  };
+
+  const getTypeLabel = (type) => {
+    const labels = {
+      'pos_topup': 'Aufladung',
+      'topup': 'Aufladung',
+      'payment': 'Zahlung',
+      'gift_card_redemption': 'Gutschein'
+    };
+    return labels[type] || type;
+  };
+
+  const getTypeColor = (type) => {
+    const colors = {
+      'pos_topup': 'text-green-400 bg-green-500/20',
+      'topup': 'text-green-400 bg-green-500/20',
+      'payment': 'text-blue-400 bg-blue-500/20',
+      'gift_card_redemption': 'text-purple-400 bg-purple-500/20'
+    };
+    return colors[type] || 'text-slate-400 bg-slate-500/20';
+  };
+
   if (loading && !stats) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
