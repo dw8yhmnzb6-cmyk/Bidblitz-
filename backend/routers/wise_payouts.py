@@ -23,6 +23,9 @@ WISE_API_URL = "https://api.sandbox.wise.com" if WISE_SANDBOX else "https://api.
 class WiseBankAccountRequest(BaseModel):
     account_holder_name: str
     iban: str
+    bic_swift: Optional[str] = None  # BIC/SWIFT for international transfers
+    bank_name: Optional[str] = None
+    bank_country: Optional[str] = None  # ISO 2-letter country code
     currency: str = "EUR"
 
 class WisePayoutRequest(BaseModel):
