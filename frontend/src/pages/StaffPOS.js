@@ -2331,8 +2331,8 @@ export default function StaffPOS() {
               </button>
               
               {showLanguages && (
-                <div className="fixed sm:absolute right-2 sm:right-0 top-14 sm:top-full sm:mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-[100] p-2 w-[calc(100vw-1rem)] sm:w-auto sm:min-w-[280px] max-h-[60vh] sm:max-h-[400px] overflow-y-auto">
-                  <div className="grid grid-cols-2 gap-1">
+                <div className="fixed sm:absolute right-2 sm:right-0 top-14 sm:top-full sm:mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-[100] p-3 w-[calc(100vw-1rem)] sm:w-auto sm:min-w-[320px] max-h-[70vh] sm:max-h-[400px] overflow-y-auto">
+                  <div className="grid grid-cols-3 sm:grid-cols-2 gap-1.5">
                     {languages.map(lang => (
                       <button
                         key={lang.code}
@@ -2340,15 +2340,15 @@ export default function StaffPOS() {
                           setLanguage(lang.code);
                           setShowLanguages(false);
                         }}
-                        className={`flex items-center gap-2 px-2 sm:px-3 py-2.5 sm:py-2 rounded-lg text-left transition-all ${
+                        className={`flex flex-col sm:flex-row items-center sm:gap-2 px-2 py-2 sm:py-2 rounded-lg text-center sm:text-left transition-all ${
                           language === lang.code
                             ? 'bg-amber-500 text-white'
                             : 'hover:bg-slate-700 text-slate-300'
                         }`}
                         data-testid={`lang-${lang.code}`}
                       >
-                        <span className="text-xl">{lang.flag}</span>
-                        <span className="text-sm truncate">{lang.name}</span>
+                        <span className="text-2xl sm:text-xl">{lang.flag}</span>
+                        <span className="text-[10px] sm:text-sm truncate leading-tight mt-0.5 sm:mt-0">{lang.name}</span>
                       </button>
                     ))}
                   </div>
