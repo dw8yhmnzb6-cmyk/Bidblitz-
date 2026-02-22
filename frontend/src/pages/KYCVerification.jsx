@@ -81,12 +81,65 @@ export default function KYCVerification() {
   const [idBack, setIdBack] = useState(null);
   const [selfie, setSelfie] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [kycStatus, setKycStatus] = useState('upload'); // upload, pending, approved, rejected
+  const [kycStatus, setKycStatus] = useState('loading'); // loading, upload, pending, approved, rejected
   const [rejectionReason, setRejectionReason] = useState('');
   
   const idFrontRef = useRef(null);
   const idBackRef = useRef(null);
   const selfieRef = useRef(null);
+
+  // Check KYC status on mount
+  useEffect(() => {
+    const checkKycStatus = async () => {
+      if (!token) {
+        setKycStatus('upload');
+        return;
+      }
+      
+      try {
+        const response = await axios.get(`${API}/auth/kyc/status`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const status = response.data.status;
+        if (status === 'approved') {
+          // Already approved, redirect to dashboard
+          navigate('/dashboard');
+          return;
+        } else if (status === 'rejected') {
+          setKycStatus('rejected');
+          setRejectionReason(response.data.rejection_reason || '');
+        } else if (status === 'pending' && response.data.id_front_uploaded) {
+          // Documents submitted, waiting for review
+          setKycStatus('pending');
+        } else {
+          setKycStatus('upload');
+        }
+      } catch (error) {
+        console.error('KYC status check error:', error);
+        setKycStatus('upload');
+      }
+    };
+    
+    checkKycStatus();
+  }, [token, navigate]);
+
+  // Handle resubmission after rejection
+  const handleResubmit = async () => {
+    try {
+      await axios.post(`${API}/auth/kyc/resubmit`, {}, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setKycStatus('upload');
+      setIdFront(null);
+      setIdBack(null);
+      setSelfie(null);
+      setRejectionReason('');
+      toast.success(t.reupload || 'Sie können jetzt neue Dokumente hochladen');
+    } catch (error) {
+      toast.error('Fehler beim Zurücksetzen');
+    }
+  };
 
   // Upload image to server
   const uploadImage = async (file, type) => {
