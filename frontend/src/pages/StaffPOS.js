@@ -1795,16 +1795,55 @@ export default function StaffPOS() {
     }
   };
 
-  // Login handler
+  // Login handler - supports both staff_number (Mitarbeiternummer) and enterprise email
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     
     try {
-      const res = await fetch(`${API_URL}/api/enterprise/login`, {
+      // First try staff login with staff_number/Kundennummer
+      const staffNumber = loginForm.employee_number || loginForm.email;
+      
+      // Try staff login endpoint first
+      let res = await fetch(`${API_URL}/api/partner/staff/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginForm)
+        body: JSON.stringify({
+          staff_number: staffNumber,
+          password: loginForm.password
+        })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        const staffData = {
+          id: data.staff?.id,
+          name: data.staff?.name,
+          email: data.staff?.email,
+          staff_number: data.staff?.staff_number,
+          role: data.staff?.role || 'counter',
+          branch_id: data.staff?.partner_id,
+          branch_name: data.staff?.partner_name,
+          company_name: data.staff?.partner_name
+        };
+        
+        setStaff(staffData);
+        setIsLoggedIn(true);
+        localStorage.setItem('staff_pos_data', JSON.stringify(staffData));
+        localStorage.setItem('staff_pos_token', data.token);
+        toast.success(`Willkommen, ${staffData.name}!`);
+        fetchTransactionHistory();
+        return;
+      }
+      
+      // Fallback to enterprise login for backwards compatibility
+      res = await fetch(`${API_URL}/api/enterprise/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: staffNumber,
+          password: loginForm.password
+        })
       });
       
       if (res.ok) {
@@ -1812,7 +1851,7 @@ export default function StaffPOS() {
         const staffData = {
           id: data.user_id || data.enterprise_id,
           name: data.user_name || data.company_name,
-          email: loginForm.email,
+          email: staffNumber,
           role: data.role,
           branch_id: data.branch_id || data.enterprise_id,
           branch_name: data.branch_name || data.company_name,
