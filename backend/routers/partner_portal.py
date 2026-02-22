@@ -438,7 +438,7 @@ async def login_staff(data: StaffLogin):
     if not staff.get("is_active", True):
         raise HTTPException(status_code=403, detail="Konto deaktiviert")
     
-    # Get parent partner info
+    # Get parent partner info - check all account types
     partner = await db.partner_accounts.find_one(
         {"id": staff["partner_id"]},
         {"_id": 0, "password_hash": 0}
@@ -446,6 +446,12 @@ async def login_staff(data: StaffLogin):
     
     if not partner:
         partner = await db.restaurant_accounts.find_one(
+            {"id": staff["partner_id"]},
+            {"_id": 0, "password_hash": 0}
+        )
+    
+    if not partner:
+        partner = await db.enterprise_accounts.find_one(
             {"id": staff["partner_id"]},
             {"_id": 0, "password_hash": 0}
         )
