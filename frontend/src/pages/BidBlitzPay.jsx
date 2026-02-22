@@ -1228,6 +1228,24 @@ const BidBlitzPay = () => {
       <div className="max-w-lg mx-auto px-4 -mt-4">
         <div className="bg-white rounded-xl shadow-lg p-1 flex gap-1 overflow-x-auto scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
           <button
+            onClick={() => { setView('topup'); fetchMainBalance(); }}
+            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              view === 'topup' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Plus className="w-4 h-4 inline mr-1" />
+            {t('topUp')}
+          </button>
+          <button
+            onClick={() => { setView('qr'); generateQR(); }}
+            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              view === 'qr' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <QrCode className="w-4 h-4 inline mr-1" />
+            {t('pay')}
+          </button>
+          <button
             onClick={() => setView('wallet')}
             className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
               view === 'wallet' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
@@ -1237,13 +1255,13 @@ const BidBlitzPay = () => {
             {t('vouchers')}
           </button>
           <button
-            onClick={() => { setView('topup'); fetchMainBalance(); }}
+            onClick={() => { setView('history'); fetchTransactions(); }}
             className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-              view === 'topup' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+              view === 'history' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
             }`}
           >
-            <Plus className="w-4 h-4 inline mr-1" />
-            {t('topUp')}
+            <History className="w-4 h-4 inline mr-1" />
+            {t('history')}
           </button>
           <button
             onClick={() => setView('bonus')}
@@ -1298,24 +1316,6 @@ const BidBlitzPay = () => {
           >
             <ArrowDownLeft className="w-4 h-4 inline mr-1" />
             {t('request')}
-          </button>
-          <button
-            onClick={() => { setView('qr'); generateQR(); }}
-            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-              view === 'qr' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <QrCode className="w-4 h-4 inline mr-1" />
-            {t('pay')}
-          </button>
-          <button
-            onClick={() => { setView('history'); fetchTransactions(); }}
-            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
-              view === 'history' ? 'bg-amber-500 text-white' : 'text-gray-600 hover:bg-gray-100'
-            }`}
-          >
-            <History className="w-4 h-4 inline mr-1" />
-            {t('history')}
           </button>
           <button
             onClick={() => setView('security')}
