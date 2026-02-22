@@ -1076,9 +1076,10 @@ class PayoutSettings(BaseModel):
     currency: str = "EUR"  # Target currency for payouts
 
 class CommissionSettings(BaseModel):
-    voucher_commission: float = 5.0  # % commission for vouchers
-    self_pay_commission: float = 3.0  # % commission when customer pays directly
-    customer_cashback: float = 1.0  # % cashback to customers
+    voucher_commission: float = 5.0  # % commission for vouchers (Händler → BidBlitz)
+    self_pay_commission: float = 3.0  # % commission when customer pays directly (BidBlitz → Händler)
+    sales_commission: float = 2.0  # % commission on sales/transactions (Händler → BidBlitz)
+    customer_cashback: float = 1.0  # % cashback to customers (BidBlitz → Kunde)
     is_active: bool = True
 
 @router.get("/admin/list")
