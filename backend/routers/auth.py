@@ -178,6 +178,88 @@ async def register(user: UserCreate, request: Request):
         }
     }
 
+# ==================== EMAIL VERIFICATION ====================
+
+@router.get("/verify-email")
+async def verify_email(token: str):
+    """Verify user's email address"""
+    user = await db.users.find_one(
+        {"email_verification_token": token},
+        {"_id": 0}
+    )
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Ungültiger Verifizierungslink")
+    
+    # Check if already verified
+    if user.get("email_verified"):
+        return {"success": True, "message": "E-Mail bereits bestätigt", "already_verified": True}
+    
+    # Check if token expired
+    expires = user.get("email_verification_expires")
+    if expires:
+        expires_dt = datetime.fromisoformat(expires.replace("Z", "+00:00"))
+        if datetime.now(timezone.utc) > expires_dt:
+            raise HTTPException(status_code=400, detail="Verifizierungslink abgelaufen. Bitte fordern Sie einen neuen an.")
+    
+    # Mark email as verified
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "email_verified": True,
+            "email_verification_token": None,
+            "email_verification_expires": None,
+            "email_verified_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    # Send welcome email
+    try:
+        await send_welcome_email(user["email"], user["name"])
+        logger.info(f"🎉 Welcome email sent to {user['email']}")
+    except Exception as e:
+        logger.error(f"Failed to send welcome email: {e}")
+    
+    logger.info(f"✅ Email verified for user {user['email']}")
+    
+    return {
+        "success": True,
+        "message": "E-Mail erfolgreich bestätigt! Sie können sich jetzt anmelden.",
+        "email": user["email"]
+    }
+
+
+@router.post("/resend-verification")
+async def resend_verification_email(user: dict = Depends(get_current_user)):
+    """Resend email verification link"""
+    full_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    
+    if full_user.get("email_verified"):
+        return {"success": True, "message": "E-Mail bereits bestätigt"}
+    
+    # Generate new token
+    new_token = secrets.token_urlsafe(32)
+    new_expires = (datetime.now(timezone.utc) + timedelta(hours=24)).isoformat()
+    
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "email_verification_token": new_token,
+            "email_verification_expires": new_expires
+        }}
+    )
+    
+    # Send new verification email
+    try:
+        await send_verification_email(full_user["email"], full_user["name"], new_token)
+        logger.info(f"✉️ New verification email sent to {full_user['email']}")
+    except Exception as e:
+        logger.error(f"Failed to send verification email: {e}")
+        raise HTTPException(status_code=500, detail="E-Mail konnte nicht gesendet werden")
+    
+    return {"success": True, "message": "Neuer Verifizierungslink wurde gesendet"}
+
+
 # ==================== LOGIN ====================
 
 @router.post("/login")
