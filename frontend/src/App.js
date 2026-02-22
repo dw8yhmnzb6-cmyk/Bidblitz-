@@ -14,6 +14,7 @@ import HappyHourBanner from "./components/HappyHourBanner";
 import PWAInstallBanner from "./components/PWAInstallBanner";
 import TawkChat from "./components/TawkChat";
 import DailyLoginPopup from "./components/DailyLoginPopup";
+import SupportButton from "./components/SupportButton";
 
 // Pages
 import Home from "./pages/Home";
