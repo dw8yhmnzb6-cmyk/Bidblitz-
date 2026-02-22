@@ -374,6 +374,16 @@ class TestKYCVerificationAPIs:
     
     def test_18_kyc_resubmit_requires_rejected_status(self):
         """Test KYC resubmit requires rejected status"""
+        # First ensure user is approved (not rejected)
+        self.session.post(
+            f"{BASE_URL}/api/auth/kyc/approve",
+            json={
+                "user_id": EXISTING_KYC_USER_ID,
+                "approved": True
+            },
+            headers={"Authorization": f"Bearer {TestKYCVerificationAPIs.admin_token}"}
+        )
+        
         # Login as regular user
         login_response = self.session.post(f"{BASE_URL}/api/auth/login", json={
             "email": EXISTING_KYC_USER_EMAIL,
