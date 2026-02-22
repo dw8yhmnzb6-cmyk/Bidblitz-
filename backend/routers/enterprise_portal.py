@@ -1067,9 +1067,13 @@ async def export_report(
 class PayoutSettings(BaseModel):
     iban: Optional[str] = None
     iban_holder: Optional[str] = None
+    bic_swift: Optional[str] = None  # BIC/SWIFT code for international transfers
+    bank_name: Optional[str] = None  # Bank name
+    bank_country: Optional[str] = None  # Bank country (ISO 2-letter code, e.g., DE, AT, US)
     payout_frequency: str = "monthly"  # daily, weekly, monthly, manual
     iban_mode: str = "admin_entry"  # admin_entry, self_entry
     min_payout_amount: int = 100
+    currency: str = "EUR"  # Target currency for payouts
 
 class CommissionSettings(BaseModel):
     voucher_commission: float = 5.0  # % commission for vouchers
