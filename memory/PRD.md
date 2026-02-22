@@ -5,38 +5,45 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 22, 2026)
 
-### ✅ Session Update - February 22, 2026 (Session 69) - MOBILE VIEW + KUNDEN-FAVORITEN ✅
+### ✅ Session Update - February 22, 2026 (Session 69) - MOBILE + PROVISION + MENU ✅
 
-#### 1. Mobile-First Design für alle Admin-Seiten ✅
+#### 1. Mobile-First Design ✅
+- Alle Admin-Seiten kompakt für Portrait-Modus
+- `overflow-x-hidden` verhindert Abschneiden
 
-**Problem:** Admin-Seiten waren auf mobilen Geräten stark abgeschnitten.
+#### 2. Kunden-Favoriten-System ✅
+- Stern-Button zum Speichern von Kunden
+- "Gespeicherte Kunden" für Ein-Klick-Auswahl
+- LocalStorage für bis zu 10 Favoriten
 
-**Lösung:**
-- **Admin.js**: `overflow-x-hidden max-w-full` zum Main-Container hinzugefügt
-- **AdminRevenueAnalytics.js**: 4 Karten in einer Reihe, ultra-kompakte Schriftgrößen
-- **AdminWalletTopup.js**: 4 Statistik-Karten, kompakte Boni-Anzeige, optimierte Suche
+#### 3. Konfigurierbare Provisionen ✅ (NEU)
+**Backend:**
+- `GET/PUT /api/admin/wallet-topup/commission-settings` - Globale Einstellungen
+- `PUT /api/admin/wallet-topup/merchant-commission` - Pro Händler
+- Einstellungen in DB `settings` Collection gespeichert
+- Pro Händler in `partner_accounts.commission_rate`
 
-**Ergebnis:**
-- ✅ Alle Statistiken auf einen Blick sichtbar
-- ✅ Portrait-Modus ohne Scrollen nutzbar
-- ✅ Bottom Navigation vollständig sichtbar
+**Frontend:**
+- ⚙️ Settings-Button neben "Aktive Boni & Anreize"
+- Panel mit Eingabefeldern für Kundenbonus (%) und Händlerprovision (%)
+- "Speichern" und "Abbrechen" Buttons
+- Dynamische Anzeige der aktuellen Werte
 
-#### 2. Kunden-Schnellauswahl / Favoriten-System ✅
+**Konfigurierbar:**
+- Kundenbonus: 0% - 50% (Standard: 2%)
+- Händlerprovision: 0% - 50% (Standard: 2%)
+- Pro Händler: Individuelle Rate möglich
 
-**Feature:** Kunden können als Favoriten gespeichert werden für schnelle Auswahl beim Geld senden.
-
-**Implementation:**
-- **Stern-Button** neben jedem Suchergebnis zum Hinzufügen zu Favoriten
-- **"Gespeicherte Kunden"** Sektion unter dem Suchfeld
-- **LocalStorage** zum Speichern der Favoriten (bis zu 10 Kunden)
-- **X-Button** zum Entfernen aus Favoriten
-- **Ein-Klick-Auswahl** der gespeicherten Kunden
+#### 4. Admin-Menü weniger empfindlich ✅
+- `onTouchEnd` entfernt
+- `setTimeout` für Tab-Wechsel (150ms Verzögerung)
+- `stopPropagation` verhindert unbeabsichtigtes Schließen
+- `userSelect: none` verhindert Text-Auswahl
 
 **Geänderte Dateien:**
-- `/app/frontend/src/pages/Admin.js`
-- `/app/frontend/src/components/admin/AdminRevenueAnalytics.js`
-- `/app/frontend/src/components/admin/AdminWalletTopup.js`
-- `/app/frontend/src/components/admin/AdminUserAnalytics.js`
+- `/app/backend/routers/admin_wallet_topup.py` (Neue Endpoints + dynamische Provision)
+- `/app/frontend/src/components/admin/AdminWalletTopup.js` (Settings UI)
+- `/app/frontend/src/pages/Admin.js` (Menü-Fix)
 
 ---
 
