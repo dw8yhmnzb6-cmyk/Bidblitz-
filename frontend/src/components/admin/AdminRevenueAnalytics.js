@@ -158,56 +158,60 @@ export function AdminRevenueAnalytics({ token }) {
 
       {/* Packages Tab - Kompakt */}
       {activeTab === 'packages' && (
-        <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-          <div className="px-3 sm:px-6 py-2 sm:py-3 border-b bg-gray-50">
-            <h3 className="font-semibold text-gray-900 flex items-center gap-2 text-sm sm:text-base">
-              <Package className="w-4 h-4 text-purple-500" />
-              Gebotspakete
-            </h3>
-          </div>
-          <div className="p-3 sm:p-4">
-            {packages.length > 0 ? (
-              <div className="space-y-2.5">
-                {packages.map((pkg, idx) => {
-                  const maxRev = packages[0]?.revenue || 1;
-                  const width = (pkg.revenue / maxRev) * 100;
-                  return (
-                    <div key={pkg.bids} className="space-y-1">
-                      <div className="flex justify-between text-xs sm:text-sm">
-                        <span className="font-medium truncate mr-2">{pkg.package_name}</span>
-                        <span className="text-gray-500 flex-shrink-0">{pkg.purchases}x</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-5 sm:h-6 bg-gray-100 rounded-full overflow-hidden">
-                          <div className={`h-full rounded-full ${idx === 0 ? 'bg-purple-500' : idx === 1 ? 'bg-blue-500' : idx === 2 ? 'bg-green-500' : 'bg-gray-400'}`} style={{ width: `${Math.max(width, 3)}%` }} />
-                        </div>
-                        <span className="font-bold text-green-600 text-xs sm:text-sm w-16 sm:w-20 text-right flex-shrink-0">{formatCurrency(pkg.revenue)}</span>
-                      </div>
+        <div className="bg-white rounded-lg border p-2 sm:p-4">
+          <h3 className="font-medium text-gray-900 mb-2 text-xs sm:text-sm flex items-center gap-1.5">
+            <Package className="w-3.5 h-3.5 text-purple-500" />
+            Gebotspakete
+          </h3>
+          {packages.length > 0 ? (
+            <div className="space-y-1.5">
+              {packages.slice(0, 5).map((pkg, idx) => {
+                const maxRev = packages[0]?.revenue || 1;
+                const width = (pkg.revenue / maxRev) * 100;
+                return (
+                  <div key={pkg.bids} className="flex items-center gap-1.5">
+                    <span className="text-[8px] sm:text-[10px] text-gray-600 w-16 sm:w-20 truncate">{pkg.package_name}</span>
+                    <div className="flex-1 h-3 sm:h-4 bg-gray-100 rounded-full overflow-hidden">
+                      <div className={`h-full rounded-full ${idx === 0 ? 'bg-purple-500' : idx === 1 ? 'bg-blue-500' : 'bg-gray-400'}`} style={{ width: `${Math.max(width, 5)}%` }} />
                     </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className="text-center text-gray-500 py-4 text-sm">Keine Daten</div>
-            )}
-          </div>
+                    <span className="text-[8px] sm:text-[10px] font-bold text-green-600 w-12 sm:w-14 text-right">{formatCurrency(pkg.revenue)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-center text-gray-400 py-3 text-xs">Keine Daten</div>
+          )}
         </div>
       )}
 
       {/* Auctions Tab - Kompakt */}
       {activeTab === 'auctions' && auctionStats && (
-        <div className="grid grid-cols-1 gap-3">
-          <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-4">
-            <h3 className="font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-sm"><Zap className="w-4 h-4 text-amber-500" />Auktions-Statistiken</h3>
-            <div className="space-y-1.5">
-              <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Abgeschlossen</span><span className="font-bold">{auctionStats.completed_auctions}</span></div>
-              <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Ø Endpreis</span><span className="font-bold text-green-600">{formatCurrency(auctionStats.avg_final_price)}</span></div>
-              <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Ø Gebote/Auktion</span><span className="font-bold">{auctionStats.avg_bids_per_auction}</span></div>
-              <div className="flex justify-between py-1.5 text-xs sm:text-sm"><span className="text-gray-600">Gesamte Gebote</span><span className="font-bold text-blue-600">{auctionStats.total_bids_used?.toLocaleString()}</span></div>
+        <div className="bg-white rounded-lg border p-2 sm:p-4">
+          <h3 className="font-medium text-gray-900 mb-2 text-xs sm:text-sm flex items-center gap-1.5">
+            <Zap className="w-3.5 h-3.5 text-amber-500" />
+            Auktionen
+          </h3>
+          <div className="grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
+            <div className="bg-gray-50 rounded p-1.5">
+              <div className="text-gray-500">Abgeschlossen</div>
+              <div className="font-bold">{auctionStats.completed_auctions}</div>
+            </div>
+            <div className="bg-gray-50 rounded p-1.5">
+              <div className="text-gray-500">Ø Endpreis</div>
+              <div className="font-bold text-green-600">{formatCurrency(auctionStats.avg_final_price)}</div>
+            </div>
+            <div className="bg-gray-50 rounded p-1.5">
+              <div className="text-gray-500">Ø Gebote</div>
+              <div className="font-bold">{auctionStats.avg_bids_per_auction}</div>
+            </div>
+            <div className="bg-gray-50 rounded p-1.5">
+              <div className="text-gray-500">Einnahmen</div>
+              <div className="font-bold text-blue-600">{formatCurrency(auctionStats.paid_revenue)}</div>
             </div>
           </div>
-          <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-4">
-            <h3 className="font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-sm"><Euro className="w-4 h-4 text-green-500" />Einnahmen</h3>
+        </div>
+      )}
             <div className="space-y-1.5">
               <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Bezahlte Auktionen</span><span className="font-bold">{auctionStats.paid_auctions}</span></div>
               <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Auktions-Einnahmen</span><span className="font-bold text-green-600">{formatCurrency(auctionStats.paid_revenue)}</span></div>
