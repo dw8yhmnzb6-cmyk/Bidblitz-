@@ -322,11 +322,16 @@ export default function DiscountCardsAdmin() {
                   >
                     <option value="percentage">{t.percentage}</option>
                     <option value="fixed">{t.fixed}</option>
+                    <option value="buy_x_get_y">{language === 'de' ? 'Kaufe X, bekomme Y gratis (2+1)' : 'Buy X get Y free (2+1)'}</option>
+                    <option value="buy_x_pay_y">{language === 'de' ? 'Kaufe X, zahle Y (3 für 2)' : 'Buy X pay Y (3 for 2)'}</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm text-slate-400 mb-1">
-                    {t.discountValue} {formData.discount_type === 'percentage' ? '(%)' : '(€)'}
+                    {formData.discount_type === 'buy_x_get_y' || formData.discount_type === 'buy_x_pay_y' 
+                      ? (language === 'de' ? 'Artikelpreis (€)' : 'Item Price (€)')
+                      : `${t.discountValue} ${formData.discount_type === 'percentage' ? '(%)' : '(€)'}`
+                    }
                   </label>
                   <input
                     type="number"
@@ -340,6 +345,98 @@ export default function DiscountCardsAdmin() {
                 </div>
               </div>
 
+              {/* Buy X Get Y / Buy X Pay Y Options */}
+              {(formData.discount_type === 'buy_x_get_y' || formData.discount_type === 'buy_x_pay_y') && (
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4">
+                  <p className="text-amber-400 text-sm mb-3 font-medium">
+                    {formData.discount_type === 'buy_x_get_y' 
+                      ? (language === 'de' ? '🎁 2+1 Aktion konfigurieren' : '🎁 Configure 2+1 Offer')
+                      : (language === 'de' ? '🏷️ 3 für 2 Aktion konfigurieren' : '🏷️ Configure 3 for 2 Offer')
+                    }
+                  </p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm text-slate-400 mb-1">
+                        {language === 'de' ? 'Kaufe (Anzahl)' : 'Buy (Quantity)'}
+                      </label>
+                      <input
+                        type="number"
+                        value={formData.buy_quantity}
+                        onChange={(e) => setFormData({...formData, buy_quantity: e.target.value})}
+                        min="1"
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500"
+                      />
+                    </div>
+                    {formData.discount_type === 'buy_x_get_y' ? (
+                      <div>
+                        <label className="block text-sm text-slate-400 mb-1">
+                          {language === 'de' ? 'Gratis (Anzahl)' : 'Free (Quantity)'}
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.free_quantity}
+                          onChange={(e) => setFormData({...formData, free_quantity: e.target.value})}
+                          min="1"
+                          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500"
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="block text-sm text-slate-400 mb-1">
+                          {language === 'de' ? 'Zahle (Anzahl)' : 'Pay (Quantity)'}
+                        </label>
+                        <input
+                          type="number"
+                          value={formData.pay_quantity}
+                          onChange={(e) => setFormData({...formData, pay_quantity: e.target.value})}
+                          min="1"
+                          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500 mt-2">
+                    {formData.discount_type === 'buy_x_get_y'
+                      ? `${language === 'de' ? 'Beispiel: Kaufe' : 'Example: Buy'} ${formData.buy_quantity}, ${language === 'de' ? 'bekomme' : 'get'} ${formData.free_quantity} ${language === 'de' ? 'gratis' : 'free'}`
+                      : `${language === 'de' ? 'Beispiel: Kaufe' : 'Example: Buy'} ${formData.buy_quantity}, ${language === 'de' ? 'zahle nur' : 'pay only'} ${formData.pay_quantity}`
+                    }
+                  </p>
+                </div>
+              )}
+
+              {/* Artikel-spezifisch */}
+              <div className="bg-slate-700/50 rounded-lg p-4">
+                <p className="text-slate-300 text-sm mb-3 font-medium">
+                  {language === 'de' ? '📦 Artikel-spezifischer Rabatt (optional)' : '📦 Article-specific discount (optional)'}
+                </p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm text-slate-400 mb-1">
+                      {language === 'de' ? 'Artikelname' : 'Article Name'}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.article_name}
+                      onChange={(e) => setFormData({...formData, article_name: e.target.value})}
+                      placeholder={language === 'de' ? 'z.B. Shampoo, Zahnpasta' : 'e.g. Shampoo, Toothpaste'}
+                      className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-slate-400 mb-1">
+                      {language === 'de' ? 'Artikel-Barcodes (kommagetrennt)' : 'Article Barcodes (comma-separated)'}
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.specific_articles}
+                      onChange={(e) => setFormData({...formData, specific_articles: e.target.value})}
+                      placeholder="4001234567890, 4009876543210"
+                      className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* Categories */}
               <div>
                 <label className="block text-sm text-slate-400 mb-1">{t.categories}</label>
@@ -347,9 +444,12 @@ export default function DiscountCardsAdmin() {
                   type="text"
                   value={formData.categories}
                   onChange={(e) => setFormData({...formData, categories: e.target.value})}
-                  placeholder="Lebensmittel, Getränke, Elektronik"
+                  placeholder={language === 'de' ? 'Hygiene, Lebensmittel, Getränke' : 'Hygiene, Food, Beverages'}
                   className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:ring-2 focus:ring-amber-500"
                 />
+                <p className="text-xs text-slate-500 mt-1">
+                  {language === 'de' ? 'Rabatt gilt nur für diese Kategorien' : 'Discount applies only to these categories'}
+                </p>
               </div>
 
               {/* Min/Max */}
