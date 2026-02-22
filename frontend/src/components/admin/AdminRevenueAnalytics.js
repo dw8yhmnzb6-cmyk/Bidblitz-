@@ -127,23 +127,23 @@ export function AdminRevenueAnalytics({ token }) {
 
       {/* Overview Tab - Täglicher Umsatz */}
       {activeTab === 'overview' && (
-        <div className="bg-white rounded-lg border p-2 sm:p-4">
+        <div className="bg-white rounded-lg border p-2 sm:p-4 w-full box-border">
           <h3 className="font-medium text-gray-900 mb-2 text-xs sm:text-sm flex items-center gap-1.5">
             <TrendingUp className="w-3.5 h-3.5 text-green-500" />
             Täglicher Umsatz
           </h3>
           {dailyRevenue.length > 0 ? (
-            <div className="space-y-1">
+            <div className="space-y-1 w-full">
               {dailyRevenue.slice(-7).map((day) => {
                 const maxRev = Math.max(...dailyRevenue.map(d => d.revenue), 1);
                 const width = (day.revenue / maxRev) * 100;
                 return (
-                  <div key={day.date} className="flex items-center gap-1.5">
-                    <span className="text-[8px] sm:text-[10px] text-gray-500 w-10 sm:w-14">{new Date(day.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit' })}</span>
-                    <div className="flex-1 h-3 sm:h-4 bg-gray-100 rounded-full overflow-hidden">
+                  <div key={day.date} className="flex items-center gap-1 w-full">
+                    <span className="text-[7px] sm:text-[9px] text-gray-500 w-8 sm:w-12 flex-shrink-0">{new Date(day.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit' })}</span>
+                    <div className="flex-1 h-2.5 sm:h-3 bg-gray-100 rounded-full overflow-hidden min-w-0">
                       <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.max(width, 3)}%` }} />
                     </div>
-                    <span className="text-[8px] sm:text-[10px] font-medium w-12 sm:w-14 text-right">{formatCurrency(day.revenue)}</span>
+                    <span className="text-[7px] sm:text-[9px] font-medium w-10 sm:w-12 text-right flex-shrink-0">{formatCurrency(day.revenue)}</span>
                   </div>
                 );
               })}
