@@ -672,7 +672,7 @@ export default function AdminEnterpriseManagement() {
 
                   {editingCommission === enterprise.id ? (
                     <div className="space-y-3">
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         <div className="bg-orange-50 rounded-lg p-3">
                           <label className="block text-sm font-medium text-orange-700 mb-1">
                             Gutschein-Provision %
