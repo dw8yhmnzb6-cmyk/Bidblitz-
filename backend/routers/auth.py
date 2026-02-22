@@ -60,14 +60,14 @@ async def register(user: UserCreate, request: Request):
     
     # Check IP registration limit
     existing_from_ip = await db.users.count_documents({"registration_ip": client_ip})
-    if existing_from_ip >= 2:
+    if existing_from_ip >= 5:
         await log_security_event("registration_blocked_ip_limit", "unknown", {
             "email": user.email,
             "existing_accounts": existing_from_ip
         }, client_ip)
         raise HTTPException(
             status_code=403,
-            detail="Maximal 2 Konten pro Haushalt erlaubt. Kontaktieren Sie den Support bei Fragen."
+            detail="Maximal 5 Konten pro Haushalt erlaubt. Kontaktieren Sie den Support bei Fragen."
         )
     
     # Check if email exists
