@@ -368,7 +368,31 @@ const translations = {
     minAmount: 'Minimumi',
     maxAmount: 'Maksimumi',
     testAccess: 'Qasje Testuese',
-    from: 'nga'
+    from: 'nga',
+    // Stammkunden
+    regularCustomers: 'Klientët e Rregullt',
+    noRegularCustomers: 'Asnjë klient i rregullt i ruajtur',
+    quickSelect: 'Zgjedhje e Shpejtë',
+    saveAsRegular: 'Ruaj si Klient të Rregullt',
+    saveCustomer: 'Ruaj Klientin',
+    customerNickname: 'Nofka (opsionale)',
+    lastTransaction: 'Transaksioni i Fundit',
+    removeCustomer: 'Fshij',
+    hardwareScanner: 'Skaneri Hardware',
+    hardwareScannerActive: 'Skaneri Aktiv',
+    hardwareScannerInfo: 'Skaneri USB/Bluetooth gati',
+    waitingForHardwareScan: 'Duke pritur skanimin hardware...',
+    // Raporti i Arkës (Kassenabschluss)
+    cashReport: 'Raporti i Arkës',
+    cashRegister: 'Arka',
+    staffMember: 'Punonjësi',
+    summary: 'Përmbledhje',
+    bonusesGivenOut: 'Bonuset e Dhëna',
+    payments: 'Pagesat',
+    totalAmount: 'TOTALI',
+    printTime: 'Printuar',
+    cashSystem: 'Sistemi i Arkës BidBlitz',
+    noTransactionsYet: 'Nuk ka transaksione'
   },
   pl: {
     loginTitle: 'Terminal Kasowy',
