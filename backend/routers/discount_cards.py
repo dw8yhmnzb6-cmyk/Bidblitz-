@@ -20,11 +20,18 @@ logger = logging.getLogger(__name__)
 # ==================== MODELS ====================
 
 class DiscountCardCreate(BaseModel):
-    name: str  # z.B. "EDEKA VIP", "Sommer-Rabatt"
+    name: str  # z.B. "EDEKA VIP", "Sommer-Rabatt", "Hygiene 2+1"
     description: Optional[str] = None
-    discount_type: str  # "percentage" oder "fixed"
+    discount_type: str  # "percentage", "fixed", "buy_x_get_y", "buy_x_pay_y"
     discount_value: float  # z.B. 10 (für 10%) oder 5.00 (für €5)
-    categories: Optional[List[str]] = None  # z.B. ["Lebensmittel", "Getränke"]
+    # Für "buy_x_get_y": buy_quantity = X, free_quantity = Y (z.B. 2+1)
+    buy_quantity: Optional[int] = None  # z.B. 2 (kaufe 2)
+    free_quantity: Optional[int] = None  # z.B. 1 (bekomme 1 gratis)
+    pay_quantity: Optional[int] = None  # Für "buy_x_pay_y": kaufe 3, zahle 2
+    # Artikel und Kategorien
+    categories: Optional[List[str]] = None  # z.B. ["Hygiene", "Lebensmittel"]
+    specific_articles: Optional[List[str]] = None  # Artikel-Barcodes oder Namen
+    article_name: Optional[str] = None  # Name des Artikels für Anzeige
     min_purchase: Optional[float] = 0  # Mindestbestellwert
     max_discount: Optional[float] = None  # Maximaler Rabatt in €
     valid_from: Optional[str] = None
@@ -39,7 +46,12 @@ class DiscountCardUpdate(BaseModel):
     description: Optional[str] = None
     discount_type: Optional[str] = None
     discount_value: Optional[float] = None
+    buy_quantity: Optional[int] = None
+    free_quantity: Optional[int] = None
+    pay_quantity: Optional[int] = None
     categories: Optional[List[str]] = None
+    specific_articles: Optional[List[str]] = None
+    article_name: Optional[str] = None
     min_purchase: Optional[float] = None
     max_discount: Optional[float] = None
     valid_from: Optional[str] = None
