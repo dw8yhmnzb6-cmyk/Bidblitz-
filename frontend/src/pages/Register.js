@@ -68,10 +68,22 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register(name, email, password, referralValid ? referralCode : null);
-      toast.success(texts.registerSuccess);
-      // Redirect to KYC verification instead of dashboard
-      navigate('/kyc-verification');
+      const response = await register(name, email, password, referralValid ? referralCode : null);
+      
+      // Show email verification message
+      if (response?.email_verification_required) {
+        toast.success(
+          language === 'de' 
+            ? '📧 Registrierung erfolgreich! Bitte bestätigen Sie Ihre E-Mail-Adresse.' 
+            : '📧 Registration successful! Please verify your email address.',
+          { duration: 6000 }
+        );
+      } else {
+        toast.success(texts.registerSuccess);
+      }
+      
+      // Navigate to a confirmation page or stay on register with message
+      navigate('/login', { state: { emailSent: true, email: email } });
     } catch (error) {
       toast.error(error.response?.data?.detail || texts.registerFailed);
     } finally {
