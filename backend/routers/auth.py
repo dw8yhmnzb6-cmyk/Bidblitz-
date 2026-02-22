@@ -831,7 +831,33 @@ async def get_all_kyc_users(
     
     return {"users": users, "count": len(users)}
 
-    return response
+@router.post("/kyc/resubmit")
+async def resubmit_kyc(user: dict = Depends(get_current_user)):
+    """Allow user to resubmit KYC documents after rejection"""
+    full_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    
+    if full_user.get("kyc_status") != "rejected":
+        raise HTTPException(status_code=400, detail="Nur abgelehnte Verifizierungen können erneut eingereicht werden")
+    
+    # Reset KYC status to allow new submission
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "kyc_status": "pending",
+            "kyc_id_front": None,
+            "kyc_id_back": None,
+            "kyc_selfie": None,
+            "kyc_submitted_at": None,
+            "kyc_rejection_reason": None
+        }}
+    )
+    
+    logger.info(f"KYC resubmission initiated by user {user['id']}")
+    
+    return {
+        "success": True,
+        "message": "Sie können jetzt neue Dokumente hochladen."
+    }
 
 @router.post("/verify-reset-code")
 async def verify_reset_code(request: VerifyResetCodeRequest):
