@@ -1258,6 +1258,7 @@ async def get_commission_settings(enterprise_id: str, x_admin_key: str = Header(
             "enterprise_id": enterprise_id,
             "voucher_commission": 5.0,
             "self_pay_commission": 3.0,
+            "sales_commission": 2.0,
             "customer_cashback": 1.0,
             "is_active": True
         }
