@@ -131,6 +131,14 @@ export default function Login() {
     } catch (error) {
       const errorMsg = error.response?.data?.detail || texts.loginFailed;
       
+      // Handle email verification error
+      if (errorMsg === 'email_not_verified') {
+        toast.error(language === 'de' 
+          ? 'Bitte bestätigen Sie Ihre E-Mail-Adresse. Überprüfen Sie Ihren Posteingang.' 
+          : 'Please verify your email address. Check your inbox.');
+        return;
+      }
+      
       // Handle KYC-related errors
       if (errorMsg === 'kyc_documents_missing') {
         toast.error(language === 'de' 
