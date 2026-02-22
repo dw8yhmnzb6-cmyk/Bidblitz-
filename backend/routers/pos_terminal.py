@@ -65,6 +65,22 @@ def calculate_bonus(amount: float) -> float:
 
 async def get_or_create_customer(barcode: str) -> dict:
     """Get customer by barcode or create new one"""
+    
+    # Check if it's a BidBlitz Pay QR code format
+    if barcode and barcode.startswith("BIDBLITZ-PAY:"):
+        payment_token = barcode.replace("BIDBLITZ-PAY:", "")
+        
+        # Find the token in database
+        token_data = await db.payment_tokens.find_one({"token": payment_token})
+        if token_data:
+            customer_id = token_data["user_id"]
+            customer = await db.users.find_one({"id": customer_id})
+            if customer:
+                logger.info(f"Found customer via BidBlitz Pay QR: {customer.get('email')} ({customer_id})")
+                return customer
+        
+        raise HTTPException(status_code=400, detail="BidBlitz Pay QR-Code ungültig oder abgelaufen")
+    
     # Clean up barcode - remove BID- prefix if present
     clean_barcode = barcode.replace("BID-", "").replace("bid-", "").strip()
     
