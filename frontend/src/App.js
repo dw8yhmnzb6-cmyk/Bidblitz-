@@ -108,6 +108,8 @@ import InvestorPortal from "./pages/InvestorPortal";
 import PhoneVerification from "./pages/PhoneVerification";
 import DealRadarPage from "./pages/DealRadarPage";
 import UserStatsPage from "./pages/UserStatsPage";
+import KYCVerification from "./pages/KYCVerification";
+import KYCAdmin from "./pages/KYCAdmin";
 import LiveWinnerPopup from "./components/LiveWinnerPopup";
 import WelcomeBonusBanner from "./components/WelcomeBonusBanner";
 import LanguageHintBanner from "./components/LanguageHintBanner";
