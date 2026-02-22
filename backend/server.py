@@ -582,6 +582,10 @@ app.include_router(backup_router)
 from routers.pos_terminal import router as pos_terminal_router
 app.include_router(pos_terminal_router)
 
+# Discount Cards / Rabattkarten System
+from routers.discount_cards import router as discount_cards_router
+app.include_router(discount_cards_router, prefix="/api")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
