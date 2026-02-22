@@ -172,20 +172,40 @@ export default function BidBlitzPayAnalytics() {
           </div>
           
           {/* Date Filters & Export */}
+          {/* Quick Date Range Buttons */}
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              { key: 'today', label: 'Heute' },
+              { key: 'yesterday', label: 'Gestern' },
+              { key: 'week', label: '7 Tage' },
+              { key: 'month', label: '30 Tage' }
+            ].map(({ key, label }) => (
+              <Button
+                key={key}
+                onClick={() => setQuickDateRange(key)}
+                variant={dateRange === key ? 'default' : 'outline'}
+                size="sm"
+                className={dateRange === key ? 'bg-amber-500 hover:bg-amber-600' : 'border-slate-600 text-slate-300'}
+              >
+                {label}
+              </Button>
+            ))}
+          </div>
+          
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-slate-400" />
               <Input
                 type="date"
                 value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+                onChange={(e) => { setStartDate(e.target.value); setDateRange('custom'); }}
                 className="w-36 bg-slate-800 border-slate-700 text-white text-sm"
               />
               <span className="text-slate-400">-</span>
               <Input
                 type="date"
                 value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+                onChange={(e) => { setEndDate(e.target.value); setDateRange('custom'); }}
                 className="w-36 bg-slate-800 border-slate-700 text-white text-sm"
               />
             </div>
@@ -215,7 +235,7 @@ export default function BidBlitzPayAnalytics() {
               className="bg-blue-600 hover:bg-blue-700"
             >
               <Download className="w-4 h-4 mr-1" />
-              Alle Daten
+              CSV Export
             </Button>
           </div>
         </div>
