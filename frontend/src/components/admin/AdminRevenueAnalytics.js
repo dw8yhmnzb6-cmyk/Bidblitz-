@@ -255,8 +255,8 @@ export function AdminRevenueAnalytics({ token }) {
       {/* Conversion Tab */}
       {activeTab === 'conversion' && conversion && (
         <div className="space-y-4">
-          <div className="bg-white rounded-xl border shadow-sm p-6">
-            <h3 className="font-semibold mb-6 flex items-center gap-2"><Target className="w-5 h-5 text-red-500" />Conversion Funnel (letzte 30 Tage)</h3>
+          <div className="bg-white rounded-xl border shadow-sm p-4 sm:p-6">
+            <h3 className="font-semibold mb-4 sm:mb-6 flex items-center gap-2"><Target className="w-5 h-5 text-red-500" />Conversion Funnel (letzte 30 Tage)</h3>
             <div className="space-y-4">
               {[
                 { label: 'Registriert', value: conversion.funnel?.registered, color: 'bg-blue-500' },
@@ -268,11 +268,11 @@ export function AdminRevenueAnalytics({ token }) {
                 const width = (step.value / maxVal) * 100;
                 return (
                   <div key={step.label} className="space-y-2">
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs sm:text-sm">
                       <span className="font-medium">{step.label}</span>
                       <span className="text-gray-600">{step.value}</span>
                     </div>
-                    <div className="h-8 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-6 sm:h-8 bg-gray-100 rounded-full overflow-hidden">
                       <div className={`h-full ${step.color} rounded-full transition-all`} style={{ width: `${width}%` }} />
                     </div>
                   </div>
@@ -281,22 +281,22 @@ export function AdminRevenueAnalytics({ token }) {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white rounded-xl border p-4 text-center">
-              <div className="text-2xl font-bold text-blue-600">{conversion.conversion_rates?.registration_to_bid}%</div>
-              <div className="text-xs text-gray-500">Reg → Bieten</div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            <div className="bg-white rounded-xl border p-3 sm:p-4 text-center">
+              <div className="text-lg sm:text-2xl font-bold text-blue-600">{conversion.conversion_rates?.registration_to_bid}%</div>
+              <div className="text-[10px] sm:text-xs text-gray-500">Reg → Bieten</div>
             </div>
-            <div className="bg-white rounded-xl border p-4 text-center">
-              <div className="text-2xl font-bold text-green-600">{conversion.conversion_rates?.bid_to_purchase}%</div>
-              <div className="text-xs text-gray-500">Bieten → Kauf</div>
+            <div className="bg-white rounded-xl border p-3 sm:p-4 text-center">
+              <div className="text-lg sm:text-2xl font-bold text-green-600">{conversion.conversion_rates?.bid_to_purchase}%</div>
+              <div className="text-[10px] sm:text-xs text-gray-500">Bieten → Kauf</div>
             </div>
-            <div className="bg-white rounded-xl border p-4 text-center">
-              <div className="text-2xl font-bold text-purple-600">{conversion.conversion_rates?.purchase_to_win}%</div>
-              <div className="text-xs text-gray-500">Kauf → Gewinn</div>
+            <div className="bg-white rounded-xl border p-3 sm:p-4 text-center">
+              <div className="text-lg sm:text-2xl font-bold text-purple-600">{conversion.conversion_rates?.purchase_to_win}%</div>
+              <div className="text-[10px] sm:text-xs text-gray-500">Kauf → Gewinn</div>
             </div>
-            <div className="bg-white rounded-xl border p-4 text-center">
-              <div className="text-2xl font-bold text-amber-600">{conversion.conversion_rates?.overall}%</div>
-              <div className="text-xs text-gray-500">Gesamt</div>
+            <div className="bg-white rounded-xl border p-3 sm:p-4 text-center">
+              <div className="text-lg sm:text-2xl font-bold text-amber-600">{conversion.conversion_rates?.overall}%</div>
+              <div className="text-[10px] sm:text-xs text-gray-500">Gesamt</div>
             </div>
           </div>
         </div>
