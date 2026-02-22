@@ -296,27 +296,27 @@ async def login(credentials: UserLogin, request: Request):
             )
     
     # Check KYC verification status - Skip for admins, managers, and enterprise users
+    kyc_required = False
+    kyc_message = None
     if not user.get("is_admin") and not user.get("is_manager") and not user.get("is_enterprise"):
         kyc_status = user.get("kyc_status", "pending")
         # Only enforce KYC for users who have the field
         if kyc_status == "pending" and "kyc_status" in user:
             # Check if documents were submitted
             if not user.get("kyc_id_front") or not user.get("kyc_id_back") or not user.get("kyc_selfie"):
-                raise HTTPException(
-                    status_code=403, 
-                    detail="kyc_documents_missing"
-                )
+                # Allow login but require KYC
+                kyc_required = True
+                kyc_message = "kyc_documents_missing"
             else:
+                # Documents submitted, waiting for approval - block login
                 raise HTTPException(
                     status_code=403, 
                     detail="kyc_pending_approval"
                 )
         elif kyc_status == "rejected":
-            rejection_reason = user.get("kyc_rejection_reason", "Unbekannter Grund")
-            raise HTTPException(
-                status_code=403, 
-                detail=f"kyc_rejected:{rejection_reason}"
-            )
+            # Allow login to resubmit documents
+            kyc_required = True
+            kyc_message = f"kyc_rejected:{user.get('kyc_rejection_reason', 'Unbekannter Grund')}"
     
     # Check 2FA
     if user.get("two_factor_enabled") and user.get("two_factor_secret"):
