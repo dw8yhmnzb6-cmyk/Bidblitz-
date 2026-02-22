@@ -26,9 +26,13 @@ export default function AdminEnterpriseManagement() {
   const [payoutForm, setPayoutForm] = useState({
     iban: '',
     iban_holder: '',
+    bic_swift: '',
+    bank_name: '',
+    bank_country: 'DE',
     payout_frequency: 'monthly',
     iban_mode: 'admin_entry',
-    min_payout_amount: 100
+    min_payout_amount: 100,
+    currency: 'EUR'
   });
   const [commissionForm, setCommissionForm] = useState({
     voucher_commission: 5.0,
