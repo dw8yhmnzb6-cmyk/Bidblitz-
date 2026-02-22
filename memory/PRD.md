@@ -5,6 +5,51 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 22, 2026)
 
+### ✅ Session Update - February 22, 2026 (Session 70) - P0 & P1 FIXES ✅
+
+#### 1. StaffPOS Sprachauswahl-Bug behoben (P0) ✅
+**Problem:** Sprachauswahl-Dropdown überlappt mit anderen UI-Elementen auf Mobile
+**Lösung:**
+- Header responsive gemacht mit kleineren Icons/Buttons auf Mobile
+- Language Dropdown: `fixed` statt `absolute` auf Mobile
+- z-index erhöht auf `z-[100]`
+- Overlay-Backdrop `z-[90]` hinzugefügt für Mobile
+- Buttons: `p-1.5 sm:p-2` für bessere Touch-Targets
+
+**Geänderte Datei:** `/app/frontend/src/pages/StaffPOS.js`
+
+#### 2. Support-System vollständig implementiert (P1) ✅
+**Backend:** `/app/backend/routers/support.py`
+- `GET/PUT /api/support/settings` - Hotline & Email Einstellungen
+- `POST /api/support/tickets` - Ticket erstellen
+- `GET /api/support/tickets` - User-Tickets abrufen
+- `POST /api/support/tickets/{id}/reply` - Auf Ticket antworten
+- `GET /api/support/admin/tickets` - Admin Ticket-Übersicht
+- `GET /api/support/admin/chats` - Admin Chat-Übersicht
+- `POST /api/support/chat/message` - Chat-Nachricht senden
+
+**Frontend:**
+- **SupportButton.jsx** - Floating Support Button (unten rechts)
+  - Modal mit 3 Tabs: Chat, Hotline, Ticket
+  - Chat für eingeloggte Benutzer
+  - Hotline mit Telefonnummer und Öffnungszeiten
+  - Ticket-System mit Kategorien
+- **AdminSupportManagement.jsx** - Admin Support-Verwaltung
+  - Ticket-Übersicht mit Status-Filter
+  - Chat-Verwaltung
+  - Einstellungen für Hotline/Email
+
+**Geänderte Dateien:**
+- `/app/frontend/src/pages/Admin.js` (Headphones import + Support Tab rendering)
+- `/app/frontend/src/App.js` (SupportButton global eingebunden)
+
+#### 3. Test-Ergebnisse ✅
+- **Backend:** 100% bestanden (11/11 Tests)
+- **Frontend:** 100% bestanden
+- **Test-Report:** `/app/test_reports/iteration_102.json`
+
+---
+
 ### ✅ Session Update - February 22, 2026 (Session 69) - MOBILE + PROVISION + MENU ✅
 
 #### 1. Mobile-First Design ✅
