@@ -140,7 +140,7 @@ export function AdminRevenueAnalytics({ token }) {
 
       {/* Overview Tab - Daily Revenue */}
       {activeTab === 'overview' && (
-        <div className="bg-white rounded-xl border shadow-sm p-6">
+        <div className="bg-white rounded-xl border shadow-sm p-4 sm:p-6">
           <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-green-500" />
             Täglicher Umsatz
@@ -152,13 +152,13 @@ export function AdminRevenueAnalytics({ token }) {
                 const maxRev = Math.max(...dailyRevenue.map(d => d.revenue), 1);
                 const width = (day.revenue / maxRev) * 100;
                 return (
-                  <div key={day.date} className="flex items-center gap-3">
-                    <span className="text-xs text-gray-500 w-20">{new Date(day.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' })}</span>
-                    <div className="flex-1 h-6 bg-gray-100 rounded-full overflow-hidden">
+                  <div key={day.date} className="flex items-center gap-2 sm:gap-3">
+                    <span className="text-[10px] sm:text-xs text-gray-500 w-16 sm:w-20">{new Date(day.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' })}</span>
+                    <div className="flex-1 h-5 sm:h-6 bg-gray-100 rounded-full overflow-hidden">
                       <div className="h-full bg-gradient-to-r from-green-400 to-green-600 rounded-full transition-all" style={{ width: `${width}%` }} />
                     </div>
-                    <span className="text-sm font-medium w-20 text-right">{formatCurrency(day.revenue)}</span>
-                    <span className="text-xs text-gray-400 w-12">({day.transactions})</span>
+                    <span className="text-xs sm:text-sm font-medium w-16 sm:w-20 text-right">{formatCurrency(day.revenue)}</span>
+                    <span className="text-[10px] sm:text-xs text-gray-400 w-8 sm:w-12 hidden sm:block">({day.transactions})</span>
                   </div>
                 );
               })}
