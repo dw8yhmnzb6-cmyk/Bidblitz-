@@ -64,23 +64,24 @@ export function AdminUserAnalytics({ token }) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Users className="w-6 h-6 text-blue-600" />
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Users className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
             Benutzer-Analyse
           </h2>
-          <p className="text-gray-500 text-sm mt-1">Benutzeraktivität, Retention und Segmente</p>
+          <p className="text-gray-500 text-xs sm:text-sm mt-1">Benutzeraktivität, Retention und Segmente</p>
         </div>
-        <div className="flex gap-2">
-          <select value={period} onChange={(e) => setPeriod(e.target.value)} className="px-3 py-2 border rounded-lg text-sm">
+        <div className="flex gap-2 w-full sm:w-auto">
+          <select value={period} onChange={(e) => setPeriod(e.target.value)} className="flex-1 sm:flex-none px-3 py-2 border rounded-lg text-sm">
             <option value="week">Diese Woche</option>
             <option value="month">Dieser Monat</option>
             <option value="quarter">Quartal</option>
           </select>
-          <Button onClick={fetchAnalytics} disabled={loading} variant="outline">
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-            Aktualisieren
+          <Button onClick={fetchAnalytics} disabled={loading} variant="outline" className="whitespace-nowrap">
+            <RefreshCw className={`w-4 h-4 mr-1 sm:mr-2 ${loading ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">Aktualisieren</span>
+            <span className="sm:hidden">⟳</span>
           </Button>
         </div>
       </div>
