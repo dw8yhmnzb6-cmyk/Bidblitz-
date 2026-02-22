@@ -111,6 +111,7 @@ import UserStatsPage from "./pages/UserStatsPage";
 import KYCVerification from "./pages/KYCVerification";
 import KYCAdmin from "./pages/KYCAdmin";
 import VerifyEmail from "./pages/VerifyEmail";
+import BidBlitzPayAnalytics from "./pages/BidBlitzPayAnalytics";
 import LiveWinnerPopup from "./components/LiveWinnerPopup";
 import WelcomeBonusBanner from "./components/WelcomeBonusBanner";
 import LanguageHintBanner from "./components/LanguageHintBanner";
