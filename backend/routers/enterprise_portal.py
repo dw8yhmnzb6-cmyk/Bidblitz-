@@ -1121,6 +1121,7 @@ async def list_all_enterprises(x_admin_key: str = Header(...)):
         enterprise["commission_settings"] = commission or {
             "voucher_commission": 5.0,
             "self_pay_commission": 3.0,
+            "sales_commission": 2.0,
             "customer_cashback": 1.0,
             "is_active": True
         }
