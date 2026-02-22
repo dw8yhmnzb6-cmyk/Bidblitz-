@@ -25,14 +25,15 @@ export function AdminUserAnalytics({ token }) {
   const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     try {
+      const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
       const [overviewRes, regRes, actRes, segRes, retRes, winRes, geoRes] = await Promise.all([
-        axios.get(`${API}/analytics/users/overview`),
-        axios.get(`${API}/analytics/users/registrations?period=${period}`),
-        axios.get(`${API}/analytics/users/activity?period=${period}`),
-        axios.get(`${API}/analytics/users/segments`),
-        axios.get(`${API}/analytics/users/retention`),
-        axios.get(`${API}/analytics/users/top-winners?limit=10`),
-        axios.get(`${API}/analytics/users/geographic`)
+        axios.get(`${API}/analytics/users/overview`, { headers }),
+        axios.get(`${API}/analytics/users/registrations?period=${period}`, { headers }),
+        axios.get(`${API}/analytics/users/activity?period=${period}`, { headers }),
+        axios.get(`${API}/analytics/users/segments`, { headers }),
+        axios.get(`${API}/analytics/users/retention`, { headers }),
+        axios.get(`${API}/analytics/users/top-winners?limit=10`, { headers }),
+        axios.get(`${API}/analytics/users/geographic`, { headers })
       ]);
       
       setOverview(overviewRes.data);
@@ -48,7 +49,7 @@ export function AdminUserAnalytics({ token }) {
     } finally {
       setLoading(false);
     }
-  }, [period]);
+  }, [period, token]);
 
   useEffect(() => {
     fetchAnalytics();
