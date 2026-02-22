@@ -431,17 +431,95 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
         if not customer:
             raise HTTPException(status_code=404, detail="Kunde nicht gefunden")
         
+        # ==================== RABATT-BERECHNUNG ====================
+        # Berechne automatisch Rabatte basierend auf aktiven Rabattkarten
+        discount_amount = 0.0
+        discount_card = None
+        now = datetime.now(timezone.utc).isoformat()
+        
+        # Finde alle aktiven Rabattkarten für diesen Kunden
+        discount_query = {
+            "is_active": True,
+            "$or": [
+                {"applies_to_all": True},
+                {"specific_customers": customer["id"]}
+            ]
+        }
+        
+        discount_cards = await db.discount_cards.find(discount_query, {"_id": 0}).to_list(50)
+        
+        # Auch persönlich zugewiesene Karten prüfen
+        assigned_cards = await db.customer_discount_cards.find({
+            "customer_id": customer["id"],
+            "is_active": True
+        }).to_list(50)
+        
+        if assigned_cards:
+            assigned_card_ids = [a["discount_card_id"] for a in assigned_cards]
+            extra_cards = await db.discount_cards.find({
+                "id": {"$in": assigned_card_ids},
+                "is_active": True
+            }, {"_id": 0}).to_list(50)
+            discount_cards.extend(extra_cards)
+        
+        # Finde den besten Rabatt
+        best_discount = 0.0
+        best_card = None
+        
+        for card in discount_cards:
+            # Prüfe Gültigkeit
+            if card.get("valid_from") and card["valid_from"] > now:
+                continue
+            if card.get("valid_until") and card["valid_until"] < now:
+                continue
+            
+            # Prüfe Mindestbestellwert
+            if card.get("min_purchase", 0) > data.amount:
+                continue
+            
+            # Prüfe Filiale
+            if card.get("specific_branches") and data.branch_id:
+                if data.branch_id not in card["specific_branches"]:
+                    continue
+            
+            # Berechne Rabatt
+            if card["discount_type"] == "percentage":
+                calc_discount = data.amount * (card["discount_value"] / 100)
+            else:  # fixed
+                calc_discount = card["discount_value"]
+            
+            # Maximalen Rabatt begrenzen
+            if card.get("max_discount"):
+                calc_discount = min(calc_discount, card["max_discount"])
+            
+            # Rabatt kann nicht höher sein als der Betrag
+            calc_discount = min(calc_discount, data.amount)
+            
+            if calc_discount > best_discount:
+                best_discount = calc_discount
+                best_card = card
+        
+        discount_amount = round(best_discount, 2)
+        discount_card = best_card
+        
+        # Berechne finalen Betrag nach Rabatt
+        final_amount = round(data.amount - discount_amount, 2)
+        
+        if discount_card:
+            logger.info(f"Rabatt angewendet: €{discount_amount:.2f} ({discount_card['name']}) für Kunde {customer['id']}")
+        
+        # ==================== GUTHABEN PRÜFEN ====================
         # Use bidblitz_balance field (same as BidBlitz Pay wallet)
         current_balance = customer.get("bidblitz_balance", 0.0)
         
-        if current_balance < data.amount:
+        if current_balance < final_amount:
             raise HTTPException(
                 status_code=400, 
-                detail=f"Nicht genügend Guthaben. Verfügbar: €{current_balance:.2f}"
+                detail=f"Nicht genügend Guthaben. Verfügbar: €{current_balance:.2f}, Benötigt: €{final_amount:.2f}"
             )
         
-        # Deduct from bidblitz_balance
-        new_balance = current_balance - data.amount
+        # Deduct final amount (nach Rabatt) from bidblitz_balance
+        new_balance = current_balance - final_amount
         await db.users.update_one(
             {"id": customer["id"]},
             {"$set": {"bidblitz_balance": new_balance}}
@@ -450,9 +528,35 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
         # Also update bidblitz_wallets collection if exists
         await db.bidblitz_wallets.update_one(
             {"user_id": customer["id"]},
-            {"$inc": {"universal_balance": -data.amount}},
+            {"$inc": {"universal_balance": -final_amount}},
             upsert=False
         )
+        
+        # ==================== RABATT-NUTZUNG PROTOKOLLIEREN ====================
+        if discount_card:
+            # Aktualisiere Statistiken der Rabattkarte
+            await db.discount_cards.update_one(
+                {"id": discount_card["id"]},
+                {
+                    "$inc": {
+                        "usage_count": 1,
+                        "total_discount_given": discount_amount
+                    }
+                }
+            )
+            
+            # Protokolliere Nutzung
+            discount_usage = {
+                "id": str(uuid.uuid4()),
+                "customer_id": customer["id"],
+                "card_id": discount_card["id"],
+                "card_name": discount_card["name"],
+                "original_amount": data.amount,
+                "discount_amount": discount_amount,
+                "final_amount": final_amount,
+                "used_at": datetime.now(timezone.utc).isoformat()
+            }
+            await db.discount_card_usage.insert_one(discount_usage)
         
         # Create transaction in pos_transactions
         transaction = {
@@ -461,7 +565,11 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
             "customer_id": customer["id"],
             "customer_barcode": data.customer_barcode,
             "customer_name": customer.get("name"),
-            "amount": data.amount,
+            "original_amount": data.amount,
+            "discount_amount": discount_amount,
+            "discount_card_id": discount_card["id"] if discount_card else None,
+            "discount_card_name": discount_card["name"] if discount_card else None,
+            "amount": final_amount,  # Finaler Betrag nach Rabatt
             "description": data.description or "POS Zahlung",
             "previous_balance": current_balance,
             "new_balance": new_balance,
@@ -474,12 +582,15 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
         await db.pos_transactions.insert_one(transaction)
         
         # Also create transaction in bidblitz_pay_transactions (for BidBlitz Pay Verlauf)
+        discount_info = f" (Rabatt: €{discount_amount:.2f})" if discount_amount > 0 else ""
         bidblitz_transaction = {
             "id": transaction["id"],
             "user_id": customer["id"],
             "type": "pos_payment",
-            "amount": -data.amount,  # Negative because it's a payment
-            "description": data.description or f"POS Zahlung bei {data.branch_name or 'Partner'}",
+            "amount": -final_amount,  # Negative because it's a payment
+            "original_amount": data.amount,
+            "discount_amount": discount_amount,
+            "description": (data.description or f"POS Zahlung bei {data.branch_name or 'Partner'}") + discount_info,
             "balance_after": new_balance,
             "status": "completed",
             "created_at": datetime.now(timezone.utc).isoformat(),
@@ -487,19 +598,25 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
                 "staff_id": data.staff_id,
                 "staff_name": data.staff_name,
                 "branch_id": data.branch_id,
-                "branch_name": data.branch_name
+                "branch_name": data.branch_name,
+                "discount_card": discount_card["name"] if discount_card else None
             }
         }
         await db.bidblitz_pay_transactions.insert_one(bidblitz_transaction)
         
-        logger.info(f"POS Payment: €{data.amount} from customer {customer.get('name')} ({customer['id']}) - New balance: €{new_balance}")
+        logger.info(f"POS Payment: €{final_amount:.2f} (Original: €{data.amount:.2f}, Rabatt: €{discount_amount:.2f}) from customer {customer.get('name')} ({customer['id']}) - New balance: €{new_balance:.2f}")
         
         return {
             "success": True,
             "transaction_id": transaction["id"],
             "customer_name": customer.get("name"),
-            "amount": data.amount,
-            "new_balance": new_balance
+            "original_amount": data.amount,
+            "discount_amount": discount_amount,
+            "discount_card_name": discount_card["name"] if discount_card else None,
+            "final_amount": final_amount,
+            "amount": final_amount,
+            "new_balance": new_balance,
+            "has_discount": discount_amount > 0
         }
         
     except HTTPException:
