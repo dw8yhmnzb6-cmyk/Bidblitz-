@@ -1,0 +1,96 @@
+{
+  "summary": "Tested 3 UI fixes: 1) Country dropdown with Balkan countries + manual entry 2) Mobile language dropdown 3-column grid 3) StaffPOS login with Mitarbeiternummer. All features working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/partner-portal/staff/login",
+        "issue": "Fixed: Staff login was not checking enterprise_accounts collection for partner lookup",
+        "priority": "FIXED"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "StaffPOS login API URL",
+        "issue": "Fixed: Frontend was calling /api/partner/staff/login instead of /api/partner-portal/staff/login",
+        "affected_selectors": [],
+        "status": "FIXED"
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_staff_login.py",
+    "/app/test_reports/pytest/pytest_staff_login_ui.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✓ Country dropdown includes all Balkan countries: XK Kosovo, AL Albanien, MK Nordmazedonien, RS Serbien, BA Bosnien, HR Kroatien (AdminEnterpriseManagement.js lines 507-512)",
+    "✓ 'Manuell eingeben...' option (OTHER) shows text input for custom country code (lines 470-487)",
+    "✓ Mobile language dropdown uses 3-column grid (grid-cols-3) with vertical layout (flex-col) - flags on top, text below (StaffPOS.js lines 2376-2394)",
+    "✓ StaffPOS login shows 'Mitarbeiternummer' label instead of 'E-Mail' (line 2273)",
+    "✓ StaffPOS login input has placeholder 'z.B. MA-001234' (line 2278)",
+    "✓ handleLogin tries /api/partner-portal/staff/login first, then falls back to enterprise login (lines 1809-1870)",
+    "✓ Backend staff login endpoint supports staff_number authentication (partner_portal.py lines 416-491)"
+  ],
+  "updated_files": [
+    "/app/backend/routers/partner_portal.py - Added enterprise_accounts lookup in staff login",
+    "/app/frontend/src/pages/StaffPOS.js - Fixed API URL from /api/partner/staff/login to /api/partner-portal/staff/login",
+    "/app/backend/tests/test_staff_login.py - Created test file"
+  ],
+  "success_rate": {
+    "backend": "100% (6/6 tests passed)",
+    "frontend": "100% - All UI features verified via Playwright"
+  },
+  "seed_data_creation": "Created test staff member MA-EDEKA-001 for Edeka enterprise",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "3 UI fixes verified: 1) Country dropdown in AdminEnterpriseManagement has Kosovo, Albania, N. Macedonia, Serbia, Bosnia, Croatia + manual entry option 2) StaffPOS mobile language dropdown uses 3-column grid with larger flags and text below 3) StaffPOS login uses Mitarbeiternummer field and authenticates via /api/partner-portal/staff/login. Test credentials: MA-EDEKA-001 / EdekaTest2026!",
+  "features_tested": {
+    "country_dropdown": {
+      "status": "PASS",
+      "file": "/app/frontend/src/components/admin/AdminEnterpriseManagement.js",
+      "lines": "488-516",
+      "countries_added": ["XK Kosovo", "AL Albanien", "MK Nordmazedonien", "RS Serbien", "BA Bosnien", "HR Kroatien"],
+      "manual_entry": "OTHER option shows text input for custom country code"
+    },
+    "mobile_language_dropdown": {
+      "status": "PASS",
+      "file": "/app/frontend/src/pages/StaffPOS.js",
+      "lines": "2374-2397",
+      "layout": "3-column grid (grid-cols-3)",
+      "flag_size": "text-2xl (larger)",
+      "text_position": "Below flag (flex-col)"
+    },
+    "staff_login_mitarbeiternummer": {
+      "status": "PASS",
+      "frontend_file": "/app/frontend/src/pages/StaffPOS.js",
+      "backend_file": "/app/backend/routers/partner_portal.py",
+      "label": "Mitarbeiternummer",
+      "placeholder": "z.B. MA-001234",
+      "api_endpoint": "/api/partner-portal/staff/login",
+      "test_credentials": "MA-EDEKA-001 / EdekaTest2026!"
+    },
+    "backend_api_tests": {
+      "status": "PASS",
+      "tests_passed": 6,
+      "tests_failed": 0,
+      "test_file": "/app/backend/tests/test_staff_login.py"
+    }
+  },
+  "fixes_applied": [
+    {
+      "file": "/app/backend/routers/partner_portal.py",
+      "issue": "Staff login was not checking enterprise_accounts for partner lookup",
+      "fix": "Added enterprise_accounts.find_one() after partner_accounts and restaurant_accounts checks"
+    },
+    {
+      "file": "/app/frontend/src/pages/StaffPOS.js",
+      "issue": "Frontend was calling wrong API endpoint /api/partner/staff/login",
+      "fix": "Changed to correct endpoint /api/partner-portal/staff/login"
+    }
+  ]
+}
