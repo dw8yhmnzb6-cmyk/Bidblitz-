@@ -1212,7 +1212,9 @@ async def update_commission_settings(enterprise_id: str, data: CommissionSetting
     if not (0 <= data.voucher_commission <= 100):
         raise HTTPException(status_code=400, detail="Gutschein-Provision muss zwischen 0 und 100% liegen")
     if not (0 <= data.self_pay_commission <= 100):
-        raise HTTPException(status_code=400, detail="Eigenzahlung-Provision muss zwischen 0 und 100% liegen")
+        raise HTTPException(status_code=400, detail="Aufladung-Provision muss zwischen 0 und 100% liegen")
+    if not (0 <= data.sales_commission <= 100):
+        raise HTTPException(status_code=400, detail="Verkaufs-Provision muss zwischen 0 und 100% liegen")
     if not (0 <= data.customer_cashback <= 100):
         raise HTTPException(status_code=400, detail="Kunden-Cashback muss zwischen 0 und 100% liegen")
     
@@ -1222,6 +1224,7 @@ async def update_commission_settings(enterprise_id: str, data: CommissionSetting
         "enterprise_id": enterprise_id,
         "voucher_commission": data.voucher_commission,
         "self_pay_commission": data.self_pay_commission,
+        "sales_commission": data.sales_commission,
         "customer_cashback": data.customer_cashback,
         "is_active": data.is_active,
         "updated_at": now.isoformat(),
