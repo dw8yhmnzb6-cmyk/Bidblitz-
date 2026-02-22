@@ -63,9 +63,9 @@ export function AdminRevenueAnalytics({ token }) {
   const formatCurrency = (value) => `€${(value || 0).toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
   return (
-    <div className="space-y-2 sm:space-y-4 max-w-full overflow-hidden">
+    <div className="space-y-2 sm:space-y-4 w-full">
       {/* Header - Einzeilig und kompakt */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between w-full">
         <h2 className="text-sm sm:text-lg font-bold text-gray-900 flex items-center gap-1.5">
           <Euro className="w-4 h-4 text-green-600" />
           Umsatz
@@ -82,24 +82,24 @@ export function AdminRevenueAnalytics({ token }) {
         </div>
       </div>
 
-      {/* Overview Cards - Kompaktes 2x2 Grid */}
+      {/* Overview Cards - 4 Karten in einer Reihe, sehr kompakt */}
       {overview && (
-        <div className="grid grid-cols-2 gap-1.5 sm:gap-3">
-          <div className="bg-green-500 rounded-md p-2 text-white">
-            <div className="text-[9px] sm:text-xs opacity-90">Heute</div>
-            <div className="text-sm sm:text-xl font-bold">{formatCurrency(overview.revenue_today)}</div>
+        <div className="grid grid-cols-4 gap-1 w-full">
+          <div className="bg-green-500 rounded p-1.5 text-white text-center">
+            <div className="text-[8px] opacity-90">Heute</div>
+            <div className="text-[10px] sm:text-sm font-bold truncate">{formatCurrency(overview.revenue_today)}</div>
           </div>
-          <div className="bg-blue-500 rounded-md p-2 text-white">
-            <div className="text-[9px] sm:text-xs opacity-90">Woche</div>
-            <div className="text-sm sm:text-xl font-bold">{formatCurrency(overview.revenue_this_week)}</div>
+          <div className="bg-blue-500 rounded p-1.5 text-white text-center">
+            <div className="text-[8px] opacity-90">Woche</div>
+            <div className="text-[10px] sm:text-sm font-bold truncate">{formatCurrency(overview.revenue_this_week)}</div>
           </div>
-          <div className="bg-purple-500 rounded-md p-2 text-white">
-            <div className="text-[9px] sm:text-xs opacity-90">Monat</div>
-            <div className="text-sm sm:text-xl font-bold">{formatCurrency(overview.revenue_this_month)}</div>
+          <div className="bg-purple-500 rounded p-1.5 text-white text-center">
+            <div className="text-[8px] opacity-90">Monat</div>
+            <div className="text-[10px] sm:text-sm font-bold truncate">{formatCurrency(overview.revenue_this_month)}</div>
           </div>
-          <div className="bg-amber-500 rounded-md p-2 text-white">
-            <div className="text-[9px] sm:text-xs opacity-90">Trans.</div>
-            <div className="text-sm sm:text-xl font-bold">{overview.transactions_today}</div>
+          <div className="bg-amber-500 rounded p-1.5 text-white text-center">
+            <div className="text-[8px] opacity-90">Trans.</div>
+            <div className="text-[10px] sm:text-sm font-bold">{overview.transactions_today}</div>
           </div>
         </div>
       )}
