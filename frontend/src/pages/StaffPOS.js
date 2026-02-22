@@ -1806,7 +1806,7 @@ export default function StaffPOS() {
       const staffNumber = loginForm.employee_number || loginForm.email;
       
       // Try staff login endpoint first
-      let res = await fetch(`${API_URL}/api/partner/staff/login`, {
+      let res = await fetch(`${API_URL}/api/partner-portal/staff/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
