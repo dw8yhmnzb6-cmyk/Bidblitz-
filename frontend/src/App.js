@@ -834,6 +834,23 @@ function AppContent() {
           <Route path="/phone-verify" element={<PhoneVerification />} />
           <Route path="/telefon" element={<PhoneVerification />} />
           
+          {/* KYC Verification */}
+          <Route path="/kyc-verification" element={<KYCVerification />} />
+          <Route path="/kyc" element={<KYCVerification />} />
+          <Route path="/verifizierung" element={<KYCVerification />} />
+          
+          {/* KYC Admin */}
+          <Route path="/admin/kyc" element={
+            <ProtectedRoute requireAdmin>
+              <KYCAdmin />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/kyc-management" element={
+            <ProtectedRoute requireAdmin>
+              <KYCAdmin />
+            </ProtectedRoute>
+          } />
+          
           {/* Social Sharing Rewards */}
           <Route path="/social-rewards" element={<SocialSharingRewards />} />
           <Route path="/teilen-belohnungen" element={<SocialSharingRewards />} />
