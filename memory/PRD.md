@@ -5,6 +5,35 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 22, 2026)
 
+### ✅ Session Update - February 22, 2026 (Session 70) - 3 UI FIXES ✅
+
+#### 6. Drei UI-Verbesserungen implementiert ✅
+
+**Fix 1: Länder-Dropdown erweitert**
+- Neue Länder: 🇽🇰 Kosovo, 🇦🇱 Albanien, 🇲🇰 Nordmazedonien, 🇷🇸 Serbien, 🇧🇦 Bosnien, 🇭🇷 Kroatien
+- "✏️ Manuell eingeben..." Option für benutzerdefinierte Ländercodes
+- Datei: `/app/frontend/src/components/admin/AdminEnterpriseManagement.js`
+
+**Fix 2: Mobile Sprachauswahl verbessert**
+- 3-Spalten Grid statt 2-Spalten
+- Größere Flaggen (text-2xl) mit Text darunter
+- Vertikales Layout für bessere Touch-Targets
+- Datei: `/app/frontend/src/pages/StaffPOS.js`
+
+**Fix 3: StaffPOS Login mit Mitarbeiternummer**
+- Label: "Mitarbeiternummer" statt "E-Mail"
+- Placeholder: "z.B. MA-001234"
+- Login über `/api/partner-portal/staff/login`
+- Fallback auf Enterprise-Login für Kompatibilität
+- Test-Zugang: MA-EDEKA-001 / EdekaTest2026!
+
+**Test-Ergebnisse:**
+- **Backend:** 100% (6/6 Tests bestanden)
+- **Frontend:** 100% - alle UI-Features verifiziert
+- **Test-Report:** `/app/test_reports/iteration_105.json`
+
+---
+
 ### ✅ Session Update - February 22, 2026 (Session 70) - VERKAUFS-PROVISION ✅
 
 #### 5. Verkaufs-Provision (sales_commission) hinzugefügt ✅
