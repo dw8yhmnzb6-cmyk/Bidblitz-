@@ -212,72 +212,61 @@ export function AdminRevenueAnalytics({ token }) {
           </div>
         </div>
       )}
-            <div className="space-y-1.5">
-              <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Bezahlte Auktionen</span><span className="font-bold">{auctionStats.paid_auctions}</span></div>
-              <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Auktions-Einnahmen</span><span className="font-bold text-green-600">{formatCurrency(auctionStats.paid_revenue)}</span></div>
-              <div className="flex justify-between py-1.5 border-b text-xs sm:text-sm"><span className="text-gray-600">Gebots-Umsatz</span><span className="font-bold text-blue-600">{formatCurrency(auctionStats.estimated_bid_revenue)}</span></div>
-              <div className="flex justify-between py-1.5 text-xs sm:text-sm"><span className="text-gray-600">Retail-Wert</span><span className="font-bold">{formatCurrency(auctionStats.total_retail_value)}</span></div>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* Top Spenders Tab - Kompakt für Mobile */}
+      {/* Top Spenders Tab - Kompakt */}
       {activeTab === 'spenders' && (
-        <div className="bg-white rounded-lg border shadow-sm overflow-hidden">
-          <div className="px-3 sm:px-6 py-2 sm:py-3 border-b bg-gray-50">
-            <h3 className="font-semibold text-gray-900 flex items-center gap-2 text-sm sm:text-base">
-              <CreditCard className="w-4 h-4 text-blue-500" />
-              Top Käufer
-            </h3>
-          </div>
-          <div className="divide-y">
-            {topSpenders.length > 0 ? topSpenders.slice(0, 10).map((spender, idx) => (
-              <div key={spender._id} className="px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2 sm:gap-3">
-                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-sm flex-shrink-0 ${idx < 3 ? 'bg-green-500' : 'bg-gray-400'}`}>{idx + 1}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-xs sm:text-sm truncate">{spender.user_name}</div>
-                  <div className="text-[10px] sm:text-xs text-gray-500">{spender.purchases} Käufe</div>
+        <div className="bg-white rounded-lg border p-2 sm:p-4">
+          <h3 className="font-medium text-gray-900 mb-2 text-xs sm:text-sm flex items-center gap-1.5">
+            <CreditCard className="w-3.5 h-3.5 text-blue-500" />
+            Top Käufer
+          </h3>
+          {topSpenders.length > 0 ? (
+            <div className="space-y-1">
+              {topSpenders.slice(0, 5).map((spender, idx) => (
+                <div key={spender._id} className="flex items-center gap-1.5 py-1 border-b border-gray-100 last:border-0">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-[9px] font-bold ${idx < 3 ? 'bg-green-500' : 'bg-gray-400'}`}>{idx + 1}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[10px] sm:text-xs font-medium truncate">{spender.user_name}</div>
+                  </div>
+                  <div className="text-[10px] sm:text-xs font-bold text-green-600">{formatCurrency(spender.total_spent)}</div>
                 </div>
-                <div className="text-right flex-shrink-0">
-                  <div className="font-bold text-green-600 text-sm sm:text-base">{formatCurrency(spender.total_spent)}</div>
-                </div>
-              </div>
-            )) : (
-              <div className="px-4 py-6 text-center text-gray-500 text-sm">Keine Käufer-Daten</div>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-400 py-3 text-xs">Keine Daten</div>
+          )}
         </div>
       )}
 
       {/* Conversion Tab - Kompakt */}
       {activeTab === 'conversion' && conversion && (
-        <div className="space-y-3">
-          <div className="bg-white rounded-lg border shadow-sm p-3 sm:p-5">
-            <h3 className="font-semibold mb-3 flex items-center gap-2 text-sm sm:text-base">
-              <Target className="w-4 h-4 text-red-500" />
-              Conversion Funnel
-            </h3>
-            <div className="space-y-2.5">
-              {[
-                { label: 'Registriert', value: conversion.funnel?.registered, color: 'bg-blue-500' },
-                { label: 'Gebote', value: conversion.funnel?.placed_bids, color: 'bg-green-500' },
-                { label: 'Kauf', value: conversion.funnel?.made_purchase, color: 'bg-purple-500' },
-                { label: 'Gewonnen', value: conversion.funnel?.won_auction, color: 'bg-amber-500' }
-              ].map((step) => {
-                const maxVal = conversion.funnel?.registered || 1;
-                const width = (step.value / maxVal) * 100;
-                return (
-                  <div key={step.label} className="space-y-1">
-                    <div className="flex justify-between text-[10px] sm:text-xs">
-                      <span className="font-medium">{step.label}</span>
-                      <span className="text-gray-600">{step.value}</span>
-                    </div>
-                    <div className="h-4 sm:h-5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className={`h-full ${step.color} rounded-full`} style={{ width: `${Math.max(width, 2)}%` }} />
-                    </div>
+        <div className="bg-white rounded-lg border p-2 sm:p-4">
+          <h3 className="font-medium text-gray-900 mb-2 text-xs sm:text-sm flex items-center gap-1.5">
+            <Target className="w-3.5 h-3.5 text-red-500" />
+            Conversion
+          </h3>
+          <div className="space-y-1.5">
+            {[
+              { label: 'Registriert', value: conversion.funnel?.registered, color: 'bg-blue-500' },
+              { label: 'Gebote', value: conversion.funnel?.placed_bids, color: 'bg-green-500' },
+              { label: 'Kauf', value: conversion.funnel?.made_purchase, color: 'bg-purple-500' },
+              { label: 'Gewonnen', value: conversion.funnel?.won_auction, color: 'bg-amber-500' }
+            ].map((step) => {
+              const maxVal = conversion.funnel?.registered || 1;
+              const width = (step.value / maxVal) * 100;
+              return (
+                <div key={step.label} className="flex items-center gap-1.5">
+                  <span className="text-[8px] sm:text-[10px] text-gray-600 w-14 sm:w-16">{step.label}</span>
+                  <div className="flex-1 h-3 sm:h-4 bg-gray-100 rounded-full overflow-hidden">
+                    <div className={`h-full ${step.color} rounded-full`} style={{ width: `${Math.max(width, 3)}%` }} />
                   </div>
-                );
+                  <span className="text-[8px] sm:text-[10px] font-medium w-6 text-right">{step.value}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
               })}
             </div>
           </div>
