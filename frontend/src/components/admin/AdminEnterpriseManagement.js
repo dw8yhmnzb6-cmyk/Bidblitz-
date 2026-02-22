@@ -724,6 +724,31 @@ export default function AdminEnterpriseManagement() {
                             data-testid="selfpay-commission-input"
                           />
                         </div>
+                        <div className="bg-amber-50 rounded-lg p-3">
+                          <label className="block text-sm font-medium text-amber-700 mb-1">
+                            Verkaufs-Provision %
+                          </label>
+                          <p className="text-xs text-amber-600 mb-2">Händler → BidBlitz (pro Verkauf)</p>
+                          <input
+                            type="text"
+                            inputMode="decimal"
+                            pattern="[0-9]*[.,]?[0-9]*"
+                            placeholder="z.B. 2"
+                            value={commissionForm.sales_commission}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(',', '.');
+                              if (val === '' || val === '.' || /^[0-9]*\.?[0-9]*$/.test(val)) {
+                                setCommissionForm({...commissionForm, sales_commission: val});
+                              }
+                            }}
+                            onBlur={(e) => {
+                              const val = parseFloat(e.target.value) || 0;
+                              setCommissionForm({...commissionForm, sales_commission: val});
+                            }}
+                            className="w-full px-4 py-3 border-2 border-amber-300 rounded-xl text-lg font-bold text-center focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                            data-testid="sales-commission-input"
+                          />
+                        </div>
                         <div className="bg-green-50 rounded-lg p-3">
                           <label className="block text-sm font-medium text-green-700 mb-1">
                             Kunden-Cashback %
