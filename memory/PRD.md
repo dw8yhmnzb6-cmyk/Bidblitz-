@@ -5,6 +5,48 @@ Create a penny auction website modeled after `dealdash.com` and `snipster.de` wi
 
 ## Current Status (February 24, 2026)
 
+### ✅ Session Update - February 24, 2026 (Session 72) - BERECHTIGUNGEN + SCANNER ✅
+
+#### 1. Staff-Rollen-Berechtigungen durchgesetzt ✅
+**Problem:** Die UI zeigte allen Mitarbeitern alle Tabs, unabhängig von ihrer Rolle
+**Lösung:** Berechtigungsprüfung in StaffPOS.js implementiert
+
+**Neue Funktionen in StaffPOS.js:**
+- `canAccessMode(modeId)` - Prüft ob Benutzer einen Modus nutzen kann
+- `hasAnyPOSAccess()` - Prüft ob Benutzer POS-Zugang hat
+- `getFirstAvailableMode()` - Wählt automatisch den ersten verfügbaren Modus
+
+**Rollenbasierte Tab-Sichtbarkeit:**
+| Rolle | Sichtbare Tabs | Nachricht |
+|-------|----------------|-----------|
+| Counter | Aufladung, Gutschein einlösen, Zahlung | - |
+| Support | - | "Kein Kassen-Zugang" + Link zum Partner-Portal |
+| Marketing | Gutschein erstellen | - |
+| Manager | - | "Kein Kassen-Zugang" + Link zum Partner-Portal |
+| Admin | Alle 4 Tabs | - |
+
+**Test-Credentials:**
+- Counter: TS-001 / Test123!
+- Support: TS-002 / Test123!
+- Marketing: TS-003 / Test123!
+
+#### 2. Barcode-Scanner optimiert ✅
+**Problem:** Scanner erkannte Barcodes nicht zuverlässig
+**Lösung:** html5-qrcode Konfiguration angepasst
+
+**Änderungen:**
+- `formatsToSupport` in den Konstruktor verschoben (empfohlene Methode)
+- `useBarCodeDetectorIfSupported: false` für bessere Kompatibilität
+- Scan-Bereich vergrößert: 300x180 Pixel
+- FPS reduziert: 8-10 für stabileres Scanning
+
+**Test-Ergebnisse:**
+- **Backend:** 100% (8/8 Tests bestanden)
+- **Frontend:** 100% (3/3 Rollen-Tests bestanden)
+- **Test-Report:** `/app/test_reports/iteration_108.json`
+
+---
+
 ### ✅ Session Update - February 24, 2026 (Session 71) - PORTFOLIO ÜBERSETZUNGEN ✅
 
 #### 2. Portfolio/Wallet Übersetzungen vervollständigt ✅
