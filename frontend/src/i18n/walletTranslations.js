@@ -289,7 +289,9 @@ export const walletTranslations = {
     cameraAccessDenied: 'Kamerazugriff verweigert. Bitte erlauben Sie die Kamera in den Browser-Einstellungen und laden Sie die Seite neu.',
     cameraStartError: 'Kamera konnte nicht gestartet werden. Nutzen Sie bitte "Foto aufnehmen".',
     qrScanInstruction: 'QR-Code mit der Kamera scannen oder "Foto aufnehmen" nutzen',
-    scanQROrUpload: 'QR-Code scannen oder Bild hochladen'
+    scanQROrUpload: 'QR-Code scannen oder Bild hochladen',
+    chooseScanOption: 'Wählen Sie eine der Optionen unten zum Scannen',
+    worksReliably: '✅ Funktioniert zuverlässig auf iPhone, iPad & Android!'
   },
   
   en: {
