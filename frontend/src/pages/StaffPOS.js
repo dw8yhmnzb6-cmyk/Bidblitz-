@@ -1243,6 +1243,36 @@ export default function StaffPOS() {
   const hardwareScanTimeoutRef = useRef(null);
   const lastKeyTimeRef = useRef(0);
 
+  // ==================== PERMISSION HELPER ====================
+  // Check if user has a specific permission
+  const hasPermission = (permission) => {
+    const permissions = staff?.permissions || [];
+    // Admin has all permissions
+    if (permissions.includes('*')) return true;
+    // Check specific permission
+    return permissions.includes(permission);
+  };
+  
+  // Check if user can access a specific mode/feature
+  const canAccessMode = (modeId) => {
+    const role = staff?.role || 'counter';
+    // Admin always has full access
+    if (role === 'admin') return true;
+    
+    switch (modeId) {
+      case 'topup':
+        return hasPermission('pos.topup') || role === 'counter';
+      case 'payment':
+        return hasPermission('pos.pay') || role === 'counter';
+      case 'giftcard-create':
+        return hasPermission('vouchers.create') || role === 'marketing' || role === 'admin';
+      case 'giftcard-redeem':
+        return hasPermission('pos.scan') || role === 'counter' || role === 'admin';
+      default:
+        return false;
+    }
+  };
+
   // Bonus tiers
   const bonusTiers = [
     { min: 200, bonus: 12.00, percent: 6 },
