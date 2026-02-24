@@ -2112,7 +2112,7 @@ const BidBlitzPay = () => {
                       <div className="flex items-center gap-2 mb-3">
                         <Keyboard className="w-5 h-5 text-amber-600" />
                         <span className="font-medium text-amber-800">
-                          {language === 'de' ? 'Manuelle Eingabe' : 'Manual Entry'}
+                          {t('manualEntry')}
                         </span>
                       </div>
                       <form onSubmit={handleManualRequestLoad} className="space-y-3">
