@@ -2037,9 +2037,7 @@ const BidBlitzPay = () => {
                       <Camera className="w-12 h-12 text-gray-400 mx-auto mb-2" />
                       <p className="text-sm text-gray-500">{t('scanRequestQR')}</p>
                       <p className="text-xs text-gray-400 mt-2">
-                        {language === 'de' 
-                          ? 'Wählen Sie eine der Optionen unten zum Scannen' 
-                          : 'Choose one of the options below to scan'}
+                        {t('chooseScanOption')}
                       </p>
                     </div>
                     
@@ -2055,9 +2053,7 @@ const BidBlitzPay = () => {
                         </span>
                       </div>
                       <p className="text-sm text-green-600 mb-3">
-                        {language === 'de' 
-                          ? '✅ Funktioniert zuverlässig auf iPhone, iPad & Android!' 
-                          : '✅ Works reliably on iPhone, iPad & Android!'}
+                        {t('worksReliably')}
                       </p>
                       <input
                         ref={fileInputRef}
