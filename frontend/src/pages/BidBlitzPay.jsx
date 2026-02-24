@@ -2741,7 +2741,7 @@ const BidBlitzPay = () => {
                   type="text"
                   value={newContactNickname}
                   onChange={(e) => setNewContactNickname(e.target.value)}
-                  placeholder={language === 'de' ? 'z.B. Mama, Max, Arbeit' : 'e.g. Mom, Max, Work'}
+                  placeholder={t('nicknameExample')}
                   className="w-full"
                 />
               </div>
@@ -2757,7 +2757,7 @@ const BidBlitzPay = () => {
                 variant="outline"
                 className="flex-1"
               >
-                {language === 'de' ? 'Abbrechen' : 'Cancel'}
+                {t('cancel')}
               </Button>
               <Button
                 onClick={addContactManually}
@@ -2769,7 +2769,7 @@ const BidBlitzPay = () => {
                 ) : (
                   <>
                     <CheckCircle className="w-4 h-4 mr-1" />
-                    {language === 'de' ? 'Speichern' : 'Save'}
+                    {t('save')}
                   </>
                 )}
               </Button>
@@ -2787,20 +2787,20 @@ const BidBlitzPay = () => {
                 <span className="text-2xl">✏️</span>
               </div>
               <h3 className="text-lg font-bold text-gray-800">
-                {language === 'de' ? 'Kontakt bearbeiten' : 'Edit Contact'}
+                {t('editContact')}
               </h3>
             </div>
             
             <div className="bg-gray-50 rounded-xl p-3 mb-4">
               <p className="text-xs text-gray-500">
-                {language === 'de' ? 'Kundennummer' : 'Customer ID'}
+                {t('customerNumber')}
               </p>
               <p className="font-medium text-gray-800">{editingContact.recipient_customer_number || editingContact.recipient_email}</p>
             </div>
             
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                {language === 'de' ? 'Neuer Spitzname' : 'New Nickname'}
+                {t('newNickname')}
               </label>
               <Input
                 type="text"
@@ -2818,7 +2818,7 @@ const BidBlitzPay = () => {
                 variant="outline"
                 className="flex-1"
               >
-                {language === 'de' ? 'Abbrechen' : 'Cancel'}
+                {t('cancel')}
               </Button>
               <Button
                 onClick={updateContact}
