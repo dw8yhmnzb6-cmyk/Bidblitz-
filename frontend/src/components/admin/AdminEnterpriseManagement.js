@@ -299,13 +299,190 @@ export default function AdminEnterpriseManagement() {
             <p className="text-sm text-gray-500">{enterprises.length} Unternehmen registriert</p>
           </div>
         </div>
-        <button 
-          onClick={fetchEnterprises}
-          className="p-2 hover:bg-gray-100 rounded-lg"
-        >
-          <RefreshCw className="w-5 h-5 text-gray-600" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setShowCreateModal(true)}
+            className="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all flex items-center gap-2"
+            data-testid="create-enterprise-btn"
+          >
+            <Store className="w-4 h-4" />
+            Neuer Händler
+          </button>
+          <button 
+            onClick={fetchEnterprises}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <RefreshCw className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
       </div>
+
+      {/* Create Enterprise Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="p-4 border-b flex items-center justify-between sticky top-0 bg-white">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                <Store className="w-5 h-5 text-purple-600" />
+                Neuen Händler erstellen
+              </h3>
+              <button 
+                onClick={() => setShowCreateModal(false)}
+                className="p-1 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <form onSubmit={createEnterprise} className="p-4 space-y-4">
+              {/* Company Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Firmenname *
+                </label>
+                <input
+                  type="text"
+                  value={createForm.company_name}
+                  onChange={(e) => setCreateForm({...createForm, company_name: e.target.value})}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="z.B. Edeka Mustermann"
+                  required
+                />
+              </div>
+              
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  E-Mail *
+                </label>
+                <input
+                  type="email"
+                  value={createForm.email}
+                  onChange={(e) => setCreateForm({...createForm, email: e.target.value})}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="admin@firma.de"
+                  required
+                />
+              </div>
+              
+              {/* Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Passwort *
+                </label>
+                <input
+                  type="text"
+                  value={createForm.password}
+                  onChange={(e) => setCreateForm({...createForm, password: e.target.value})}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Sicheres Passwort"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">Das Passwort wird dem Händler mitgeteilt</p>
+              </div>
+              
+              {/* Contact Person */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Ansprechpartner
+                </label>
+                <input
+                  type="text"
+                  value={createForm.contact_person}
+                  onChange={(e) => setCreateForm({...createForm, contact_person: e.target.value})}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Max Mustermann"
+                />
+              </div>
+              
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Telefon
+                </label>
+                <input
+                  type="tel"
+                  value={createForm.phone}
+                  onChange={(e) => setCreateForm({...createForm, phone: e.target.value})}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="+49 123 456789"
+                />
+              </div>
+              
+              {/* Address */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Adresse
+                </label>
+                <textarea
+                  value={createForm.address}
+                  onChange={(e) => setCreateForm({...createForm, address: e.target.value})}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="Musterstraße 1, 12345 Musterstadt"
+                  rows={2}
+                />
+              </div>
+              
+              {/* Tax ID */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Steuernummer / USt-IdNr.
+                </label>
+                <input
+                  type="text"
+                  value={createForm.tax_id}
+                  onChange={(e) => setCreateForm({...createForm, tax_id: e.target.value})}
+                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                  placeholder="DE123456789"
+                />
+              </div>
+              
+              {/* Auto Approve */}
+              <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                <input
+                  type="checkbox"
+                  id="auto_approve"
+                  checked={createForm.auto_approve}
+                  onChange={(e) => setCreateForm({...createForm, auto_approve: e.target.checked})}
+                  className="w-5 h-5 text-green-600 rounded focus:ring-green-500"
+                />
+                <label htmlFor="auto_approve" className="text-sm">
+                  <span className="font-medium text-green-700">Sofort freischalten</span>
+                  <p className="text-xs text-green-600">Händler kann direkt loslegen</p>
+                </label>
+              </div>
+              
+              {/* Submit */}
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  type="submit"
+                  disabled={createLoading}
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {createLoading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      Erstelle...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      Händler erstellen
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
