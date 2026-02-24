@@ -1908,28 +1908,122 @@ export default function EnterprisePortal() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {branches.map(branch => (
                 <div key={branch.id} className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                        branch.is_active ? 'bg-emerald-100' : 'bg-slate-100'
-                      }`}>
-                        <Store className={`w-5 h-5 ${branch.is_active ? 'text-emerald-600' : 'text-slate-400'}`} />
+                  {editingBranch?.id === branch.id ? (
+                    // Edit Mode
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">{t.branchName}</label>
+                        <input
+                          type="text"
+                          value={editingBranch.name}
+                          onChange={(e) => setEditingBranch({...editingBranch, name: e.target.value})}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
                       </div>
                       <div>
-                        <h3 className="font-bold text-slate-800">{branch.name}</h3>
-                        <p className="text-sm text-slate-500">{branch.city || '-'}</p>
+                        <label className="block text-xs text-slate-500 mb-1">{t.city}</label>
+                        <input
+                          type="text"
+                          value={editingBranch.city || ''}
+                          onChange={(e) => setEditingBranch({...editingBranch, city: e.target.value})}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">{t.address}</label>
+                        <input
+                          type="text"
+                          value={editingBranch.address || ''}
+                          onChange={(e) => setEditingBranch({...editingBranch, address: e.target.value})}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">{t.phone}</label>
+                        <input
+                          type="text"
+                          value={editingBranch.phone || ''}
+                          onChange={(e) => setEditingBranch({...editingBranch, phone: e.target.value})}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div className="flex gap-2 pt-2">
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await fetch(`${API_URL}/api/enterprise/branches/${branch.id}?token=${token}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  name: editingBranch.name,
+                                  city: editingBranch.city,
+                                  address: editingBranch.address,
+                                  phone: editingBranch.phone
+                                })
+                              });
+                              if (res.ok) {
+                                toast.success(t.success || 'Gespeichert!');
+                                setEditingBranch(null);
+                                fetchData();
+                              } else {
+                                const err = await res.json();
+                                toast.error(err.detail || t.error);
+                              }
+                            } catch (e) {
+                              toast.error(t.error);
+                            }
+                          }}
+                          className="flex-1 py-2 bg-emerald-500 text-white rounded-lg text-sm font-medium hover:bg-emerald-600 flex items-center justify-center gap-1"
+                        >
+                          <Save className="w-4 h-4" />
+                          {t.save}
+                        </button>
+                        <button
+                          onClick={() => setEditingBranch(null)}
+                          className="flex-1 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 flex items-center justify-center gap-1"
+                        >
+                          <X className="w-4 h-4" />
+                          {t.cancel}
+                        </button>
                       </div>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      branch.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
-                    }`}>
-                      {branch.is_active ? t.active : t.inactive}
-                    </span>
-                  </div>
-                  <div className="space-y-1 text-sm text-slate-600">
-                    <p className="flex items-center gap-2"><Key className="w-4 h-4" /> {branch.api_keys_count || 0} API-Keys</p>
-                    <p className="flex items-center gap-2"><Euro className="w-4 h-4" /> €{branch.total_revenue?.toFixed(2) || '0.00'}</p>
-                  </div>
+                  ) : (
+                    // View Mode
+                    <>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                            branch.is_active ? 'bg-emerald-100' : 'bg-slate-100'
+                          }`}>
+                            <Store className={`w-5 h-5 ${branch.is_active ? 'text-emerald-600' : 'text-slate-400'}`} />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-slate-800">{branch.name}</h3>
+                            <p className="text-sm text-slate-500">{branch.city || '-'}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => setEditingBranch({...branch})}
+                            className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg"
+                            title={t.edit || 'Bearbeiten'}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            branch.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'
+                          }`}>
+                            {branch.is_active ? t.active : t.inactive}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="space-y-1 text-sm text-slate-600">
+                        <p className="flex items-center gap-2"><Key className="w-4 h-4" /> {branch.api_keys_count || 0} API-Keys</p>
+                        <p className="flex items-center gap-2"><Euro className="w-4 h-4" /> €{branch.total_revenue?.toFixed(2) || '0.00'}</p>
+                        {branch.address && <p className="flex items-center gap-2 text-xs text-slate-400">{branch.address}</p>}
+                      </div>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
