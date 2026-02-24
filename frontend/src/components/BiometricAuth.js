@@ -493,9 +493,10 @@ export const BiometricVerification = ({ user, token, onSuccess, onCancel, amount
 
 // ==================== SECURITY SETTINGS ====================
 
-export const SecuritySettings = ({ user, token }) => {
+export const SecuritySettings = ({ user, token, language = 'de' }) => {
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
+  const t = getSecurityT(language);
 
   useEffect(() => {
     fetchSettings();
@@ -522,9 +523,9 @@ export const SecuritySettings = ({ user, token }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSettings({ ...settings, [key]: value });
-      toast.success('Einstellung gespeichert');
+      toast.success(language === 'de' ? 'Einstellung gespeichert' : 'Setting saved');
     } catch (err) {
-      toast.error('Fehler beim Speichern');
+      toast.error(language === 'de' ? 'Fehler beim Speichern' : 'Error saving');
     }
   };
 
