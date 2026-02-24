@@ -812,6 +812,8 @@ export const walletTranslations = {
     enterAmount: 'Entrer le montant',
     successTransfer: 'Transféré avec succès',
     processing: 'Traitement...',
+    hideBalance: 'Masquer le solde',
+    balanceHidden: 'Solde masqué',
     sendMoney: 'Envoyer de l\'argent',
     recipientId: 'Destinataire (N° client ou Email)',
     recipientEmail: 'Email du destinataire',
