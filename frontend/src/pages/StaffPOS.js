@@ -1823,6 +1823,7 @@ export default function StaffPOS() {
           email: data.staff?.email,
           staff_number: data.staff?.staff_number,
           role: data.staff?.role || 'counter',
+          permissions: data.permissions || data.staff?.permissions || [], // Store permissions
           branch_id: data.staff?.partner_id,
           branch_name: data.staff?.partner_name,
           company_name: data.staff?.partner_name
