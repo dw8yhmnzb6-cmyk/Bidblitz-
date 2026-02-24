@@ -23,6 +23,18 @@ export default function AdminEnterpriseManagement() {
   const [expandedId, setExpandedId] = useState(null);
   const [editingPayout, setEditingPayout] = useState(null);
   const [editingCommission, setEditingCommission] = useState(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [createForm, setCreateForm] = useState({
+    company_name: '',
+    email: '',
+    password: '',
+    contact_person: '',
+    phone: '',
+    address: '',
+    tax_id: '',
+    auto_approve: true
+  });
   const [payoutForm, setPayoutForm] = useState({
     iban: '',
     iban_holder: '',
