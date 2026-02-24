@@ -2519,35 +2519,51 @@ export default function StaffPOS() {
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto p-4">
-        {/* Mode Tabs */}
-        <div className="grid grid-cols-2 gap-2 mb-6">
-          {[
+        {/* Mode Tabs - Filtered by permissions */}
+        {(() => {
+          const allTabs = [
             { id: 'topup', labelKey: 'topup', icon: Wallet, color: 'amber' },
             { id: 'giftcard-create', labelKey: 'giftcardCreate', icon: Gift, color: 'green' },
             { id: 'giftcard-redeem', labelKey: 'giftcardRedeem', icon: Ticket, color: 'purple' },
             { id: 'payment', labelKey: 'payment', icon: CreditCard, color: 'blue' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                setMode(tab.id);
-                setScanMode(false);
-                setRedeemedGiftCard(null);
-              }}
-              data-testid={`tab-${tab.id}`}
-              className={`py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-                mode === tab.id
-                  ? tab.color === 'amber' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
-                  : tab.color === 'green' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
-                  : tab.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30'
-                  : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30'
-                  : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-              }`}
-            >
-              <tab.icon className="w-5 h-5" />
-              <span className="text-sm">{t[tab.labelKey]}</span>
-            </button>
-          ))}
+          ];
+          
+          // Filter tabs based on user permissions
+          const visibleTabs = allTabs.filter(tab => canAccessMode(tab.id));
+          
+          // Dynamic grid columns based on visible tabs
+          const gridCols = visibleTabs.length === 1 ? 'grid-cols-1' 
+                         : visibleTabs.length === 2 ? 'grid-cols-2'
+                         : visibleTabs.length === 3 ? 'grid-cols-3'
+                         : 'grid-cols-2';
+          
+          return (
+            <div className={`grid ${gridCols} gap-2 mb-6`}>
+              {visibleTabs.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setMode(tab.id);
+                    setScanMode(false);
+                    setRedeemedGiftCard(null);
+                  }}
+                  data-testid={`tab-${tab.id}`}
+                  className={`py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                    mode === tab.id
+                      ? tab.color === 'amber' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
+                      : tab.color === 'green' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
+                      : tab.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30'
+                      : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30'
+                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                  }`}
+                >
+                  <tab.icon className="w-5 h-5" />
+                  <span className="text-sm">{t[tab.labelKey]}</span>
+                </button>
+              ))}
+            </div>
+          );
+        })()}
         </div>
 
         {/* ==================== AUFLADUNG MODE ==================== */}
