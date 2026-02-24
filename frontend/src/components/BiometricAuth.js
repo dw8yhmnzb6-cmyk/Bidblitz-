@@ -616,7 +616,6 @@ export const SecuritySettings = ({ user, token, language = 'de' }) => {
           <div>
             <p className="font-medium text-green-800">{t.encryptedTransfer}</p>
             <p className="text-sm text-green-700">{t.encryptedTransferDesc}</p>
-            </p>
           </div>
         </div>
       </div>
