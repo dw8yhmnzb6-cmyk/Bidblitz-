@@ -2468,14 +2468,6 @@ export default function StaffPOS() {
           </div>
         </div>
       </header>
-      
-      {/* Overlay for language dropdown on mobile */}
-      {showLanguages && (
-        <div 
-          className="fixed inset-0 bg-black/40 z-[90] sm:hidden" 
-          onClick={() => setShowLanguages(false)}
-        />
-      )}
 
       {/* Hardware Scanner Status Bar */}
       {hardwareScannerMode && (
