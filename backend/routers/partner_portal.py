@@ -77,9 +77,18 @@ class VoucherRedeemRequest(BaseModel):
 class StaffAccountCreate(BaseModel):
     name: str
     password: str
-    role: str = "counter"  # "counter" (Theke) or "admin"
+    role: str = "counter"  # "counter", "support", "marketing", "manager", "admin"
     # Note: staff_number is auto-generated, email is optional
     email: Optional[str] = None
+
+# Role permissions mapping
+ROLE_PERMISSIONS = {
+    "counter": ["pos.scan", "pos.pay", "pos.topup"],
+    "support": ["support.view", "support.manage", "tickets.view", "tickets.reply", "users.view"],
+    "marketing": ["vouchers.view", "vouchers.create", "campaigns.view", "campaigns.manage"],
+    "manager": ["staff.view", "staff.manage", "reports.view", "stats.view"],
+    "admin": ["*"]  # Full access
+}
 
 class StaffLogin(BaseModel):
     staff_number: str  # Kundennummer z.B. "PR-001-001"
