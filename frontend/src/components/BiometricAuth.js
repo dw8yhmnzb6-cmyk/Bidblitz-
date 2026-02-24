@@ -593,8 +593,8 @@ export const SecuritySettings = ({ user, token, language = 'de' }) => {
         {settings?.biometric_credentials_count > 0 && (
           <div className="p-4 flex items-center justify-between">
             <div>
-              <p className="font-medium text-gray-800">Biometrie für Transaktionen</p>
-              <p className="text-sm text-gray-500">Fingerabdruck/Face ID für jede Zahlung</p>
+              <p className="font-medium text-gray-800">{t.requireBiometric}</p>
+              <p className="text-sm text-gray-500">{t.requireBiometricDesc}</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -614,10 +614,8 @@ export const SecuritySettings = ({ user, token, language = 'de' }) => {
         <div className="flex items-start gap-3">
           <Lock className="w-5 h-5 text-green-500 mt-0.5" />
           <div>
-            <p className="font-medium text-green-800">Verschlüsselte Datenübertragung</p>
-            <p className="text-sm text-green-700">
-              Alle Daten werden mit TLS 1.3 verschlüsselt übertragen. 
-              Sensible Informationen werden zusätzlich verschlüsselt gespeichert.
+            <p className="font-medium text-green-800">{t.encryptedTransfer}</p>
+            <p className="text-sm text-green-700">{t.encryptedTransferDesc}</p>
             </p>
           </div>
         </div>
