@@ -2371,29 +2371,66 @@ export default function StaffPOS() {
                 <span className="text-base sm:text-lg">{languages.find(l => l.code === language)?.flag || '🇩🇪'}</span>
               </button>
               
+              {/* Language Selection Modal - Neues Design */}
               {showLanguages && (
-                <div className="fixed sm:absolute right-2 sm:right-0 top-14 sm:top-full sm:mt-2 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-[100] p-3 w-[calc(100vw-1rem)] sm:w-auto sm:min-w-[320px] max-h-[70vh] sm:max-h-[400px] overflow-y-auto">
-                  <div className="grid grid-cols-4 sm:grid-cols-2 gap-2">
-                    {languages.map(lang => (
-                      <button
-                        key={lang.code}
-                        onClick={() => {
-                          setLanguage(lang.code);
-                          setShowLanguages(false);
-                        }}
-                        className={`flex flex-col sm:flex-row items-center justify-center sm:gap-2 p-2 rounded-lg text-center sm:text-left transition-all min-h-[60px] ${
-                          language === lang.code
-                            ? 'bg-amber-500 text-white'
-                            : 'hover:bg-slate-700 text-slate-300'
-                        }`}
-                        data-testid={`lang-${lang.code}`}
+                <>
+                  {/* Backdrop */}
+                  <div 
+                    className="fixed inset-0 bg-black/60 z-[99]" 
+                    onClick={() => setShowLanguages(false)}
+                  />
+                  
+                  {/* Modal */}
+                  <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:translate-y-0 bg-slate-800 border border-slate-600 rounded-2xl shadow-2xl z-[100] overflow-hidden max-h-[80vh] sm:max-h-[500px] sm:w-[400px]">
+                    {/* Header */}
+                    <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Globe className="w-5 h-5 text-white" />
+                        <span className="font-bold text-white">Sprache / Language</span>
+                      </div>
+                      <button 
+                        onClick={() => setShowLanguages(false)}
+                        className="text-white/80 hover:text-white p-1"
                       >
-                        <span className="text-3xl leading-none">{lang.flag}</span>
-                        <span className="text-[9px] sm:text-sm truncate leading-tight mt-1 sm:mt-0 max-w-full">{lang.name.split(' ')[0]}</span>
+                        <X className="w-5 h-5" />
                       </button>
-                    ))}
+                    </div>
+                    
+                    {/* Language List */}
+                    <div className="p-2 overflow-y-auto max-h-[60vh] sm:max-h-[400px]">
+                      <div className="grid grid-cols-2 gap-2">
+                        {languages.map(lang => (
+                          <button
+                            key={lang.code}
+                            onClick={() => {
+                              setLanguage(lang.code);
+                              setShowLanguages(false);
+                            }}
+                            className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
+                              language === lang.code
+                                ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30'
+                                : 'bg-slate-700/50 hover:bg-slate-700 text-slate-200'
+                            }`}
+                            data-testid={`lang-${lang.code}`}
+                          >
+                            <span className="text-2xl flex-shrink-0">{lang.flag}</span>
+                            <div className="text-left min-w-0">
+                              <p className={`font-medium text-sm truncate ${language === lang.code ? 'text-white' : 'text-slate-200'}`}>
+                                {lang.name}
+                              </p>
+                              <p className={`text-xs truncate ${language === lang.code ? 'text-white/70' : 'text-slate-400'}`}>
+                                {lang.code.toUpperCase()}
+                              </p>
+                            </div>
+                            {language === lang.code && (
+                              <CheckCircle className="w-5 h-5 text-white ml-auto flex-shrink-0" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
             
