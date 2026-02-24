@@ -7,7 +7,7 @@ import {
   Building2, Key, Users, BarChart3, Download, Store, Plus,
   LogOut, Check, X, RefreshCw, FileText, TrendingUp, Menu,
   Euro, ShoppingBag, Gift, Percent, Copy, Globe, ChevronDown,
-  Trash2, ToggleLeft, ToggleRight, Eye, EyeOff, Clock, Sparkles, Mail
+  Trash2, ToggleLeft, ToggleRight, Eye, EyeOff, Clock, Sparkles, Mail, Pencil, Save
 } from 'lucide-react';
 import { toast } from 'sonner';
 
