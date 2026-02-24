@@ -2155,17 +2155,90 @@ export default function EnterprisePortal() {
                         <p className="text-sm text-slate-500">{user.email}</p>
                       </div>
                     </div>
+                    <button
+                      onClick={() => setEditingUser({...user})}
+                      className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg"
+                      title={t.edit || 'Bearbeiten'}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 
-                      user.role === 'branch_manager' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'
-                    }`}>
-                      {user.role === 'admin' ? t.admin : user.role === 'branch_manager' ? t.branchManager : t.cashier}
-                    </span>
-                    {user.branch_name && (
-                      <span className="text-sm text-slate-500">{user.branch_name}</span>
-                    )}
+                  {editingUser?.id === user.id ? (
+                    // Edit Mode
+                    <div className="mt-3 space-y-3 pt-3 border-t border-slate-100">
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">{t.name}</label>
+                        <input
+                          type="text"
+                          value={editingUser.name}
+                          onChange={(e) => setEditingUser({...editingUser, name: e.target.value})}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">{t.role}</label>
+                        <select
+                          value={editingUser.role}
+                          onChange={(e) => setEditingUser({...editingUser, role: e.target.value})}
+                          className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                        >
+                          <option value="admin">{t.admin}</option>
+                          <option value="branch_manager">{t.branchManager}</option>
+                          <option value="cashier">{t.cashier}</option>
+                          <option value="accountant">{t.accountant || 'Steuerberater'}</option>
+                        </select>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await fetch(`${API_URL}/api/enterprise/users/${user.id}?token=${token}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  name: editingUser.name,
+                                  role: editingUser.role
+                                })
+                              });
+                              if (res.ok) {
+                                toast.success(t.success || 'Gespeichert!');
+                                setEditingUser(null);
+                                fetchData();
+                              } else {
+                                const err = await res.json();
+                                toast.error(err.detail || t.error);
+                              }
+                            } catch (e) {
+                              toast.error(t.error);
+                            }
+                          }}
+                          className="flex-1 py-2 bg-emerald-500 text-white rounded-lg text-sm font-medium hover:bg-emerald-600 flex items-center justify-center gap-1"
+                        >
+                          <Save className="w-4 h-4" />
+                          {t.save}
+                        </button>
+                        <button
+                          onClick={() => setEditingUser(null)}
+                          className="flex-1 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50"
+                        >
+                          {t.cancel}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    // View Mode
+                    <div className="flex items-center justify-between mt-3">
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 
+                        user.role === 'branch_manager' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700'
+                      }`}>
+                        {user.role === 'admin' ? t.admin : user.role === 'branch_manager' ? t.branchManager : t.cashier}
+                      </span>
+                      {user.branch_name && (
+                        <span className="text-sm text-slate-500">{user.branch_name}</span>
+                      )}
+                    </div>
+                  )}
                   </div>
                 </div>
               ))}
