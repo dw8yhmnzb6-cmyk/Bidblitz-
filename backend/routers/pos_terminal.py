@@ -127,6 +127,61 @@ async def get_or_create_customer(barcode: str) -> dict:
     logger.info(f"Created new customer via POS barcode: {barcode}")
     return new_customer
 
+# ==================== CUSTOMER LOOKUP ====================
+
+@router.get("/customer/lookup")
+async def lookup_customer_by_barcode(barcode: str, authorization: Optional[str] = Header(None)):
+    """
+    Look up customer by barcode/customer_number to show balance before topup.
+    Returns customer info including current balance.
+    """
+    try:
+        # Normalize barcode
+        barcode = barcode.strip().upper()
+        
+        # Try to find by customer_number or qr_code
+        customer = await db.users.find_one(
+            {"$or": [
+                {"customer_number": barcode},
+                {"qr_code": barcode},
+                {"customer_number": {"$regex": barcode, "$options": "i"}}
+            ]},
+            {"_id": 0, "password": 0}
+        )
+        
+        if not customer:
+            raise HTTPException(status_code=404, detail="Kunde nicht gefunden")
+        
+        # Get balance from bidblitz_balance field
+        main_balance = customer.get("balance", 0.0)
+        bidblitz_balance = customer.get("bidblitz_balance", 0.0)
+        
+        # Also check bidblitz_wallets for wallet balance
+        wallet = await db.bidblitz_wallets.find_one(
+            {"user_id": customer.get("id")},
+            {"_id": 0}
+        )
+        wallet_balance = wallet.get("universal_balance", 0.0) if wallet else 0.0
+        
+        return {
+            "found": True,
+            "customer_number": customer.get("customer_number"),
+            "name": customer.get("name", "Kunde"),
+            "email": customer.get("email", "")[:3] + "***" if customer.get("email") else None,
+            "balance": main_balance,
+            "bidblitz_balance": bidblitz_balance,
+            "wallet_balance": wallet_balance,
+            "total_balance": main_balance + bidblitz_balance + wallet_balance,
+            "total_deposits": customer.get("total_deposits", 0),
+            "created_at": customer.get("created_at")
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Customer lookup error: {e}")
+        raise HTTPException(status_code=500, detail="Fehler bei der Kundensuche")
+
 # ==================== TOPUP ENDPOINTS ====================
 
 @router.post("/topup")
