@@ -2387,7 +2387,9 @@ export const walletTranslations = {
     cameraAccessDenied: 'Qasja në kamerë u refuzua. Ju lutem lejoni kamerën në cilësimet e shfletuesit dhe ringarkoni faqen.',
     cameraStartError: 'Kamera nuk mund të nisej. Ju lutem përdorni "Bëj foto".',
     qrScanInstruction: 'Skanoni QR-kodin me kamerë ose përdorni "Bëj foto"',
-    scanQROrUpload: 'Skano QR-kodin ose ngarko imazhin'
+    scanQROrUpload: 'Skano QR-kodin ose ngarko imazhin',
+    chooseScanOption: 'Zgjidhni një nga opsionet më poshtë për të skanuar',
+    worksReliably: '✅ Funksionon me besueshmëri në iPhone, iPad & Android!'
   }
 };
 
