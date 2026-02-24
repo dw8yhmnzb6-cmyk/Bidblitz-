@@ -2564,7 +2564,6 @@ export default function StaffPOS() {
             </div>
           );
         })()}
-        </div>
 
         {/* ==================== AUFLADUNG MODE ==================== */}
         {mode === 'topup' && (
