@@ -1302,6 +1302,60 @@ async def get_pending_enterprises(x_admin_key: str = Header(...)):
     return {"pending": pending, "total": len(pending)}
 
 
+class AdminEnterpriseCreate(BaseModel):
+    """Model for admin-created enterprise accounts."""
+    company_name: str
+    email: str
+    password: str
+    contact_person: str = ""
+    phone: str = ""
+    address: str = ""
+    tax_id: str = ""
+    auto_approve: bool = True  # Admin can auto-approve
+
+
+@router.post("/admin/create")
+async def admin_create_enterprise(data: AdminEnterpriseCreate, x_admin_key: str = Header(...)):
+    """Admin: Create a new enterprise account directly (bypasses registration)."""
+    if x_admin_key != "bidblitz-admin-2026":
+        raise HTTPException(status_code=403, detail="Ungültiger Admin-Key")
+    
+    # Check if email already exists
+    existing = await db.enterprise_accounts.find_one({"email": data.email.lower()})
+    if existing:
+        raise HTTPException(status_code=400, detail="E-Mail bereits registriert")
+    
+    enterprise_id = f"ent_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc)
+    
+    enterprise = {
+        "id": enterprise_id,
+        "company_name": data.company_name,
+        "email": data.email.lower(),
+        "password": hash_password(data.password),
+        "contact_person": data.contact_person,
+        "phone": data.phone,
+        "address": data.address,
+        "tax_id": data.tax_id,
+        "status": "approved" if data.auto_approve else "pending",
+        "created_at": now.isoformat(),
+        "updated_at": now.isoformat(),
+        "created_by_admin": True
+    }
+    
+    if data.auto_approve:
+        enterprise["approved_at"] = now.isoformat()
+    
+    await db.enterprise_accounts.insert_one(enterprise)
+    
+    return {
+        "success": True,
+        "enterprise_id": enterprise_id,
+        "status": enterprise["status"],
+        "message": f"Händler '{data.company_name}' erfolgreich erstellt"
+    }
+
+
 @router.post("/admin/approve/{enterprise_id}")
 async def approve_enterprise(enterprise_id: str, x_admin_key: str = Header(...)):
     """Admin: Approve an enterprise registration."""
