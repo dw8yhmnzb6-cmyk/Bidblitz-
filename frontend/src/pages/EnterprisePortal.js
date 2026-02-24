@@ -1122,6 +1122,8 @@ export default function EnterprisePortal() {
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [editingBranch, setEditingBranch] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
   
   // Report filters
   const [reportPeriod, setReportPeriod] = useState('month');
