@@ -2786,7 +2786,7 @@ const BidBlitzPay = () => {
                 type="text"
                 value={editingContact.newNickname || ''}
                 onChange={(e) => setEditingContact({ ...editingContact, newNickname: e.target.value })}
-                placeholder={language === 'de' ? 'z.B. Mama, Max, Arbeit' : 'e.g. Mom, Max, Work'}
+                placeholder={t('nicknameExample')}
                 className="w-full"
                 autoFocus
               />
@@ -2806,7 +2806,7 @@ const BidBlitzPay = () => {
                 className="flex-1 bg-blue-500 hover:bg-blue-600 text-white"
               >
                 <CheckCircle className="w-4 h-4 mr-1" />
-                {language === 'de' ? 'Speichern' : 'Save'}
+                {t('save')}
               </Button>
             </div>
           </div>
