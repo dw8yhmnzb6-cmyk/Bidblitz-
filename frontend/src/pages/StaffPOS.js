@@ -2766,6 +2766,64 @@ export default function StaffPOS() {
                   </div>
                 </div>
               )}
+              
+              {/* Scanned Customer Preview */}
+              {scannedCustomer && (
+                <div className="mt-4 p-4 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/50 rounded-xl">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-amber-400 font-bold flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      {scannedCustomer.name}
+                    </span>
+                    <button 
+                      onClick={() => setScannedCustomer(null)}
+                      className="text-slate-400 hover:text-white"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="bg-slate-900/50 p-3 rounded-lg">
+                      <p className="text-slate-400 text-xs">Kundennummer</p>
+                      <p className="text-white font-mono">{scannedCustomer.barcode}</p>
+                    </div>
+                    <div className="bg-slate-900/50 p-3 rounded-lg">
+                      <p className="text-slate-400 text-xs">Aktuelles Guthaben</p>
+                      <p className="text-2xl font-bold text-amber-400">€{(scannedCustomer.total_balance || 0).toFixed(2)}</p>
+                    </div>
+                  </div>
+                  {parseFloat(amount) >= 5 && (
+                    <div className="mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <span className="text-green-400 text-sm">Nach Aufladung:</span>
+                        <span className="text-green-400 font-bold">
+                          €{((scannedCustomer.total_balance || 0) + parseFloat(amount) + calculateBonus(parseFloat(amount))).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  {/* Direct Topup Button when customer is selected */}
+                  {parseFloat(amount) >= 5 && (
+                    <button
+                      onClick={() => processTopupWithBarcode(scannedCustomer.barcode)}
+                      disabled={loading}
+                      className="w-full mt-3 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-bold hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {loading ? (
+                        <>
+                          <RefreshCw className="w-5 h-5 animate-spin" />
+                          Wird aufgeladen...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="w-5 h-5" />
+                          €{parseFloat(amount).toFixed(2)} aufladen
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Barcode Scanner mit Kamera */}
