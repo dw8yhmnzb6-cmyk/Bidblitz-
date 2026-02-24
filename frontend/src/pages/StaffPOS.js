@@ -1284,6 +1284,34 @@ export default function StaffPOS() {
       p === '*' || p.startsWith('pos.') || p === 'vouchers.create'
     );
   };
+  
+  // Get first available mode based on permissions
+  const getFirstAvailableMode = (staffData) => {
+    const role = staffData?.role || 'counter';
+    const permissions = staffData?.permissions || [];
+    const isAdmin = role === 'admin' || permissions.includes('*');
+    
+    const modes = ['topup', 'giftcard-create', 'giftcard-redeem', 'payment'];
+    
+    for (const m of modes) {
+      if (isAdmin) return m;
+      switch (m) {
+        case 'topup':
+          if (permissions.includes('pos.topup') || role === 'counter') return m;
+          break;
+        case 'payment':
+          if (permissions.includes('pos.pay') || role === 'counter') return m;
+          break;
+        case 'giftcard-create':
+          if (permissions.includes('vouchers.create') || role === 'marketing') return m;
+          break;
+        case 'giftcard-redeem':
+          if (permissions.includes('pos.scan') || role === 'counter') return m;
+          break;
+      }
+    }
+    return 'topup'; // Fallback
+  };
 
   // Bonus tiers
   const bonusTiers = [
