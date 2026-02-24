@@ -426,12 +426,22 @@ const PartnerStaff = ({ token, language, t }) => {
                       />
                       
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        staff.role === 'admin' ? 'bg-purple-100' : 'bg-amber-100'
+                        staff.role === 'admin' ? 'bg-purple-100' : 
+                        staff.role === 'support' ? 'bg-blue-100' :
+                        staff.role === 'marketing' ? 'bg-pink-100' :
+                        staff.role === 'manager' ? 'bg-indigo-100' :
+                        'bg-amber-100'
                       }`}>
                         {staff.role === 'admin' ? (
-                          <User className="w-5 h-5 text-purple-600" />
+                          <span className="text-lg">👑</span>
+                        ) : staff.role === 'support' ? (
+                          <span className="text-lg">📧</span>
+                        ) : staff.role === 'marketing' ? (
+                          <span className="text-lg">📢</span>
+                        ) : staff.role === 'manager' ? (
+                          <span className="text-lg">👔</span>
                         ) : (
-                          <Store className="w-5 h-5 text-amber-600" />
+                          <span className="text-lg">🔢</span>
                         )}
                       </div>
                       <div>
@@ -450,11 +460,18 @@ const PartnerStaff = ({ token, language, t }) => {
                     </div>
                     <div className="flex items-center gap-3">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        staff.role === 'admin' 
-                          ? 'bg-purple-100 text-purple-700' 
-                          : 'bg-amber-100 text-amber-700'
+                        staff.role === 'admin' ? 'bg-purple-100 text-purple-700' : 
+                        staff.role === 'support' ? 'bg-blue-100 text-blue-700' :
+                        staff.role === 'marketing' ? 'bg-pink-100 text-pink-700' :
+                        staff.role === 'manager' ? 'bg-indigo-100 text-indigo-700' :
+                        'bg-amber-100 text-amber-700'
                       }`}>
-                        {staff.role === 'admin' ? t('admin') : t('counter')}
+                        {staff.role === 'admin' ? '👑 Admin' : 
+                         staff.role === 'support' ? '📧 Support' :
+                         staff.role === 'marketing' ? '📢 Marketing' :
+                         staff.role === 'manager' ? '👔 Manager' :
+                         '🔢 ' + t('counter')}
+                      </span>
                       </span>
                       <span className={`px-2 py-1 rounded-full text-xs ${
                         staff.is_active !== false
