@@ -847,17 +847,9 @@ const BidBlitzPay = () => {
           localStorage.setItem('bidblitz_camera_permission', 'denied');
           
           if (permErr.name === 'NotAllowedError') {
-            toast.error(language === 'de' 
-              ? 'Kamerazugriff verweigert. Bitte erlauben Sie die Kamera in den Browser-Einstellungen und laden Sie die Seite neu.'
-              : 'Camera access denied. Please allow camera in browser settings and reload the page.', 
-              { duration: 8000 }
-            );
+            toast.error(t('cameraAccessDenied'), { duration: 8000 });
           } else {
-            toast.error(language === 'de'
-              ? 'Kamera konnte nicht gestartet werden. Nutzen Sie bitte "Foto aufnehmen".'
-              : 'Camera could not be started. Please use "Take Photo".',
-              { duration: 5000 }
-            );
+            toast.error(t('cameraStartError'), { duration: 5000 });
           }
           return;
         }
