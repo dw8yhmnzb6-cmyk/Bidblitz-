@@ -2539,51 +2539,78 @@ export default function StaffPOS() {
 
       {/* Main Content */}
       <main className="max-w-2xl mx-auto p-4">
-        {/* Mode Tabs - Filtered by permissions */}
-        {(() => {
-          const allTabs = [
-            { id: 'topup', labelKey: 'topup', icon: Wallet, color: 'amber' },
-            { id: 'giftcard-create', labelKey: 'giftcardCreate', icon: Gift, color: 'green' },
-            { id: 'giftcard-redeem', labelKey: 'giftcardRedeem', icon: Ticket, color: 'purple' },
-            { id: 'payment', labelKey: 'payment', icon: CreditCard, color: 'blue' }
-          ];
-          
-          // Filter tabs based on user permissions
-          const visibleTabs = allTabs.filter(tab => canAccessMode(tab.id));
-          
-          // Dynamic grid columns based on visible tabs
-          const gridCols = visibleTabs.length === 1 ? 'grid-cols-1' 
-                         : visibleTabs.length === 2 ? 'grid-cols-2'
-                         : visibleTabs.length === 3 ? 'grid-cols-3'
-                         : 'grid-cols-2';
-          
-          return (
-            <div className={`grid ${gridCols} gap-2 mb-6`}>
-              {visibleTabs.map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => {
-                    setMode(tab.id);
-                    setScanMode(false);
-                    setRedeemedGiftCard(null);
-                  }}
-                  data-testid={`tab-${tab.id}`}
-                  className={`py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-                    mode === tab.id
-                      ? tab.color === 'amber' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
-                      : tab.color === 'green' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
-                      : tab.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30'
-                      : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30'
-                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-                  }`}
-                >
-                  <tab.icon className="w-5 h-5" />
-                  <span className="text-sm">{t[tab.labelKey]}</span>
-                </button>
-              ))}
-            </div>
-          );
-        })()}
+        {/* Show message if user has no POS access */}
+        {!hasAnyPOSAccess() ? (
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700/50 text-center">
+            <AlertCircle className="w-16 h-16 text-amber-400 mx-auto mb-4" />
+            <h2 className="text-xl font-bold text-white mb-2">
+              {language === 'de' ? 'Kein Kassen-Zugang' : 'No POS Access'}
+            </h2>
+            <p className="text-slate-400 mb-4">
+              {language === 'de' 
+                ? `Ihre Rolle "${staff?.role}" hat keinen Zugang zu den Kassen-Funktionen. Bitte wenden Sie sich an Ihren Administrator, wenn Sie Zugang benötigen.`
+                : `Your role "${staff?.role}" does not have access to POS functions. Please contact your administrator if you need access.`}
+            </p>
+            <p className="text-sm text-slate-500">
+              {language === 'de' 
+                ? 'Support-Mitarbeiter nutzen bitte das Partner-Portal für Tickets.'
+                : 'Support staff please use the Partner Portal for tickets.'}
+            </p>
+            <a 
+              href="/partner-portal" 
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-all"
+            >
+              <Store className="w-5 h-5" />
+              {language === 'de' ? 'Zum Partner-Portal' : 'Go to Partner Portal'}
+            </a>
+          </div>
+        ) : (
+          <>
+            {/* Mode Tabs - Filtered by permissions */}
+            {(() => {
+              const allTabs = [
+                { id: 'topup', labelKey: 'topup', icon: Wallet, color: 'amber' },
+                { id: 'giftcard-create', labelKey: 'giftcardCreate', icon: Gift, color: 'green' },
+                { id: 'giftcard-redeem', labelKey: 'giftcardRedeem', icon: Ticket, color: 'purple' },
+                { id: 'payment', labelKey: 'payment', icon: CreditCard, color: 'blue' }
+              ];
+              
+              // Filter tabs based on user permissions
+              const visibleTabs = allTabs.filter(tab => canAccessMode(tab.id));
+              
+              // Dynamic grid columns based on visible tabs
+              const gridCols = visibleTabs.length === 1 ? 'grid-cols-1' 
+                             : visibleTabs.length === 2 ? 'grid-cols-2'
+                             : visibleTabs.length === 3 ? 'grid-cols-3'
+                             : 'grid-cols-2';
+              
+              return (
+                <div className={`grid ${gridCols} gap-2 mb-6`}>
+                  {visibleTabs.map(tab => (
+                    <button
+                      key={tab.id}
+                      onClick={() => {
+                        setMode(tab.id);
+                        setScanMode(false);
+                        setRedeemedGiftCard(null);
+                      }}
+                      data-testid={`tab-${tab.id}`}
+                      className={`py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                        mode === tab.id
+                          ? tab.color === 'amber' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30'
+                          : tab.color === 'green' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/30'
+                          : tab.color === 'purple' ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30'
+                          : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30'
+                          : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                      }`}
+                    >
+                      <tab.icon className="w-5 h-5" />
+                      <span className="text-sm">{t[tab.labelKey]}</span>
+                    </button>
+                  ))}
+                </div>
+              );
+            })()}
 
         {/* ==================== AUFLADUNG MODE ==================== */}
         {mode === 'topup' && (
