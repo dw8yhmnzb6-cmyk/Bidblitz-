@@ -34,6 +34,8 @@ export const walletTranslations = {
     enterAmount: 'Betrag eingeben',
     successTransfer: 'Erfolgreich übertragen',
     processing: 'Wird verarbeitet...',
+    hideBalance: 'Guthaben ausblenden',
+    balanceHidden: 'Guthaben ausgeblendet',
     
     // Transfer Balance (NEW)
     transferBalance: 'Guthaben übertragen',
