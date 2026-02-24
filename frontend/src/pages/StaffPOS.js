@@ -1909,6 +1909,8 @@ export default function StaffPOS() {
         
         setStaff(staffData);
         setIsLoggedIn(true);
+        // Set first available mode based on permissions
+        setMode(getFirstAvailableMode(staffData));
         localStorage.setItem('staff_pos_data', JSON.stringify(staffData));
         localStorage.setItem('staff_pos_token', data.token);
         toast.success(`Willkommen, ${staffData.name}!`);
@@ -1933,6 +1935,7 @@ export default function StaffPOS() {
           name: data.user_name || data.company_name,
           email: staffNumber,
           role: data.role,
+          permissions: data.permissions || [], // Store permissions for enterprise too
           branch_id: data.branch_id || data.enterprise_id,
           branch_name: data.branch_name || data.company_name,
           company_name: data.company_name
@@ -1940,6 +1943,8 @@ export default function StaffPOS() {
         
         setStaff(staffData);
         setIsLoggedIn(true);
+        // Set first available mode based on permissions
+        setMode(getFirstAvailableMode(staffData));
         localStorage.setItem('staff_pos_data', JSON.stringify(staffData));
         localStorage.setItem('staff_pos_token', data.token);
         toast.success(`Willkommen, ${staffData.name}!`);
