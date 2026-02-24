@@ -1712,10 +1712,10 @@ const BidBlitzPay = () => {
                 <div className="text-center py-6 bg-gray-50 rounded-xl">
                   <Users className="w-10 h-10 text-gray-300 mx-auto mb-2" />
                   <p className="text-sm text-gray-500">
-                    {language === 'de' ? 'Noch keine Kontakte gespeichert' : 'No contacts saved yet'}
+                    {t('noContactsSaved')}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
-                    {language === 'de' ? 'Klicken Sie auf "Neu" um einen Kontakt hinzuzufügen' : 'Click "Add" to add a contact'}
+                    {t('clickAddContact')}
                   </p>
                 </div>
               )}
