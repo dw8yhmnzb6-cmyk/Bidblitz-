@@ -1695,7 +1695,7 @@ const BidBlitzPay = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (confirm(language === 'de' ? `${recipient.nickname} löschen?` : `Delete ${recipient.nickname}?`)) {
+                            if (confirm(`${recipient.nickname} ${t('delete')}?`)) {
                               deleteSavedRecipient(recipient.id);
                             }
                           }}
@@ -2203,15 +2203,15 @@ const BidBlitzPay = () => {
                         if (navigator.share) {
                           try {
                             await navigator.share({
-                              title: language === 'de' ? 'Zahlungsanfrage' : 'Payment Request',
+                              title: t('paymentRequest'),
                               text: shareText
                             });
-                            toast.success(language === 'de' ? 'Erfolgreich geteilt!' : 'Shared successfully!');
+                            toast.success(t('sharedSuccessfully'));
                           } catch (err) {
                             if (err.name !== 'AbortError') {
                               // Fallback to copy
                               await navigator.clipboard.writeText(shareText);
-                              toast.success(language === 'de' ? 'In Zwischenablage kopiert!' : 'Copied to clipboard!');
+                              toast.success(t('copiedToClipboard'));
                             }
                           }
                         } else {
@@ -2224,7 +2224,7 @@ const BidBlitzPay = () => {
                       className="border-gray-300"
                     >
                       <Copy className="w-4 h-4 mr-2" />
-                      {language === 'de' ? 'Teilen' : 'Share'}
+                      {t('shareQRCode')}
                     </Button>
                   </div>
                   
@@ -2237,7 +2237,7 @@ const BidBlitzPay = () => {
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
-                      toast.success(language === 'de' ? 'QR-Code heruntergeladen!' : 'QR code downloaded!');
+                      toast.success(t('qrDownloaded'));
                     }}
                     variant="outline"
                     className="w-full border-amber-300 text-amber-600 hover:bg-amber-50"
