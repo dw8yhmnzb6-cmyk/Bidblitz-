@@ -1648,7 +1648,7 @@ const BidBlitzPay = () => {
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
                   <Users className="w-4 h-4 text-amber-500" />
-                  {language === 'de' ? 'Gespeicherte Kontakte' : 'Saved Contacts'}
+                  {t('savedContacts')}
                 </h3>
                 <Button
                   size="sm"
@@ -1657,7 +1657,7 @@ const BidBlitzPay = () => {
                   data-testid="add-contact-btn"
                 >
                   <Plus className="w-3 h-3 mr-1" />
-                  {language === 'de' ? 'Neu' : 'Add'}
+                  {t('newContact')}
                 </Button>
               </div>
               
@@ -1688,7 +1688,7 @@ const BidBlitzPay = () => {
                             setEditingContact({ ...recipient, newNickname: recipient.nickname });
                           }}
                           className="w-6 h-6 bg-blue-100 hover:bg-blue-200 rounded-full flex items-center justify-center"
-                          title={language === 'de' ? 'Bearbeiten' : 'Edit'}
+                          title={t('edit')}
                         >
                           <span className="text-xs">✏️</span>
                         </button>
@@ -1700,7 +1700,7 @@ const BidBlitzPay = () => {
                             }
                           }}
                           className="w-6 h-6 bg-red-100 hover:bg-red-200 rounded-full flex items-center justify-center"
-                          title={language === 'de' ? 'Löschen' : 'Delete'}
+                          title={t('delete')}
                         >
                           <span className="text-xs">🗑️</span>
                         </button>
@@ -1978,7 +1978,7 @@ const BidBlitzPay = () => {
                       <div className="bg-green-50 border border-green-200 rounded-xl p-3 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-green-500" />
                         <span className="text-sm text-green-700">
-                          {language === 'de' ? 'Kamera bereit ✓' : 'Camera ready ✓'}
+                          {t('cameraReady')}
                         </span>
                       </div>
                     )}
@@ -1990,7 +1990,7 @@ const BidBlitzPay = () => {
                           <AlertCircle className="w-6 h-6 text-red-500 flex-shrink-0 mt-0.5" />
                           <div>
                             <p className="font-medium text-red-800 mb-2">
-                              {language === 'de' ? 'Kamera-Berechtigung erforderlich' : 'Camera Permission Required'}
+                              {t('cameraPermissionRequired')}
                             </p>
                             <div className="text-sm text-red-700 space-y-2">
                               <p className="font-medium">📱 iPhone/iPad (Safari):</p>
