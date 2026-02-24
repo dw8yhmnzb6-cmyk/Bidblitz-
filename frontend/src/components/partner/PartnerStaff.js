@@ -472,7 +472,6 @@ const PartnerStaff = ({ token, language, t }) => {
                          staff.role === 'manager' ? '👔 Manager' :
                          '🔢 ' + t('counter')}
                       </span>
-                      </span>
                       <span className={`px-2 py-1 rounded-full text-xs ${
                         staff.is_active !== false
                           ? 'bg-green-100 text-green-700'
