@@ -790,7 +790,8 @@ async def bot_early_bidder():
             # Process each auction
             for auction in active_auctions:
                 auction_id = auction.get("id")
-                current_price = float(auction.get("current_price", 0))
+                # Support both current_price and current_bid fields
+                current_price = float(auction.get("current_price") or auction.get("current_bid") or 0)
                 target_price = float(auction.get("bot_target_price", 0))
                 bid_increment = float(auction.get("bid_increment", 0.01))
                 
