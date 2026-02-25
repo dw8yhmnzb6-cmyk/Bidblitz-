@@ -2862,12 +2862,9 @@ export default function StaffPOS() {
                                     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
                       
                       if (isIOS) {
-                        // iOS: Nutze native Kamera-Input (zuverlässiger)
+                        // iOS: Der Klick wird vom Label/htmlFor unten behandelt
+                        // Wir setzen nur den Scan-Modus
                         setScanMode(true);
-                        setTimeout(() => {
-                          const fileInput = document.getElementById('ios-topup-camera-input');
-                          if (fileInput) fileInput.click();
-                        }, 100);
                       } else {
                         // Android/Desktop: Nutze html5-qrcode Scanner
                         setScanMode(true);
@@ -2884,7 +2881,7 @@ export default function StaffPOS() {
                     {language === 'de' ? 'Kunden-Barcode scannen' : 'Scan Customer Barcode'}
                   </button>
                   
-                  {/* iOS Native Kamera Input für Topup (versteckt) */}
+                  {/* iOS Native Kamera - als Label das direkt die Kamera öffnet */}
                   <input
                     type="file"
                     accept="image/*"
@@ -2893,6 +2890,16 @@ export default function StaffPOS() {
                     className="hidden"
                     id="ios-topup-camera-input"
                   />
+                  {/* iOS: Separater Button der als Label fungiert */}
+                  {(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && (
+                    <label
+                      htmlFor="ios-topup-camera-input"
+                      className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-3 shadow-lg shadow-green-500/30 cursor-pointer mt-2"
+                    >
+                      <Camera className="w-6 h-6" />
+                      📸 {language === 'de' ? 'KAMERA ÖFFNEN' : 'OPEN CAMERA'}
+                    </label>
+                  )}
                   
                   {/* Manuelle Eingabe Option */}
                   <button
