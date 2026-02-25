@@ -154,7 +154,7 @@ export default function CardLock({ language = 'de', walletId, onStatusChange }) 
   const fetchLockStatus = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API}/api/wallet/lock-status`, {
+      const res = await fetch(`${API}/api/bidblitz-pay/lock-status`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -173,7 +173,7 @@ export default function CardLock({ language = 'de', walletId, onStatusChange }) 
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${API}/api/wallet/${isLocked ? 'unlock' : 'lock'}`, {
+      const res = await fetch(`${API}/api/bidblitz-pay/${isLocked ? 'unlock' : 'lock'}`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
