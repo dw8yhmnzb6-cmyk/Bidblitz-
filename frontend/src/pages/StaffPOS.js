@@ -3266,146 +3266,172 @@ export default function StaffPOS() {
 
         {/* ==================== ZAHLUNG MODE ==================== */}
         {mode === 'payment' && (
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50 text-center">
-            <CreditCard className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">{t.paymentBarcode}</h3>
-            <p className="text-slate-400 mb-6">
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <CreditCard className="w-8 h-8 text-blue-400" />
+              <h3 className="text-xl font-bold text-white">{t.paymentBarcode}</h3>
+            </div>
+            <p className="text-slate-400 text-center mb-6">
               {t.customersPay}
             </p>
             
-            {!paymentScanMode ? (
-              <div className="space-y-4">
-                <div className="relative">
-                  <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-blue-400" />
-                  <input
-                    type="number"
-                    value={paymentAmount}
-                    onChange={(e) => setPaymentAmount(e.target.value)}
-                    onKeyDown={(e) => {
-                      // Bei Enter direkt zum Scan-Modus wechseln
-                      if (e.key === 'Enter') {
-                        const amt = parseFloat(paymentAmount);
-                        if (amt && amt > 0) {
-                          setPaymentScanMode(true);
-                        }
-                      }
-                    }}
-                    placeholder={t.enterAmount}
-                    className="w-full pl-14 pr-4 py-4 bg-slate-900/50 border border-slate-600 rounded-xl text-white text-2xl font-bold placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    min="0.01"
-                    step="0.01"
-                    autoFocus
-                    data-testid="payment-amount-input"
-                  />
+            {/* Betrag eingeben */}
+            <div className="mb-4">
+              <label className="block text-slate-300 mb-2">
+                {language === 'de' ? 'Betrag eingeben' : 'Enter amount'}
+              </label>
+              <div className="relative">
+                <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-blue-400" />
+                <input
+                  type="number"
+                  value={paymentAmount}
+                  onChange={(e) => setPaymentAmount(e.target.value)}
+                  placeholder={t.enterAmount}
+                  className="w-full pl-14 pr-4 py-4 bg-slate-900/50 border border-slate-600 rounded-xl text-white text-2xl font-bold placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  min="0.01"
+                  step="0.01"
+                  data-testid="payment-amount-input"
+                />
+              </div>
+            </div>
+            
+            {/* Scanner Bereich - gleiches Design wie Aufladung */}
+            <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+              <label className="block text-slate-300 mb-2">
+                {language === 'de' ? 'Kunden-Barcode scannen' : 'Scan customer barcode'}
+              </label>
+              
+              {/* Scanner bereit Anzeige */}
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center mb-4">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <p className="text-green-400 font-bold">
+                    {language === 'de' ? 'Scanner bereit - Barcode scannen oder Nummer eingeben + Enter' : 'Scanner ready - Scan barcode or enter number + Enter'}
+                  </p>
                 </div>
                 
-                <p className="text-slate-500 text-sm">
-                  {language === 'de' ? '💡 Tipp: Enter drücken nach Betragseingabe' : '💡 Tip: Press Enter after entering amount'}
-                </p>
-                
-                <button
-                  onClick={async () => {
-                    const amt = parseFloat(paymentAmount);
-                    if (!amt || amt <= 0) {
-                      toast.error(language === 'de' ? 'Bitte Betrag eingeben' : 'Please enter amount');
-                      return;
+                {/* Barcode Eingabefeld */}
+                <input
+                  type="text"
+                  value={paymentBarcode}
+                  onChange={(e) => setPaymentBarcode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && paymentBarcode.trim().length >= 3) {
+                      const amt = parseFloat(paymentAmount);
+                      if (!amt || amt <= 0) {
+                        toast.error(language === 'de' ? 'Bitte zuerst Betrag eingeben' : 'Please enter amount first');
+                        return;
+                      }
+                      processPayment(paymentBarcode.trim());
+                      setPaymentBarcode('');
                     }
-                    setPaymentScanMode(true);
                   }}
+                  placeholder={language === 'de' ? 'Barcode scannen oder Nummer eingeben...' : 'Scan barcode or enter number...'}
+                  className="w-full px-4 py-3 bg-slate-900 border border-green-500/50 rounded-xl text-white text-center font-mono focus:ring-2 focus:ring-green-500 focus:border-green-400"
                   disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
-                  className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                  data-testid="scan-customer-payment-btn"
-                >
-                  <ScanLine className="w-6 h-6" />
-                  {language === 'de' ? 'Weiter zum Scanner' : 'Continue to Scanner'}
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {/* Betrag Anzeige */}
-                <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-6 text-center">
-                  <p className="text-blue-200 text-sm mb-1">{language === 'de' ? 'Zu zahlender Betrag' : 'Amount to pay'}</p>
-                  <p className="text-white font-bold text-5xl">€{parseFloat(paymentAmount).toFixed(2)}</p>
-                </div>
+                  data-hardware-scanner="true"
+                />
                 
-                {/* Scanner-Eingabefeld für Hardware-Scanner */}
-                <div className="bg-slate-800 rounded-2xl p-6">
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                    <p className="text-green-400 font-medium text-lg">
-                      {language === 'de' ? '🔊 Scanner bereit - Jetzt scannen!' : '🔊 Scanner ready - Scan now!'}
-                    </p>
-                  </div>
-                  
-                  <p className="text-slate-400 text-center mb-4">
-                    {language === 'de' 
-                      ? 'Scannen Sie den Kunden-Barcode (BID-XXXXXX)' 
-                      : 'Scan customer barcode (BID-XXXXXX)'}
-                  </p>
-                  
-                  {/* Barcode Eingabefeld - automatisch fokussiert für Hardware-Scanner */}
-                  <input
-                    type="text"
-                    autoFocus
-                    value={paymentBarcode}
-                    onChange={(e) => setPaymentBarcode(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && paymentBarcode.trim()) {
-                        e.preventDefault();
-                        processPayment(paymentBarcode.trim());
-                        setPaymentScanMode(false);
-                        setPaymentBarcode('');
-                      }
-                    }}
-                    placeholder={language === 'de' ? 'Barcode hier eingeben oder scannen...' : 'Enter or scan barcode here...'}
-                    className="w-full px-6 py-4 bg-slate-900 border-2 border-green-500 rounded-xl text-white text-center font-mono text-xl focus:ring-4 focus:ring-green-500/50 focus:border-green-400 animate-pulse"
-                    data-testid="barcode-scanner-input"
-                  />
-                  
-                  {/* Schnelle manuelle Eingabe + OK Button */}
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      onClick={() => {
-                        if (paymentBarcode.trim()) {
-                          processPayment(paymentBarcode.trim());
+                <p className="text-slate-500 text-xs mt-2">
+                  {language === 'de' 
+                    ? 'Kundenkarte unter den Scanner halten oder Nummer eingeben + Enter' 
+                    : 'Hold customer card under scanner or enter number + Enter'}
+                </p>
+              </div>
+              
+              {/* Scanner öffnen Button */}
+              <button
+                onClick={() => {
+                  const amt = parseFloat(paymentAmount);
+                  if (!amt || amt <= 0) {
+                    toast.error(language === 'de' ? 'Bitte zuerst Betrag eingeben' : 'Please enter amount first');
+                    return;
+                  }
+                  setPaymentScanMode(true);
+                  setTimeout(() => {
+                    startPaymentCamera();
+                  }, 300);
+                }}
+                disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
+                className={`w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+                  !paymentAmount || parseFloat(paymentAmount) <= 0
+                    ? 'bg-slate-700/30 text-slate-600 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-blue-500/30'
+                }`}
+              >
+                <Scan className="w-5 h-5" />
+                {language === 'de' ? '📷 Scanner öffnen' : '📷 Open Scanner'}
+              </button>
+              
+              {/* Live Scanner Modal */}
+              {paymentScanMode && (
+                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+                  <div className="bg-slate-800 rounded-2xl w-full max-w-md p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <Scan className="w-5 h-5 text-green-400" />
+                        {language === 'de' ? 'Barcode Scanner' : 'Barcode Scanner'}
+                      </h3>
+                      <button 
+                        onClick={() => {
+                          stopPaymentCamera();
                           setPaymentScanMode(false);
-                          setPaymentBarcode('');
-                        }
-                      }}
-                      disabled={!paymentBarcode.trim()}
-                      className="flex-1 py-3 bg-green-500 hover:bg-green-600 disabled:bg-slate-700 disabled:text-slate-500 text-white font-bold rounded-xl transition-colors"
-                    >
-                      {language === 'de' ? '✓ Zahlung durchführen' : '✓ Process Payment'}
-                    </button>
-                  </div>
-                  
-                  {/* Scanner Animation */}
-                  <div className="mt-6 flex justify-center">
-                    <div className="relative w-32 h-32 border-4 border-dashed border-green-500/50 rounded-xl flex items-center justify-center">
-                      <ScanLine className="w-16 h-16 text-green-400 animate-pulse" />
-                      <div className="absolute inset-0 bg-gradient-to-b from-green-500/20 to-transparent animate-scan"></div>
+                        }}
+                        className="p-2 text-slate-400 hover:text-white bg-slate-700 rounded-lg"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
                     </div>
+                    
+                    {/* Betrag Anzeige */}
+                    <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-4 text-center mb-4">
+                      <p className="text-blue-200 text-sm">{language === 'de' ? 'Zu zahlen' : 'To pay'}</p>
+                      <p className="text-white font-bold text-3xl">€{parseFloat(paymentAmount).toFixed(2)}</p>
+                    </div>
+                    
+                    {/* Scanner Video Area */}
+                    <div id="payment-scanner" className="w-full aspect-square bg-black rounded-xl overflow-hidden mb-4"></div>
+                    
+                    {/* Manuelle Eingabe */}
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={paymentBarcode}
+                        onChange={(e) => setPaymentBarcode(e.target.value.toUpperCase())}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && paymentBarcode.trim().length >= 3) {
+                            processPayment(paymentBarcode.trim());
+                            setPaymentScanMode(false);
+                            stopPaymentCamera();
+                            setPaymentBarcode('');
+                          }
+                        }}
+                        placeholder="BID-XXXXXX"
+                        className="flex-1 px-4 py-3 bg-slate-900 border border-slate-600 rounded-xl text-white text-center font-mono"
+                      />
+                      <button
+                        onClick={() => {
+                          if (paymentBarcode.trim().length >= 3) {
+                            processPayment(paymentBarcode.trim());
+                            setPaymentScanMode(false);
+                            stopPaymentCamera();
+                            setPaymentBarcode('');
+                          }
+                        }}
+                        disabled={paymentBarcode.trim().length < 3}
+                        className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-slate-700 text-white rounded-xl font-bold"
+                      >
+                        OK
+                      </button>
+                    </div>
+                    
+                    {paymentCameraError && (
+                      <p className="text-red-400 text-sm text-center mt-3">{paymentCameraError}</p>
+                    )}
                   </div>
-                  
-                  <p className="text-slate-500 text-xs text-center mt-4">
-                    {language === 'de' 
-                      ? '📟 Hardware-Scanner: Automatische Erkennung bei Enter' 
-                      : '📟 Hardware scanner: Auto-detection on Enter'}
-                  </p>
                 </div>
-                
-                {/* Abbrechen Button */}
-                <button
-                  onClick={() => {
-                    setPaymentScanMode(false);
-                    setPaymentBarcode('');
-                  }}
-                  className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl font-medium transition-colors"
-                >
-                  {language === 'de' ? 'Abbrechen' : 'Cancel'}
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
         </>
