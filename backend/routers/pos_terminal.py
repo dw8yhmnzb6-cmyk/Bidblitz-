@@ -14,6 +14,9 @@ import hashlib
 
 from config import db, logger
 
+# Import WebSocket notification function
+from services.websocket import notify_payment_received
+
 router = APIRouter(prefix="/api/pos", tags=["POS"])
 
 # ==================== MODELS ====================
