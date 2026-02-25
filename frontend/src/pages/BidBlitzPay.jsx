@@ -3,7 +3,8 @@ import {
   Wallet, QrCode, CreditCard, History, ChevronRight, 
   Store, RefreshCw, Euro, CheckCircle, AlertCircle,
   Smartphone, ArrowUpRight, ArrowDownLeft, Gift, Languages,
-  Plus, Minus, X, Shield, Loader2, Camera, ScanLine, Banknote, Percent, Copy, Filter, Users, Bell, Trophy, Crown, Zap, Keyboard
+  Plus, Minus, X, Shield, Loader2, Camera, ScanLine, Banknote, Percent, Copy, Filter, Users, Bell, Trophy, Crown, Zap, Keyboard,
+  Lock, PieChart, TrendingUp
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -19,6 +20,9 @@ import NotificationCenter from '../components/NotificationCenter';
 import DailyLoginReward from '../components/DailyLoginReward';
 import AchievementsPage from '../components/AchievementsPage';
 import MonthlyLeaderboard from '../components/MonthlyLeaderboard';
+import SpendingStats from '../components/SpendingStats';
+import CardLock from '../components/CardLock';
+import QuickTopUp from '../components/QuickTopUp';
 import { walletTranslations } from '../i18n/walletTranslations';
 import { useAuth } from '../context/AuthContext';
 
