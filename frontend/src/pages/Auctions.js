@@ -1255,6 +1255,17 @@ export default function Auctions() {
         return endedAuctions;
       case 'vip':
         return auctions.filter(a => a.is_vip_only && a.status === 'active');
+      // Product Category Filters
+      case 'elektronik':
+        return publicAuctions.filter(a => a.category === 'Elektronik' && a.status === 'active');
+      case 'mode':
+        return publicAuctions.filter(a => a.category === 'Mode & Accessoires' && a.status === 'active');
+      case 'haus':
+        return publicAuctions.filter(a => a.category === 'Haus & Garten' && a.status === 'active');
+      case 'sport':
+        return publicAuctions.filter(a => a.category === 'Sport & Freizeit' && a.status === 'active');
+      case 'kunst':
+        return publicAuctions.filter(a => a.category === 'Kunst & Sammlerstücke' && a.status === 'active');
       case 'live':
       default:
         return publicAuctions.filter(a => a.status === 'active');
