@@ -2856,11 +2856,25 @@ export default function StaffPOS() {
                         toast.error(language === 'de' ? 'Bitte zuerst Betrag eingeben (min. €5)' : 'Please enter amount first (min. €5)');
                         return;
                       }
-                      setScanMode(true);
-                      // Automatisch Kamera starten
-                      setTimeout(() => {
-                        startTopupCamera();
-                      }, 300);
+                      
+                      // Prüfen ob iOS
+                      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+                      
+                      if (isIOS) {
+                        // iOS: Nutze native Kamera-Input (zuverlässiger)
+                        setScanMode(true);
+                        setTimeout(() => {
+                          const fileInput = document.getElementById('ios-topup-camera-input');
+                          if (fileInput) fileInput.click();
+                        }, 100);
+                      } else {
+                        // Android/Desktop: Nutze html5-qrcode Scanner
+                        setScanMode(true);
+                        setTimeout(() => {
+                          startTopupCamera();
+                        }, 300);
+                      }
                     }}
                     disabled={!amount || parseFloat(amount) < 5}
                     className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-3 shadow-lg shadow-amber-500/30 disabled:shadow-none"
@@ -2868,6 +2882,17 @@ export default function StaffPOS() {
                   >
                     <Camera className="w-6 h-6" />
                     {language === 'de' ? 'Kunden-Barcode scannen' : 'Scan Customer Barcode'}
+                  </button>
+                  
+                  {/* iOS Native Kamera Input für Topup (versteckt) */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleTopupPhotoUpload}
+                    className="hidden"
+                    id="ios-topup-camera-input"
+                  />
                   </button>
                   
                   {/* Manuelle Eingabe Option */}
