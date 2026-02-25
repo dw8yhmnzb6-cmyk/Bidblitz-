@@ -349,15 +349,14 @@ class TestQRCodeFormats:
         # We'll test that the endpoint handles it correctly
         
         staff_login = requests.post(
-            f"{BASE_URL}/api/staff/login",
+            f"{BASE_URL}/api/partner-portal/staff/login",
             json={
-                "employee_number": "TS-001",
+                "staff_number": "TS-001",
                 "password": "Test123!"
             }
         )
         
-        if staff_login.status_code != 200:
-            pytest.skip("Staff login failed")
+        assert staff_login.status_code == 200, f"Staff login failed: {staff_login.text}"
         
         staff_token = staff_login.json().get("token")
         
@@ -383,15 +382,14 @@ class TestQRCodeFormats:
     def test_02_invalid_qr_format(self):
         """Test handling of invalid QR code formats"""
         staff_login = requests.post(
-            f"{BASE_URL}/api/staff/login",
+            f"{BASE_URL}/api/partner-portal/staff/login",
             json={
-                "employee_number": "TS-001",
+                "staff_number": "TS-001",
                 "password": "Test123!"
             }
         )
         
-        if staff_login.status_code != 200:
-            pytest.skip("Staff login failed")
+        assert staff_login.status_code == 200, f"Staff login failed: {staff_login.text}"
         
         staff_token = staff_login.json().get("token")
         
