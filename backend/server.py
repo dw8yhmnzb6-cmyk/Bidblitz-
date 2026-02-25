@@ -594,6 +594,10 @@ app.include_router(discount_cards_router, prefix="/api")
 
 # Support System Router
 from routers.support import router as support_router
+
+# NEW: Merchant & Loyalty Features (Händler-Produkte, Cashback, VIP-Tiers, Empfehlungen)
+from routers.merchant_features import router as merchant_features_router
+from routers.loyalty_system import router as loyalty_system_router
 app.include_router(support_router, prefix="/api/support")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
