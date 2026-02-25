@@ -3447,67 +3447,8 @@ export default function StaffPOS() {
                 <div id="payment-photo-scanner" style={{ display: 'none' }}></div>
               </div>
             )}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg font-bold"
-                      >
-                        OK
-                      </button>
-                    </div>
-                  </div>
-                )}
-                
-                {/* Hidden scanner element for photo scanning */}
-                <div id="payment-photo-scanner" style={{ display: 'none' }}></div>
-                
-                {/* Fallback wenn Kamera läuft aber Alternative gebraucht wird */}
-                {paymentCameraActive && (
-                  <div className="mt-4 pt-4 border-t border-slate-700">
-                    <p className="text-slate-500 text-xs text-center mb-2">
-                      {language === 'de' ? 'Kamera funktioniert nicht?' : 'Camera not working?'}
-                    </p>
-                    <div className="flex gap-2">
-                      <input
-                        ref={paymentFileInputRef}
-                        type="file"
-                        accept="image/*"
-                        capture="environment"
-                        onChange={handlePaymentPhotoUpload}
-                        className="hidden"
-                        id="payment-photo-input-alt"
-                      />
-                      <label
-                        htmlFor="payment-photo-input-alt"
-                        className="flex-1 py-2 bg-green-500/20 border border-green-500 text-green-400 text-sm font-medium rounded-lg flex items-center justify-center gap-2 cursor-pointer"
-                      >
-                        📸 Foto
-                      </label>
-                      <input
-                        type="text"
-                        value={paymentBarcode}
-                        onChange={(e) => setPaymentBarcode(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && paymentBarcode.trim()) {
-                            stopPaymentCamera();
-                            processPayment(paymentBarcode.trim());
-                          }
-                        }}
-                        placeholder="Manuell..."
-                        className="flex-1 px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-sm text-center font-mono"
-                      />
-                    </div>
-                  </div>
-                )}
-                
-                {/* Abbrechen Button */}
-                <button
-                  onClick={() => {
-                    stopPaymentCamera();
-                    setPaymentScanMode(false);
-                    setPaymentBarcode('');
-                    setPaymentCameraError(null);
-                  }}
-                  className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-xl transition-colors mt-4"
-                >
-                  {t.cancel}
+          </div>
+        )}
                 </button>
               </div>
             )}
