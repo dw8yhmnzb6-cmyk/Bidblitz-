@@ -221,6 +221,25 @@ const BidBlitzPay = () => {
                 navigator.vibrate([100, 50, 100]);
               }
             }
+            
+            // Handle topup received notification
+            if (message.type === 'topup_received') {
+              // Show topup confirmation modal (use same modal with different text)
+              setPaymentReceived({
+                ...message.data,
+                is_topup: true
+              });
+              setShowPaymentModal(true);
+              
+              // Update wallet balance
+              fetchWallet();
+              fetchTransactions();
+              
+              // Vibrate if supported
+              if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100, 50, 100]);
+              }
+            }
           } catch (e) {
             console.error('WebSocket parse error:', e);
           }
