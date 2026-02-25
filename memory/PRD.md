@@ -44,6 +44,16 @@ German (Deutsch)
 
 ## Implemented Features (as of 2026-02-25)
 
+### ✅ Kategoriefilter (NEU)
+- 5 Produktkategorien: Elektronik, Mode, Haus & Garten, Sport, Kunst
+- Filter-Buttons auf der Auktionsseite
+- Funktioniert parallel zu Auktionstyp-Filtern
+
+### ✅ Händler-Portal (NEU)
+- Unterstützt Kleinhändler und Großhändler
+- Händler-Typ Auswahl bei Registrierung
+- URL: /b2b/register, /b2b/login, /b2b/dashboard
+
 ### ✅ Auktions-System
 - 51 gemischte Auktionen in 5 Kategorien (Elektronik, Mode, Haus & Garten, Sport, Kunst)
 - Bot-System aktiv (288 Bots mit Budget €50k-€200k)
