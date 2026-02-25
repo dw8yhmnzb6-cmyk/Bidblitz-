@@ -3325,79 +3325,84 @@ export default function StaffPOS() {
                     if (isIOS) {
                       // iOS: Der Klick wird vom Label unten behandelt
                       setPaymentScanMode(true);
-                    } else {
-                      // Android/Desktop: Nutze html5-qrcode Scanner
-                      setPaymentScanMode(true);
-                      setTimeout(() => {
-                        startPaymentCamera();
-                      }, 300);
                     }
                   }}
                   disabled={!paymentAmount || parseFloat(paymentAmount) <= 0}
                   className="w-full py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   data-testid="scan-customer-payment-btn"
                 >
-                  <Camera className="w-6 h-6" />
-                  {t.scanCustomer}
+                  <ScanLine className="w-6 h-6" />
+                  {language === 'de' ? 'Barcode scannen' : 'Scan Barcode'}
                 </button>
-                
-                {/* iOS Native Kamera Input (versteckt) */}
-                <input
-                  type="file"
-                  accept="image/*"
-                  capture="environment"
-                  onChange={handlePaymentPhotoUpload}
-                  className="hidden"
-                  id="ios-native-camera-input"
-                />
-                {/* Foto aufnehmen Button - funktioniert auf allen Geräten */}
-                <label
-                  htmlFor="ios-native-camera-input"
-                  className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-3 shadow-lg shadow-green-500/30 cursor-pointer"
-                >
-                  <Camera className="w-6 h-6" />
-                  📸 {language === 'de' ? 'FOTO AUFNEHMEN' : 'TAKE PHOTO'}
-                </label>
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="bg-blue-500/20 rounded-xl p-4 mb-4">
-                  <p className="text-blue-400 font-bold text-3xl">€{parseFloat(paymentAmount).toFixed(2)}</p>
-                  <p className="text-slate-400 text-sm">{language === 'de' ? 'Zu zahlender Betrag' : 'Amount to pay'}</p>
+                {/* Betrag Anzeige */}
+                <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-6 text-center">
+                  <p className="text-blue-200 text-sm mb-1">{language === 'de' ? 'Zu zahlender Betrag' : 'Amount to pay'}</p>
+                  <p className="text-white font-bold text-5xl">€{parseFloat(paymentAmount).toFixed(2)}</p>
                 </div>
                 
-                {/* KAMERA ÖFFNEN - Primäre Option */}
-                <div className="bg-slate-800 rounded-xl p-4">
-                  <p className="text-blue-400 text-center mb-4 font-medium">
-                    📷 {language === 'de' ? 'Kunden QR-Code fotografieren' : 'Take photo of customer QR code'}
-                  </p>
-                  
-                  {/* KAMERA ÖFFNEN Button mit transparentem Input darüber */}
-                  <div className="relative w-full">
-                    <div className="w-full py-5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl text-white font-bold text-xl flex items-center justify-center gap-3 shadow-lg shadow-green-500/30">
-                      <Camera className="w-8 h-8" />
-                      📸 {language === 'de' ? 'KAMERA ÖFFNEN' : 'OPEN CAMERA'}
-                    </div>
-                    {/* Transparenter File-Input der den ganzen Button überdeckt */}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      capture="environment"
-                      onChange={handlePaymentPhotoUpload}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      style={{ fontSize: '200px' }}
-                    />
+                {/* Scanner-Eingabefeld für Hardware-Scanner */}
+                <div className="bg-slate-800 rounded-2xl p-6">
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <p className="text-green-400 font-medium text-lg">
+                      {language === 'de' ? 'Scanner bereit' : 'Scanner ready'}
+                    </p>
                   </div>
                   
-                  {/* Manuelle Eingabe */}
-                  <div className="mt-4 pt-4 border-t border-slate-700">
-                    <p className="text-slate-500 text-xs text-center mb-3">
-                      {language === 'de' ? 'Oder Code manuell eingeben:' : 'Or enter code manually:'}
-                    </p>
-                    <div className="flex gap-2">
-                      <input
-                        type="text"
-                        value={paymentBarcode}
+                  <p className="text-slate-400 text-center mb-4">
+                    {language === 'de' 
+                      ? 'Halten Sie den Kunden-Barcode vor den Scanner' 
+                      : 'Hold customer barcode in front of scanner'}
+                  </p>
+                  
+                  {/* Barcode Eingabefeld - automatisch fokussiert */}
+                  <input
+                    type="text"
+                    autoFocus
+                    value={paymentBarcode}
+                    onChange={(e) => setPaymentBarcode(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && paymentBarcode.trim()) {
+                        processPayment(paymentBarcode.trim());
+                        setPaymentScanMode(false);
+                        setPaymentBarcode('');
+                      }
+                    }}
+                    placeholder={language === 'de' ? 'Barcode wird hier eingescannt...' : 'Barcode will be scanned here...'}
+                    className="w-full px-6 py-4 bg-slate-900 border-2 border-blue-500 rounded-xl text-white text-center font-mono text-xl focus:ring-4 focus:ring-blue-500/50 focus:border-blue-400"
+                    data-testid="barcode-scanner-input"
+                  />
+                  
+                  {/* Scanner Animation */}
+                  <div className="mt-6 flex justify-center">
+                    <div className="relative w-32 h-32 border-4 border-dashed border-blue-500/50 rounded-xl flex items-center justify-center">
+                      <ScanLine className="w-16 h-16 text-blue-400 animate-pulse" />
+                      <div className="absolute inset-0 bg-gradient-to-b from-blue-500/20 to-transparent animate-scan"></div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-slate-500 text-xs text-center mt-4">
+                    {language === 'de' 
+                      ? 'Der Scanner liest QR-Codes und Barcodes automatisch' 
+                      : 'Scanner reads QR codes and barcodes automatically'}
+                  </p>
+                </div>
+                
+                {/* Abbrechen Button */}
+                <button
+                  onClick={() => {
+                    setPaymentScanMode(false);
+                    setPaymentBarcode('');
+                  }}
+                  className="w-full py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl font-medium transition-colors"
+                >
+                  {language === 'de' ? 'Abbrechen' : 'Cancel'}
+                </button>
+              </div>
+            )}}
                         onChange={(e) => setPaymentBarcode(e.target.value)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && paymentBarcode.trim()) {
