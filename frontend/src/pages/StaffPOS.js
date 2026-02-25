@@ -1446,9 +1446,11 @@ export default function StaffPOS() {
   
   // ==================== HARDWARE SCANNER SUPPORT (USB/Bluetooth) ====================
   // Hardware-Scanner senden Barcodes als schnelle Tastatureingaben + Enter
+  // IMMER AKTIV wenn eingeloggt - kein manuelles Aktivieren nötig
   
   useEffect(() => {
-    if (!hardwareScannerMode || !isLoggedIn) return;
+    // Scanner ist immer aktiv wenn eingeloggt
+    if (!isLoggedIn) return;
     
     const handleGlobalKeyDown = (e) => {
       // Ignorieren wenn ein Input-Feld fokussiert ist (außer unser Scanner-Input)
@@ -1476,15 +1478,14 @@ export default function StaffPOS() {
         return;
       }
       
-      // Escape beendet den Scanner-Modus
+      // Escape löscht den Buffer
       if (e.key === 'Escape') {
-        setHardwareScannerMode(false);
         setHardwareScanBuffer('');
         return;
       }
       
-      // Nur alphanumerische Zeichen akzeptieren
-      if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
+      // Nur alphanumerische Zeichen und Bindestriche akzeptieren (für BID-XXXXXX)
+      if (e.key.length === 1 && /[a-zA-Z0-9\-]/.test(e.key)) {
         e.preventDefault();
         
         // Wenn mehr als 100ms zwischen Tasten, neuer Scan-Vorgang
@@ -1517,7 +1518,7 @@ export default function StaffPOS() {
         clearTimeout(hardwareScanTimeoutRef.current);
       }
     };
-  }, [hardwareScannerMode, isLoggedIn, hardwareScanBuffer, mode, amount, paymentAmount]);
+  }, [isLoggedIn, hardwareScanBuffer, mode, amount, paymentAmount]);
   
   // Process hardware scanner input based on current mode
   const processHardwareScan = (barcode) => {
