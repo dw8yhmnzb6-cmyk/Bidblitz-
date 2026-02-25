@@ -1646,15 +1646,32 @@ export default function StaffPOS() {
         }
       }
       
-      // Scanner ohne formatsToSupport im Konstruktor (verursacht iOS-Probleme)
-      const scanner = new Html5Qrcode("payment-scanner");
+      // Scanner MIT Barcode-Formaten im Konstruktor
+      const scanner = new Html5Qrcode("payment-scanner", {
+        formatsToSupport: [
+          0,  // QR_CODE
+          4,  // CODE_128
+          2,  // CODE_39
+          3,  // CODE_93
+          10, // EAN_13
+          9,  // EAN_8
+          12, // UPC_A
+          11, // UPC_E
+          7,  // ITF
+          1,  // AZTEC
+          6,  // DATA_MATRIX
+          8,  // PDF_417
+        ],
+        verbose: false
+      });
       paymentScannerRef.current = scanner;
       
-      // Optimierte Einstellungen - KEIN aspectRatio (bricht iOS)
+      // Optimierte Einstellungen für Barcode-Scanning
       const config = {
-        fps: 10,
-        qrbox: isIOS ? { width: 250, height: 250 } : { width: 300, height: 300 },
-        // Wichtig: videoConstraints für bessere Auflösung
+        fps: 15,  // Höhere FPS für bessere Barcode-Erkennung
+        qrbox: isIOS 
+          ? { width: 280, height: 150 }  // Breiter für Barcodes auf iOS
+          : { width: 350, height: 180 }, // Desktop/Android
         videoConstraints: {
           width: { ideal: 1920 },
           height: { ideal: 1080 },
