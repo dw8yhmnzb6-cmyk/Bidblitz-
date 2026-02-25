@@ -828,19 +828,13 @@ async def bot_early_bidder():
                 except Exception as e:
                     logger.warning(f"Zeit-Parse Fehler: {e}")
                 
-                # Only place 3-5 bids per cycle to spread activity
-                if bids_placed >= 5:
+                # Only place 5-10 bids per cycle to spread activity
+                if bids_placed >= 10:
                     logger.debug(f"🛑 Max Gebote erreicht ({bids_placed})")
                     break
                 
-                # Calculate bid increment - BIGGER steps to reach €2-5 faster!
-                # Use €0.05-0.25 steps instead of €0.01
-                if current_price < 0.50:
-                    bid_step = random.uniform(0.05, 0.15)  # Kleine Schritte am Anfang
-                elif current_price < 2.00:
-                    bid_step = random.uniform(0.10, 0.25)  # Mittlere Schritte
-                else:
-                    bid_step = random.uniform(0.15, 0.35)  # Größere Schritte nahe Target
+                # Bid increment - always €0.01 (one cent)
+                bid_step = 0.01
                 
                 new_price = round(current_price + bid_step, 2)
                 
