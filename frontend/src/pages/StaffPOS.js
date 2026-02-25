@@ -3402,59 +3402,10 @@ export default function StaffPOS() {
                   {language === 'de' ? 'Abbrechen' : 'Cancel'}
                 </button>
               </div>
-            )}}
-                        onChange={(e) => setPaymentBarcode(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && paymentBarcode.trim()) {
-                            processPayment(paymentBarcode.trim());
-                            setPaymentScanMode(false);
-                          }
-                        }}
-                        placeholder={language === 'de' ? 'BID-XXXXXX oder QR-Code' : 'BID-XXXXXX or QR code'}
-                        className="flex-1 px-4 py-3 bg-slate-900 border border-slate-600 rounded-xl text-white text-center font-mono text-lg"
-                      />
-                      <button
-                        onClick={() => {
-                          if (paymentBarcode.trim()) {
-                            processPayment(paymentBarcode.trim());
-                            setPaymentScanMode(false);
-                          }
-                        }}
-                        disabled={!paymentBarcode.trim()}
-                        className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold disabled:opacity-50"
-                      >
-                        OK
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Abbrechen Button */}
-                  <button
-                    onClick={() => {
-                      stopPaymentCamera();
-                      setPaymentScanMode(false);
-                      setPaymentBarcode('');
-                    }}
-                    className="w-full mt-4 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl font-medium transition-colors"
-                  >
-                    {language === 'de' ? 'Abbrechen' : 'Cancel'}
-                  </button>
-                </div>
-                
-                {/* Camera Error Message */}
-                {paymentCameraError && (
-                  <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-center">
-                    <p className="text-red-400 text-sm">{paymentCameraError}</p>
-                  </div>
-                )}
-                
-                {/* Hidden scanner element for photo scanning */}
-                <div id="payment-photo-scanner" style={{ display: 'none' }}></div>
-              </div>
             )}
           </div>
         )}
-          </>
+        </>
         )}
       </main>
 
