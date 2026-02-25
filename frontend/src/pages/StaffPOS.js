@@ -3066,21 +3066,20 @@ export default function StaffPOS() {
                       {language === 'de' ? 'Kamera stoppen' : 'Stop Camera'}
                     </button>
                   )}
-                    
-                    {/* Manuelle Eingabe */}
-                    <div className="relative">
-                      <Scan className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
-                      <input
-                        ref={barcodeInputRef}
-                        type="text"
-                        placeholder={language === 'de' ? 'Barcode manuell eingeben...' : 'Enter barcode manually...'}
-                        value={barcodeInput}
-                        onChange={(e) => setBarcodeInput(e.target.value)}
-                        onKeyDown={handleBarcodeScan}
-                        className="w-full pl-12 pr-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono"
-                        data-testid="barcode-input"
-                      />
-                    </div>
+                  
+                  {/* Manuelle Eingabe */}
+                  <div className="relative">
+                    <Scan className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400" />
+                    <input
+                      ref={barcodeInputRef}
+                      type="text"
+                      placeholder={language === 'de' ? 'Barcode manuell eingeben...' : 'Enter barcode manually...'}
+                      value={barcodeInput}
+                      onChange={(e) => setBarcodeInput(e.target.value)}
+                      onKeyDown={handleBarcodeScan}
+                      className="w-full pl-12 pr-4 py-3 bg-slate-900/50 border border-slate-600 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-transparent font-mono"
+                      data-testid="barcode-input"
+                    />
                   </div>
                   
                   {/* Hidden scanner element for photo scanning */}
