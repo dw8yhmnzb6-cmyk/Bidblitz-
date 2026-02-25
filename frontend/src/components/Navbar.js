@@ -251,21 +251,27 @@ export const Navbar = () => {
           <div className="px-4 py-4 space-y-3">
             
             {/* Dark Mode Toggle - Mobile */}
-            <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10">
+            <button
+              onClick={toggleDarkMode}
+              className={`w-full flex items-center justify-between pb-3 border-b border-gray-200 dark:border-white/10 ${
+                isDarkMode ? 'hover:bg-white/5' : 'hover:bg-gray-50'
+              } rounded-lg px-2 py-2 transition-all`}
+            >
               <span className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
                 {isDarkMode ? `☀️ ${t('nav.lightMode')}` : `🌙 ${t('nav.darkMode')}`}
               </span>
-              <button
-                onClick={toggleDarkMode}
-                className={`p-2 rounded-lg transition-all ${
-                  isDarkMode 
-                    ? 'bg-yellow-500/20 text-yellow-400' 
-                    : 'bg-gray-100 text-gray-600'
-                }`}
-              >
-                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-            </div>
+              <div className={`w-12 h-7 rounded-full p-1 transition-all ${
+                isDarkMode 
+                  ? 'bg-cyan-500' 
+                  : 'bg-gray-300'
+              }`}>
+                <div className={`w-5 h-5 rounded-full bg-white shadow-md transition-transform ${
+                  isDarkMode ? 'translate-x-5' : 'translate-x-0'
+                }`}>
+                  {isDarkMode ? <Sun className="w-5 h-5 text-yellow-500" /> : <Moon className="w-5 h-5 text-gray-500" />}
+                </div>
+              </div>
+            </button>
             
             {/* AUTH SECTION - Prominent at top */}
             {isAuthenticated ? (
