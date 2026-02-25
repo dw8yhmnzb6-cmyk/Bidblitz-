@@ -2868,31 +2868,93 @@ export default function StaffPOS() {
                 </p>
               </div>
               
-              {/* 📷 Scanner öffnen Button - öffnet Handy-Kamera */}
-              <label
-                htmlFor="camera-scanner-input"
-                className={`w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              {/* Scanner öffnen Button - öffnet Live Barcode Scanner */}
+              <button
+                onClick={() => {
+                  if (!amount || parseFloat(amount) < 5) {
+                    toast.error(language === 'de' ? 'Bitte zuerst Betrag eingeben (min. €5)' : 'Please enter amount first (min. €5)');
+                    return;
+                  }
+                  setScanMode(true);
+                  setTimeout(() => {
+                    startTopupCamera();
+                  }, 300);
+                }}
+                disabled={!amount || parseFloat(amount) < 5}
+                className={`w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
                   !amount || parseFloat(amount) < 5
                     ? 'bg-slate-700/30 text-slate-600 cursor-not-allowed'
                     : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-blue-500/30'
                 }`}
               >
-                <Camera className="w-5 h-5" />
+                <Scan className="w-5 h-5" />
                 {language === 'de' ? '📷 Scanner öffnen' : '📷 Open Scanner'}
-              </label>
+              </button>
               
-              {/* Hidden Camera Input */}
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                onChange={handleTopupPhotoUpload}
-                className="hidden"
-                id="camera-scanner-input"
-                disabled={!amount || parseFloat(amount) < 5}
-              />
+              {/* Live Scanner Modal */}
+              {scanMode && (
+                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+                  <div className="bg-slate-800 rounded-2xl w-full max-w-md p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <Scan className="w-5 h-5 text-green-400" />
+                        {language === 'de' ? 'Barcode Scanner' : 'Barcode Scanner'}
+                      </h3>
+                      <button 
+                        onClick={() => {
+                          stopTopupCamera();
+                          setScanMode(false);
+                        }}
+                        className="p-2 text-slate-400 hover:text-white bg-slate-700 rounded-lg"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    
+                    {/* Scanner Video Area */}
+                    <div id="topup-scanner" className="w-full aspect-square bg-black rounded-xl overflow-hidden mb-4"></div>
+                    
+                    {/* Manuelle Eingabe im Scanner-Modal */}
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={manualBarcode}
+                        onChange={(e) => setManualBarcode(e.target.value.toUpperCase())}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && manualBarcode.trim().length >= 3) {
+                            processTopupWithBarcode(manualBarcode.trim());
+                            setScanMode(false);
+                            stopTopupCamera();
+                            setManualBarcode('');
+                          }
+                        }}
+                        placeholder="BID-XXXXXX"
+                        className="flex-1 px-4 py-3 bg-slate-900 border border-slate-600 rounded-xl text-white text-center font-mono"
+                      />
+                      <button
+                        onClick={() => {
+                          if (manualBarcode.trim().length >= 3) {
+                            processTopupWithBarcode(manualBarcode.trim());
+                            setScanMode(false);
+                            stopTopupCamera();
+                            setManualBarcode('');
+                          }
+                        }}
+                        disabled={manualBarcode.trim().length < 3}
+                        className="px-6 py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-slate-700 text-white rounded-xl font-bold"
+                      >
+                        OK
+                      </button>
+                    </div>
+                    
+                    {topupCameraError && (
+                      <p className="text-red-400 text-sm text-center mt-3">{topupCameraError}</p>
+                    )}
+                  </div>
+                </div>
+              )}
               
-              {/* Hidden scanner element for photo processing */}
+              {/* Hidden scanner element for processing */}
               <div id="topup-photo-scanner" style={{ display: 'none' }}></div>
               
               {/* Manuelle Eingabe Modal - nur noch als Backup */}
