@@ -543,8 +543,22 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
                     )
                     logger.info(f"Direct token recognized for customer {customer_id}")
         
-        # ==================== FALLBACK: Reguläre Barcode-Suche ====================
+        # ==================== FALLBACK: Nur für Staff-Eingaben ====================
+        # SICHERHEIT: Statische Barcodes/Kundennummern nur für manuelle Eingabe akzeptieren
+        # Nicht für QR-Code Zahlungen (die müssen dynamische Tokens verwenden)
         if not customer:
+            # Prüfen ob es ein QR-Format ist (diese müssen Tokens verwenden)
+            is_qr_payment = barcode.startswith("bidblitz://") or barcode.startswith("cpt_") or "cpt_" in barcode
+            
+            if is_qr_payment:
+                # QR-Code Zahlungen MÜSSEN gültige Tokens haben
+                raise HTTPException(
+                    status_code=400, 
+                    detail="QR-Code ungültig oder abgelaufen. Bitte neuen QR-Code generieren."
+                )
+            
+            # Nur manuelle Eingabe (BID-XXXXX oder Kundennummer) erlauben
+            # Diese sind weniger sicher, aber für manuellen Gebrauch OK
             customer = await db.users.find_one({
                 "$or": [
                     {"customer_number": data.customer_barcode},
@@ -552,6 +566,9 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
                     {"id": data.customer_barcode}
                 ]
             })
+            
+            if customer:
+                logger.info(f"Manual barcode entry for customer {customer.get('customer_number', 'unknown')}")
         
         if not customer:
             raise HTTPException(status_code=404, detail="Kunde nicht gefunden")
