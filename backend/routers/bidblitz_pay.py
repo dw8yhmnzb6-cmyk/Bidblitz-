@@ -1635,4 +1635,216 @@ async def export_transactions(
     return {"transactions": transactions}
 
 
+# ==================== WALLET LOCK / SECURITY ENDPOINTS ====================
+
+@router.get("/lock-status")
+async def get_lock_status(user: dict = Depends(get_current_user)):
+    """Get the current lock status of the wallet"""
+    wallet = await db.bidblitz_wallets.find_one(
+        {"user_id": user.get("id")},
+        {"_id": 0, "is_locked": 1, "lock_history": 1}
+    )
+    
+    return {
+        "is_locked": wallet.get("is_locked", False) if wallet else False,
+        "history": wallet.get("lock_history", [])[:10] if wallet else []
+    }
+
+
+@router.post("/lock")
+async def lock_wallet(user: dict = Depends(get_current_user)):
+    """Lock the wallet - prevents all payments"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.bidblitz_wallets.update_one(
+        {"user_id": user.get("id")},
+        {
+            "$set": {"is_locked": True, "locked_at": now},
+            "$push": {
+                "lock_history": {
+                    "$each": [{"action": "locked", "timestamp": now}],
+                    "$slice": -20
+                }
+            }
+        }
+    )
+    
+    if result.modified_count == 0:
+        # Create wallet if it doesn't exist
+        await db.bidblitz_wallets.insert_one({
+            "user_id": user.get("id"),
+            "is_locked": True,
+            "locked_at": now,
+            "lock_history": [{"action": "locked", "timestamp": now}]
+        })
+    
+    logger.info(f"Wallet locked for user {user.get('id')}")
+    return {"success": True, "is_locked": True}
+
+
+@router.post("/unlock")
+async def unlock_wallet(user: dict = Depends(get_current_user)):
+    """Unlock the wallet - re-enables payments"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.bidblitz_wallets.update_one(
+        {"user_id": user.get("id")},
+        {
+            "$set": {"is_locked": False, "unlocked_at": now},
+            "$push": {
+                "lock_history": {
+                    "$each": [{"action": "unlocked", "timestamp": now}],
+                    "$slice": -20
+                }
+            }
+        }
+    )
+    
+    logger.info(f"Wallet unlocked for user {user.get('id')}")
+    return {"success": True, "is_locked": False}
+
+
+# ==================== SPENDING STATISTICS ENDPOINTS ====================
+
+@router.get("/spending-stats")
+async def get_spending_stats(
+    month: int = Query(default=None),
+    year: int = Query(default=None),
+    user: dict = Depends(get_current_user)
+):
+    """Get spending statistics for a specific month"""
+    now = datetime.now(timezone.utc)
+    month = month or now.month
+    year = year or now.year
+    
+    # Calculate date range
+    start_date = datetime(year, month, 1, tzinfo=timezone.utc)
+    if month == 12:
+        end_date = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+    else:
+        end_date = datetime(year, month + 1, 1, tzinfo=timezone.utc)
+    
+    # Previous month for comparison
+    if month == 1:
+        prev_start = datetime(year - 1, 12, 1, tzinfo=timezone.utc)
+        prev_end = start_date
+    else:
+        prev_start = datetime(year, month - 1, 1, tzinfo=timezone.utc)
+        prev_end = start_date
+    
+    user_id = user.get("id")
+    
+    # Get transactions for current month
+    transactions = await db.bidblitz_transactions.find({
+        "user_id": user_id,
+        "created_at": {
+            "$gte": start_date.isoformat(),
+            "$lt": end_date.isoformat()
+        }
+    }).to_list(1000)
+    
+    # Calculate stats
+    total_spent = sum(
+        t.get("amount", 0) for t in transactions 
+        if t.get("type") in ["payment", "purchase", "debit"]
+    )
+    total_received = sum(
+        t.get("amount", 0) for t in transactions 
+        if t.get("type") in ["topup", "credit", "cashback", "bonus"]
+    )
+    cashback_earned = sum(
+        t.get("amount", 0) for t in transactions 
+        if t.get("type") == "cashback"
+    )
+    
+    # Get previous month spending for comparison
+    prev_transactions = await db.bidblitz_transactions.find({
+        "user_id": user_id,
+        "created_at": {
+            "$gte": prev_start.isoformat(),
+            "$lt": prev_end.isoformat()
+        },
+        "type": {"$in": ["payment", "purchase", "debit"]}
+    }).to_list(1000)
+    
+    previous_month_spent = sum(t.get("amount", 0) for t in prev_transactions)
+    
+    # Category breakdown (simplified)
+    categories = [
+        {"name": "shopping", "amount": total_spent * 0.4, "percent": 40},
+        {"name": "food", "amount": total_spent * 0.25, "percent": 25},
+        {"name": "transport", "amount": total_spent * 0.2, "percent": 20},
+        {"name": "other", "amount": total_spent * 0.15, "percent": 15}
+    ]
+    
+    return {
+        "month": month,
+        "year": year,
+        "totalSpent": total_spent,
+        "totalReceived": total_received,
+        "cashbackEarned": cashback_earned,
+        "transactionCount": len(transactions),
+        "previousMonthSpent": previous_month_spent,
+        "categories": categories
+    }
+
+
+# ==================== QUICK TOP UP ENDPOINTS ====================
+
+class QuickTopUpRequest(BaseModel):
+    amount: float
+    payment_method: str  # apple_pay, google_pay, card
+
+
+@router.post("/quick-topup")
+async def quick_topup(data: QuickTopUpRequest, user: dict = Depends(get_current_user)):
+    """Process quick top-up via Apple Pay / Google Pay"""
+    if data.amount < 5:
+        raise HTTPException(status_code=400, detail="Mindestbetrag ist €5")
+    
+    user_id = user.get("id")
+    now = datetime.now(timezone.utc)
+    
+    # In production, this would integrate with Stripe for Apple Pay / Google Pay
+    # For now, we simulate a successful payment
+    
+    # Update wallet balance
+    result = await db.bidblitz_wallets.update_one(
+        {"user_id": user_id},
+        {
+            "$inc": {"universal_balance": data.amount},
+            "$set": {"updated_at": now.isoformat()}
+        },
+        upsert=True
+    )
+    
+    # Also update user balance
+    await db.users.update_one(
+        {"id": user_id},
+        {"$inc": {"bidblitz_balance": data.amount}}
+    )
+    
+    # Create transaction record
+    transaction = {
+        "id": f"topup_{uuid.uuid4().hex[:12]}",
+        "user_id": user_id,
+        "type": "topup",
+        "amount": data.amount,
+        "payment_method": data.payment_method,
+        "description": f"Aufladung via {data.payment_method.replace('_', ' ').title()}",
+        "status": "completed",
+        "created_at": now.isoformat()
+    }
+    await db.bidblitz_transactions.insert_one(transaction)
+    
+    logger.info(f"Quick top-up: €{data.amount} for user {user_id} via {data.payment_method}")
+    
+    return {
+        "success": True,
+        "amount": data.amount,
+        "new_balance": (await db.bidblitz_wallets.find_one({"user_id": user_id})).get("universal_balance", 0),
+        "transaction_id": transaction["id"]
+    }
+
+
 bidblitz_pay_router = router
