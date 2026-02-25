@@ -12,7 +12,7 @@ import uuid
 import jwt
 import os
 
-router = APIRouter(prefix="/api/loyalty", tags=["Loyalty & Referrals"])
+router = APIRouter(prefix="/api/customer-loyalty", tags=["Customer Loyalty & Referrals"])
 
 JWT_SECRET = os.environ.get("JWT_SECRET", "your-secret-key-change-in-production")
 
