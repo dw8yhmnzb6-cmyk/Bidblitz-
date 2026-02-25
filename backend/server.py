@@ -823,12 +823,14 @@ async def bot_early_bidder():
                     end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
                     seconds_left = (end_time - now).total_seconds()
                     if seconds_left < 300:  # < 5 minutes (reduced from 10)
+                        logger.debug(f"⏩ Auktion {auction.get('title', '?')[:20]} übersprungen - endet in {seconds_left:.0f}s")
                         continue  # Let bot_last_second_bidder handle this
-                except:
-                    pass
+                except Exception as e:
+                    logger.warning(f"Zeit-Parse Fehler: {e}")
                 
                 # Only place 1-3 bids per cycle to spread activity
                 if bids_placed >= 3:
+                    logger.debug(f"🛑 Max Gebote erreicht ({bids_placed})")
                     break
                 
                 # PLACE BID!
