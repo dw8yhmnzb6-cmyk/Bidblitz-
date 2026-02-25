@@ -5,9 +5,10 @@ import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import { usePageTranslations } from '../i18n/pageTranslations';
 import { Button } from '../components/ui/button';
-import { Zap, Check, Sparkles, CreditCard, Bitcoin, X, Wallet, ArrowRight } from 'lucide-react';
+import { Zap, Check, Sparkles, CreditCard, Bitcoin, X, Wallet, ArrowRight, Clock, Gift, Star, Coins } from 'lucide-react';
 import { toast } from 'sonner';
 import FlashSalesBanner from '../components/FlashSalesBanner';
+import BNPLModal from '../components/BNPLModal';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
