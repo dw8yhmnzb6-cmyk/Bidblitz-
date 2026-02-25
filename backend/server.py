@@ -812,16 +812,16 @@ async def bot_early_bidder():
                 
                 # Skip if we bid recently (10-30 seconds interval for faster bidding)
                 last_bid = last_bid_time.get(auction_id, 0)
-                min_interval = random.uniform(10, 30)  # Schnelleres Intervall
+                min_interval = random.uniform(8, 20)  # Schnelleres Intervall
                 time_since_last = now.timestamp() - last_bid
-                if time_since_last < min_interval:
-                    continue
+                if last_bid > 0 and time_since_last < min_interval:
+                    continue  # Skip only if we actually bid before
                 
-                # Check time remaining - skip if in last 10 minutes (bot_last_second_bidder handles that)
+                # Check time remaining - skip if in last 5 minutes (bot_last_second_bidder handles that)
                 try:
                     end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
                     seconds_left = (end_time - now).total_seconds()
-                    if seconds_left < 600:  # < 10 minutes
+                    if seconds_left < 300:  # < 5 minutes (reduced from 10)
                         continue  # Let bot_last_second_bidder handle this
                 except:
                     pass
