@@ -3381,13 +3381,8 @@ export default function StaffPOS() {
                                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
                     
                     if (isIOS) {
-                      // iOS: Nutze native Kamera-Input (zuverlässiger)
+                      // iOS: Der Klick wird vom Label unten behandelt
                       setPaymentScanMode(true);
-                      // Trigger den versteckten file input für native Kamera
-                      setTimeout(() => {
-                        const fileInput = document.getElementById('ios-native-camera-input');
-                        if (fileInput) fileInput.click();
-                      }, 100);
                     } else {
                       // Android/Desktop: Nutze html5-qrcode Scanner
                       setPaymentScanMode(true);
@@ -3413,6 +3408,16 @@ export default function StaffPOS() {
                   className="hidden"
                   id="ios-native-camera-input"
                 />
+                {/* iOS: Separater Button der als Label fungiert - öffnet direkt die Kamera */}
+                {(/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && (
+                  <label
+                    htmlFor="ios-native-camera-input"
+                    className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 rounded-xl text-white font-bold transition-all flex items-center justify-center gap-3 shadow-lg shadow-green-500/30 cursor-pointer"
+                  >
+                    <Camera className="w-6 h-6" />
+                    📸 {language === 'de' ? 'KAMERA ÖFFNEN' : 'OPEN CAMERA'}
+                  </label>
+                )}
               </div>
             ) : (
               <div className="space-y-4">
