@@ -2958,9 +2958,9 @@ export default function StaffPOS() {
                     <div className="relative">
                       <div className="bg-slate-900 rounded-xl p-2">
                         <p className="text-amber-400 text-sm text-center mb-2 animate-pulse">
-                          📷 {language === 'de' ? 'Halten Sie den Kunden-Barcode vor die Kamera...' : 'Hold customer barcode in front of camera...'}
+                          📷 {language === 'de' ? 'Halten Sie den Kunden-Code vor die Kamera...' : 'Hold customer code in front of camera...'}
                         </p>
-                        <div id="topup-scanner" className="w-full h-72 rounded-lg overflow-hidden bg-black"></div>
+                        <div id="topup-scanner" className="w-full h-80 rounded-lg overflow-hidden bg-black"></div>
                         
                         {/* Manuelle Eingabe als Alternative */}
                         <div className="mt-3 flex gap-2">
@@ -2974,7 +2974,7 @@ export default function StaffPOS() {
                                 processTopupWithBarcode(manualBarcode.trim());
                               }
                             }}
-                            placeholder={language === 'de' ? 'Barcode manuell...' : 'Manual barcode...'}
+                            placeholder={language === 'de' ? 'Code manuell...' : 'Manual code...'}
                             className="flex-1 px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-center font-mono text-sm"
                           />
                           <button
@@ -2986,7 +2986,7 @@ export default function StaffPOS() {
                           </button>
                         </div>
                         
-                        {/* Foto-Button nur als kleine Alternative */}
+                        {/* Hidden file input (kept for error fallback) */}
                         <input
                           ref={topupFileInputRef}
                           type="file"
@@ -2996,12 +2996,6 @@ export default function StaffPOS() {
                           className="hidden"
                           id="topup-photo-input-main"
                         />
-                        <label
-                          htmlFor="topup-photo-input-main"
-                          className="block mt-2 py-2 text-center text-slate-400 text-xs underline cursor-pointer hover:text-slate-300"
-                        >
-                          {language === 'de' ? '📸 Foto stattdessen aufnehmen' : '📸 Take photo instead'}
-                        </label>
                       </div>
                       <button
                         onClick={() => {
