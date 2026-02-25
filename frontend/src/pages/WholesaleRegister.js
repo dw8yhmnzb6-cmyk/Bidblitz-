@@ -53,6 +53,7 @@ export default function WholesaleRegister() {
           website: form.website || null,
           tax_id: form.tax_id || null,
           expected_volume: form.expected_volume,
+          business_type: form.business_type,
           message: form.message || null
         })
       });
