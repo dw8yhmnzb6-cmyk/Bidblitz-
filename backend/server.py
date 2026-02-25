@@ -606,6 +606,7 @@ app.include_router(support_router, prefix="/api/support")
 # NEW: Merchant & Loyalty Features
 app.include_router(merchant_features_router)  # /api/merchant/* endpoints
 app.include_router(loyalty_system_router)  # /api/loyalty/* endpoints
+app.include_router(bnpl_router)  # /api/bnpl/* - Ratenzahlung
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
