@@ -714,6 +714,22 @@ async def process_payment(data: PaymentRequest, authorization: Optional[str] = H
         
         logger.info(f"POS Payment: €{final_amount:.2f} (Original: €{data.amount:.2f}, Rabatt: €{discount_amount:.2f}) from customer {customer.get('name')} ({customer['id']}) - New balance: €{new_balance:.2f}")
         
+        # ==================== REAL-TIME NOTIFICATION ====================
+        # Send WebSocket notification to customer's device
+        try:
+            await notify_payment_received(
+                user_id=customer["id"],
+                amount=final_amount,
+                new_balance=new_balance,
+                merchant_name=data.branch_name,
+                transaction_id=transaction["id"],
+                discount_amount=discount_amount,
+                discount_card_name=discount_card["name"] if discount_card else None
+            )
+        except Exception as ws_error:
+            # Don't fail the payment if notification fails
+            logger.warning(f"Could not send payment notification: {ws_error}")
+        
         return {
             "success": True,
             "transaction_id": transaction["id"],
