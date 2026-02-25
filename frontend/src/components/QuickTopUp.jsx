@@ -161,7 +161,7 @@ export default function QuickTopUp({ language = 'de', onSuccess, walletId }) {
       const token = localStorage.getItem('token');
       
       // Create payment intent
-      const res = await fetch(`${API}/api/wallet/quick-topup`, {
+      const res = await fetch(`${API}/api/bidblitz-pay/quick-topup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
