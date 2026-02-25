@@ -185,6 +185,7 @@ export default function BuyBids() {
     fetchPaymentMethods();
     if (isAuthenticated && token) {
       fetchWalletBalance();
+      fetchLoyaltyInfo();
     }
     
     // Check for crypto callback
@@ -195,6 +196,17 @@ export default function BuyBids() {
       toast.info(texts.cryptoCancel);
     }
   }, [searchParams, isAuthenticated, token]);
+
+  const fetchLoyaltyInfo = async () => {
+    try {
+      const response = await axios.get(`${API}/customer-loyalty/status`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setLoyaltyInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching loyalty info:', error);
+    }
+  };
 
   const fetchWalletBalance = async () => {
     try {
