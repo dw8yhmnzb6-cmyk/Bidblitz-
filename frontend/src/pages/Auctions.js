@@ -1227,7 +1227,13 @@ export default function Auctions() {
     restaurant: publicAuctions.filter(a => isRestaurantAuction(a) && a.status === 'active').length,
     nacht: publicAuctions.filter(a => a.is_night_auction).length,
     ende: endedAuctions.length, // Use endedAuctions from auction_history
-    vip: auctions.filter(a => a.is_vip_only && a.status === 'active').length
+    vip: auctions.filter(a => a.is_vip_only && a.status === 'active').length,
+    // Product Categories
+    elektronik: publicAuctions.filter(a => a.category === 'Elektronik' && a.status === 'active').length,
+    mode: publicAuctions.filter(a => a.category === 'Mode & Accessoires' && a.status === 'active').length,
+    haus: publicAuctions.filter(a => a.category === 'Haus & Garten' && a.status === 'active').length,
+    sport: publicAuctions.filter(a => a.category === 'Sport & Freizeit' && a.status === 'active').length,
+    kunst: publicAuctions.filter(a => a.category === 'Kunst & Sammlerstücke' && a.status === 'active').length
   };
   
   // Apply filter
