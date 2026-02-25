@@ -770,7 +770,7 @@ async def bot_early_bidder():
             active_auctions = await db.auctions.find({
                 "status": "active",
                 "bot_target_price": {"$gt": 0}
-            }, {"_id": 0, "id": 1, "current_price": 1, "bot_target_price": 1, 
+            }, {"_id": 0, "id": 1, "current_price": 1, "current_bid": 1, "bot_target_price": 1, 
                 "bid_increment": 1, "title": 1, "end_time": 1}).to_list(100)
             
             if not active_auctions:
