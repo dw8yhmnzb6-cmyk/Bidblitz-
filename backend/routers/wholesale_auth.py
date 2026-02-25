@@ -29,7 +29,8 @@ class WholesaleRegister(BaseModel):
     password: str
     website: Optional[str] = None
     tax_id: Optional[str] = None  # Steuernummer
-    expected_volume: str  # e.g., "500-1000", "1000-5000", "5000+"
+    expected_volume: str  # e.g., "100-500", "500-1000", "1000-5000", "5000+"
+    business_type: Optional[str] = "small"  # "small" for Kleinhändler, "wholesale" for Großhändler
     message: Optional[str] = None
 
 class WholesaleLogin(BaseModel):
