@@ -3,7 +3,42 @@
 ## Original Problem Statement
 Create a penny auction website modeled after `dealdash.com` and `snipster.de` with complete visual and functional features.
 
-## Current Status (February 24, 2026)
+## Current Status (February 25, 2026)
+
+### ✅ Session Update - February 25, 2026 (Session 73) - CUSTOMER-PRESENTED QR PAYMENT ✅
+
+#### Customer-Presented QR Model - Zahlungsfluss implementiert ✅
+**Problem:** Der POS akzeptierte nur das alte QR-Format `BIDBLITZ-PAY:{token}`, aber die Kunden-App generierte das neue Format `BIDBLITZ:2.0:{token}:{customer}:{timestamp}`.
+
+**Lösung:** `/api/pos/payment` Endpoint erweitert, um alle 3 QR-Formate zu unterstützen:
+
+| Format | Beispiel | Collection |
+|--------|----------|------------|
+| BIDBLITZ 2.0 | `BIDBLITZ:2.0:cpt_xxx:BID-286446:1772019480` | customer_payment_tokens |
+| BIDBLITZ-PAY (Legacy) | `BIDBLITZ-PAY:uuid-token` | payment_tokens |
+| Direkter Token | `cpt_xxx` | customer_payment_tokens |
+
+**Dateien geändert:**
+- `/app/backend/routers/pos_terminal.py` (Lines 445-525): Erweiterte QR-Code Format-Erkennung
+
+**Sicherheitsfeatures:**
+- ✅ Token kann nur einmal verwendet werden
+- ✅ Token-Ablauf wird geprüft (5 Minuten Gültigkeit)
+- ✅ Guthaben wird von `bidblitz_balance` und `bidblitz_wallets` abgezogen
+
+**Zahlungsflow:**
+1. Kunde öffnet `/my-payment-qr` und generiert QR-Code
+2. Staff im POS (Zahlung-Tab) gibt Betrag ein
+3. Staff scannt Kunden-QR-Code
+4. Betrag wird vom Kundenguthaben abgezogen
+5. Transaktion wird in `pos_transactions` und `bidblitz_pay_transactions` gespeichert
+
+**Test-Ergebnisse:**
+- **Backend:** 100% (12/12 Tests bestanden)
+- **Frontend:** 100% (Staff POS Zahlung Tab verifiziert)
+- **Test-Report:** `/app/test_reports/iteration_109.json`
+
+---
 
 ### ✅ Session Update - February 24, 2026 (Session 72) - BERECHTIGUNGEN + SCANNER ✅
 
