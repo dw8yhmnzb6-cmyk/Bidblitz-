@@ -2831,57 +2831,71 @@ export default function StaffPOS() {
               )}
             </div>
 
-            {/* Hardware Scanner Info - Kein Kamera-Button */}
+            {/* Hardware Scanner Info */}
             <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-slate-700/50">
               <label className="block text-slate-300 mb-2">{t.scanCustomer}</label>
               
-              {/* Einfache Anweisung für Hardware-Scanner */}
-              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
-                <div className="flex items-center justify-center gap-3 mb-3">
+              {/* Scanner bereit Anzeige */}
+              <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center mb-4">
+                <div className="flex items-center justify-center gap-3 mb-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <p className="text-green-400 font-bold text-lg">
-                    {language === 'de' ? 'Scanner bereit' : 'Scanner ready'}
+                  <p className="text-green-400 font-bold">
+                    {language === 'de' ? 'Scanner bereit - Barcode scannen oder Nummer eingeben + Enter' : 'Scanner ready - Scan barcode or enter number + Enter'}
                   </p>
                 </div>
-                <p className="text-slate-400 text-sm mb-4">
+                
+                {/* Barcode Eingabefeld für Hardware-Scanner */}
+                <input
+                  type="text"
+                  value={manualBarcode}
+                  onChange={(e) => setManualBarcode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && manualBarcode.trim().length >= 3) {
+                      processTopupWithBarcode(manualBarcode.trim());
+                      setManualBarcode('');
+                    }
+                  }}
+                  placeholder={language === 'de' ? 'Barcode scannen oder Nummer eingeben...' : 'Scan barcode or enter number...'}
+                  className="w-full px-4 py-3 bg-slate-900 border border-green-500/50 rounded-xl text-white text-center font-mono focus:ring-2 focus:ring-green-500 focus:border-green-400"
+                  disabled={!amount || parseFloat(amount) < 5}
+                  data-hardware-scanner="true"
+                />
+                
+                <p className="text-slate-500 text-xs mt-2">
                   {language === 'de' 
-                    ? 'Scannen Sie den Kunden-Barcode mit dem Hardware-Scanner' 
-                    : 'Scan customer barcode with hardware scanner'}
-                </p>
-                <div className="flex justify-center">
-                  <div className="w-24 h-24 border-2 border-dashed border-green-500/50 rounded-xl flex items-center justify-center">
-                    <Scan className="w-12 h-12 text-green-400 animate-pulse" />
-                  </div>
-                </div>
-                <p className="text-slate-500 text-xs mt-3">
-                  {language === 'de' 
-                    ? '📟 BID-XXXXXX oder QR-Code scannen' 
-                    : '📟 Scan BID-XXXXXX or QR code'}
+                    ? 'Kundenkarte unter den Scanner halten oder Nummer eingeben + Enter' 
+                    : 'Hold customer card under scanner or enter number + Enter'}
                 </p>
               </div>
               
-              {/* Manuelle Eingabe Option - nur als Fallback */}
-              <button
-                onClick={() => setShowManualEntry(true)}
-                disabled={!amount || parseFloat(amount) < 5}
-                className="w-full mt-4 py-3 bg-slate-700/50 hover:bg-slate-600/50 disabled:bg-slate-800/50 disabled:text-slate-600 rounded-xl text-slate-300 font-medium transition-all flex items-center justify-center gap-2"
-                data-testid="manual-barcode-btn"
+              {/* 📷 Scanner öffnen Button - öffnet Handy-Kamera */}
+              <label
+                htmlFor="camera-scanner-input"
+                className={`w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                  !amount || parseFloat(amount) < 5
+                    ? 'bg-slate-700/30 text-slate-600 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white hover:shadow-lg hover:shadow-blue-500/30'
+                }`}
               >
-                <Scan className="w-5 h-5" />
-                {language === 'de' ? 'Manuell eingeben (Fallback)' : 'Enter manually (Fallback)'}
-              </button>
+                <Camera className="w-5 h-5" />
+                {language === 'de' ? '📷 Scanner öffnen' : '📷 Open Scanner'}
+              </label>
               
-              {/* Hidden file input for legacy - nicht sichtbar */}
+              {/* Hidden Camera Input */}
               <input
                 type="file"
                 accept="image/*"
                 capture="environment"
                 onChange={handleTopupPhotoUpload}
                 className="hidden"
-                id="ios-topup-camera-input"
+                id="camera-scanner-input"
+                disabled={!amount || parseFloat(amount) < 5}
               />
               
-              {/* Manuelle Eingabe Modal */}
+              {/* Hidden scanner element for photo processing */}
+              <div id="topup-photo-scanner" style={{ display: 'none' }}></div>
+              
+              {/* Manuelle Eingabe Modal - nur noch als Backup */}
               {showManualEntry && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
                   <div className="bg-slate-800 rounded-2xl w-full max-w-md p-6">
