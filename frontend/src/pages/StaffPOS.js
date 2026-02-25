@@ -3371,32 +3371,49 @@ export default function StaffPOS() {
                       <p className="text-green-400 text-sm text-center mb-2 animate-pulse">
                         📷 {language === 'de' ? 'Halten Sie den Barcode vor die Kamera...' : 'Hold barcode in front of camera...'}
                       </p>
-                      <div id="payment-scanner" className="w-full h-64 rounded-lg overflow-hidden bg-black"></div>
+                      {/* GRÖSSERER SCANNER-BEREICH */}
+                      <div id="payment-scanner" className="w-full h-72 rounded-lg overflow-hidden bg-black"></div>
                       
-                      {/* iOS-Hinweis: Foto-Button ist zuverlässiger */}
-                      <div className="mt-3 p-3 bg-amber-500/20 border border-amber-500/50 rounded-lg">
-                        <p className="text-amber-400 text-xs text-center mb-2">
-                          💡 {language === 'de' ? 'Scanner erkennt nicht? Nutze den Foto-Button!' : 'Scanner not detecting? Use the Photo button!'}
-                        </p>
-                        <div className="flex gap-2">
-                          <input
-                            ref={paymentFileInputRef}
-                            type="file"
-                            accept="image/*"
-                            capture="environment"
-                            onChange={handlePaymentPhotoUpload}
-                            className="hidden"
-                            id="payment-photo-input-main"
-                          />
-                          <label
-                            htmlFor="payment-photo-input-main"
-                            className="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white font-bold text-lg rounded-lg flex items-center justify-center gap-2 cursor-pointer transition-colors shadow-lg"
-                          >
-                            <Camera className="w-6 h-6" />
-                            📸 {language === 'de' ? 'FOTO AUFNEHMEN' : 'TAKE PHOTO'}
-                          </label>
-                        </div>
+                      {/* Manuelle Eingabe als Alternative */}
+                      <div className="mt-3 flex gap-2">
+                        <input
+                          type="text"
+                          value={paymentBarcode}
+                          onChange={(e) => setPaymentBarcode(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && paymentBarcode.trim()) {
+                              stopPaymentCamera();
+                              processPayment(paymentBarcode.trim());
+                            }
+                          }}
+                          placeholder={language === 'de' ? 'Barcode manuell eingeben...' : 'Enter barcode manually...'}
+                          className="flex-1 px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-center font-mono text-sm"
+                        />
+                        <button
+                          onClick={() => paymentBarcode.trim() && processPayment(paymentBarcode.trim())}
+                          disabled={!paymentBarcode.trim()}
+                          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-bold disabled:opacity-50"
+                        >
+                          OK
+                        </button>
                       </div>
+                      
+                      {/* Foto-Button nur als kleine Alternative */}
+                      <input
+                        ref={paymentFileInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        onChange={handlePaymentPhotoUpload}
+                        className="hidden"
+                        id="payment-photo-input-main"
+                      />
+                      <label
+                        htmlFor="payment-photo-input-main"
+                        className="block mt-2 py-2 text-center text-slate-400 text-xs underline cursor-pointer hover:text-slate-300"
+                      >
+                        {language === 'de' ? '📸 Foto stattdessen aufnehmen' : '📸 Take photo instead'}
+                      </label>
                     </div>
                     <button
                       onClick={() => {
