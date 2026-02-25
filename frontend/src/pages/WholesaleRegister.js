@@ -170,6 +170,39 @@ export default function WholesaleRegister() {
             <form onSubmit={handleSubmit} className="bg-slate-800/50 backdrop-blur rounded-2xl p-6 border border-slate-700 space-y-5">
               <h2 className="text-xl font-bold text-white mb-4">Registrierung</h2>
               
+              {/* Business Type Selection */}
+              <div>
+                <Label className="text-slate-300 mb-2 block">Händler-Typ *</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setForm({...form, business_type: 'small'})}
+                    className={`p-4 rounded-xl border-2 transition-all text-left ${
+                      form.business_type === 'small'
+                        ? 'border-cyan-500 bg-cyan-500/10'
+                        : 'border-slate-600 hover:border-slate-500'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">🏪</div>
+                    <div className="text-white font-semibold">Kleinhändler</div>
+                    <div className="text-slate-400 text-xs">Einzelhandel, kleine Shops</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm({...form, business_type: 'wholesale'})}
+                    className={`p-4 rounded-xl border-2 transition-all text-left ${
+                      form.business_type === 'wholesale'
+                        ? 'border-cyan-500 bg-cyan-500/10'
+                        : 'border-slate-600 hover:border-slate-500'
+                    }`}
+                  >
+                    <div className="text-2xl mb-1">🏢</div>
+                    <div className="text-white font-semibold">Großhändler</div>
+                    <div className="text-slate-400 text-xs">Großmengen, B2B-Vertrieb</div>
+                  </button>
+                </div>
+              </div>
+              
               {/* Company Info */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
