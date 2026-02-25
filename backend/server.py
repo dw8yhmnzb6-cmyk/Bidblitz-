@@ -784,6 +784,8 @@ async def bot_early_bidder():
                 await asyncio.sleep(60)
                 continue
             
+            logger.info(f"🤖 Early Bidder prüft {len(active_auctions)} Auktionen mit {len(bots)} Bots")
+            
             # Process each auction
             for auction in active_auctions:
                 auction_id = auction.get("id")
