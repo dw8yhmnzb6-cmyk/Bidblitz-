@@ -3366,12 +3366,85 @@ export default function StaffPOS() {
                   <p className="text-slate-400 text-sm">{language === 'de' ? 'Zu zahlender Betrag' : 'Amount to pay'}</p>
                 </div>
                 
-                {/* Camera Scanner - für Android/Desktop */}
-                {paymentCameraActive && (
-                  <div className="relative">
-                    <div className="bg-slate-900 rounded-xl p-2">
-                      <p className="text-green-400 text-sm text-center mb-2 animate-pulse">
-                        📷 {language === 'de' ? 'Halten Sie den QR-Code/Barcode vor die Kamera...' : 'Hold QR code/barcode in front of camera...'}
+                {/* KAMERA ÖFFNEN - Primäre Option */}
+                <div className="bg-slate-800 rounded-xl p-4">
+                  <p className="text-blue-400 text-center mb-4 font-medium">
+                    📷 {language === 'de' ? 'Kunden QR-Code fotografieren' : 'Take photo of customer QR code'}
+                  </p>
+                  
+                  {/* Native Kamera Input */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handlePaymentPhotoUpload}
+                    className="hidden"
+                    id="payment-native-camera"
+                  />
+                  <label
+                    htmlFor="payment-native-camera"
+                    className="w-full py-5 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 rounded-xl text-white font-bold text-xl transition-all flex items-center justify-center gap-3 shadow-lg shadow-green-500/30 cursor-pointer"
+                  >
+                    <Camera className="w-8 h-8" />
+                    📸 {language === 'de' ? 'KAMERA ÖFFNEN' : 'OPEN CAMERA'}
+                  </label>
+                  
+                  {/* Manuelle Eingabe */}
+                  <div className="mt-4 pt-4 border-t border-slate-700">
+                    <p className="text-slate-500 text-xs text-center mb-3">
+                      {language === 'de' ? 'Oder Code manuell eingeben:' : 'Or enter code manually:'}
+                    </p>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={paymentBarcode}
+                        onChange={(e) => setPaymentBarcode(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && paymentBarcode.trim()) {
+                            processPayment(paymentBarcode.trim());
+                            setPaymentScanMode(false);
+                          }
+                        }}
+                        placeholder={language === 'de' ? 'BID-XXXXXX oder QR-Code' : 'BID-XXXXXX or QR code'}
+                        className="flex-1 px-4 py-3 bg-slate-900 border border-slate-600 rounded-xl text-white text-center font-mono text-lg"
+                      />
+                      <button
+                        onClick={() => {
+                          if (paymentBarcode.trim()) {
+                            processPayment(paymentBarcode.trim());
+                            setPaymentScanMode(false);
+                          }
+                        }}
+                        disabled={!paymentBarcode.trim()}
+                        className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold disabled:opacity-50"
+                      >
+                        OK
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Abbrechen Button */}
+                  <button
+                    onClick={() => {
+                      stopPaymentCamera();
+                      setPaymentScanMode(false);
+                      setPaymentBarcode('');
+                    }}
+                    className="w-full mt-4 py-3 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-xl font-medium transition-colors"
+                  >
+                    {language === 'de' ? 'Abbrechen' : 'Cancel'}
+                  </button>
+                </div>
+                
+                {/* Camera Error Message */}
+                {paymentCameraError && (
+                  <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-4 text-center">
+                    <p className="text-red-400 text-sm">{paymentCameraError}</p>
+                  </div>
+                )}
+                
+                {/* Hidden scanner element for photo scanning */}
+                <div id="payment-photo-scanner" style={{ display: 'none' }}></div>
                       </p>
                       {/* GRÖSSERER SCANNER-BEREICH */}
                       <div id="payment-scanner" className="w-full h-80 rounded-lg overflow-hidden bg-black"></div>
