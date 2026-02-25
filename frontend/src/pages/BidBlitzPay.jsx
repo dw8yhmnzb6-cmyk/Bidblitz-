@@ -2607,6 +2607,46 @@ const BidBlitzPay = () => {
           </div>
         )}
 
+        {/* Spending Stats View */}
+        {view === 'stats' && (
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-lg p-6" data-testid="stats-view">
+            <SpendingStats 
+              language={language}
+              userId={user?.id}
+            />
+          </div>
+        )}
+
+        {/* Card Lock View */}
+        {view === 'cardlock' && (
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-lg p-6" data-testid="cardlock-view">
+            <CardLock 
+              language={language}
+              walletId={wallet?.id}
+              onStatusChange={(isLocked) => {
+                if (isLocked) {
+                  toast.warning(t('cardLocked') || 'Karte wurde gesperrt');
+                }
+              }}
+            />
+          </div>
+        )}
+
+        {/* Quick Top Up (Apple Pay / Google Pay) View */}
+        {view === 'quicktopup' && (
+          <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl shadow-lg p-6" data-testid="quicktopup-view">
+            <QuickTopUp 
+              language={language}
+              walletId={wallet?.id}
+              onSuccess={(amount) => {
+                fetchWallet();
+                fetchTransactions();
+                toast.success(`€${amount.toFixed(2)} aufgeladen!`);
+              }}
+            />
+          </div>
+        )}
+
         {/* Bonus / Deposit Offers View */}
         {view === 'bonus' && (
           <div data-testid="bonus-offers-view">
