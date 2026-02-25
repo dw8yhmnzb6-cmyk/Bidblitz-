@@ -37,6 +37,15 @@ export const walletTranslations = {
     hideBalance: 'Guthaben ausblenden',
     balanceHidden: 'Guthaben ausgeblendet',
     
+    // New Features
+    stats: 'Statistik',
+    cardLock: 'Karte sperren',
+    cardLocked: 'Karte gesperrt',
+    quickTopUp: 'Schnell aufladen',
+    spendingStats: 'Ausgaben-Übersicht',
+    lockCard: 'Karte sperren',
+    unlockCard: 'Karte entsperren',
+    
     // Transfer Balance (NEW)
     transferBalance: 'Guthaben übertragen',
     toBidBlitzPay: 'Auf BidBlitz Pay',
