@@ -117,7 +117,8 @@ async def check_eligibility(token: str):
     try:
         # Token validieren
         from jose import jwt
-        from config import SECRET_KEY
+        import os
+        SECRET_KEY = os.environ.get("SECRET_KEY", "your-secret-key-here")
         payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_id = payload.get("user_id")
         
@@ -138,9 +139,14 @@ async def check_eligibility(token: str):
                 {"months": 12, "interest": 5.9, "label": "12 Raten (5.9% Zinsen)"}
             ]
         }
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token abgelaufen")
+    except jwt.JWTError as e:
+        logger.error(f"JWT Error: {e}")
+        raise HTTPException(status_code=401, detail="Ungültiger Token")
     except Exception as e:
         logger.error(f"Eligibility check error: {e}")
-        raise HTTPException(status_code=401, detail="Authentifizierung fehlgeschlagen")
+        raise HTTPException(status_code=500, detail="Fehler bei der Berechtigungsprüfung")
 
 @router.post("/create-plan")
 async def create_installment_plan(request: InstallmentPlanRequest, token: str):
