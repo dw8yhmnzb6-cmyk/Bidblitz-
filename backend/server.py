@@ -805,7 +805,8 @@ async def bot_early_bidder():
                 # Skip if we bid recently (10-30 seconds interval for faster bidding)
                 last_bid = last_bid_time.get(auction_id, 0)
                 min_interval = random.uniform(10, 30)  # Schnelleres Intervall
-                if (now.timestamp() - last_bid) < min_interval:
+                time_since_last = now.timestamp() - last_bid
+                if time_since_last < min_interval:
                     continue
                 
                 # Check time remaining - skip if in last 10 minutes (bot_last_second_bidder handles that)
@@ -816,6 +817,9 @@ async def bot_early_bidder():
                         continue  # Let bot_last_second_bidder handle this
                 except:
                     pass
+                
+                # PLACE BID!
+                logger.info(f"🤖 Bot wird bieten auf: {auction.get('title', '?')[:25]} (€{current_price} -> €{current_price + bid_increment})")
                 
                 # Select a random bot
                 bot = random.choice(bots)
