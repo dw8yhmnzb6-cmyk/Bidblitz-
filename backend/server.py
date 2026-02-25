@@ -886,8 +886,8 @@ async def bot_early_bidder():
                 
                 logger.debug(f"🤖 Bot '{bot['name']}' bietet auf {auction.get('title', '?')[:25]}: €{new_price:.2f} / €{target_price:.2f}")
             
-            # Wait before next cycle (3-6 seconds for faster bidding)
-            await asyncio.sleep(random.uniform(3, 6))
+            # Wait before next cycle (1-3 seconds for fast bidding)
+            await asyncio.sleep(random.uniform(1, 3))
             
         except asyncio.CancelledError:
             break
