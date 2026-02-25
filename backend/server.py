@@ -796,6 +796,7 @@ async def bot_early_bidder():
             logger.info(f"🤖 Early Bidder prüft {len(active_auctions)} Auktionen mit {len(bots)} Bots")
             
             # Process each auction
+            bids_placed = 0
             for auction in active_auctions:
                 auction_id = auction.get("id")
                 # Support both current_price and current_bid fields
@@ -825,6 +826,10 @@ async def bot_early_bidder():
                         continue  # Let bot_last_second_bidder handle this
                 except:
                     pass
+                
+                # Only place 1-3 bids per cycle to spread activity
+                if bids_placed >= 3:
+                    break
                 
                 # PLACE BID!
                 logger.info(f"🤖 Bot wird bieten auf: {auction.get('title', '?')[:25]} (€{current_price} -> €{current_price + bid_increment})")
