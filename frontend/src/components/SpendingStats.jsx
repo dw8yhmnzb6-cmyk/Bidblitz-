@@ -135,7 +135,7 @@ export default function SpendingStats({ language = 'de', userId }) {
     try {
       const token = localStorage.getItem('token');
       const res = await fetch(
-        `${API}/api/wallet/spending-stats?month=${selectedMonth + 1}&year=${selectedYear}`,
+        `${API}/api/bidblitz-pay/spending-stats?month=${selectedMonth + 1}&year=${selectedYear}`,
         { headers: { 'Authorization': `Bearer ${token}` } }
       );
       
