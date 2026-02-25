@@ -1361,6 +1361,33 @@ const BidBlitzPay = () => {
             <Percent className="w-4 h-4 inline mr-1" />
             {t('cashback')}
           </button>
+          <button
+            onClick={() => setView('stats')}
+            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              view === 'stats' ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <PieChart className="w-4 h-4 inline mr-1" />
+            {t('stats') || 'Statistik'}
+          </button>
+          <button
+            onClick={() => setView('cardlock')}
+            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              view === 'cardlock' ? 'bg-gradient-to-r from-red-500 to-rose-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Lock className="w-4 h-4 inline mr-1" />
+            {t('cardLock') || 'Sperren'}
+          </button>
+          <button
+            onClick={() => setView('quicktopup')}
+            className={`flex-shrink-0 py-2 px-3 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+              view === 'quicktopup' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Zap className="w-4 h-4 inline mr-1" />
+            Apple Pay
+          </button>
         </div>
       </div>
 
