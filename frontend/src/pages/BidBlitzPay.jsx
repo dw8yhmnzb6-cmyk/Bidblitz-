@@ -61,6 +61,10 @@ const BidBlitzPay = () => {
   // Use global language from localStorage
   const [language, setLanguage] = useState(() => localStorage.getItem('language') || 'de');
   
+  // Payment notification states
+  const [paymentReceived, setPaymentReceived] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  
   // Add Contact Dialog states
   const [showAddContactDialog, setShowAddContactDialog] = useState(false);
   const [newContactId, setNewContactId] = useState('');
