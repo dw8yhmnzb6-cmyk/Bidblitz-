@@ -1020,8 +1020,8 @@ async def bot_last_second_bidder():
                     seconds_left = (end_time - now).total_seconds()
                     current_price = float(a.get("current_price", 0))
                     
-                    # Skip auctions that are more than 10 minutes away
-                    if seconds_left > 600:
+                    # Skip auctions that are more than 5 minutes away
+                    if seconds_left > 300:
                         continue
                     
                     # SUPER URGENT: < 15 seconds AND price < €25
