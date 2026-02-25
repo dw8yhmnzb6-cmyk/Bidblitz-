@@ -795,6 +795,9 @@ async def bot_early_bidder():
             
             logger.info(f"🤖 Early Bidder prüft {len(active_auctions)} Auktionen mit {len(bots)} Bots")
             
+            # Shuffle auctions so different ones get bids each cycle
+            random.shuffle(active_auctions)
+            
             # Process each auction
             bids_placed = 0
             for auction in active_auctions:
