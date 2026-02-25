@@ -2883,74 +2883,73 @@ export default function StaffPOS() {
               
               {/* Manuelle Eingabe Modal */}
               {showManualEntry && (
-                    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                      <div className="bg-slate-800 rounded-2xl w-full max-w-md p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                            <Scan className="w-5 h-5 text-amber-400" />
-                            {language === 'de' ? 'Kundennummer eingeben' : 'Enter Customer Number'}
-                          </h3>
-                          <button 
-                            onClick={() => {
-                              setShowManualEntry(false);
-                              setManualBarcode('');
-                            }}
-                            className="p-1 text-slate-400 hover:text-white"
-                          >
-                            <X className="w-5 h-5" />
-                          </button>
-                        </div>
-                        
-                        <input
-                          type="text"
-                          value={manualBarcode}
-                          onChange={(e) => setManualBarcode(e.target.value.toUpperCase())}
-                          placeholder={language === 'de' ? 'z.B. BID-123456' : 'e.g. BID-123456'}
-                          className="w-full px-4 py-4 bg-slate-900 border border-slate-600 rounded-xl text-white text-lg font-mono text-center focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                          autoFocus
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' && manualBarcode.length >= 3) {
-                              processTopupWithBarcode(manualBarcode);
-                              setShowManualEntry(false);
-                              setManualBarcode('');
-                            }
-                          }}
-                        />
-                        
-                        <p className="text-slate-500 text-sm text-center mt-2 mb-4">
-                          {language === 'de' ? 'Kundennummer von der Kundenkarte eingeben' : 'Enter customer number from customer card'}
-                        </p>
-                        
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() => {
-                              setShowManualEntry(false);
-                              setManualBarcode('');
-                            }}
-                            className="flex-1 py-3 border border-slate-600 text-slate-400 rounded-xl font-medium hover:bg-slate-700"
-                          >
-                            {language === 'de' ? 'Abbrechen' : 'Cancel'}
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (manualBarcode.length >= 3) {
-                                processTopupWithBarcode(manualBarcode);
-                                setShowManualEntry(false);
-                                setManualBarcode('');
-                              } else {
-                                toast.error(language === 'de' ? 'Bitte Kundennummer eingeben' : 'Please enter customer number');
-                              }
-                            }}
-                            disabled={manualBarcode.length < 3}
-                            className="flex-1 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-bold hover:shadow-lg disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500"
-                          >
-                            {language === 'de' ? 'Suchen' : 'Search'}
-                          </button>
-                        </div>
-                      </div>
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                  <div className="bg-slate-800 rounded-2xl w-full max-w-md p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <Scan className="w-5 h-5 text-amber-400" />
+                        {language === 'de' ? 'Kundennummer eingeben' : 'Enter Customer Number'}
+                      </h3>
+                      <button 
+                        onClick={() => {
+                          setShowManualEntry(false);
+                          setManualBarcode('');
+                        }}
+                        className="p-1 text-slate-400 hover:text-white"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
                     </div>
-                  )}
+                    
+                    <input
+                      type="text"
+                      value={manualBarcode}
+                      onChange={(e) => setManualBarcode(e.target.value.toUpperCase())}
+                      placeholder={language === 'de' ? 'z.B. BID-123456' : 'e.g. BID-123456'}
+                      className="w-full px-4 py-4 bg-slate-900 border border-slate-600 rounded-xl text-white text-lg font-mono text-center focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && manualBarcode.length >= 3) {
+                          processTopupWithBarcode(manualBarcode);
+                          setShowManualEntry(false);
+                          setManualBarcode('');
+                        }
+                      }}
+                    />
+                    
+                    <p className="text-slate-500 text-sm text-center mt-2 mb-4">
+                      {language === 'de' ? 'Kundennummer von der Kundenkarte eingeben' : 'Enter customer number from customer card'}
+                    </p>
+                    
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          setShowManualEntry(false);
+                          setManualBarcode('');
+                        }}
+                        className="flex-1 py-3 border border-slate-600 text-slate-400 rounded-xl font-medium hover:bg-slate-700"
+                      >
+                        {language === 'de' ? 'Abbrechen' : 'Cancel'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (manualBarcode.length >= 3) {
+                            processTopupWithBarcode(manualBarcode);
+                            setShowManualEntry(false);
+                            setManualBarcode('');
+                          } else {
+                            toast.error(language === 'de' ? 'Bitte Kundennummer eingeben' : 'Please enter customer number');
+                          }
+                        }}
+                        disabled={manualBarcode.length < 3}
+                        className="flex-1 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-bold hover:shadow-lg disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500"
+                      >
+                        {language === 'de' ? 'Suchen' : 'Search'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
+              )}
             </div>
             
             {/* Stammkunden / Regular Customers */}
