@@ -140,6 +140,7 @@ import RestaurantPortal from "./pages/RestaurantPortal";
 import PartnerPortal from "./pages/PartnerPortal";
 import DiscoverRestaurants from "./pages/DiscoverRestaurants";
 import LoyaltyDashboard from "./pages/LoyaltyDashboard";
+import CustomerLoyaltyDashboard from "./pages/CustomerLoyaltyDashboard";
 import RestaurantDetail from "./pages/RestaurantDetail";
 import WriteReview from "./pages/WriteReview";
 import BidBlitzPay from "./pages/BidBlitzPay";
