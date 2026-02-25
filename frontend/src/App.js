@@ -1017,6 +1017,18 @@ function AppContent() {
             </ProtectedRoute>
           } />
           
+          {/* Ratenzahlung - Meine Pläne */}
+          <Route path="/meine-ratenzahlungen" element={
+            <ProtectedRoute>
+              <MyInstallments />
+            </ProtectedRoute>
+          } />
+          <Route path="/my-installments" element={
+            <ProtectedRoute>
+              <MyInstallments />
+            </ProtectedRoute>
+          } />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
