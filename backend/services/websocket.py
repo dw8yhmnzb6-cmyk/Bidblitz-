@@ -72,6 +72,62 @@ class ConnectionManager:
         if auction_id:
             return len(self.auction_connections.get(auction_id, set()))
         return sum(len(conns) for conns in self.auction_connections.values())
+    
+    # ==================== USER PAYMENT CONNECTIONS ====================
+    
+    async def connect_user(self, websocket: WebSocket, user_id: str):
+        """Connect a user for payment notifications"""
+        await websocket.accept()
+        
+        if user_id not in self.user_connections:
+            self.user_connections[user_id] = set()
+        
+        self.user_connections[user_id].add(websocket)
+        self.connection_info[websocket] = {
+            "type": "payment",
+            "user_id": user_id,
+            "connected_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+        logger.info(f"User {user_id} connected for payment notifications. Total: {len(self.user_connections[user_id])}")
+    
+    def disconnect_user(self, websocket: WebSocket):
+        """Disconnect a user from payment notifications"""
+        info = self.connection_info.get(websocket, {})
+        user_id = info.get("user_id")
+        
+        if user_id and user_id in self.user_connections:
+            self.user_connections[user_id].discard(websocket)
+            if not self.user_connections[user_id]:
+                del self.user_connections[user_id]
+        
+        if websocket in self.connection_info:
+            del self.connection_info[websocket]
+        
+        logger.info(f"User {user_id} disconnected from payment notifications")
+    
+    async def send_to_user(self, user_id: str, message: Dict) -> bool:
+        """Send a message to a specific user"""
+        if user_id not in self.user_connections:
+            logger.info(f"No active connections for user {user_id}")
+            return False
+        
+        sent = False
+        disconnected = set()
+        
+        for websocket in self.user_connections[user_id]:
+            try:
+                await websocket.send_json(message)
+                sent = True
+                logger.info(f"Sent payment notification to user {user_id}")
+            except Exception as e:
+                logger.error(f"Failed to send to user {user_id}: {e}")
+                disconnected.add(websocket)
+        
+        for ws in disconnected:
+            self.disconnect_user(ws)
+        
+        return sent
 
 # Global WebSocket manager instance
 ws_manager = ConnectionManager()
