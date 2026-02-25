@@ -1598,6 +1598,10 @@ export default function StaffPOS() {
         setPaymentAmount('');
         setPaymentScanMode(false);
         setPaymentBarcode('');
+        
+        // AUTO-CLOSE Scanner nach erfolgreicher Zahlung
+        stopPaymentCamera();
+        
         fetchTransactionHistory();
       } else {
         const error = await res.json();
