@@ -811,9 +811,9 @@ async def bot_early_bidder():
                         logger.info(f"✅ Auktion {auction.get('title', auction_id)[:30]} hat Zielpreis €{target_price:.2f} erreicht (aktuell: €{current_price:.2f})")
                     continue
                 
-                # Skip if we bid recently (10-30 seconds interval for faster bidding)
+                # Skip if we bid recently (3-8 seconds for faster initial bidding)
                 last_bid = last_bid_time.get(auction_id, 0)
-                min_interval = random.uniform(8, 20)  # Schnelleres Intervall
+                min_interval = random.uniform(3, 8)  # Schnelleres Intervall für initiale Gebote
                 time_since_last = now.timestamp() - last_bid
                 if last_bid > 0 and time_since_last < min_interval:
                     continue  # Skip only if we actually bid before
@@ -822,24 +822,27 @@ async def bot_early_bidder():
                 try:
                     end_time = datetime.fromisoformat(auction["end_time"].replace("Z", "+00:00"))
                     seconds_left = (end_time - now).total_seconds()
-                    if seconds_left < 300:  # < 5 minutes (reduced from 10)
+                    if seconds_left < 300:  # < 5 minutes
                         logger.debug(f"⏩ Auktion {auction.get('title', '?')[:20]} übersprungen - endet in {seconds_left:.0f}s")
                         continue  # Let bot_last_second_bidder handle this
                 except Exception as e:
                     logger.warning(f"Zeit-Parse Fehler: {e}")
                 
-                # Only place 1-3 bids per cycle to spread activity
-                if bids_placed >= 3:
+                # Only place 3-5 bids per cycle to spread activity
+                if bids_placed >= 5:
                     logger.debug(f"🛑 Max Gebote erreicht ({bids_placed})")
                     break
                 
-                # PLACE BID!
-                logger.info(f"🤖 Bot wird bieten auf: {auction.get('title', '?')[:25]} (€{current_price} -> €{current_price + bid_increment})")
-                bids_placed += 1
+                # Calculate bid increment - BIGGER steps to reach €2-5 faster!
+                # Use €0.05-0.25 steps instead of €0.01
+                if current_price < 0.50:
+                    bid_step = random.uniform(0.05, 0.15)  # Kleine Schritte am Anfang
+                elif current_price < 2.00:
+                    bid_step = random.uniform(0.10, 0.25)  # Mittlere Schritte
+                else:
+                    bid_step = random.uniform(0.15, 0.35)  # Größere Schritte nahe Target
                 
-                # Select a random bot
-                bot = random.choice(bots)
-                new_price = round(current_price + bid_increment, 2)
+                new_price = round(current_price + bid_step, 2)
                 
                 # Don't exceed target
                 if new_price > target_price:
