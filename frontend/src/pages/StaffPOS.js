@@ -3376,10 +3376,10 @@ export default function StaffPOS() {
                   <div className="relative">
                     <div className="bg-slate-900 rounded-xl p-2">
                       <p className="text-green-400 text-sm text-center mb-2 animate-pulse">
-                        📷 {language === 'de' ? 'Halten Sie den Barcode vor die Kamera...' : 'Hold barcode in front of camera...'}
+                        📷 {language === 'de' ? 'Halten Sie den QR-Code/Barcode vor die Kamera...' : 'Hold QR code/barcode in front of camera...'}
                       </p>
                       {/* GRÖSSERER SCANNER-BEREICH */}
-                      <div id="payment-scanner" className="w-full h-72 rounded-lg overflow-hidden bg-black"></div>
+                      <div id="payment-scanner" className="w-full h-80 rounded-lg overflow-hidden bg-black"></div>
                       
                       {/* Manuelle Eingabe als Alternative */}
                       <div className="mt-3 flex gap-2">
@@ -3393,7 +3393,7 @@ export default function StaffPOS() {
                               processPayment(paymentBarcode.trim());
                             }
                           }}
-                          placeholder={language === 'de' ? 'Barcode manuell eingeben...' : 'Enter barcode manually...'}
+                          placeholder={language === 'de' ? 'Code manuell eingeben...' : 'Enter code manually...'}
                           className="flex-1 px-3 py-2 bg-slate-800 border border-slate-600 rounded-lg text-white text-center font-mono text-sm"
                         />
                         <button
@@ -3405,7 +3405,7 @@ export default function StaffPOS() {
                         </button>
                       </div>
                       
-                      {/* Foto-Button nur als kleine Alternative */}
+                      {/* Hidden file input for photo fallback (kept for error cases) */}
                       <input
                         ref={paymentFileInputRef}
                         type="file"
@@ -3415,12 +3415,6 @@ export default function StaffPOS() {
                         className="hidden"
                         id="payment-photo-input-main"
                       />
-                      <label
-                        htmlFor="payment-photo-input-main"
-                        className="block mt-2 py-2 text-center text-slate-400 text-xs underline cursor-pointer hover:text-slate-300"
-                      >
-                        {language === 'de' ? '📸 Foto stattdessen aufnehmen' : '📸 Take photo instead'}
-                      </label>
                     </div>
                     <button
                       onClick={() => {
