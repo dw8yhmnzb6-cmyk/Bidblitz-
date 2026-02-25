@@ -650,6 +650,26 @@ async def websocket_auction_legacy(websocket: WebSocket, auction_id: str):
 async def websocket_all_auctions_legacy(websocket: WebSocket):
     await websocket_all_auctions(websocket)
 
+# ==================== PAYMENT NOTIFICATION WEBSOCKET ====================
+
+@app.websocket("/api/ws/payments/{user_id}")
+async def websocket_payment_notifications(websocket: WebSocket, user_id: str):
+    """
+    WebSocket endpoint for real-time payment notifications.
+    Customer connects with their user_id to receive instant payment confirmations.
+    """
+    await ws_manager.connect_user(websocket, user_id)
+    try:
+        while True:
+            # Keep connection alive
+            data = await websocket.receive_text()
+            # Could handle ping/pong or other client messages
+    except WebSocketDisconnect:
+        ws_manager.disconnect_user(websocket)
+    except Exception as e:
+        logger.error(f"Payment WebSocket error for user {user_id}: {e}")
+        ws_manager.disconnect_user(websocket)
+
 # ==================== BOT BACKGROUND TASK ====================
 
 # ==================== ABANDONED CART REMINDER TASK ====================
