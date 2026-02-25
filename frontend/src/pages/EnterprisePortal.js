@@ -2504,19 +2504,64 @@ function ApiKeyForm({ t, branches, onSubmit, onCancel }) {
   );
 }
 
-function UserForm({ t, branches, onSubmit, onCancel }) {
+function UserForm({ t, branches, onSubmit, onCancel, companyPrefix }) {
   const [form, setForm] = useState({ name: '', email: '', password: '', role: '', branch_id: '' });
+  const [generatedNumber, setGeneratedNumber] = useState('');
+  
+  // Generate staff number when name changes
+  useEffect(() => {
+    if (form.name && form.name.length >= 2) {
+      const prefix = companyPrefix || 'MA';
+      const random = Math.floor(1000 + Math.random() * 9000);
+      setGeneratedNumber(`${prefix}-${random}`);
+    }
+  }, [form.name, companyPrefix]);
   
   // Tax advisor and admin don't need branch selection
   const needsBranch = form.role && form.role !== 'admin' && form.role !== 'tax_advisor';
   
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (needsBranch && !form.branch_id) {
+      toast.error(t.selectBranch);
+      return;
+    }
+    // Include generated staff number
+    onSubmit({ ...form, staff_number: generatedNumber });
+  };
+  
   return (
-    <form onSubmit={(e) => { e.preventDefault(); if (needsBranch && !form.branch_id) { toast.error(t.selectBranch); return; } onSubmit(form); }} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">{t.staffName || 'Name'} *</label>
         <input type="text" placeholder={t.staffName || 'Name'} value={form.name} onChange={(e) => setForm({...form, name: e.target.value})}
           className={inputStyles} required />
       </div>
+      
+      {/* Auto-generated Staff Number */}
+      {generatedNumber && (
+        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-emerald-600 font-medium">Mitarbeiternummer (auto-generiert)</p>
+              <p className="text-lg font-bold text-emerald-700 font-mono">{generatedNumber}</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                const prefix = companyPrefix || 'MA';
+                const random = Math.floor(1000 + Math.random() * 9000);
+                setGeneratedNumber(`${prefix}-${random}`);
+              }}
+              className="p-2 text-emerald-600 hover:bg-emerald-100 rounded-lg"
+              title="Neue Nummer generieren"
+            >
+              <RefreshCw className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+      
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">{t.email} *</label>
         <input type="email" placeholder={t.email} value={form.email} onChange={(e) => setForm({...form, email: e.target.value})}
