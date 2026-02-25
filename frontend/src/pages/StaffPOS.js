@@ -1796,7 +1796,7 @@ export default function StaffPOS() {
             } 
           });
           stream.getTracks().forEach(track => track.stop());
-          await new Promise(resolve => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 300));
         } catch (permErr) {
           console.error('iOS camera permission error:', permErr);
           setTopupCameraError(language === 'de' 
@@ -1823,21 +1823,19 @@ export default function StaffPOS() {
           6,  // DATA_MATRIX
           8,  // PDF_417
         ],
-        verbose: false
+        verbose: false,
+        // Experimentelle Features für bessere iOS Unterstützung
+        experimentalFeatures: {
+          useBarCodeDetectorIfSupported: true
+        }
       });
       topupScannerRef.current = scanner;
       
-      // Optimierte Einstellungen für Barcode-Scanning
+      // OPTIMIERTE Einstellungen für iOS Safari
       const config = {
-        fps: 15,  // Höhere FPS für bessere Barcode-Erkennung
-        qrbox: isIOS 
-          ? { width: 280, height: 150 }  // Breiter für Barcodes auf iOS
-          : { width: 350, height: 180 }, // Desktop/Android
-        videoConstraints: {
-          width: { ideal: 1920 },
-          height: { ideal: 1080 },
-          facingMode: "environment"
-        }
+        fps: 30,  // Höhere FPS für bessere Erkennung
+        qrbox: { width: 250, height: 250 },  // Quadratische Box
+        aspectRatio: 1.777778,  // 16:9 Seitenverhältnis
       };
       
       await scanner.start(
@@ -1861,8 +1859,8 @@ export default function StaffPOS() {
     } catch (err) {
       console.error('Topup Camera error:', err);
       setTopupCameraError(language === 'de' 
-        ? 'Kamera konnte nicht gestartet werden. Bitte verwenden Sie "Foto aufnehmen" oder geben Sie den Barcode manuell ein.' 
-        : 'Camera could not be started. Please use "Take Photo" or enter barcode manually.');
+        ? 'Kamera konnte nicht gestartet werden. Bitte nutzen Sie die Foto-Funktion oder geben Sie den Code manuell ein.' 
+        : 'Camera could not be started. Please use the photo function or enter the code manually.');
       setTopupCameraActive(false);
     }
   };
