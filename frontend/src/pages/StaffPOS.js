@@ -2605,20 +2605,15 @@ export default function StaffPOS() {
               )}
             </div>
             
-            {/* Hardware Scanner Toggle */}
-            <button
-              onClick={() => setHardwareScannerMode(!hardwareScannerMode)}
-              className={`p-1.5 sm:p-2 rounded-lg transition-colors flex items-center gap-0.5 sm:gap-1 ${
-                hardwareScannerMode 
-                  ? 'bg-green-500 text-white animate-pulse' 
-                  : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
-              }`}
-              title={hardwareScannerMode ? (t.hardwareScannerActive || 'Scanner aktiv') : (t.hardwareScanner || 'Hardware-Scanner')}
+            {/* Hardware Scanner Status - Always Active */}
+            <div
+              className="p-1.5 sm:p-2 rounded-lg bg-green-500 text-white flex items-center gap-0.5 sm:gap-1"
+              title={t.hardwareScannerActive || 'Scanner aktiv'}
               data-testid="hardware-scanner-btn"
             >
               <Scan className="w-4 h-4 sm:w-5 sm:h-5" />
-              {hardwareScannerMode && <span className="text-[10px] sm:text-xs font-bold">ON</span>}
-            </button>
+              <span className="text-[10px] sm:text-xs font-bold">ON</span>
+            </div>
             
             <button
               onClick={() => setShowHistory(true)}
