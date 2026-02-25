@@ -1344,6 +1344,15 @@ export default function Auctions() {
     { id: 'vip', label: t('auctionPage.filters.vip') || 'VIP', count: auctionCounts.vip, color: 'from-yellow-400 to-amber-500', icon: '⭐' }
   ];
   
+  // Category filter buttons - separate row
+  const categoryFilters = [
+    { id: 'elektronik', label: 'Elektronik', count: auctionCounts.elektronik, color: 'from-blue-500 to-blue-600', icon: '📱' },
+    { id: 'mode', label: 'Mode', count: auctionCounts.mode, color: 'from-pink-500 to-rose-500', icon: '👜' },
+    { id: 'haus', label: 'Haus & Garten', count: auctionCounts.haus, color: 'from-green-600 to-teal-600', icon: '🏠' },
+    { id: 'sport', label: 'Sport', count: auctionCounts.sport, color: 'from-red-500 to-orange-500', icon: '⚽' },
+    { id: 'kunst', label: 'Sammler', count: auctionCounts.kunst, color: 'from-purple-600 to-indigo-600', icon: '🎨' }
+  ];
+  
   // Show skeleton loading instead of full page spinner
   if (loading) {
     return (
