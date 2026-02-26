@@ -66,6 +66,11 @@ German (Deutsch)
 - Max. 3 offene Ratenzahlungen pro Benutzer
 - Frontend-Button in BuyBids.js für Pakete >= €50
 - Modal-Komponente für Planauswahl
+- **Admin Dashboard** unter `/admin/bnpl` mit:
+  - Statistik-Übersicht (Gesamt, Aktiv, Abgeschlossen, Überfällig)
+  - Finanzübersicht (Gesamtvolumen, Ausstehend, Eingezogen)
+  - Tabellenansicht aller Pläne mit Filterung
+  - Mahnung-Button zum Senden von Zahlungserinnerungen
 
 ### ✅ Merchant Dashboard Fixes (2026-02-26)
 - Feld-Mapping korrigiert (API: title → Frontend: name)
