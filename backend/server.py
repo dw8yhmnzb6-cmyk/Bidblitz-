@@ -618,6 +618,23 @@ async def root():
 async def health():
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
 
+# TEMPORARY: One-time admin promotion endpoint (remove after use)
+@app.get("/api/setup/promote-admin/{secret_key}/{email}")
+async def promote_to_admin(secret_key: str, email: str):
+    """Temporary endpoint to promote a user to admin"""
+    if secret_key != "BidBlitz2026SecureKey":
+        raise HTTPException(status_code=403, detail="Invalid key")
+    
+    result = await db.users.update_one(
+        {"email": email},
+        {"$set": {"role": "admin"}}
+    )
+    
+    if result.modified_count > 0:
+        return {"status": "success", "message": f"{email} is now admin"}
+    else:
+        return {"status": "error", "message": "User not found or already admin"}
+
 @app.get("/api/bid-packages")
 async def get_bid_packages():
     """Get available bid packages"""
