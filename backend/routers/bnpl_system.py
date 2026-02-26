@@ -584,6 +584,8 @@ async def admin_send_payment_reminder(plan_id: str, token: str):
     try:
         from jose import jwt
         from config import JWT_SECRET, JWT_ALGORITHM
+        from utils.email import send_email
+        
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         user_id = payload.get("user_id")
         
@@ -599,8 +601,69 @@ async def admin_send_payment_reminder(plan_id: str, token: str):
         if not plan_user:
             raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
         
-        # Log the reminder (in production, send email here)
-        logger.info(f"Payment reminder sent to {plan_user.get('email')} for plan {plan_id}")
+        # Format the due date
+        next_due = plan.get("next_due_date", "")
+        try:
+            due_date = datetime.fromisoformat(next_due.replace("Z", "+00:00"))
+            formatted_due = due_date.strftime("%d.%m.%Y")
+        except:
+            formatted_due = next_due[:10] if next_due else "Demnächst"
+        
+        # Send email notification
+        email_subject = "BidBlitz - Zahlungserinnerung für Ihren Ratenzahlungsplan"
+        email_html = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #10B981, #06B6D4); padding: 20px; border-radius: 10px 10px 0 0;">
+                <h1 style="color: white; margin: 0; font-size: 24px;">⏰ Zahlungserinnerung</h1>
+            </div>
+            <div style="background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px;">
+                <p style="color: #374151; font-size: 16px;">Hallo {plan_user.get('name', 'Kunde')},</p>
+                
+                <p style="color: #374151; font-size: 16px;">
+                    Wir möchten Sie daran erinnern, dass eine Rate für Ihren Ratenzahlungsplan fällig ist.
+                </p>
+                
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="color: #6b7280; padding: 8px 0;">Fälligkeitsdatum:</td>
+                            <td style="color: #111827; font-weight: bold; text-align: right;">{formatted_due}</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #6b7280; padding: 8px 0;">Monatliche Rate:</td>
+                            <td style="color: #10B981; font-weight: bold; text-align: right;">€{plan.get('monthly_payment', 0):.2f}</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #6b7280; padding: 8px 0;">Ausstehender Betrag:</td>
+                            <td style="color: #f59e0b; font-weight: bold; text-align: right;">€{plan.get('remaining_amount', 0):.2f}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <p style="color: #374151; font-size: 16px;">
+                    Bitte begleichen Sie die fällige Rate, um Ihren Ratenzahlungsplan aktiv zu halten.
+                </p>
+                
+                <a href="https://bidblitz.ae/meine-ratenzahlungen" 
+                   style="display: inline-block; background: linear-gradient(135deg, #10B981, #06B6D4); color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0;">
+                    Jetzt bezahlen
+                </a>
+                
+                <p style="color: #9ca3af; font-size: 14px; margin-top: 30px;">
+                    Bei Fragen kontaktieren Sie uns unter support@bidblitz.ae
+                </p>
+            </div>
+        </div>
+        """
+        
+        # Send the email
+        email_sent = await send_email(
+            to_email=plan_user.get('email'),
+            subject=email_subject,
+            html_content=email_html
+        )
+        
+        logger.info(f"Payment reminder sent to {plan_user.get('email')} for plan {plan_id}, success: {email_sent}")
         
         # Update plan with reminder timestamp
         await db.installment_plans.update_one(
