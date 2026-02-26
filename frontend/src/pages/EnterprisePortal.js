@@ -1267,6 +1267,29 @@ export default function EnterprisePortal() {
     } catch (err) { console.error(err); }
   }, [token, reportPeriod, selectedBranch, dateFilterActive, customDateFrom, customDateTo]);
 
+  // Fetch Peak Hours Analysis
+  const fetchPeakHours = useCallback(async () => {
+    if (!token) return;
+    setLoadingPeakHours(true);
+    try {
+      let url = `${API_URL}/api/enterprise/reports/peak-hours?period=${reportPeriod}`;
+      if (selectedBranch) {
+        url += `&branch_id=${selectedBranch}`;
+      }
+      if (dateFilterActive && customDateFrom && customDateTo) {
+        url += `&date_from=${customDateFrom}&date_to=${customDateTo}`;
+      }
+      const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPeakHoursData(data);
+      }
+    } catch (err) { console.error(err); }
+    setLoadingPeakHours(false);
+  }, [token, reportPeriod, selectedBranch, dateFilterActive, customDateFrom, customDateTo]);
+
   useEffect(() => {
     fetchEnterprise();
   }, [fetchEnterprise]);
