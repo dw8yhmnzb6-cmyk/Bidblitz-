@@ -111,6 +111,13 @@ const enterpriseTranslations = {
     thisMonth: 'Dieser Monat',
     filterActive: 'Filter aktiv',
     selectDates: 'Bitte wählen Sie Von- und Bis-Datum',
+    // Peak hours translations
+    peakHours: 'Stoßzeiten-Analyse',
+    busiestHour: 'Stärkste Uhrzeit',
+    busiestDay: 'Stärkster Tag',
+    hourlyDistribution: 'Verteilung nach Uhrzeit',
+    weeklyDistribution: 'Verteilung nach Wochentag',
+    busyPeriods: 'Stoßzeiten - Mehr Personal empfohlen',
     // Commission settings for enterprises
     commissionSettings: 'Provisionseinstellungen',
     voucherCommission: 'Gutschein-Provision',
