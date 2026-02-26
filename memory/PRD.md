@@ -79,9 +79,14 @@ German (Deutsch)
 - Produkte zeigen jetzt: Titel, Bild, Preis, Status
 - Coupons zeigen jetzt: Code, Rabatt, Status, Verwendung
 
-### ✅ Daily Login Popup Dev-Mode (2026-02-26)
-- Popup kann für Tests deaktiviert werden via:
-  `localStorage.setItem('disableDailyLoginPopup', 'true')`
+### ✅ Enterprise Portal Filter Update (2026-02-26)
+- **Datums-/Filialfilter** für Dashboard und Reports hinzugefügt:
+  - Schnellauswahl: Heute, Woche, Monat, Jahr
+  - Benutzerdefinierter Zeitraum mit Von-/Bis-Datumsauswahl
+  - Schnellauswahl-Presets: Gestern, Letzte 7 Tage, Letzte 30 Tage, Dieser Monat
+  - Filialfilter-Dropdown zum Filtern nach spezifischer Filiale
+  - Backend-APIs unterstützen `date_from` und `date_to` Parameter
+- **Test-Account:** edeka@test.de / Test123!
 
 ### ✅ Merchant & Loyalty Features (2026-02-25)
 **Backend APIs vollständig implementiert und getestet:**
