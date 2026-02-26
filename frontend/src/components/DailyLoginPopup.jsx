@@ -100,6 +100,14 @@ const DailyLoginPopup = ({ language = 'de', token, isAuthenticated, onClose, onR
         return;
       }
 
+      // DEV MODE: Disable popup completely for testing (set in localStorage)
+      // To disable: localStorage.setItem('disableDailyLoginPopup', 'true')
+      // To re-enable: localStorage.removeItem('disableDailyLoginPopup')
+      if (localStorage.getItem('disableDailyLoginPopup') === 'true') {
+        setLoading(false);
+        return;
+      }
+
       // Check if popup was already shown today
       const lastShown = localStorage.getItem('dailyLoginPopupLastShown');
       const today = new Date().toDateString();
