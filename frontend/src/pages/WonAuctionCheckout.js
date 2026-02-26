@@ -363,6 +363,20 @@ export default function WonAuctionCheckout() {
                 </span>
               )}
             </Button>
+            
+            {/* BNPL Option - Ratenzahlung */}
+            {!isBidVoucher && wonAuction.final_price >= 50 && (
+              <Button
+                onClick={() => setShowBNPLModal(true)}
+                variant="outline"
+                className="w-full mt-3 py-3 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10"
+                data-testid="bnpl-button"
+              >
+                <Calendar className="w-5 h-5 mr-2" />
+                {language === 'de' ? 'In Raten zahlen (3-12 Monate)' : 'Pay in Installments (3-12 months)'}
+              </Button>
+            )}
+            </Button>
           </>
         )}
         
