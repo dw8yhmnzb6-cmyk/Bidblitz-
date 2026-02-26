@@ -275,6 +275,33 @@ export default function Login() {
                     </button>
                   </div>
                 </div>
+                
+                {/* Remember Me Checkbox */}
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500"
+                      data-testid="remember-me-checkbox"
+                    />
+                    <span className="text-sm text-gray-600">
+                      {language === 'de' ? 'Angemeldet bleiben' : 
+                       language === 'sq' ? 'Mbaj mend' : 
+                       language === 'tr' ? 'Beni hatırla' : 
+                       language === 'fr' ? 'Se souvenir de moi' : 
+                       'Remember me'}
+                    </span>
+                  </label>
+                  <Link to="/forgot-password" className="text-sm text-amber-600 hover:text-amber-700">
+                    {language === 'de' ? 'Passwort vergessen?' : 
+                     language === 'sq' ? 'Keni harruar fjalëkalimin?' : 
+                     language === 'tr' ? 'Şifremi unuttum?' : 
+                     language === 'fr' ? 'Mot de passe oublié ?' : 
+                     'Forgot password?'}
+                  </Link>
+                </div>
               </>
             ) : (
               <div className="space-y-4">
