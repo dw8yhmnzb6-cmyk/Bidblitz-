@@ -1090,12 +1090,15 @@ export default function WholesaleDashboard() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {merchantProducts.map(product => (
                   <div key={product.id} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
-                    {product.image_url && (
-                      <img src={product.image_url} alt={product.name} className="w-full h-32 object-cover rounded-lg mb-3" />
+                    {(product.image || product.image_url) && (
+                      <img src={product.image || product.image_url} alt={product.title || product.name} className="w-full h-32 object-cover rounded-lg mb-3" />
                     )}
-                    <h4 className="text-white font-medium">{product.name}</h4>
+                    <h4 className="text-white font-medium">{product.title || product.name}</h4>
                     <p className="text-slate-400 text-sm mt-1">{product.category}</p>
-                    <p className="text-cyan-400 font-bold mt-2">€{product.retail_price?.toFixed(2)}</p>
+                    <p className="text-cyan-400 font-bold mt-2">€{(product.market_value || product.retail_price)?.toFixed(2)}</p>
+                    <span className={`inline-block mt-2 px-2 py-1 rounded text-xs ${product.status === 'approved' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                      {product.status === 'approved' ? 'Genehmigt' : product.status === 'pending_approval' ? 'Ausstehend' : product.status}
+                    </span>
                     <div className="flex gap-2 mt-3">
                       <Button
                         size="sm"
@@ -1222,20 +1225,24 @@ export default function WholesaleDashboard() {
                   <div key={coupon.id} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
                     <div className="flex justify-between items-start mb-3">
                       <code className="text-cyan-400 font-bold text-lg">{coupon.code}</code>
-                      <span className={`px-2 py-1 rounded text-xs ${coupon.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
-                        {coupon.is_active ? 'Aktiv' : 'Inaktiv'}
+                      <span className={`px-2 py-1 rounded text-xs ${(coupon.active !== false && coupon.is_active !== false) ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+                        {(coupon.active !== false && coupon.is_active !== false) ? 'Aktiv' : 'Inaktiv'}
                       </span>
                     </div>
                     <p className="text-white font-medium">
-                      {coupon.discount_type === 'percent' 
-                        ? `${coupon.discount_value}% Rabatt` 
-                        : `€${coupon.discount_value?.toFixed(2)} Rabatt`}
+                      {coupon.discount_percent 
+                        ? `${coupon.discount_percent}% Rabatt` 
+                        : coupon.discount_amount 
+                          ? `€${coupon.discount_amount?.toFixed(2)} Rabatt`
+                          : coupon.discount_type === 'percent'
+                            ? `${coupon.discount_value}% Rabatt`
+                            : `€${coupon.discount_value?.toFixed(2)} Rabatt`}
                     </p>
                     {coupon.min_purchase > 0 && (
                       <p className="text-slate-400 text-sm">Ab €{coupon.min_purchase?.toFixed(2)}</p>
                     )}
                     <p className="text-slate-500 text-sm mt-2">
-                      Verwendet: {coupon.times_used || 0}{coupon.max_uses ? `/${coupon.max_uses}` : ''}
+                      Verwendet: {coupon.used_count || coupon.times_used || 0}{coupon.max_uses ? `/${coupon.max_uses}` : ''}
                     </p>
                     <div className="flex gap-2 mt-3">
                       <Button
