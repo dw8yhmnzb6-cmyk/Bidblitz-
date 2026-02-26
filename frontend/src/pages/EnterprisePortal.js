@@ -1147,6 +1147,10 @@ export default function EnterprisePortal() {
   const [customDateFrom, setCustomDateFrom] = useState('');
   const [customDateTo, setCustomDateTo] = useState('');
   const [dateFilterActive, setDateFilterActive] = useState(false);
+  
+  // Peak hours analysis
+  const [peakHoursData, setPeakHoursData] = useState(null);
+  const [loadingPeakHours, setLoadingPeakHours] = useState(false);
 
   // Change language
   const changeLanguage = (code) => {
