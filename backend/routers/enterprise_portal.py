@@ -167,11 +167,21 @@ async def register_enterprise(data: EnterpriseCreate):
 async def login_enterprise(data: EnterpriseLogin):
     """Login to enterprise portal (supports both admin and staff accounts)."""
     
+    logger.info(f"Enterprise login attempt for: {data.email}")
+    
     # First, try to find enterprise admin account
     enterprise = await db.enterprise_accounts.find_one(
         {"email": data.email.lower()},
         {"_id": 0}
     )
+    
+    if enterprise:
+        logger.info(f"Found enterprise: {enterprise.get('company_name')}, status: {enterprise.get('status')}")
+        stored_hash = enterprise.get("password")
+        input_hash = hash_password(data.password)
+        logger.info(f"Hash match: {stored_hash == input_hash}")
+    else:
+        logger.info("No enterprise found for email")
     
     if enterprise and enterprise["password"] == hash_password(data.password):
         # Enterprise admin login
