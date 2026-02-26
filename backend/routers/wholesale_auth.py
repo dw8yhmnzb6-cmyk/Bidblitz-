@@ -474,7 +474,7 @@ async def create_wholesale_checkout(
     await db.wholesale_orders.insert_one(order_doc)
     
     # Create Stripe checkout session
-    FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://blitz-deploy.preview.emergentagent.com")
+    FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://bidblitz.ae")
     
     try:
         session = stripe.checkout.Session.create(
