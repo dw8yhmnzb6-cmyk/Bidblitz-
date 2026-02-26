@@ -65,12 +65,14 @@ German (Deutsch)
 - Kreditlimit berechnet aus: Basis (€100) + Kaufhistorie-Bonus + VIP-Multiplikator
 - Max. 3 offene Ratenzahlungen pro Benutzer
 - Frontend-Button in BuyBids.js für Pakete >= €50
+- **Frontend-Button in WonAuctionCheckout.js** für gewonnene Auktionen >= €50
 - Modal-Komponente für Planauswahl
 - **Admin Dashboard** unter `/admin/bnpl` mit:
   - Statistik-Übersicht (Gesamt, Aktiv, Abgeschlossen, Überfällig)
   - Finanzübersicht (Gesamtvolumen, Ausstehend, Eingezogen)
   - Tabellenansicht aller Pläne mit Filterung
-  - Mahnung-Button zum Senden von Zahlungserinnerungen
+  - **Mahnung-Button mit E-Mail-Versand via Resend**
+- **"Meine Ratenzahlungen" Link** im Dashboard Quick Access Bereich
 
 ### ✅ Merchant Dashboard Fixes (2026-02-26)
 - Feld-Mapping korrigiert (API: title → Frontend: name)
