@@ -126,6 +126,9 @@ German (Deutsch)
 | `/api/bnpl/create-plan` | POST | Yes | Plan erstellen |
 | `/api/bnpl/my-plans` | GET | Yes | Eigene Pläne |
 | `/api/bnpl/pay-installment` | POST | Yes | Rate bezahlen |
+| `/api/bnpl/admin/overview` | GET | Admin | Admin-Übersicht aller Pläne |
+| `/api/bnpl/admin/plan/{id}` | GET | Admin | Plan-Details |
+| `/api/bnpl/admin/send-reminder` | POST | Admin | Zahlungserinnerung senden |
 
 ### Customer Loyalty
 | Endpoint | Method | Auth | Description |
