@@ -431,3 +431,190 @@ async def calculate_installments(amount: float, installments: int = 3):
         "monthly_payment": monthly,
         "label": f"{installments}x €{monthly:.2f}" + (f" ({interest_rate}% Zinsen)" if interest_rate > 0 else " (0% Zinsen)")
     }
+
+
+
+# ============== ADMIN ENDPOINTS ==============
+
+@router.get("/admin/overview")
+async def admin_bnpl_overview(token: str):
+    """
+    Admin-Übersicht aller Ratenzahlungspläne
+    """
+    try:
+        from jose import jwt
+        from config import JWT_SECRET, JWT_ALGORITHM
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        user_id = payload.get("user_id")
+        
+        # Check if user is admin
+        user = await db.users.find_one({"id": user_id})
+        if not user or not user.get("is_admin"):
+            raise HTTPException(status_code=403, detail="Nur für Administratoren")
+        
+        # Get all plans with user info
+        pipeline = [
+            {
+                "$lookup": {
+                    "from": "users",
+                    "localField": "user_id",
+                    "foreignField": "id",
+                    "as": "user_info"
+                }
+            },
+            {"$unwind": {"path": "$user_info", "preserveNullAndEmptyArrays": True}},
+            {"$sort": {"created_at": -1}},
+            {"$limit": 100}
+        ]
+        
+        plans = await db.installment_plans.aggregate(pipeline).to_list(100)
+        
+        # Calculate statistics
+        all_plans = await db.installment_plans.find({}).to_list(1000)
+        
+        total_plans = len(all_plans)
+        active_plans = len([p for p in all_plans if p.get("status") == "active"])
+        completed_plans = len([p for p in all_plans if p.get("status") == "completed"])
+        overdue_plans = 0
+        
+        total_volume = sum(p.get("total_amount", 0) for p in all_plans)
+        total_outstanding = sum(p.get("remaining_amount", 0) for p in all_plans if p.get("status") == "active")
+        total_collected = sum(p.get("paid_amount", 0) for p in all_plans)
+        
+        # Check for overdue payments
+        now = datetime.now(timezone.utc)
+        for plan in all_plans:
+            if plan.get("status") == "active" and plan.get("next_due_date"):
+                try:
+                    due_date = datetime.fromisoformat(plan["next_due_date"].replace("Z", "+00:00"))
+                    if due_date < now:
+                        overdue_plans += 1
+                except:
+                    pass
+        
+        # Format plans for response
+        formatted_plans = []
+        for plan in plans:
+            user_info = plan.get("user_info", {})
+            formatted_plans.append({
+                "id": plan.get("id"),
+                "user_id": plan.get("user_id"),
+                "user_email": user_info.get("email", "Unbekannt"),
+                "user_name": user_info.get("name", user_info.get("email", "Unbekannt")),
+                "item_type": plan.get("item_type"),
+                "original_amount": plan.get("original_amount"),
+                "total_amount": plan.get("total_amount"),
+                "remaining_amount": plan.get("remaining_amount"),
+                "paid_amount": plan.get("paid_amount"),
+                "monthly_payment": plan.get("monthly_payment"),
+                "installment_count": plan.get("installment_count"),
+                "interest_rate": plan.get("interest_rate"),
+                "status": plan.get("status"),
+                "created_at": plan.get("created_at"),
+                "next_due_date": plan.get("next_due_date"),
+                "is_overdue": False
+            })
+            
+            # Check if overdue
+            if plan.get("status") == "active" and plan.get("next_due_date"):
+                try:
+                    due_date = datetime.fromisoformat(plan["next_due_date"].replace("Z", "+00:00"))
+                    if due_date < now:
+                        formatted_plans[-1]["is_overdue"] = True
+                except:
+                    pass
+        
+        return {
+            "plans": formatted_plans,
+            "stats": {
+                "total_plans": total_plans,
+                "active_plans": active_plans,
+                "completed_plans": completed_plans,
+                "overdue_plans": overdue_plans,
+                "total_volume": round(total_volume, 2),
+                "total_outstanding": round(total_outstanding, 2),
+                "total_collected": round(total_collected, 2)
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Admin BNPL overview error: {e}")
+        raise HTTPException(status_code=500, detail="Fehler beim Laden der Übersicht")
+
+@router.get("/admin/plan/{plan_id}")
+async def admin_get_plan_details(plan_id: str, token: str):
+    """
+    Admin: Detaillierte Ansicht eines Ratenzahlungsplans
+    """
+    try:
+        from jose import jwt
+        from config import JWT_SECRET, JWT_ALGORITHM
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        user_id = payload.get("user_id")
+        
+        user = await db.users.find_one({"id": user_id})
+        if not user or not user.get("is_admin"):
+            raise HTTPException(status_code=403, detail="Nur für Administratoren")
+        
+        plan = await db.installment_plans.find_one({"id": plan_id}, {"_id": 0})
+        if not plan:
+            raise HTTPException(status_code=404, detail="Plan nicht gefunden")
+        
+        # Get user info
+        plan_user = await db.users.find_one({"id": plan.get("user_id")}, {"_id": 0, "password": 0})
+        
+        return {
+            "plan": plan,
+            "user": plan_user
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Admin get plan error: {e}")
+        raise HTTPException(status_code=500, detail="Fehler beim Laden des Plans")
+
+@router.post("/admin/send-reminder")
+async def admin_send_payment_reminder(plan_id: str, token: str):
+    """
+    Admin: Zahlungserinnerung an Benutzer senden
+    """
+    try:
+        from jose import jwt
+        from config import JWT_SECRET, JWT_ALGORITHM
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        user_id = payload.get("user_id")
+        
+        user = await db.users.find_one({"id": user_id})
+        if not user or not user.get("is_admin"):
+            raise HTTPException(status_code=403, detail="Nur für Administratoren")
+        
+        plan = await db.installment_plans.find_one({"id": plan_id})
+        if not plan:
+            raise HTTPException(status_code=404, detail="Plan nicht gefunden")
+        
+        plan_user = await db.users.find_one({"id": plan.get("user_id")})
+        if not plan_user:
+            raise HTTPException(status_code=404, detail="Benutzer nicht gefunden")
+        
+        # Log the reminder (in production, send email here)
+        logger.info(f"Payment reminder sent to {plan_user.get('email')} for plan {plan_id}")
+        
+        # Update plan with reminder timestamp
+        await db.installment_plans.update_one(
+            {"id": plan_id},
+            {"$set": {"last_reminder_sent": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        return {
+            "success": True,
+            "message": f"Erinnerung an {plan_user.get('email')} gesendet"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Send reminder error: {e}")
+        raise HTTPException(status_code=500, detail="Fehler beim Senden der Erinnerung")
