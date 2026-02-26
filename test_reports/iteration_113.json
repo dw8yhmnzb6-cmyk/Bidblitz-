@@ -1,0 +1,70 @@
+{
+  "summary": "Tested BNPL (Buy Now Pay Later) Button Integration and Merchant Dashboard Field Mapping. All 9 backend tests passed (100%). BNPL APIs working correctly - calculate and eligibility endpoints functional. Merchant Dashboard correctly displays products (title field) and coupons (code, discount, status fields). Frontend BNPL button implementation verified in code - shows only for authenticated users on packages >= €50.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_bnpl_merchant_features.py",
+    "/app/test_reports/pytest/pytest_bnpl_merchant.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "✓ BNPL Button correctly shows only for isAuthenticated && pkg.price >= 50 (BuyBids.js line 496)",
+    "✓ BNPL Button has correct data-testid='bnpl-{pkg.id}' for testing",
+    "✓ BNPL Modal component properly handles eligibility check and plan selection",
+    "✓ BNPL Calculate API returns correct interest rates: 3 months (0%), 6 months (2.9%), 12 months (5.9%)",
+    "✓ BNPL Eligibility API correctly checks user credit score, open plans, and max amount",
+    "✓ Merchant Products display uses fallback: product.title || product.name (WholesaleDashboard.js line 1094)",
+    "✓ Merchant Products price uses fallback: product.market_value || product.retail_price (line 1098)",
+    "✓ Merchant Coupons display uses fallback for discount: discount_percent || discount_amount || discount_value (lines 1233-1239)",
+    "✓ Merchant Coupons status uses fallback: coupon.active !== false && coupon.is_active !== false (line 1228)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_bnpl_merchant_features.py"
+  ],
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (verified via Playwright - Products and Coupons display correctly)"
+  },
+  "test_credentials": {
+    "customer": {"email": "kunde@bidblitz.ae", "password": "Kunde123!"},
+    "merchant": {"email": "demo@grosshandel.de", "password": "Haendler123!", "login_endpoint": "/api/wholesale/auth/login"}
+  },
+  "seed_data_creation": "None - used existing test data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "BNPL feature: Button appears on Buy Bids page for logged-in users on packages >= €50 (Pro €50, Ultimate €100). Test user kunde@bidblitz.ae has 2 open installment plans so is 'nicht berechtigt' (not eligible) - this is expected behavior. Merchant Dashboard at /b2b/dashboard - login via /b2b/login. Products tab shows title, category, price, status. Coupons tab shows code, discount, min purchase, usage count, status.",
+  "verified_features": {
+    "bnpl_button": {
+      "location": "BuyBids.js lines 495-509",
+      "condition": "isAuthenticated && pkg.price >= 50",
+      "packages_eligible": ["pro (€50)", "ultimate (€100)"],
+      "status": "PASS - Code verified, button renders conditionally"
+    },
+    "bnpl_modal": {
+      "location": "BNPLModal.jsx",
+      "features": ["Eligibility check", "Plan selection (3/6/12 months)", "Interest calculation", "Create plan"],
+      "status": "PASS - Modal opens and shows eligibility status"
+    },
+    "bnpl_apis": {
+      "/api/bnpl/eligibility": "PASS - Returns eligible, reason, max_amount, credit_score, installment_options",
+      "/api/bnpl/calculate": "PASS - Returns monthly_payment, interest_rate, total_amount"
+    },
+    "merchant_products": {
+      "location": "WholesaleDashboard.js lines 1091-1115",
+      "field_mapping": "title || name, market_value || retail_price, category, status",
+      "status": "PASS - No 'undefined' text, products display correctly"
+    },
+    "merchant_coupons": {
+      "location": "WholesaleDashboard.js lines 1221-1260",
+      "field_mapping": "code, discount_percent || discount_amount || discount_value, active || is_active",
+      "status": "PASS - No 'undefined' text, coupons display correctly"
+    }
+  }
+}
