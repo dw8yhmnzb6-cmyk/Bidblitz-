@@ -1128,6 +1128,12 @@ export default function EnterprisePortal() {
   // Report filters
   const [reportPeriod, setReportPeriod] = useState('month');
   const [selectedBranch, setSelectedBranch] = useState('');
+  
+  // Custom date filter
+  const [showCustomDateFilter, setShowCustomDateFilter] = useState(false);
+  const [customDateFrom, setCustomDateFrom] = useState('');
+  const [customDateTo, setCustomDateTo] = useState('');
+  const [dateFilterActive, setDateFilterActive] = useState(false);
 
   // Change language
   const changeLanguage = (code) => {
