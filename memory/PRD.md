@@ -209,7 +209,11 @@ German (Deutsch)
 - [ ] SSL-Zertifikat einrichten (nachdem Domain auf neue IP zeigt)
 - [ ] Domain `bidblitz.ae` DNS auf `212.227.20.190` ändern
 - [ ] GitHub Secret `SERVER_PASSWORD` setzen
-- [ ] Datenbank mit Auktionen, Benutzern, Bots befüllen
+- [x] ✅ Datenbank mit Auktionen, Benutzern, Bots befüllen (2026-02-26)
+  - 50 Auktionen (verschiedene Kategorien: Elektronik, Gaming, Haushalt, Luxus, Gutscheine)
+  - 100 Bots mit deutschen Namen
+  - 6 Gebotspakete
+  - Test-Benutzer: admin@bidblitz.ae, kunde@bidblitz.ae, demo@grosshandel.de, edeka@test.de
 
 ### P2 - Frontend Verbesserungen
 - [ ] Push-Benachrichtigungen (FCM)
