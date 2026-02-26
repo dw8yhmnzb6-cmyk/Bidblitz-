@@ -652,6 +652,29 @@ export default function BuyBids() {
           </div>
         </div>
       )}
+
+      {/* BNPL Modal - Ratenzahlung */}
+      {showBNPLModal && bnplPackage && (
+        <BNPLModal
+          isOpen={showBNPLModal}
+          onClose={() => {
+            setShowBNPLModal(false);
+            setBnplPackage(null);
+          }}
+          itemType="bid_package"
+          itemId={bnplPackage.id}
+          itemName={bnplPackage.name}
+          amount={bnplPackage.price}
+          onSuccess={(plan) => {
+            toast.success(
+              langKey === 'de' 
+                ? `Ratenzahlung erfolgreich! ${plan.installments}x €${plan.monthly_payment.toFixed(2)}`
+                : `Installment plan created! ${plan.installments}x €${plan.monthly_payment.toFixed(2)}`
+            );
+            // Optionally refresh user data or redirect
+          }}
+        />
+      )}
     </div>
   );
 }
