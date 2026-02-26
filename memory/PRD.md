@@ -156,13 +156,7 @@ German (Deutsch)
 
 ## Upcoming Tasks
 
-### P1 - BNPL Erweiterung
-- [ ] BNPL in Auktions-Checkout integrieren (gewonnene Auktionen bezahlen)
-- [ ] BNPL E-Mail-Erinnerungen für fällige Raten
-- [ ] Admin-Panel für BNPL-Verwaltung
-
 ### P2 - Frontend Verbesserungen
-- [ ] MyInstallments.jsx Seite in Navbar verlinken
 - [ ] Push-Benachrichtigungen (FCM)
 - [ ] Händler-Finder mit Kartenansicht
 
