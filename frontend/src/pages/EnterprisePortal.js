@@ -1787,28 +1787,164 @@ export default function EnterprisePortal() {
       <main className="max-w-7xl mx-auto px-4 py-6">
         {/* Period Selector - Show on Dashboard and Reports */}
         {(activeTab === 'dashboard' || activeTab === 'reports') && (
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <div className="flex bg-white rounded-xl p-1 shadow-sm">
-              {[
-                { id: 'day', label: t.today },
-                { id: 'week', label: t.week },
-                { id: 'month', label: t.month },
-                { id: 'year', label: t.year }
-              ].map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => setReportPeriod(p.id)}
-                  className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    reportPeriod === p.id ? 'bg-amber-500 text-white shadow' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
+          <div className="space-y-4 mb-6">
+            {/* Row 1: Period buttons + Branch filter + Refresh */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex bg-white rounded-xl p-1 shadow-sm">
+                {[
+                  { id: 'day', label: t.today },
+                  { id: 'week', label: t.week },
+                  { id: 'month', label: t.month },
+                  { id: 'year', label: t.year }
+                ].map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      setReportPeriod(p.id);
+                      setDateFilterActive(false);
+                      setShowCustomDateFilter(false);
+                    }}
+                    className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      reportPeriod === p.id && !dateFilterActive ? 'bg-amber-500 text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              
+              {/* Branch Filter Dropdown */}
+              <select
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm shadow-sm min-w-[160px]"
+              >
+                <option value="">{t.allBranches}</option>
+                {branches.map(b => (
+                  <option key={b.id} value={b.id}>{b.name}</option>
+                ))}
+              </select>
+              
+              {/* Custom Date Toggle */}
+              <button
+                onClick={() => setShowCustomDateFilter(!showCustomDateFilter)}
+                className={`px-3 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 ${
+                  dateFilterActive || showCustomDateFilter
+                    ? 'bg-blue-500 text-white shadow'
+                    : 'bg-white text-slate-600 hover:bg-slate-100 shadow-sm'
+                }`}
+              >
+                <Clock className="w-4 h-4" />
+                {t.customDate || 'Zeitraum wählen'}
+              </button>
+              
+              <button onClick={() => { fetchStats(); fetchTransactions(); }} className="p-2 bg-white rounded-lg shadow-sm hover:bg-slate-50">
+                <RefreshCw className="w-5 h-5 text-slate-600" />
+              </button>
             </div>
-            <button onClick={() => { fetchStats(); fetchTransactions(); }} className="p-2 bg-white rounded-lg shadow-sm hover:bg-slate-50">
-              <RefreshCw className="w-5 h-5 text-slate-600" />
-            </button>
+            
+            {/* Row 2: Custom Date Filter (if expanded) */}
+            {showCustomDateFilter && (
+              <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+                <div className="flex flex-wrap items-end gap-3">
+                  <div className="flex-1 min-w-[140px]">
+                    <label className="block text-xs text-slate-500 mb-1">{t.from || 'Von'}</label>
+                    <input
+                      type="date"
+                      value={customDateFrom}
+                      onChange={(e) => setCustomDateFrom(e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                    />
+                  </div>
+                  <div className="flex-1 min-w-[140px]">
+                    <label className="block text-xs text-slate-500 mb-1">{t.to || 'Bis'}</label>
+                    <input
+                      type="date"
+                      value={customDateTo}
+                      onChange={(e) => setCustomDateTo(e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                    />
+                  </div>
+                  <button
+                    onClick={() => {
+                      if (customDateFrom && customDateTo) {
+                        setDateFilterActive(true);
+                        fetchStats();
+                        fetchTransactions();
+                      } else {
+                        toast.error(t.selectDates || 'Bitte wählen Sie Von- und Bis-Datum');
+                      }
+                    }}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600"
+                  >
+                    {t.apply || 'Anwenden'}
+                  </button>
+                  {dateFilterActive && (
+                    <button
+                      onClick={() => {
+                        setDateFilterActive(false);
+                        setCustomDateFrom('');
+                        setCustomDateTo('');
+                        setShowCustomDateFilter(false);
+                      }}
+                      className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-200"
+                    >
+                      {t.reset || 'Zurücksetzen'}
+                    </button>
+                  )}
+                </div>
+                
+                {/* Quick Date Presets */}
+                <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-slate-100">
+                  <span className="text-xs text-slate-500 mr-2">{t.quickSelect || 'Schnellauswahl'}:</span>
+                  {[
+                    { label: t.yesterday || 'Gestern', days: 1 },
+                    { label: t.last7Days || 'Letzte 7 Tage', days: 7 },
+                    { label: t.last30Days || 'Letzte 30 Tage', days: 30 },
+                    { label: t.thisMonth || 'Dieser Monat', days: 'month' }
+                  ].map((preset, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        const today = new Date();
+                        let fromDate, toDate;
+                        
+                        if (preset.days === 'month') {
+                          fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                          toDate = today;
+                        } else if (preset.days === 1) {
+                          const yesterday = new Date(today);
+                          yesterday.setDate(yesterday.getDate() - 1);
+                          fromDate = yesterday;
+                          toDate = yesterday;
+                        } else {
+                          fromDate = new Date(today);
+                          fromDate.setDate(fromDate.getDate() - preset.days);
+                          toDate = today;
+                        }
+                        
+                        setCustomDateFrom(fromDate.toISOString().split('T')[0]);
+                        setCustomDateTo(toDate.toISOString().split('T')[0]);
+                      }}
+                      className="px-2 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-md"
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Active Filter Info */}
+            {dateFilterActive && (
+              <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 px-3 py-2 rounded-lg">
+                <Clock className="w-4 h-4" />
+                {t.filterActive || 'Filter aktiv'}: {customDateFrom} - {customDateTo}
+                {selectedBranch && branches.find(b => b.id === selectedBranch) && (
+                  <span className="ml-2">| {branches.find(b => b.id === selectedBranch).name}</span>
+                )}
+              </div>
+            )}
           </div>
         )}
 
