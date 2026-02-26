@@ -473,23 +473,41 @@ export default function BuyBids() {
                   ))}
                 </ul>
 
-                <Button
-                  onClick={() => openPaymentModal(pkg)}
-                  disabled={purchasing === pkg.id}
-                  className={`w-full py-3 h-auto ${
-                    pkg.popular ? 'btn-bid' : 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-200'
-                  }`}
-                  data-testid={`buy-${pkg.id}`}
-                >
-                  {purchasing === pkg.id ? (
-                    texts.processing
-                  ) : (
-                    <>
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      {{ de: 'Jetzt kaufen', en: 'Buy Now', sq: 'Bli Tani', xk: 'Bli Tani', tr: 'Şimdi Satın Al', fr: 'Acheter' }[langKey] || 'Jetzt kaufen'}
-                    </>
+                <div className="space-y-2">
+                  <Button
+                    onClick={() => openPaymentModal(pkg)}
+                    disabled={purchasing === pkg.id}
+                    className={`w-full py-3 h-auto ${
+                      pkg.popular ? 'btn-bid' : 'bg-white hover:bg-gray-100 text-gray-800 border border-gray-200'
+                    }`}
+                    data-testid={`buy-${pkg.id}`}
+                  >
+                    {purchasing === pkg.id ? (
+                      texts.processing
+                    ) : (
+                      <>
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        {{ de: 'Jetzt kaufen', en: 'Buy Now', sq: 'Bli Tani', xk: 'Bli Tani', tr: 'Şimdi Satın Al', fr: 'Acheter' }[langKey] || 'Jetzt kaufen'}
+                      </>
+                    )}
+                  </Button>
+                  
+                  {/* BNPL Button - Ratenzahlung */}
+                  {isAuthenticated && pkg.price >= 50 && (
+                    <Button
+                      onClick={() => {
+                        setBnplPackage(pkg);
+                        setShowBNPLModal(true);
+                      }}
+                      variant="outline"
+                      className="w-full py-2 h-auto border-emerald-500/50 text-emerald-600 hover:bg-emerald-50 text-sm"
+                      data-testid={`bnpl-${pkg.id}`}
+                    >
+                      <Clock className="w-4 h-4 mr-2" />
+                      {{ de: 'In Raten zahlen', en: 'Pay in Installments', sq: 'Paguaj me këste', xk: 'Paguaj me këste', tr: 'Taksitle Öde', fr: 'Payer en plusieurs fois' }[langKey] || 'In Raten zahlen'}
+                    </Button>
                   )}
-                </Button>
+                </div>
               </div>
             ))}
           </div>
