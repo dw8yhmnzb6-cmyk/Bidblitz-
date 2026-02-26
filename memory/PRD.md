@@ -13,6 +13,39 @@ BidBlitz ist eine umfassende Zahlungs- und Auktionsplattform mit:
 ## User Language
 German (Deutsch)
 
+## 🚀 IONOS Server Deployment (2026-02-26)
+**Server erfolgreich eingerichtet und live!**
+
+### Server-Informationen
+- **IP:** `212.227.20.190`
+- **OS:** Ubuntu 24.04 LTS
+- **User:** root
+
+### Installierte Software
+- MongoDB 7.0 (läuft als systemd service)
+- Node.js v20.20.0
+- Python 3.12.3 mit venv
+- Nginx als Reverse Proxy
+- Yarn, Certbot
+
+### Services (systemd)
+- `bidblitz-backend.service` - Backend auf Port 8001
+- `bidblitz-frontend.service` - Frontend auf Port 3000 (serve -s build)
+- `mongod.service` - MongoDB
+- `nginx.service` - Reverse Proxy
+
+### Dateipfade auf dem Server
+- App: `/var/www/bidblitz/`
+- Backend venv: `/var/www/bidblitz/backend/venv/`
+- Frontend build: `/var/www/bidblitz/frontend/build/`
+- Nginx config: `/etc/nginx/sites-available/bidblitz`
+- Deploy script: `/var/www/bidblitz/scripts/deploy.sh`
+
+### CI/CD Pipeline (GitHub Actions)
+- Workflow-Datei: `.github/workflows/deploy.yml`
+- **WICHTIG:** GitHub Secret `SERVER_PASSWORD` muss gesetzt werden!
+- Automatisches Deployment bei Push auf `main` Branch
+
 ## Core Architecture
 ```
 /app
