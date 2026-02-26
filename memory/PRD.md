@@ -8,6 +8,7 @@ BidBlitz ist eine umfassende Zahlungs- und Auktionsplattform mit:
 - Bot-System für realistische Auktions-Aktivität
 - Merchant Portal für kleine und große Händler
 - Kunden-Loyalty-System mit VIP-Stufen, Cashback und Empfehlungen
+- BNPL (Buy Now Pay Later) für Gebotepakete und gewonnene Auktionen
 
 ## User Language
 German (Deutsch)
@@ -20,8 +21,9 @@ German (Deutsch)
 │   │   ├── pos_terminal.py           # POS Zahlungen + Loyalty-Integration
 │   │   ├── auctions.py               # Auktions-Endpunkte
 │   │   ├── bidblitz_pay.py           # Wallet-Funktionen
-│   │   ├── merchant_features.py      # NEU: Händler-Produkte, Dashboard, Coupons
-│   │   └── loyalty_system.py         # NEU: VIP-Tiers, Cashback, Empfehlungen
+│   │   ├── bnpl_system.py            # NEU: Buy Now Pay Later System
+│   │   ├── merchant_features.py      # Händler-Produkte, Dashboard, Coupons
+│   │   └── loyalty_system.py         # VIP-Tiers, Cashback, Empfehlungen
 │   ├── services/
 │   │   └── websocket.py              # Echtzeit-Updates
 │   └── server.py                     # Bot-Tasks, WebSocket, Router-Registrierung
@@ -30,8 +32,13 @@ German (Deutsch)
 │   │   ├── StaffPOS.js               # Kassensystem
 │   │   ├── BidBlitzPay.jsx           # Kunden-Wallet
 │   │   ├── Auctions.js               # Auktions-Übersicht mit Kategoriefiltern
+│   │   ├── BuyBids.js                # Gebote kaufen + BNPL-Integration
 │   │   ├── WholesaleDashboard.js     # Händler-Dashboard
-│   │   └── CustomerLoyaltyDashboard.jsx # NEU: Kunden-Loyalty-Dashboard
+│   │   ├── MyInstallments.jsx        # Benutzer Ratenzahlungsübersicht
+│   │   └── CustomerLoyaltyDashboard.jsx # Kunden-Loyalty-Dashboard
+│   ├── components/
+│   │   ├── BNPLModal.jsx             # NEU: Ratenzahlung Modal
+│   │   └── DailyLoginPopup.jsx       # Tägliche Belohnung Popup
 │   └── components/ui/                # Shadcn UI
 └── memory/
     └── PRD.md
@@ -45,14 +52,32 @@ German (Deutsch)
 
 ## Database
 - **Cloud MongoDB Atlas** (bidblitz)
-- Collections: auctions, bots, users, pos_transactions, customer_payment_tokens, user_loyalty, merchant_products, merchant_coupons
+- Collections: auctions, bots, users, pos_transactions, customer_payment_tokens, user_loyalty, merchant_products, merchant_coupons, installment_plans
 
 ---
 
-## Implemented Features (as of 2026-02-25)
+## Implemented Features (as of 2026-02-26)
 
-### ✅ Merchant & Loyalty Features (NEU - 2026-02-25)
+### ✅ BNPL System (NEU - 2026-02-26)
 **Backend APIs vollständig implementiert und getestet (100% Pass Rate):**
+- 3, 6 oder 12 Raten (0%, 2.9%, 5.9% Zinsen)
+- Bonitätsprüfung basierend auf Kaufhistorie
+- Kreditlimit berechnet aus: Basis (€100) + Kaufhistorie-Bonus + VIP-Multiplikator
+- Max. 3 offene Ratenzahlungen pro Benutzer
+- Frontend-Button in BuyBids.js für Pakete >= €50
+- Modal-Komponente für Planauswahl
+
+### ✅ Merchant Dashboard Fixes (2026-02-26)
+- Feld-Mapping korrigiert (API: title → Frontend: name)
+- Produkte zeigen jetzt: Titel, Bild, Preis, Status
+- Coupons zeigen jetzt: Code, Rabatt, Status, Verwendung
+
+### ✅ Daily Login Popup Dev-Mode (2026-02-26)
+- Popup kann für Tests deaktiviert werden via:
+  `localStorage.setItem('disableDailyLoginPopup', 'true')`
+
+### ✅ Merchant & Loyalty Features (2026-02-25)
+**Backend APIs vollständig implementiert und getestet:**
 
 #### Customer Loyalty System (`/api/customer-loyalty/*`)
 - VIP-Stufen: Bronze (1% Cashback), Silber (2%), Gold (3%), Platin (5%)
@@ -67,15 +92,6 @@ German (Deutsch)
 - Gutschein-System (Prozent oder Festbetrag)
 - Mitarbeiter-Verwaltung
 - Provisions-Übersicht (5% auf Gebote-Käufe)
-- Push-Benachrichtigungen an Kunden
-
-### ✅ Tutorial-Modal deaktiviert (2026-02-25)
-- Onboarding-Tour temporär deaktiviert zur Entwicklungsbeschleunigung
-- Kann in OnboardingTour.js wieder aktiviert werden
-
-### ✅ Kategoriefilter
-- 5 Produktkategorien: Elektronik, Mode, Haus & Garten, Sport, Kunst
-- Filter-Buttons auf der Auktionsseite
 
 ### ✅ Staff POS Scanner (2026-02-25)
 - Hardware-Scanner (Keyboard-Wedge) als primäre Eingabe
@@ -86,37 +102,25 @@ German (Deutsch)
 
 ### ✅ Sicherheits-Fix: Dynamische Barcodes (2026-02-25)
 - QR/Barcodes sind jetzt Single-Use mit Ablaufzeit
-- Alte/statische Barcodes können nicht mehr wiederverwendet werden
 
 ### ✅ Auktions-System
-- 51 gemischte Auktionen in 5 Kategorien
-- Bot-System aktiv (288 Bots)
+- 58 gemischte Auktionen in 5 Kategorien (inkl. VIP, Nacht, Anfänger)
+- Bot-System aktiv (100+ Bots)
 - Early Bidder + Last Second Bidder Tasks
-
-### ✅ BidBlitz Pay
-- QR-Code + Barcode für Kunden-Identifikation
-- Echtzeit-Zahlungsbestätigung via WebSocket
+- €0.01 Inkrement-Bidding
 
 ---
 
-## Pending Issues (Priority Order)
+## API Endpoints
 
-### 🟡 P1 - Frontend für Merchant-Features
-- **Status:** Backend fertig, Frontend-Integration ausstehend
-- **TODO:** WholesaleDashboard.js erweitern mit:
-  - Produkt-Erstellung UI
-  - Gutschein-Verwaltung UI
-  - Push-Benachrichtigungen UI
-
-### 🟡 P2 - KYC Upload Flow
-- **Status:** User-Verifizierung ausstehend
-
-### 🟡 P2 - Mobile Layout Issues
-- **Status:** Wiederkehrende CSS-Probleme
-
----
-
-## API Endpoints (New)
+### BNPL (Buy Now Pay Later)
+| Endpoint | Method | Auth | Description |
+|----------|--------|------|-------------|
+| `/api/bnpl/eligibility` | GET | Yes | Berechtigung prüfen |
+| `/api/bnpl/calculate` | GET | No | Raten berechnen |
+| `/api/bnpl/create-plan` | POST | Yes | Plan erstellen |
+| `/api/bnpl/my-plans` | GET | Yes | Eigene Pläne |
+| `/api/bnpl/pay-installment` | POST | Yes | Rate bezahlen |
 
 ### Customer Loyalty
 | Endpoint | Method | Auth | Description |
@@ -137,32 +141,32 @@ German (Deutsch)
 | `/api/merchant/coupons` | GET/POST/DELETE | Merchant | Gutscheine |
 | `/api/merchant/staff` | GET/POST/PUT/DELETE | Merchant | Mitarbeiter |
 | `/api/merchant/commissions` | GET | Merchant | Provisionen |
-| `/api/merchant/notifications/send` | POST | Merchant | Push senden |
-| `/api/merchant/public/find` | GET | Public | Händler finden |
 
 ---
 
 ## Upcoming Tasks
 
-### P0 - Continue Merchant & Loyalty Implementation
-1. Frontend-UI für Händler-Produkte in WholesaleDashboard
-2. Frontend-UI für Gutschein-Erstellung
-3. Link zu Loyalty-Dashboard in Navbar hinzufügen
+### P1 - BNPL Erweiterung
+- [ ] BNPL in Auktions-Checkout integrieren (gewonnene Auktionen bezahlen)
+- [ ] BNPL E-Mail-Erinnerungen für fällige Raten
+- [ ] Admin-Panel für BNPL-Verwaltung
 
-### P1 - Additional Features
-- Händler-Finder mit Kartenansicht
-- Push-Benachrichtigungen (FCM)
-- WhatsApp-Integration (blockiert - API-Keys benötigt)
+### P2 - Frontend Verbesserungen
+- [ ] MyInstallments.jsx Seite in Navbar verlinken
+- [ ] Push-Benachrichtigungen (FCM)
+- [ ] Händler-Finder mit Kartenansicht
 
 ### P2 - Refactoring
-- StaffPOS.js aufteilen (>3500 Zeilen)
-- Auctions.js aufteilen
+- [ ] StaffPOS.js aufteilen (>3500 Zeilen)
+- [ ] Auctions.js aufteilen
+- [ ] WholesaleDashboard.js in Sub-Komponenten
 
 ---
 
 ## Test Reports
-- Latest: `/app/test_reports/iteration_112.json` (21/21 passed)
-- Test files: `/app/backend/tests/test_loyalty_merchant_features.py`
+- Latest: `/app/test_reports/iteration_113.json` (9/9 passed - BNPL & Merchant)
+- Previous: `/app/test_reports/iteration_112.json` (21/21 passed)
+- Test files: `/app/backend/tests/test_bnpl_merchant_features.py`
 
 ---
 
