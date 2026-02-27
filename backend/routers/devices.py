@@ -281,3 +281,150 @@ async def get_available_devices(
     
     devices = await db.devices.find(query, {"_id": 0}).to_list(100)
     return {"devices": devices}
+
+
+# ==================== LIME-STYLE FEATURES ====================
+
+@router.get("/available")
+async def get_available_devices_public(
+    lat: Optional[float] = None,
+    lng: Optional[float] = None,
+    radius_km: float = 5.0,
+    type: Optional[str] = None
+):
+    """Get available devices near a location (public, no auth needed)"""
+    query = {"status": "available"}
+    if type:
+        query["type"] = type
+    
+    devices = await db.devices.find(query, {"_id": 0}).to_list(200)
+    
+    # If location provided, filter by distance (simple bounding box)
+    if lat is not None and lng is not None:
+        from math import radians, cos
+        lat_range = radius_km / 111.0  # ~111km per degree latitude
+        lng_range = radius_km / (111.0 * cos(radians(lat)))
+        devices = [d for d in devices if d.get("lat") and d.get("lng") and
+                   abs(d["lat"] - lat) < lat_range and abs(d["lng"] - lng) < lng_range]
+    
+    return {"devices": devices, "count": len(devices)}
+
+
+@router.post("/reserve/{device_id}")
+async def reserve_device(device_id: str, user: dict = Depends(get_current_user)):
+    """Reserve a device for 10 minutes (free)"""
+    device = await db.devices.find_one({"id": device_id})
+    if not device:
+        raise HTTPException(404, "Gerät nicht gefunden")
+    if device.get("status") != "available":
+        raise HTTPException(409, "Gerät nicht verfügbar")
+    
+    # Check if user already has a reservation
+    existing = await db.device_reservations.find_one({
+        "user_id": user["id"],
+        "status": "active"
+    })
+    if existing:
+        raise HTTPException(409, "Sie haben bereits eine aktive Reservierung")
+    
+    now = datetime.now(timezone.utc)
+    reservation = {
+        "id": str(uuid.uuid4()),
+        "device_id": device_id,
+        "user_id": user["id"],
+        "user_name": user.get("name"),
+        "status": "active",
+        "expires_at": (now + __import__("datetime").timedelta(minutes=10)).isoformat(),
+        "created_at": now.isoformat()
+    }
+    
+    await db.device_reservations.insert_one(reservation)
+    await db.devices.update_one({"id": device_id}, {"$set": {"status": "reserved", "reserved_by": user["id"]}})
+    
+    logger.info(f"🔒 Device {device_id} reserved by {user.get('email')}")
+    reservation.pop("_id", None)
+    
+    return {
+        "success": True,
+        "reservation": reservation,
+        "message": "Gerät für 10 Minuten reserviert. Kostenlos!"
+    }
+
+
+@router.delete("/reserve/{reservation_id}")
+async def cancel_reservation(reservation_id: str, user: dict = Depends(get_current_user)):
+    """Cancel a reservation"""
+    reservation = await db.device_reservations.find_one({
+        "id": reservation_id,
+        "user_id": user["id"],
+        "status": "active"
+    })
+    if not reservation:
+        raise HTTPException(404, "Reservierung nicht gefunden")
+    
+    await db.device_reservations.update_one(
+        {"id": reservation_id},
+        {"$set": {"status": "cancelled"}}
+    )
+    await db.devices.update_one(
+        {"id": reservation["device_id"]},
+        {"$set": {"status": "available"}, "$unset": {"reserved_by": ""}}
+    )
+    
+    return {"success": True, "message": "Reservierung storniert"}
+
+
+@router.post("/ring/{device_id}")
+async def ring_device(device_id: str, user: dict = Depends(get_current_user)):
+    """Ring/locate a device (play sound)"""
+    device = await db.devices.find_one({"id": device_id})
+    if not device:
+        raise HTTPException(404, "Gerät nicht gefunden")
+    
+    # In production, this would send a command to the IoT device
+    logger.info(f"🔔 Ring request for device {device_id} by {user.get('email')}")
+    
+    return {
+        "success": True,
+        "message": "Gerät klingelt jetzt! Folgen Sie dem Sound.",
+        "device_id": device_id
+    }
+
+
+@router.post("/report/{device_id}")
+async def report_device_problem(device_id: str, user: dict = Depends(get_current_user)):
+    """Report a problem with a device"""
+    device = await db.devices.find_one({"id": device_id})
+    if not device:
+        raise HTTPException(404, "Gerät nicht gefunden")
+    
+    report = {
+        "id": str(uuid.uuid4()),
+        "device_id": device_id,
+        "device_serial": device.get("serial"),
+        "user_id": user["id"],
+        "user_name": user.get("name"),
+        "status": "open",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.device_reports.insert_one(report)
+    logger.info(f"⚠️ Problem reported for device {device_id} by {user.get('email')}")
+    report.pop("_id", None)
+    
+    return {
+        "success": True,
+        "report": report,
+        "message": "Problem gemeldet. Danke für Ihre Hilfe!"
+    }
+
+
+@router.get("/my-reservations")
+async def get_my_reservations(user: dict = Depends(get_current_user)):
+    """Get user's active reservations"""
+    reservations = await db.device_reservations.find(
+        {"user_id": user["id"], "status": "active"},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(10)
+    
+    return {"reservations": reservations}
