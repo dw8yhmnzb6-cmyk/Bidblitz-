@@ -135,17 +135,32 @@ async def request_unlock(data: UnlockRequest, user: dict = Depends(get_current_u
     unlock_fee = device.get("unlock_fee_cents", 100)
     per_minute = device.get("per_minute_cents", 25)
     
-    # Charge unlock fee from wallet
-    try:
-        unlock_entry = await _charge_wallet(
-            user["id"], unlock_fee, "ride_unlock",
-            f"Entsperrgebuehr: {device.get('name', device['serial'])}",
-            reference_id=None  # Will update with session_id
-        )
-    except HTTPException as e:
-        if e.status_code == 402:
-            raise HTTPException(402, f"Nicht genug Guthaben. Entsperrgebuehr: EUR {unlock_fee/100:.2f}. Bitte Wallet aufladen.")
-        raise
+    # Check if user has active subscription (Abo) - skip unlock fee
+    active_sub = await db.scooter_subscriptions.find_one({
+        "user_id": user["id"],
+        "status": "active"
+    })
+    has_abo = active_sub is not None
+    
+    if has_abo:
+        # Abo active - no unlock fee
+        unlock_fee = 0
+        unlock_entry = {"id": "abo-free"}
+        # Check if flatrate (Unlimited plan) - also free minutes
+        if active_sub.get("flatrate"):
+            per_minute = 0
+    else:
+        # Charge unlock fee from wallet
+        try:
+            unlock_entry = await _charge_wallet(
+                user["id"], unlock_fee, "ride_unlock",
+                f"Entsperrgebuehr: {device.get('name', device['serial'])}",
+                reference_id=None
+            )
+        except HTTPException as e:
+            if e.status_code == 402:
+                raise HTTPException(402, f"Nicht genug Guthaben. Entsperrgebuehr: EUR {unlock_fee/100:.2f}. Bitte Wallet aufladen.")
+            raise
     
     # Create unlock session
     session_id = str(uuid.uuid4())
