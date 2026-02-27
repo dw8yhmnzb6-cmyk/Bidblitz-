@@ -150,7 +150,7 @@ export default function ScooterAboPage() {
       <div className="mx-4 mt-6 p-4 bg-slate-800 border border-slate-700 rounded-xl flex items-center justify-between">
         <div>
           <p className="text-slate-400 text-xs">Dein Wallet-Guthaben</p>
-          <p className="text-white font-bold text-lg">{'\u20AC'}{((user?.wallet_balance_cents || 0) / 100).toFixed(2)}</p>
+          <p className="text-white font-bold text-lg">{'\u20AC'}{(walletBalance / 100).toFixed(2)}</p>
         </div>
         <Link to="/pay" className="px-4 py-2 bg-emerald-600 text-white text-sm font-bold rounded-xl">Aufladen</Link>
       </div>
