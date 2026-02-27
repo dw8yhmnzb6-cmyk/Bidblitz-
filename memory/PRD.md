@@ -1,39 +1,31 @@
-# BidBlitz PRD
+# BidBlitz PRD - Aktuell
 
-## Aktueller Stand: Komplett-System LIVE auf bidblitz.ae
+## Neue Features (Feb 28, 2026)
 
-### Scooter-App (Lime-Style)
-- Echte Leaflet-Karte mit OpenStreetMap
-- Scooter-Marker mit Akku-Farbe (gruen/gelb/rot)
-- User-Position (blauer Punkt)
-- Bottom-Sheet: Details, Reservieren, Klingeln, Problem melden
-- QR-Scanner + manuelle Seriennummer
-- Aktive Fahrt: Timer, Kosten, Beenden
-- Sidebar: Wallet, Abo, Gruppen, Verlauf, Hilfe, Einstellungen
-- Abo-Badge auf Karte wenn aktiv
+### Übersetzungen (DE/EN/SQ/TR/FR)
+- mobilityTranslations.js: Zentrale Übersetzungsdatei für alle Mobility-Seiten
+- ScooterGuide, HändlerFinder, SupportTickets, GroupRides - alle 5 Sprachen
 
-### Abo-Integration
-- Bei aktivem Abo: Entsperrgebuehr = 0 EUR (Backend prüft automatisch)
-- Unlimited-Plan: Auch Minutenpreis = 0 EUR
-- Abo-Status in ScooterApp sichtbar
+### Geofencing System
+- **11 Zonen** erstellt: Dubai + Pristina
+- Zonentypen: parking, no_parking, speed_limit, service_area
+- API: /api/geofencing/zones (öffentlich für Karten-Anzeige)
+- API: /api/geofencing/check-location (prüft ob Parken erlaubt)
+- API: /api/geofencing/track/{session_id} (Live-Tracking während Fahrt)
 
-### Push Notifications
-- Service Worker mit Push-Event-Handler
-- VAPID-Key Subscription Flow
-- Automatische Prompt-Banner nach Login (3 Sek Delay)
-- "Aktivieren" / "Nicht jetzt" Buttons
-- Auto-Subscribe bei bereits erteilter Erlaubnis
-- Backend sendet Notifications für Auktionen, Fahrten, Angebote
+### Scooter-Tracking
+- GPS-Punkte während Fahrt speichern
+- Route nach Fahrt abrufbar
+- Geschwindigkeits-Warnungen in Tempo-Zonen
 
-### Caching (Auto-Update für Kunden)
-- index.html: no-cache (immer neueste Version)
-- Static JS/CSS: 1 Jahr Cache (Hash im Dateinamen)
-- Nginx serviert direkt aus build/ (kein Node.js Server nötig)
+### Verfügbarkeits-Alarm
+- API: /api/geofencing/alerts/subscribe (Alarm setzen)
+- Benachrichtigung wenn Scooter in der Nähe verfügbar wird
+- Radius + Gerätetyp konfigurierbar
 
-## Alle Seiten
-/scooter, /scooter-abo, /gruppen-fahrt, /scooter-bewertungen
-/scooter-guide, /haendler-finder, /support-tickets, /loans, /auctions
+### Footer Reorganisiert
+- EXTRAS → aufgeteilt in "Partner" und "Marketing"
+- Partner: Händler-Portal, Partner Portal, Kassen-Terminal, Großkunden, Investoren
+- Marketing: Influencer, Auto-Werbung, VIP
 
-## Credentials
-- Admin: admin@bidblitz.ae / AfrimKrasniqi123
-- Server: 212.227.20.190 / root / neew7ky3xhyt3H
+## Server: 212.227.20.190 | Admin: admin@bidblitz.ae
