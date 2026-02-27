@@ -278,20 +278,10 @@ async def end_session(session_id: str, data: Optional[SessionEnd] = None, user: 
         }
     )
     
-    # Create ledger entry for the ride fee
-    await db.ledger_entries.insert_one({
-        "id": str(uuid.uuid4()),
-        "user_id": user["id"],
-        "type": "debit",
-        "reason": "ride_fee",
-        "amount_cents": cost_cents,
-        "currency": "EUR",
-        "reference_id": session_id,
-        "description": f"Fahrt: {session['device_type']} ({duration_seconds // 60} Min)",
-        "created_at": ended_at.isoformat()
-    })
+    # Total cost = unlock fee + ride fee
+    total_cost_cents = pricing.get("unlock_cents", 100) + cost_cents
     
-    logger.info(f"🏁 Session ended: {session_id}, Duration: {duration_seconds}s, Cost: {cost_cents}c")
+    logger.info(f"Session ended: {session_id}, Duration: {duration_seconds}s, Cost: {total_cost_cents}c")
     
     return {
         "success": True,
