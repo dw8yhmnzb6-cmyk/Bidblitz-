@@ -1,36 +1,38 @@
-# BidBlitz PRD - Complete
+# BidBlitz PRD
 
-## Scooter Features (Feb 27, 2026)
+## Aktueller Stand: Komplett-System LIVE auf bidblitz.ae
 
-### Scooter-Abo (Monatspass)
-- `/scooter-abo` - 3 Plaene: Basic (29 EUR), Plus (49 EUR), Unlimited (99 EUR)
-- Basic: Keine Entsperrgebuehr
-- Plus: + 30 Min/Tag gratis
-- Unlimited: Komplett-Flatrate
-- Auto-Verlaengerung, Kuendigung jederzeit
-- Bezahlung ueber integriertes Wallet
+### Scooter-App (Lime-Style)
+- Echte Leaflet-Karte mit OpenStreetMap
+- Scooter-Marker mit Akku-Farbe (gruen/gelb/rot)
+- User-Position (blauer Punkt)
+- Bottom-Sheet: Details, Reservieren, Klingeln, Problem melden
+- QR-Scanner + manuelle Seriennummer
+- Aktive Fahrt: Timer, Kosten, Beenden
+- Sidebar: Wallet, Abo, Gruppen, Verlauf, Hilfe, Einstellungen
+- Abo-Badge auf Karte wenn aktiv
 
-### Gruppen-Fahrten
-- `/gruppen-fahrt` - Gruppe erstellen mit 6-stelligem Code
-- Max 5 Mitglieder pro Gruppe
-- 2 Modi: "Leader zahlt" oder "Jeder zahlt selbst"
-- Teilen per Copy/Share, Beitreten mit Code
+### Abo-Integration
+- Bei aktivem Abo: Entsperrgebuehr = 0 EUR (Backend prüft automatisch)
+- Unlimited-Plan: Auch Minutenpreis = 0 EUR
+- Abo-Status in ScooterApp sichtbar
 
-### Scooter-Bewertungen
-- Nach jeder Fahrt: 1-5 Sterne Rating Modal
-- Kategorien: Sauberkeit, Akku-Zustand, Bremsen
-- Optionaler Kommentar
-- Durchschnittsbewertung auf jedem Scooter
+### Push Notifications
+- Service Worker mit Push-Event-Handler
+- VAPID-Key Subscription Flow
+- Automatische Prompt-Banner nach Login (3 Sek Delay)
+- "Aktivieren" / "Nicht jetzt" Buttons
+- Auto-Subscribe bei bereits erteilter Erlaubnis
+- Backend sendet Notifications für Auktionen, Fahrten, Angebote
 
-### Alle Live-Seiten
-- /scooter - Lime-Style App (Karte, QR, Ride)
-- /scooter-abo - Abo-Plaene
-- /gruppen-fahrt - Gruppen-Fahrten
-- /scooter-bewertungen - Bewertungen
-- /scooter-guide - Anleitung
-- /haendler-finder - Partner-Geschaefte
-- /support-tickets - Support
-- /loans - Mikrokredite
+### Caching (Auto-Update für Kunden)
+- index.html: no-cache (immer neueste Version)
+- Static JS/CSS: 1 Jahr Cache (Hash im Dateinamen)
+- Nginx serviert direkt aus build/ (kein Node.js Server nötig)
+
+## Alle Seiten
+/scooter, /scooter-abo, /gruppen-fahrt, /scooter-bewertungen
+/scooter-guide, /haendler-finder, /support-tickets, /loans, /auctions
 
 ## Credentials
 - Admin: admin@bidblitz.ae / AfrimKrasniqi123
