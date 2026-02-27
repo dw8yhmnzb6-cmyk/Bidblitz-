@@ -1847,6 +1847,26 @@ export default function Admin() {
           {activeTab === 'passwords' && (
             <AdminPasswordManager token={token} />
           )}
+
+          {/* Mobility Tabs */}
+          {activeTab === 'mobility-dashboard' && (
+            <AdminMobilityDashboard token={token} />
+          )}
+          {activeTab === 'organizations' && (
+            <AdminOrganizations token={token} />
+          )}
+          {activeTab === 'fleet' && (
+            <AdminFleetManagement token={token} />
+          )}
+          {activeTab === 'devices' && (
+            <AdminDevices token={token} />
+          )}
+          {activeTab === 'tickets' && (
+            <AdminTickets token={token} />
+          )}
+          {activeTab === 'loans' && (
+            <AdminLoans token={token} />
+          )}
         </main>
       </div>
       
