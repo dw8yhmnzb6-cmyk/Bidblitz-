@@ -437,89 +437,155 @@ export default function AdminOrganizations() {
         />
       </div>
       
-      {/* Organizations Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gray-50 dark:bg-gray-700/50">
-            <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Organisation</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Geräte</th>
-              <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase">Fahrten</th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase">Umsatz</th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase">Aktionen</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-            {filteredOrgs.length === 0 ? (
+      {/* Mobile: Card Layout */}
+      <div className="sm:hidden space-y-3">
+        {filteredOrgs.length === 0 ? (
+          <p className="text-center text-gray-500 py-8 text-sm">
+            {search ? 'Keine Organisationen gefunden' : 'Noch keine Organisationen'}
+          </p>
+        ) : (
+          filteredOrgs.map(org => (
+            <div key={org.id} className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Building2 className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-900 dark:text-white text-sm truncate">{org.name}</p>
+                    <p className="text-xs text-gray-500">{org.slug}</p>
+                  </div>
+                </div>
+                <select
+                  value={org.status}
+                  onChange={(e) => handleStatusChange(org.id, e.target.value)}
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-medium border-0 cursor-pointer ${
+                    org.status === 'active' ? 'bg-green-100 text-green-700' :
+                    org.status === 'suspended' ? 'bg-red-100 text-red-700' :
+                    'bg-yellow-100 text-yellow-700'
+                  }`}
+                >
+                  <option value="active">Aktiv</option>
+                  <option value="trial">Trial</option>
+                  <option value="suspended">Gesperrt</option>
+                </select>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-center mb-3">
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2">
+                  <p className="text-xs text-gray-500">Geräte</p>
+                  <p className="font-bold text-gray-900 dark:text-white">{org.stats?.total_devices || 0}</p>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2">
+                  <p className="text-xs text-gray-500">Fahrten</p>
+                  <p className="font-bold text-gray-900 dark:text-white">{org.stats?.total_sessions || 0}</p>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-2">
+                  <p className="text-xs text-gray-500">Umsatz</p>
+                  <p className="font-bold text-emerald-600">€{((org.stats?.total_revenue_cents || 0) / 100).toFixed(2)}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setSettingsOrg(org)}
+                  className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-xs text-gray-600 dark:text-gray-300"
+                >
+                  <Settings className="w-3 h-3" /> Einstellungen
+                </button>
+                <button
+                  onClick={() => { setEditingOrg(org); setShowOrgModal(true); }}
+                  className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-xs text-gray-600 dark:text-gray-300"
+                >
+                  <Edit className="w-3 h-3" /> Bearbeiten
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop: Table */}
+      <div className="hidden sm:block bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 dark:bg-gray-700/50">
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                  {search ? 'Keine Organisationen gefunden' : 'Noch keine Organisationen'}
-                </td>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Organisation</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Geräte</th>
+                <th className="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase">Fahrten</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Umsatz</th>
+                <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Aktionen</th>
               </tr>
-            ) : (
-              filteredOrgs.map(org => (
-                <tr key={org.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
-                        <Building2 className="w-5 h-5 text-emerald-600" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900 dark:text-white">{org.name}</p>
-                        <p className="text-sm text-gray-500">{org.slug}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <select
-                      value={org.status}
-                      onChange={(e) => handleStatusChange(org.id, e.target.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border-0 cursor-pointer ${
-                        org.status === 'active' ? 'bg-green-100 text-green-700' :
-                        org.status === 'suspended' ? 'bg-red-100 text-red-700' :
-                        'bg-yellow-100 text-yellow-700'
-                      }`}
-                    >
-                      <option value="active">Aktiv</option>
-                      <option value="trial">Trial</option>
-                      <option value="suspended">Gesperrt</option>
-                    </select>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="font-semibold text-gray-900 dark:text-white">{org.stats?.total_devices || 0}</span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="font-semibold text-gray-900 dark:text-white">{org.stats?.total_sessions || 0}</span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <span className="font-semibold text-emerald-600">
-                      €{((org.stats?.total_revenue_cents || 0) / 100).toFixed(2)}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => setSettingsOrg(org)}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                        title="Einstellungen"
-                      >
-                        <Settings className="w-4 h-4 text-gray-500" />
-                      </button>
-                      <button
-                        onClick={() => { setEditingOrg(org); setShowOrgModal(true); }}
-                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
-                        title="Bearbeiten"
-                      >
-                        <Edit className="w-4 h-4 text-gray-500" />
-                      </button>
-                    </div>
+            </thead>
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              {filteredOrgs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    {search ? 'Keine Organisationen gefunden' : 'Noch keine Organisationen'}
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filteredOrgs.map(org => (
+                  <tr key={org.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center">
+                          <Building2 className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-white">{org.name}</p>
+                          <p className="text-sm text-gray-500">{org.slug}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <select
+                        value={org.status}
+                        onChange={(e) => handleStatusChange(org.id, e.target.value)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium border-0 cursor-pointer ${
+                          org.status === 'active' ? 'bg-green-100 text-green-700' :
+                          org.status === 'suspended' ? 'bg-red-100 text-red-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}
+                      >
+                        <option value="active">Aktiv</option>
+                        <option value="trial">Trial</option>
+                        <option value="suspended">Gesperrt</option>
+                      </select>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="font-semibold text-gray-900 dark:text-white">{org.stats?.total_devices || 0}</span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="font-semibold text-gray-900 dark:text-white">{org.stats?.total_sessions || 0}</span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <span className="font-semibold text-emerald-600">
+                        €{((org.stats?.total_revenue_cents || 0) / 100).toFixed(2)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setSettingsOrg(org)}
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                        >
+                          <Settings className="w-4 h-4 text-gray-500" />
+                        </button>
+                        <button
+                          onClick={() => { setEditingOrg(org); setShowOrgModal(true); }}
+                          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                        >
+                          <Edit className="w-4 h-4 text-gray-500" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       
       {/* Modals */}
