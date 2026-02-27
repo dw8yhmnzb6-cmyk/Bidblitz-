@@ -608,6 +608,14 @@ app.include_router(merchant_features_router)  # /api/merchant/* endpoints
 app.include_router(loyalty_system_router)  # /api/loyalty/* endpoints
 app.include_router(bnpl_router)  # /api/bnpl/* - Ratenzahlung
 
+# Mobility: Devices, Tickets, Loans
+from routers.devices import router as devices_router
+from routers.support_tickets import router as tickets_router
+from routers.microfinance import router as loans_router
+app.include_router(devices_router, prefix="/api")
+app.include_router(tickets_router, prefix="/api")
+app.include_router(loans_router, prefix="/api")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
