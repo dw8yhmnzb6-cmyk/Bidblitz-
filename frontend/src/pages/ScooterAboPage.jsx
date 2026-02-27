@@ -17,9 +17,9 @@ const planColors = {
   unlimited: 'from-amber-500 to-orange-600'
 };
 const planFeatures = {
-  basic: ['Keine Entsperrgebuehr', 'Nur Minutenpreis zahlen', 'Alle Scooter & E-Bikes'],
-  plus: ['Keine Entsperrgebuehr', '30 Min/Tag gratis fahren', 'Alle Scooter & E-Bikes', 'Prioritaets-Reservierung'],
-  unlimited: ['Komplett-Flatrate', 'Unbegrenzt fahren', 'Alle Scooter & E-Bikes', 'Prioritaets-Reservierung', 'VIP Support']
+  basic: ['Keine Entsperrgebühr', 'Nur Minutenpreis zahlen', 'Alle Scooter & E-Bikes'],
+  plus: ['Keine Entsperrgebühr', '30 Min/Tag gratis fahren', 'Alle Scooter & E-Bikes', 'Prioritäts-Reservierung'],
+  unlimited: ['Komplett-Flatrate', 'Unbegrenzt fahren', 'Alle Scooter & E-Bikes', 'Prioritäts-Reservierung', 'VIP Support']
 };
 
 export default function ScooterAboPage() {
