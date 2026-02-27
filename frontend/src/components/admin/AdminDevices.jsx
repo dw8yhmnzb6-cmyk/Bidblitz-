@@ -265,55 +265,60 @@ export default function AdminDevices({ token }) {
 
       {/* Add Device Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-50">
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl p-6 w-full sm:max-w-md sm:mx-4 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-800 mb-4">Neues Gerät</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-slate-600">Seriennummer *</label>
-                <Input
-                  value={newDevice.serial}
-                  onChange={(e) => setNewDevice({...newDevice, serial: e.target.value})}
-                  placeholder="z.B. SCOOTER-001"
-                />
+        <div className="fixed inset-0 bg-black/50 flex items-end sm:items-center justify-center z-[60]" onClick={() => setShowAddModal(false)}>
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl p-5 w-full sm:max-w-md sm:mx-4 max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <h2 className="text-lg font-bold text-slate-800 mb-4">Neues Gerät</h2>
+            <div className="space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-slate-600 font-medium">Seriennummer *</label>
+                  <Input value={newDevice.serial} onChange={(e) => setNewDevice({...newDevice, serial: e.target.value})} placeholder="SCOOTER-001" className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-600 font-medium">Typ *</label>
+                  <select value={newDevice.type} onChange={(e) => setNewDevice({...newDevice, type: e.target.value})} className="w-full border rounded-lg px-3 py-2 mt-1 text-sm">
+                    <option value="scooter">E-Scooter</option>
+                    <option value="bike">E-Bike</option>
+                    <option value="locker">Schließfach</option>
+                    <option value="gate">Tor</option>
+                  </select>
+                </div>
               </div>
               <div>
-                <label className="text-sm text-slate-600">Typ *</label>
-                <select
-                  value={newDevice.type}
-                  onChange={(e) => setNewDevice({...newDevice, type: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2"
-                >
-                  <option value="scooter">🛴 E-Scooter</option>
-                  <option value="bike">🚲 E-Bike</option>
-                  <option value="locker">🔐 Schließfach</option>
-                  <option value="gate">🚪 Tor</option>
-                </select>
+                <label className="text-xs text-slate-600 font-medium">Name</label>
+                <Input value={newDevice.name} onChange={(e) => setNewDevice({...newDevice, name: e.target.value})} placeholder="E-Scooter Dubai Marina" className="mt-1" />
               </div>
               <div>
-                <label className="text-sm text-slate-600">Name</label>
-                <Input
-                  value={newDevice.name}
-                  onChange={(e) => setNewDevice({...newDevice, name: e.target.value})}
-                  placeholder="z.B. E-Scooter Dubai Marina"
-                />
+                <label className="text-xs text-slate-600 font-medium">Standort</label>
+                <Input value={newDevice.location} onChange={(e) => setNewDevice({...newDevice, location: e.target.value})} placeholder="Dubai Marina" className="mt-1" />
               </div>
-              <div>
-                <label className="text-sm text-slate-600">Standort</label>
-                <Input
-                  value={newDevice.location}
-                  onChange={(e) => setNewDevice({...newDevice, location: e.target.value})}
-                  placeholder="z.B. Dubai Marina"
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-slate-600 font-medium">Latitude</label>
+                  <Input type="number" step="0.0001" value={newDevice.lat || ''} onChange={(e) => setNewDevice({...newDevice, lat: e.target.value})} placeholder="25.0780" className="mt-1" />
+                </div>
+                <div>
+                  <label className="text-xs text-slate-600 font-medium">Longitude</label>
+                  <Input type="number" step="0.0001" value={newDevice.lng || ''} onChange={(e) => setNewDevice({...newDevice, lng: e.target.value})} placeholder="55.1380" className="mt-1" />
+                </div>
+              </div>
+              <div className="bg-slate-50 rounded-xl p-3">
+                <p className="text-xs font-medium text-slate-700 mb-2">Preisüberschreibung (optional)</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] text-slate-500">Entsperrgebühr (Cent)</label>
+                    <Input type="number" value={newDevice.unlock_fee_cents || ''} onChange={(e) => setNewDevice({...newDevice, unlock_fee_cents: e.target.value})} placeholder="100" className="mt-0.5" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-slate-500">Pro Minute (Cent)</label>
+                    <Input type="number" value={newDevice.per_minute_cents || ''} onChange={(e) => setNewDevice({...newDevice, per_minute_cents: e.target.value})} placeholder="25" className="mt-0.5" />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="flex gap-2 mt-6">
-              <Button variant="outline" onClick={() => setShowAddModal(false)} className="flex-1">
-                Abbrechen
-              </Button>
-              <Button onClick={handleAddDevice} className="flex-1 bg-cyan-500 hover:bg-cyan-600">
-                Hinzufügen
-              </Button>
+            <div className="flex gap-2 mt-5">
+              <Button variant="outline" onClick={() => setShowAddModal(false)} className="flex-1">Abbrechen</Button>
+              <Button onClick={handleAddDevice} className="flex-1 bg-cyan-500 hover:bg-cyan-600">Hinzufügen</Button>
             </div>
           </div>
         </div>
