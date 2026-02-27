@@ -1,34 +1,36 @@
-# BidBlitz PRD - Complete Platform
+# BidBlitz PRD - Complete
 
-## Scooter App (Lime/Bird/Bolt Style) - LIVE
-### Frontend (ScooterApp.jsx)
-- Vollbild-Karte mit Scooter-Markern (Akku %)
-- Bottom-Sheet: Scooter-Details, Preis, Reichweite
-- Reservieren (10 Min kostenlos), Klingeln, Problem melden
-- QR-Scanner + manuelle Seriennummer-Eingabe
-- Aktive Fahrt-Anzeige (Timer, Kosten live, Beenden-Button)
-- Sidebar-Menu: Wallet, Verlauf, Sicheres Fahren, Hilfe, Einstellungen
+## Scooter Features (Feb 27, 2026)
 
-### Backend
-- Wallet-Ledger: Entsperrgebuehr + Minutengebuehr automatisch abgebucht
-- Rollen: user, partner_admin, super_admin (im bestehenden User-System)
-- 16 Demo-Scooter in Dubai + Pristina
+### Scooter-Abo (Monatspass)
+- `/scooter-abo` - 3 Plaene: Basic (29 EUR), Plus (49 EUR), Unlimited (99 EUR)
+- Basic: Keine Entsperrgebuehr
+- Plus: + 30 Min/Tag gratis
+- Unlimited: Komplett-Flatrate
+- Auto-Verlaengerung, Kuendigung jederzeit
+- Bezahlung ueber integriertes Wallet
 
-### Neue Seiten
-- /scooter - Scooter App (Karte, QR, Ride)
-- /scooter-guide - Anleitung (5 Schritte, Preise, Sicherheitsregeln)
-- /haendler-finder - Partner-Geschaefte finden (Suche, Kategorien, Kontakt)
-- /support-tickets - Support-Tickets erstellen/verwalten
-- /loans - Mikrokredite beantragen
+### Gruppen-Fahrten
+- `/gruppen-fahrt` - Gruppe erstellen mit 6-stelligem Code
+- Max 5 Mitglieder pro Gruppe
+- 2 Modi: "Leader zahlt" oder "Jeder zahlt selbst"
+- Teilen per Copy/Share, Beitreten mit Code
 
-### Footer-Links
-- MOBILITY Sektion: E-Scooter mieten, So funktioniert es, Haendler-Finder, Support
+### Scooter-Bewertungen
+- Nach jeder Fahrt: 1-5 Sterne Rating Modal
+- Kategorien: Sauberkeit, Akku-Zustand, Bremsen
+- Optionaler Kommentar
+- Durchschnittsbewertung auf jedem Scooter
 
-## Backlog
-- Push Notifications
-- Leaflet-Karte in ScooterApp (statt Platzhalter-Karte)
-- WhatsApp Integration
-- App Store Submission
+### Alle Live-Seiten
+- /scooter - Lime-Style App (Karte, QR, Ride)
+- /scooter-abo - Abo-Plaene
+- /gruppen-fahrt - Gruppen-Fahrten
+- /scooter-bewertungen - Bewertungen
+- /scooter-guide - Anleitung
+- /haendler-finder - Partner-Geschaefte
+- /support-tickets - Support
+- /loans - Mikrokredite
 
 ## Credentials
 - Admin: admin@bidblitz.ae / AfrimKrasniqi123
