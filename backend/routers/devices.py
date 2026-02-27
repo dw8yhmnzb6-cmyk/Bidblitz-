@@ -1,0 +1,283 @@
+"""
+Device/Scooter Unlock System for BidBlitz
+Handles device unlock requests, sessions, and IoT integration
+"""
+
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
+from typing import Optional, List
+from datetime import datetime, timezone
+from bson import ObjectId
+import uuid
+import logging
+
+from dependencies import get_current_user, get_admin_user
+from config import db
+
+logger = logging.getLogger(__name__)
+router = APIRouter(prefix="/devices", tags=["Devices & Unlock"])
+
+
+# ==================== SCHEMAS ====================
+
+class DeviceCreate(BaseModel):
+    serial: str
+    type: str  # scooter, locker, gate, bike, etc.
+    name: Optional[str] = None
+    location: Optional[str] = None
+
+class DeviceUpdate(BaseModel):
+    status: Optional[str] = None  # available, in_use, maintenance, disabled
+    name: Optional[str] = None
+    location: Optional[str] = None
+
+class UnlockRequest(BaseModel):
+    device_id: str
+
+class SessionEnd(BaseModel):
+    notes: Optional[str] = None
+
+
+# ==================== DEVICE MANAGEMENT (Admin) ====================
+
+@router.post("/admin/create")
+async def create_device(data: DeviceCreate, admin: dict = Depends(get_admin_user)):
+    """Admin creates a new device"""
+    # Check if serial exists
+    existing = await db.devices.find_one({"serial": data.serial})
+    if existing:
+        raise HTTPException(status_code=400, detail="Seriennummer bereits vorhanden")
+    
+    device_id = str(uuid.uuid4())
+    device = {
+        "id": device_id,
+        "serial": data.serial,
+        "type": data.type,
+        "name": data.name or f"{data.type.upper()}-{data.serial[-4:]}",
+        "location": data.location,
+        "status": "available",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "last_seen_at": None,
+        "total_sessions": 0,
+        "total_revenue_cents": 0
+    }
+    
+    await db.devices.insert_one(device)
+    logger.info(f"🛴 Device created: {data.serial} by admin {admin.get('email')}")
+    
+    return {"success": True, "device": {k: v for k, v in device.items() if k != '_id'}}
+
+
+@router.get("/admin/list")
+async def list_devices(
+    status: Optional[str] = None,
+    type: Optional[str] = None,
+    admin: dict = Depends(get_admin_user)
+):
+    """Admin lists all devices"""
+    query = {}
+    if status:
+        query["status"] = status
+    if type:
+        query["type"] = type
+    
+    devices = await db.devices.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return {"devices": devices, "total": len(devices)}
+
+
+@router.patch("/admin/{device_id}")
+async def update_device(device_id: str, data: DeviceUpdate, admin: dict = Depends(get_admin_user)):
+    """Admin updates device status"""
+    update_data = {k: v for k, v in data.dict().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Keine Änderungen angegeben")
+    
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.devices.update_one({"id": device_id}, {"": update_data})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Gerät nicht gefunden")
+    
+    return {"success": True, "message": "Gerät aktualisiert"}
+
+
+# ==================== UNLOCK SYSTEM ====================
+
+@router.post("/unlock/request")
+async def request_unlock(data: UnlockRequest, user: dict = Depends(get_current_user)):
+    """User requests to unlock a device"""
+    device = await db.devices.find_one({"id": data.device_id})
+    if not device:
+        raise HTTPException(status_code=404, detail="Gerät nicht gefunden")
+    
+    if device["status"] != "available":
+        raise HTTPException(status_code=409, detail=f"Gerät nicht verfügbar (Status: {device['status']})")
+    
+    # Check if user has active session
+    active_session = await db.unlock_sessions.find_one({
+        "user_id": user["id"],
+        "status": {"": ["requested", "active"]}
+    })
+    if active_session:
+        raise HTTPException(status_code=409, detail="Sie haben bereits eine aktive Sitzung")
+    
+    # Create unlock session
+    session_id = str(uuid.uuid4())
+    session = {
+        "id": session_id,
+        "user_id": user["id"],
+        "user_name": user.get("name"),
+        "user_email": user.get("email"),
+        "device_id": data.device_id,
+        "device_serial": device["serial"],
+        "device_type": device["type"],
+        "status": "requested",
+        "requested_at": datetime.now(timezone.utc).isoformat(),
+        "started_at": None,
+        "ended_at": None,
+        "duration_seconds": None,
+        "cost_cents": None,
+        "failure_reason": None
+    }
+    
+    await db.unlock_sessions.insert_one(session)
+    
+    # Update device status
+    await db.devices.update_one(
+        {"id": data.device_id},
+        {"": {"status": "in_use", "last_seen_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # TODO: Call IoT provider API to physically unlock device
+    # await iot_provider.unlock(device["serial"])
+    
+    logger.info(f"🔓 Unlock requested: Device {device['serial']} by user {user.get('email')}")
+    
+    return {
+        "success": True,
+        "session_id": session_id,
+        "status": "requested",
+        "device": {
+            "serial": device["serial"],
+            "type": device["type"],
+            "name": device.get("name")
+        },
+        "message": "Entsperrung angefordert. Bitte warten..."
+    }
+
+
+@router.post("/unlock/{session_id}/confirm")
+async def confirm_unlock(session_id: str, user: dict = Depends(get_current_user)):
+    """Confirms that device was successfully unlocked (called by device or system)"""
+    session = await db.unlock_sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Sitzung nicht gefunden")
+    
+    if session["user_id"] != user["id"]:
+        raise HTTPException(status_code=403, detail="Nicht autorisiert")
+    
+    if session["status"] != "requested":
+        raise HTTPException(status_code=409, detail=f"Ungültiger Status: {session['status']}")
+    
+    await db.unlock_sessions.update_one(
+        {"id": session_id},
+        {"": {
+            "status": "active",
+            "started_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    logger.info(f"✅ Unlock confirmed: Session {session_id}")
+    
+    return {"success": True, "session_id": session_id, "status": "active", "message": "Gerät entsperrt!"}
+
+
+@router.post("/unlock/{session_id}/end")
+async def end_session(session_id: str, data: Optional[SessionEnd] = None, user: dict = Depends(get_current_user)):
+    """End an active unlock session"""
+    session = await db.unlock_sessions.find_one({"id": session_id})
+    if not session:
+        raise HTTPException(status_code=404, detail="Sitzung nicht gefunden")
+    
+    if session["user_id"] != user["id"]:
+        raise HTTPException(status_code=403, detail="Nicht autorisiert")
+    
+    if session["status"] not in ["requested", "active"]:
+        raise HTTPException(status_code=409, detail=f"Sitzung bereits beendet: {session['status']}")
+    
+    ended_at = datetime.now(timezone.utc)
+    started_at = datetime.fromisoformat(session.get("started_at") or session["requested_at"])
+    duration_seconds = int((ended_at - started_at).total_seconds())
+    
+    # Calculate cost (example: 0.15€ per minute, minimum 1€)
+    cost_cents = max(100, int(duration_seconds / 60 * 15))
+    
+    await db.unlock_sessions.update_one(
+        {"id": session_id},
+        {"": {
+            "status": "ended",
+            "ended_at": ended_at.isoformat(),
+            "duration_seconds": duration_seconds,
+            "cost_cents": cost_cents,
+            "notes": data.notes if data else None
+        }}
+    )
+    
+    # Update device status back to available
+    await db.devices.update_one(
+        {"id": session["device_id"]},
+        {
+            "": {"status": "available"},
+            "": {"total_sessions": 1, "total_revenue_cents": cost_cents}
+        }
+    )
+    
+    # Create ledger entry for the ride fee
+    await db.ledger_entries.insert_one({
+        "id": str(uuid.uuid4()),
+        "user_id": user["id"],
+        "type": "debit",
+        "reason": "ride_fee",
+        "amount_cents": cost_cents,
+        "currency": "EUR",
+        "reference_id": session_id,
+        "description": f"Fahrt: {session['device_type']} ({duration_seconds // 60} Min)",
+        "created_at": ended_at.isoformat()
+    })
+    
+    logger.info(f"🏁 Session ended: {session_id}, Duration: {duration_seconds}s, Cost: {cost_cents}c")
+    
+    return {
+        "success": True,
+        "session_id": session_id,
+        "status": "ended",
+        "duration_seconds": duration_seconds,
+        "duration_formatted": f"{duration_seconds // 60} Min {duration_seconds % 60} Sek",
+        "cost_cents": cost_cents,
+        "cost_formatted": f"€{cost_cents / 100:.2f}"
+    }
+
+
+@router.get("/my-sessions")
+async def get_my_sessions(user: dict = Depends(get_current_user)):
+    """Get user's unlock sessions"""
+    sessions = await db.unlock_sessions.find(
+        {"user_id": user["id"]},
+        {"_id": 0}
+    ).sort("requested_at", -1).to_list(100)
+    
+    return {"sessions": sessions}
+
+
+@router.get("/available-legacy")
+async def get_available_devices(
+    type: Optional[str] = None,
+    user: dict = Depends(get_current_user)
+):
+    """Get list of available devices"""
+    query = {"status": "available"}
+    if type:
+        query["type"] = type
+    
+    devices = await db.devices.find(query, {"_id": 0}).to_list(100)
+    return {"devices": devices}
