@@ -391,6 +391,26 @@ async def get_auctions():
     """Get all auctions with product details - CACHED & OPTIMIZED"""
     return await get_cached_auctions()
 
+
+@router.get("/auctions/recent-winners")
+async def get_recent_winners_alias(limit: int = 10):
+    """Recent winners endpoint (alias for frontend compatibility)"""
+    winners = await db.auction_history.find(
+        {"winner_id": {"$ne": None}},
+        {"_id": 0}
+    ).sort("ended_at", -1).to_list(limit)
+    
+    product_ids = list(set(w.get("product_id") for w in winners if w.get("product_id")))
+    if product_ids:
+        products_list = await db.products.find({"id": {"$in": product_ids}}, {"_id": 0}).to_list(len(product_ids))
+        products_map = {p["id"]: p for p in products_list}
+        for w in winners:
+            if not w.get("product") and w.get("product_id"):
+                w["product"] = products_map.get(w["product_id"])
+    
+    return winners
+
+
 @router.get("/auctions/ended")
 async def get_ended_auctions(limit: int = 50):
     """Get recently ended auctions from history (for 'Ende' tab) - OPTIMIZED"""
