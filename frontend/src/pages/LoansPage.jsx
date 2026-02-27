@@ -218,7 +218,30 @@ export default function LoansPage() {
             {/* KYC Notice */}
             <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-3">
               <Shield className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-amber-700">KYC-Verifizierung erforderlich. Ihr Antrag wird innerhalb von 24 Stunden geprüft.</p>
+              <p className="text-xs text-amber-700">KYC-Verifizierung erforderlich. Antrag wird innerhalb von 5 Minuten geprueft.</p>
+            </div>
+
+            {/* Payout Method */}
+            <div className="bg-white rounded-2xl p-5 border border-slate-100">
+              <label className="block text-sm font-medium text-slate-700 mb-3">Auszahlungsmethode</label>
+              <div className="space-y-2">
+                {[
+                  { id: 'wallet', icon: Wallet, label: 'BidBlitz Wallet', desc: 'Sofort verfuegbar', badge: 'Sofort' },
+                  { id: 'bank', icon: Building2, label: 'Bankkonto (SEPA)', desc: '1-2 Werktage', badge: null },
+                  { id: 'instant', icon: CreditCard, label: 'Sofort auf Karte', desc: 'Visa/Mastercard', badge: 'Express' },
+                ].map(opt => (
+                  <button key={opt.id} type="button"
+                    onClick={() => setPurpose(prev => prev)} 
+                    className="w-full flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-emerald-300 transition-all text-left">
+                    <opt.icon className="w-5 h-5 text-slate-600" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-slate-800">{opt.label}</p>
+                      <p className="text-xs text-slate-500">{opt.desc}</p>
+                    </div>
+                    {opt.badge && <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full">{opt.badge}</span>}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <button
