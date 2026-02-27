@@ -110,6 +110,13 @@ import AdminDigitalPayments from '../components/admin/AdminDigitalPayments';
 import AdminEnterpriseManagement from '../components/admin/AdminEnterpriseManagement';
 import AdminPayouts from '../components/admin/AdminPayouts';
 import AdminFlashSales from '../components/admin/AdminFlashSales';
+import AdminDevices from '../components/admin/AdminDevices';
+import AdminTickets from '../components/admin/AdminTickets';
+import AdminLoans from '../components/admin/AdminLoans';
+import AdminOrganizations from '../components/admin/AdminOrganizations';
+import AdminMobilityDashboard from '../components/admin/AdminMobilityDashboard';
+import AdminFleetManagement from '../components/admin/AdminFleetManagement';
+
 
 // Import Voice Debug Assistant
 import VoiceDebugAssistant from '../components/VoiceDebugAssistant';
