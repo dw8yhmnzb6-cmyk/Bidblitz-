@@ -116,16 +116,36 @@ async def request_unlock(data: UnlockRequest, user: dict = Depends(get_current_u
     if not device:
         raise HTTPException(status_code=404, detail="Gerät nicht gefunden")
     
-    if device["status"] != "available":
-        raise HTTPException(status_code=409, detail=f"Gerät nicht verfügbar (Status: {device['status']})")
+    if device["status"] != "available" and device["status"] != "reserved":
+        raise HTTPException(status_code=409, detail=f"Geraet nicht verfuegbar (Status: {device['status']})")
+    
+    # If reserved, check it's reserved by this user
+    if device["status"] == "reserved" and device.get("reserved_by") != user["id"]:
+        raise HTTPException(status_code=409, detail="Geraet ist fuer einen anderen Nutzer reserviert")
     
     # Check if user has active session
     active_session = await db.unlock_sessions.find_one({
         "user_id": user["id"],
-        "status": {"": ["requested", "active"]}
+        "status": {"$in": ["requested", "active"]}
     })
     if active_session:
         raise HTTPException(status_code=409, detail="Sie haben bereits eine aktive Sitzung")
+    
+    # Get pricing from device
+    unlock_fee = device.get("unlock_fee_cents", 100)
+    per_minute = device.get("per_minute_cents", 25)
+    
+    # Charge unlock fee from wallet
+    try:
+        unlock_entry = await _charge_wallet(
+            user["id"], unlock_fee, "ride_unlock",
+            f"Entsperrgebuehr: {device.get('name', device['serial'])}",
+            reference_id=None  # Will update with session_id
+        )
+    except HTTPException as e:
+        if e.status_code == 402:
+            raise HTTPException(402, f"Nicht genug Guthaben. Entsperrgebuehr: EUR {unlock_fee/100:.2f}. Bitte Wallet aufladen.")
+        raise
     
     # Create unlock session
     session_id = str(uuid.uuid4())
