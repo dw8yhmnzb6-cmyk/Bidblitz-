@@ -39,17 +39,37 @@ Deployed a new dark-themed hotel booking frontend:
 - Booking confirmation modal
 
 **API Endpoints:**
+
+PUBLIC:
 - `GET /api/hotels/health` - Health check
-- `GET /api/hotels/listings` - Search hotels with filters (city, region, min/max price, guests, q)
+- `GET /api/hotels/listings` - Search hotels (city, region, min/max price, guests, q)
 - `GET /api/hotels/listings/{id}` - Get hotel details
+
+AUTHENTICATED:
 - `POST /api/hotels/bookings` - Create booking (wallet payment, 10% platform fee)
 - `GET /api/hotels/bookings/my` - User's booking history
-- `POST /api/hotels/internal/payouts/run` - Monthly host payouts (localhost + secret only)
+
+HOST:
+- `GET /api/hotels/host/listings` - Get host's own listings
+- `POST /api/hotels/host/listings` - Create new listing
+- `PUT /api/hotels/host/listings/{id}` - Update listing
+- `PATCH /api/hotels/host/listings/{id}/status` - Activate/deactivate
+- `GET /api/hotels/host/bookings` - Get bookings for host's listings
+- `PATCH /api/hotels/host/bookings/{id}` - Actions: confirm, cancel (refunds guest), complete (pays host)
+
+INTERNAL:
+- `POST /api/hotels/internal/payouts/run?secret=...` - Monthly host payouts
 
 **Internal Payouts Job:**
 - Cron: `0 3 1 * *` (1st of each month, 03:00)
 - Security: localhost only + HOTELS_PAYOUT_SECRET env var
-- Logic: Credits host wallet, writes ledger entry, marks payout as done
+- Logic: Finds bookings with past checkout, credits host wallet, logs ledger entry, marks completed
+
+**Frontend Pages:**
+- `/hotels` - Hotel search/browse
+- `/hotels/:id` - Hotel detail & booking
+- `/hotels/host` - Host dashboard (create/edit listings)
+- `/hotels/bookings` - Booking history (guest & host tabs)
 
 **Routes:**
 - `/hotels` - Hotel search/browse
