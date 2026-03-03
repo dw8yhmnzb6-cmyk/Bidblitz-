@@ -17,6 +17,31 @@ Migration und Weiterentwicklung der BidBlitz Auktionsplattform zu einer vollstä
 
 ## Completed Work (March 3, 2026)
 
+### BidBlitz Genius Level-System ✅
+**Status: COMPLETED (March 3, 2026)**
+
+Implemented a 3-tier loyalty program for hotels and Super-App:
+
+**Backend:**
+- `/var/www/bidblitz/backend/utils/genius.py` - Level calculation logic
+- `/var/www/bidblitz/backend/routers/genius.py` - API endpoints
+- Hook added in `/var/www/bidblitz/backend/routers/extended_services.py` (line 41)
+
+**API Endpoints:**
+- `GET /api/genius/me` - Get user's genius status
+- `GET /api/genius/benefits` - Get current level benefits
+- `POST /api/genius/_internal/add_activity` - Admin: add activity
+- `POST /api/genius/_internal/recalc_all` - Admin: recalculate all levels
+
+**Level Requirements:**
+- Level 1 (Starter): Default - 10% Hotel-Rabatt
+- Level 2 (Gold): 1.000€ OR 5 Buchungen OR 1.000 Punkte - 10-15% Rabatt + Upgrade
+- Level 3 (Platinum): 5.000€ OR 15 Buchungen OR 5.000 Punkte - 10-20% Rabatt + VIP
+
+**Frontend:**
+- `/var/www/bidblitz/frontend/src/pages/GeniusProgramPage.jsx`
+- Route: `/genius`
+
 ### Location Selection & Bids Display Fix ✅
 **Status: COMPLETED**
 
