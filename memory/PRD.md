@@ -17,6 +17,20 @@ Migration und Weiterentwicklung der BidBlitz Auktionsplattform zu einer vollstä
 
 ## Completed Work (March 3, 2026)
 
+### Location Selection & Bids Display Fix ✅
+**Status: COMPLETED**
+
+1. **Dynamic Location Selector** - Users can now select from:
+   - 🇦🇪 Dubai (VAE)
+   - 🇽🇰 Kosovo
+   - 🇩🇪 Deutschland
+   - 🇦🇹 Österreich
+   - 🇨🇭 Schweiz
+   
+   The selection is persisted in localStorage and dynamically updates the "Explore" section title and images.
+
+2. **Bids Balance Display** - Wallet card now shows real-time bids_balance from user API (e.g., "992 Gebote")
+
 ### Full-Site Translation Implementation ✅
 **Status: COMPLETED**
 
