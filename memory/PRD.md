@@ -8,7 +8,7 @@ Migration und Weiterentwicklung der BidBlitz Auktionsplattform zu einer vollstä
 2. **Admin Panel** - Vollständiges Management-Dashboard ✅
 3. **Marketplace** - Produktlisten, Kategorien, Filter ✅
 4. **Multi-Language Support** - DE, EN, TR, SQ, AR, FR ✅
-5. **Mobility Module** - Taxi, Scooter, Transport
+5. **Mobility Module** - Taxi, Scooter, Transport ✅
 6. **Services Hub** - Hotels, Versicherung, Krypto, Parken ✅
 7. **Food Delivery** - Restaurantbestellungen ✅
 8. **Events** - Dubai Events & Tickets ✅
@@ -16,6 +16,28 @@ Migration und Weiterentwicklung der BidBlitz Auktionsplattform zu einer vollstä
 10. **BidBlitz Pay** - Wallet & Zahlungen ✅
 
 ## Completed Work (March 3, 2026)
+
+### Hotel Booking System - Dark Theme Frontend ✅
+**Status: COMPLETED (March 3, 2026)**
+
+Deployed a new dark-themed Airbnb-style hotel booking frontend:
+
+**Frontend Files:**
+- `/var/www/bidblitz/frontend/src/pages/HotelsPage.jsx` - Hotel search/list page
+- `/var/www/bidblitz/frontend/src/pages/HotelDetailPage.jsx` - Hotel detail & booking page
+
+**Features:**
+- Dark slate-950 background theme
+- Filter system: Region, Stadt, Suche, Gäste, Max €/Nacht
+- Hotel cards with images, ratings, prices
+- Detailed view with photo gallery
+- Booking widget with Genius discount display
+- Price breakdown (subtotal, discount, total)
+- Booking confirmation modal with level-up notification
+
+**Routes:**
+- `/hotels` - Hotel search/browse
+- `/hotels/:id` - Hotel detail & booking
 
 ### BidBlitz Genius Level-System ✅
 **Status: COMPLETED (March 3, 2026)**
@@ -42,56 +64,48 @@ Implemented a 3-tier loyalty program for hotels and Super-App:
 - `/var/www/bidblitz/frontend/src/pages/GeniusProgramPage.jsx`
 - Route: `/genius`
 
+### Hotel Booking System - Backend ✅
+**Status: COMPLETED (March 3, 2026)**
+
+Full Airbnb-style backend for hotel listings and bookings:
+
+**Backend File:**
+- `/var/www/bidblitz/backend/routers/hotels_airbnb.py`
+
+**API Endpoints:**
+- `GET /api/hotels-airbnb/listings` - Search/filter listings
+- `GET /api/hotels-airbnb/listings/{listing_id}` - Get listing details
+- `POST /api/hotels-airbnb/listings` - Create listing (host)
+- `POST /api/hotels-airbnb/bookings` - Book a listing (applies Genius discount)
+- `GET /api/hotels-airbnb/user/level` - Get user's Genius level
+- `POST /api/hotels-airbnb/_internal/payouts` - Process host payouts
+
+**Features:**
+- Listing management with photos, amenities, pricing
+- Booking with wallet debit (uses existing debit_payment)
+- Automatic Genius level discount application
+- Platform fee calculation (15%)
+- Host payout management
+
+### Nginx Optimization ✅
+**Status: COMPLETED (March 3, 2026)**
+
+Optimized Nginx configuration for SPA:
+- `try_files` for client-side routing
+- Security headers (X-Frame-Options, CSP, etc.)
+- Caching for static assets
+- Reverse proxy for API
+
 ### Location Selection & Bids Display Fix ✅
 **Status: COMPLETED**
 
-1. **Dynamic Location Selector** - Users can now select from:
-   - 🇦🇪 Dubai (VAE)
-   - 🇽🇰 Kosovo
-   - 🇩🇪 Deutschland
-   - 🇦🇹 Österreich
-   - 🇨🇭 Schweiz
-   
-   The selection is persisted in localStorage and dynamically updates the "Explore" section title and images.
-
-2. **Bids Balance Display** - Wallet card now shows real-time bids_balance from user API (e.g., "992 Gebote")
+1. **Dynamic Location Selector** - Users can select from UAE, Kosovo, Deutschland, Österreich, Schweiz
+2. **Bids Balance Display** - Real-time bids_balance from user API
 
 ### Full-Site Translation Implementation ✅
 **Status: COMPLETED**
 
-All pages now fully support multi-language translation:
-
-1. **Dubai Events (DubaiEvents.jsx)** ✅
-   - Title, subtitle, categories, prices all translated
-   - Languages: DE, EN, SQ, AR, TR, FR
-
-2. **Services Hub (ServicesHub.jsx)** ✅
-   - All tabs (Hotels, Insurance, Crypto, Marketplace, Parking, Transfer) translated
-   - All button labels, messages, placeholders translated
-   - Languages: DE, EN, SQ, AR, TR, FR
-
-3. **Food Delivery (FoodDelivery.jsx)** ✅
-   - Menu items, buttons, status messages translated
-   - Languages: DE, EN, SQ, AR, TR, FR
-
-4. **Partner Landing (PartnerLanding.js)** ✅
-   - All UI elements, business types, action buttons translated
-   - Languages: DE, EN, SQ, AR, TR, FR
-
-5. **VIP Auctions (VIPAuctions.js)** ✅
-   - Already connected to translation system
-
-6. **Buy Bids (BuyBids.js)** ✅
-   - Has inline translations already implemented
-
-7. **pageTranslations.js** - Added `usePageTranslations` hook
-
-### Previous Session Completions
-- Marketplace overhaul with working listings, detail pages, and create page
-- Country/city filtering (VAE structure)
-- Admin panel accessibility fix
-- SuperApp home page translations
-- Mobile language selector fix
+All pages fully support multi-language translation (DE, EN, SQ, AR, TR, FR)
 
 ## Technical Architecture
 
@@ -106,11 +120,11 @@ All pages now fully support multi-language translation:
 - MongoDB database
 - Location: `/var/www/bidblitz/backend/`
 
-### Translation System
-- `/var/www/bidblitz/frontend/src/i18n/pageTranslations.js`
-- `/var/www/bidblitz/frontend/src/i18n/marketplaceTranslations.js`
-- `/var/www/bidblitz/frontend/src/i18n/superAppTranslations.js`
-- `/var/www/bidblitz/frontend/src/context/LanguageContext.js`
+### Database Collections
+- `genius` - User loyalty level data
+- `genius_events` - Audit log for level changes
+- `hotel_listings` - Hotel/apartment listings
+- `hotel_bookings` - Booking records
 
 ### Deployment
 - Server: IONOS (212.227.20.190)
@@ -125,6 +139,10 @@ All pages now fully support multi-language translation:
 5. 🇦🇪 Arabic (ar/ae)
 6. 🇫🇷 French (fr)
 
+## Upcoming Tasks (P1)
+- [ ] Add Genius page link in main navigation
+- [ ] Implement "Booking History" page for users
+
 ## Upcoming Tasks (P2)
 - [ ] In-App Chat (Rider-Driver)
 - [ ] SOS Button in Taxi App
@@ -135,9 +153,10 @@ All pages now fully support multi-language translation:
 - [ ] Sync production server with GitHub repository
 - [ ] App Store submission preparation
 - [ ] KI-powered support chatbot
-- [ ] Hotel Booking Module
 - [ ] Insurance Module
 - [ ] Parking Finder Module
+- [ ] Remove obsolete hotels_booking.py router
+- [ ] Create MongoDB indexes for genius collections
 
 ## Mocked Features
 - Crypto Wallet (placeholder implementation)
