@@ -39,10 +39,17 @@ Deployed a new dark-themed hotel booking frontend:
 - Booking confirmation modal
 
 **API Endpoints:**
-- `GET /api/hotels/listings` - Search hotels with filters
+- `GET /api/hotels/health` - Health check
+- `GET /api/hotels/listings` - Search hotels with filters (city, region, min/max price, guests, q)
 - `GET /api/hotels/listings/{id}` - Get hotel details
-- `POST /api/hotels/bookings` - Create booking (wallet payment)
+- `POST /api/hotels/bookings` - Create booking (wallet payment, 10% platform fee)
 - `GET /api/hotels/bookings/my` - User's booking history
+- `POST /api/hotels/internal/payouts/run` - Monthly host payouts (localhost + secret only)
+
+**Internal Payouts Job:**
+- Cron: `0 3 1 * *` (1st of each month, 03:00)
+- Security: localhost only + HOTELS_PAYOUT_SECRET env var
+- Logic: Credits host wallet, writes ledger entry, marks payout as done
 
 **Routes:**
 - `/hotels` - Hotel search/browse
