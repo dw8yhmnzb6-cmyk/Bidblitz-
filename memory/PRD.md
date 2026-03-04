@@ -3,37 +3,40 @@
 ## Architecture
 Frontend: React + Tailwind + Leaflet | Backend: FastAPI | DB: MongoDB | Server: IONOS 212.227.20.190
 
-## Level 14: Enhanced Reviews System (March 2026)
+## Level 15: In-App Chat (March 2026)
 
 ### Features
-- Photos support (up to 5 URLs per review)
-- Profanity auto-moderation (DE+EN keyword list + spam patterns)
-- Clean reviews → auto-APPROVED, flagged → PENDING for admin
-- Breakdown response: {5: count, 4: count, 3: count, 2: count, 1: count}
-- Helpful votes (1 per user per review)
-- Can-review check endpoint (validates booking ownership + completion + uniqueness)
-- Host reply (unique per review, host-only)
-- Report system (SPAM/ABUSE/FAKE/OTHER)
+- Chat per booking (Guest <-> Host), thread auto-created
+- Real-time polling (5s interval), unread badges, inbox
+- Admin escalation: support tickets with reason + notes
+- Admin can respond in escalated threads
+- In-app notifications on new messages
+- System messages for escalation events
+
+### Collections
+- chat_threads (per booking, unread counters per role)
+- chat_messages (TEXT/IMAGE/SYSTEM, sender_role)
+- support_tickets (OPEN/IN_PROGRESS/RESOLVED)
+- notifications (in-app)
+
+### Endpoints (hotel_chat.py)
+- POST /api/hotels/chat/thread — create/get thread
+- GET /api/hotels/chat/thread/{bookingId} — thread + messages
+- POST /api/hotels/chat/send — send message
+- POST /api/hotels/chat/read — mark read
+- GET /api/hotels/chat/inbox — all user threads + unread count
+- POST /api/hotels/chat/escalate — create support ticket
+- GET /api/hotels/chat/admin/tickets — admin ticket list
+- PATCH /api/hotels/chat/admin/tickets/{id} — update ticket
+- POST /api/hotels/chat/admin/tickets/{id}/message — admin reply
+
+### Notifications (notifications_inapp.py)
+- GET /api/notifications/my
+- POST /api/notifications/read/{id}
 
 ### Frontend
-- `/hotels/:id/review/:bookingId` — Review form with 5-star selector + title + comment
-- Validates can-review before showing form
-- Success/error states
+- /chat — Inbox with unread badges
+- /chat/:bookingId — Chat thread with send, escalation modal
 
-### Endpoints (hotels_reviews.py)
-- GET /api/hotels/{id}/reviews — avg_rating, breakdown, paginated items with user+reply
-- POST /api/hotels/{id}/reviews — booking-verified, profanity-checked
-- POST /api/hotels/reviews/{id}/reply — host only
-- POST /api/hotels/reviews/{id}/helpful — vote helpful
-- POST /api/hotels/reviews/{id}/report — report abuse
-- GET /api/hotels/reviews/can-review/{bookingId} — pre-check
-
-### Admin (admin_reviews.py)
-- GET /api/admin/hotel-reviews — filter by status/reported/hotel
-- POST /api/admin/hotel-reviews/{id}/approve
-- POST /api/admin/hotel-reviews/{id}/reject
-
-## Previous Levels: L1-13 (Hotels, Taxi, Marketplace, Admin, Security, Monetization, Genius Loyalty)
-
-## Pending: P2
-Guest-Host Chat (L15), Insurance, Parking, KI-Chatbot, App Store, Analytics
+## Previous: L1-14 (Hotels, Taxi, Marketplace, Admin, Security, Monetization, Genius, Reviews)
+## Pending: Insurance, Parking, KI-Chatbot, App Store, Analytics, Push Notifications
