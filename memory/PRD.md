@@ -3,43 +3,48 @@
 ## Architecture
 Frontend: React + Tailwind + Leaflet | Backend: FastAPI | DB: MongoDB | Server: IONOS 212.227.20.190
 
-## Level 10 Production-Grade Features (March 2026)
+## Level 11 Monetization Engine (March 2026)
 
-### Security & Rate Limiting
-- MongoDB-backed rate limits (key: ip+user+route, 60/min + 300/10min windows)
-- Auto-block on exceed with 429
+### Products (Auto-seeded)
+- Hotels Boost 24h: 10€ (weight 50)
+- Hotels Featured 72h: 30€ (weight 100)
+- Marketplace Boost 24h: 5€
+- Business Basic 30d: 29€
 
-### Audit Logs
-- All critical actions logged to `audit_logs` collection
-- Admin endpoint: `GET /api/admin/audit?action=&actor=&limit=`
+### Purchase Flow
+- Wallet deduction → Purchase record → Promotion/Subscription created → Audit logged
+- Insufficient funds → 402 error with balance info
 
-### Marketplace Moderation
-- Auto-moderation on listing create: banned keyword check, spam detection, risk scoring (0-100)
-- Status: approved/pending/rejected with flagged_terms
-- Admin review: `GET /api/admin/marketplace/review` + `PATCH /api/admin/marketplace/{id}`
+### Hotels Promotion Sorting
+- Listings sorted: FEATURED first → BOOST → normal
+- Response includes is_featured, is_boosted, promo_ends_at fields
 
-### Fraud Detection
-- Fraud event recording for: failed payments, cancel abuse, promo abuse, high-freq posts
-- Auto-flag users with 10+ events/day
-- Admin: `GET /api/admin/fraud?type=&user_id=`
+### Admin Revenue Dashboard
+- KPIs: today/7d/30d revenue, purchase count, active promotions, refunds
+- Top products, top users
+- Refund capability with wallet restoration
 
-### Business Accounts (KYC-lite)
-- `POST /api/business/create` with pending status + kyc_level=none
-- `GET /api/business/me` + `PATCH /api/business/me`
+### Collections
+- monetization_products, monetization_purchases, listing_promotions, business_subscriptions
 
-### Hotels Dynamic Pricing (Real Logic)
-- Per-night pricing with: weekend +20%, seasonal multiplier by month, occupancy surcharge
-- `GET /api/hotels/pricing/quote?listing_id=&checkin=&checkout=` returns full breakdown
-- Host can set rules: `POST /api/hotels/host/pricing/rules`
-- Admin override: `PATCH /api/admin/hotels/pricing/override/{listing_id}`
+### All Endpoints
+- GET /api/monetization/products
+- POST /api/monetization/purchase
+- GET /api/monetization/my-purchases
+- GET /api/admin/monetization/overview
+- GET /api/admin/monetization/purchases
+- POST /api/admin/monetization/refund
 
-### Frontend
-- `/admin/audit` - Audit log viewer with action filter
-- `/admin/fraud` - Fraud events viewer with type filter
+### Frontend Pages
+- /shop — Product catalog with buy buttons
+- /my-purchases — Purchase history
+- /admin/monetization — Revenue KPIs + refund management
 
-## All Backend Routers
-security_rate_limit, audit_logs, marketplace_moderation, fraud_signals, business_accounts, hotels_pricing
-+ hotels (7 routers), taxi (8 routers), admin_dashboard, marketplace_extended, ai_search, recommendations, user_reputation
+## Previous Levels Complete
+- L1-5: Hotels, Taxi (rider+driver), Admin Dashboard
+- L6: Loyalty, Dynamic Pricing, Coupons, Reviews, Star Filter
+- L7: Marketplace (Real Estate, Cars, Jobs), Search
+- L10: Rate Limiting, Audit Logs, Moderation, Fraud Detection, Business Accounts, Dynamic Pricing
 
 ## Pending: P2
 Guest-Host chat, Genius loyalty, Insurance, Parking, KI-Chatbot, App Store
