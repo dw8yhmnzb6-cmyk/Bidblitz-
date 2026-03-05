@@ -1,33 +1,30 @@
 # BidBlitz Super-App - PRD (Final)
 
-## Architecture
-Frontend: React + Tailwind + Leaflet | Backend: FastAPI | DB: MongoDB | Server: IONOS 212.227.20.190
+## Complete System: 45+ Pages, 80+ Routers
 
-## Super App Dashboard + Revenue Engine (March 2026)
+### KYC + Risk (kyc_system.py)
+- 3 KYC levels (0/1/2) with transfer/wallet limits
+- Document + selfie upload, admin approve/reject
+- Risk score tracking
 
-### Super App Dashboard (/dashboard)
-- Wallet quick-view (balance + Genius level)
-- 4 Quick Actions: Scan, Pay, Transport, Wallet
-- Category grid: Mobility, Food, Shopping, Services
-- Explore carousel: Deals, Auktionen, Hotels, Games
-- Referral widget + Quick links (Plus, Support, Genius)
+### Growth Engine (growth_engine.py)
+- Daily rewards (Day 1-5: 10-200 points)
+- Activity rewards per module
+- Campaigns + leaderboard
 
-### Revenue Engine (Auto-Revenue)
-- Central fee rules per module (TAXI 2%, HOTELS 12%, MARKETPLACE 5%)
-- Double-entry ledger (immutable entries + reversals)
-- Partner balances (HOST/DRIVER/MERCHANT/PLATFORM)
-- Payout management (request, admin approve/fail)
-- Auto-invoicing per period (generate from ledger entries)
-- Admin Revenue Dashboard (/admin/revenue): KPIs, Fee Rules, Payouts, Invoices
+### Super Marketplace V3 (marketplace_v3.py)
+- Products/Cars/RealEstate/Services
+- Wallet-based orders, seller reviews
 
-### Collections
-- fee_rules, ledger_entries, partner_balances, payout_jobs, invoices
+### AI Assistant (ai_assistant.py)
+- Command routing (12 modules: taxi, hotels, deals, wallet, etc.)
+- Chat with action buttons
 
-### Key Endpoints
-- POST /api/revenue/internal/post — ledger entry with auto fee calc
-- GET /api/admin/revenue/kpis — revenue by module + totals
-- POST /api/admin/revenue/fee-rules/seed — default rules
-- POST /api/payouts/request — partner payout
-- POST /api/admin/invoices/generate — monthly invoices
+### Merchant Ecosystem (merchants.py)
+- Registration, products, orders, reviews
+- Admin verification
 
-## Complete Feature Count: 40+ Frontend Routes, 70+ Backend Routers, 20+ Feature Levels
+### Frontend
+- /rewards — Daily rewards + leaderboard + campaigns
+- /assistant — AI chat with module routing
+- /admin/kyc — KYC review + approve/reject
