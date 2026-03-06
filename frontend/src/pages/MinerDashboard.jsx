@@ -1,6 +1,5 @@
 /**
- * BidBlitz Mining Farm - Professional Design
- * With 3D animated miners and live BTC counter
+ * BidBlitz Mining Farm - With Pool Stats
  */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ import BottomNav from '../components/BottomNav';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
-// Animated 3D Machine Component
+// Animated 3D Machine
 const Machine = ({ tier }) => {
   const gradients = {
     bronze: 'linear-gradient(135deg, #cd7f32, #8b5a2b)',
@@ -21,10 +20,10 @@ const Machine = ({ tier }) => {
   
   return (
     <div 
-      className="w-20 h-20 mx-auto rounded-xl animate-spin-slow"
+      className="w-16 h-16 mx-auto rounded-xl animate-spin-slow"
       style={{ 
         background: gradients[tier] || gradients.silver,
-        boxShadow: '0 10px 30px rgba(0,0,0,0.4)'
+        boxShadow: '0 8px 20px rgba(0,0,0,0.4)'
       }}
     />
   );
@@ -33,13 +32,13 @@ const Machine = ({ tier }) => {
 export default function MinerDashboard() {
   const [stats, setStats] = useState({ hashrate: 0, daily: 0, coins: 0 });
   const [miners, setMiners] = useState([]);
+  const [poolStats, setPoolStats] = useState(null);
   const [liveBtc, setLiveBtc] = useState(0.00000001);
   const [message, setMessage] = useState('');
   
   useEffect(() => {
     fetchData();
     
-    // Live mining counter
     const interval = setInterval(() => {
       setLiveBtc(prev => prev + 0.00000001);
     }, 2000);
@@ -52,9 +51,10 @@ export default function MinerDashboard() {
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       
-      const [statsRes, minersRes] = await Promise.all([
+      const [statsRes, minersRes, poolRes] = await Promise.all([
         axios.get(`${API}/app/mining/stats`, { headers }),
-        axios.get(`${API}/app/miners/my`, { headers })
+        axios.get(`${API}/app/miners/my`, { headers }),
+        axios.get(`${API}/app/pool/stats`)
       ]);
       
       setStats({
@@ -63,6 +63,7 @@ export default function MinerDashboard() {
         coins: statsRes.data.coins || 0
       });
       setMiners(minersRes.data.miners || []);
+      setPoolStats(poolRes.data);
     } catch (error) {
       console.log('Data error');
     }
@@ -92,7 +93,6 @@ export default function MinerDashboard() {
     }
   };
   
-  // Convert daily coins to fake BTC for display
   const dailyBtc = (stats.daily * 0.00000001).toFixed(8);
   
   return (
@@ -100,21 +100,56 @@ export default function MinerDashboard() {
       <div className="p-5">
         <h2 className="text-2xl font-bold mb-5">BidBlitz Mining Farm</h2>
         
-        {/* Overview Boxes */}
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          <div className="bg-[#1c213f] p-4 rounded-xl text-center">
-            <p className="text-xs text-slate-400 mb-1">Total Power</p>
+        {/* Overview */}
+        <div className="grid grid-cols-3 gap-3 mb-5">
+          <div className="bg-[#1c213f] p-3 rounded-xl text-center">
+            <p className="text-xs text-slate-400">Total Power</p>
             <h3 className="text-lg font-bold text-cyan-400">{stats.hashrate} TH</h3>
           </div>
-          <div className="bg-[#1c213f] p-4 rounded-xl text-center">
-            <p className="text-xs text-slate-400 mb-1">Daily Profit</p>
-            <h3 className="text-lg font-bold text-green-400">{dailyBtc} BTC</h3>
+          <div className="bg-[#1c213f] p-3 rounded-xl text-center">
+            <p className="text-xs text-slate-400">Daily Profit</p>
+            <h3 className="text-sm font-bold text-green-400">{dailyBtc} BTC</h3>
           </div>
-          <div className="bg-[#1c213f] p-4 rounded-xl text-center">
-            <p className="text-xs text-slate-400 mb-1">Active Miners</p>
+          <div className="bg-[#1c213f] p-3 rounded-xl text-center">
+            <p className="text-xs text-slate-400">Miners</p>
             <h3 className="text-lg font-bold text-amber-400">{miners.length}</h3>
           </div>
         </div>
+        
+        {/* Pool Stats */}
+        {poolStats && (
+          <div className="bg-gradient-to-r from-[#1c213f] to-[#14183a] p-4 rounded-xl mb-5 border border-[#6c63ff]/30">
+            <h3 className="font-semibold mb-3 text-[#6c63ff]">⛏️ Mining Pool Stats</h3>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <p className="text-slate-400">Global Hashrate</p>
+                <p className="font-bold text-cyan-400">{poolStats.total_hashrate} TH/s</p>
+              </div>
+              <div>
+                <p className="text-slate-400">Active Miners</p>
+                <p className="font-bold text-amber-400">{poolStats.total_miners}</p>
+              </div>
+              <div>
+                <p className="text-slate-400">Block Height</p>
+                <p className="font-bold text-white">{poolStats.block_height?.toLocaleString()}</p>
+              </div>
+              <div>
+                <p className="text-slate-400">Next Reward</p>
+                <p className="font-bold text-green-400">{poolStats.next_block_reward} BTC</p>
+              </div>
+              <div>
+                <p className="text-slate-400">Pool Luck</p>
+                <p className={`font-bold ${poolStats.pool_luck >= 100 ? 'text-green-400' : 'text-amber-400'}`}>
+                  {poolStats.pool_luck}%
+                </p>
+              </div>
+              <div>
+                <p className="text-slate-400">Est. Daily</p>
+                <p className="font-bold text-green-400">{poolStats.estimated_daily_btc} BTC</p>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* Message */}
         {message && (
@@ -125,20 +160,20 @@ export default function MinerDashboard() {
         
         {/* Miners Grid */}
         {miners.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-2 gap-3 mb-5">
             {miners.map((miner) => (
               <div 
                 key={miner.id} 
                 className="bg-[#14183a] p-4 rounded-xl text-center"
-                style={{ boxShadow: '0 15px 40px rgba(0,0,0,0.6)' }}
+                style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
               >
                 <Machine tier={miner.tier} />
-                <h3 className="font-semibold mt-3 mb-1">{miner.name}</h3>
-                <p className="text-sm text-cyan-400 mb-3">{miner.hashrate} TH</p>
+                <h3 className="font-semibold mt-2 text-sm">{miner.name}</h3>
+                <p className="text-xs text-cyan-400 mb-2">{miner.hashrate} TH</p>
                 <button
                   onClick={() => upgradeMiner(miner.id)}
                   disabled={miner.level >= 10}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
                     miner.level >= 10
                       ? 'bg-slate-700 text-slate-500'
                       : 'bg-[#6c63ff] hover:bg-[#5a52e0]'
@@ -150,43 +185,31 @@ export default function MinerDashboard() {
             ))}
           </div>
         ) : (
-          <div className="bg-[#1c213f] p-8 rounded-xl text-center mb-6">
-            <p className="text-slate-400 mb-4">No miners yet</p>
-            <Link
-              to="/miner-market"
-              className="inline-block px-6 py-2.5 bg-[#6c63ff] rounded-lg font-medium"
-            >
-              Buy First Miner
+          <div className="bg-[#1c213f] p-6 rounded-xl text-center mb-5">
+            <p className="text-slate-400 mb-3">No miners yet</p>
+            <Link to="/miner-market" className="inline-block px-5 py-2 bg-[#6c63ff] rounded-lg font-medium">
+              Buy Miner
             </Link>
           </div>
         )}
         
         {/* Live Mining */}
-        <div className="bg-[#1c213f] p-5 rounded-xl text-center mb-6">
+        <div className="bg-[#1c213f] p-4 rounded-xl text-center mb-5">
           <h3 className="font-semibold mb-2">Live Mining</h3>
-          <p className="text-2xl font-bold text-green-400 font-mono">
-            +{liveBtc.toFixed(8)} BTC
-          </p>
+          <p className="text-xl font-bold text-green-400 font-mono">+{liveBtc.toFixed(8)} BTC</p>
         </div>
         
-        {/* Action Buttons */}
+        {/* Buttons */}
         <div className="flex gap-3">
-          <button
-            onClick={claimRewards}
-            className="flex-1 py-3 bg-green-600 hover:bg-green-500 rounded-xl font-semibold"
-          >
-            Claim Rewards
+          <button onClick={claimRewards} className="flex-1 py-3 bg-green-600 hover:bg-green-500 rounded-xl font-semibold">
+            Claim
           </button>
-          <Link
-            to="/miner-market"
-            className="flex-1 py-3 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-xl font-semibold text-center"
-          >
-            Buy Miners
+          <Link to="/miner-market" className="flex-1 py-3 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-xl font-semibold text-center">
+            Buy
           </Link>
         </div>
       </div>
       
-      {/* CSS Animation */}
       <style jsx>{`
         @keyframes spinSlow {
           0% { transform: rotateY(0deg); }
