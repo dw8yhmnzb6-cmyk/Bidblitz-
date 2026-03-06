@@ -1046,6 +1046,13 @@ function AppContent() {
             </ProtectedRoute>
           } />
           
+          {/* Mining Dashboard & Market */}
+          <Route path="/miner" element={<MinerDashboard />} />
+          <Route path="/mining" element={<MinerDashboard />} />
+          <Route path="/mining-dashboard" element={<MinerDashboard />} />
+          <Route path="/miner-market" element={<MinerMarket />} />
+          <Route path="/miner-markt" element={<MinerMarket />} />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
