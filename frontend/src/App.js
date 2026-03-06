@@ -159,6 +159,8 @@ import MinerMarket from "./pages/MinerMarket";
 import SuperAppMinimal from "./pages/SuperAppMinimal";
 import GamesHub from "./pages/GamesHub";
 import AppWallet from "./pages/AppWallet";
+import Match3Game from "./pages/Match3Game";
+import SpinWheel from "./pages/SpinWheel";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
