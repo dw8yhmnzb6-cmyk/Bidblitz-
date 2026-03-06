@@ -1087,6 +1087,8 @@ function AppContent() {
           } />
           <Route path="/app-leaderboard" element={<AppLeaderboard />} />
           <Route path="/app-profile" element={<AppProfile />} />
+          <Route path="/app-vip" element={<AppVIP />} />
+          <Route path="/vip" element={<AppVIP />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
