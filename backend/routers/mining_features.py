@@ -978,3 +978,153 @@ async def add_vip_points(points: int = 10, authorization: str = Header(None)):
         "name": current_level["name"],
         "bonus": current_level["bonus"]
     }
+
+
+# ======================== REFERRAL SYSTEM ========================
+
+referral_col = db["referrals"]
+
+@router.get("/referral/my-code")
+async def get_my_referral_code(authorization: str = Header(None)):
+    """Get or create user's referral code"""
+    user_id = get_user_id_from_token(authorization)
+    
+    referral = referral_col.find_one({"user_id": user_id})
+    
+    if not referral:
+        # Generate unique code
+        code = f"BB{random.randint(10000, 99999)}"
+        referral_col.insert_one({
+            "user_id": user_id,
+            "code": code,
+            "referrals": [],
+            "total_earnings": 0,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        return {"code": code, "referrals": 0, "earnings": 0}
+    
+    return {
+        "code": referral.get("code"),
+        "referrals": len(referral.get("referrals", [])),
+        "earnings": referral.get("total_earnings", 0)
+    }
+
+@router.post("/referral/use-code")
+async def use_referral_code(code: str, authorization: str = Header(None)):
+    """Use a referral code to join"""
+    user_id = get_user_id_from_token(authorization)
+    now = datetime.now(timezone.utc)
+    
+    # Check if already used a code
+    existing = referral_col.find_one({"referrals": user_id})
+    if existing:
+        raise HTTPException(status_code=400, detail="Du hast bereits einen Code verwendet")
+    
+    # Find referrer
+    referrer = referral_col.find_one({"code": code.upper()})
+    if not referrer:
+        raise HTTPException(status_code=404, detail="Code nicht gefunden")
+    
+    if referrer.get("user_id") == user_id:
+        raise HTTPException(status_code=400, detail="Du kannst deinen eigenen Code nicht verwenden")
+    
+    # Add to referrer's list and give bonus
+    referral_bonus = 100
+    
+    referral_col.update_one(
+        {"code": code.upper()},
+        {
+            "$push": {"referrals": user_id},
+            "$inc": {"total_earnings": referral_bonus}
+        }
+    )
+    
+    # Give coins to referrer
+    wallets_col.update_one(
+        {"user_id": referrer.get("user_id")},
+        {
+            "$inc": {"coins": referral_bonus, "total_earned": referral_bonus},
+            "$setOnInsert": {"created_at": now.isoformat()}
+        },
+        upsert=True
+    )
+    
+    # Give bonus to new user too
+    new_user_bonus = 50
+    wallets_col.update_one(
+        {"user_id": user_id},
+        {
+            "$inc": {"coins": new_user_bonus, "total_earned": new_user_bonus},
+            "$setOnInsert": {"created_at": now.isoformat()}
+        },
+        upsert=True
+    )
+    
+    # Add to live feed
+    live_feed_col.insert_one({
+        "user_id": user_id,
+        "action": f"New user joined via referral!",
+        "type": "referral",
+        "timestamp": now.isoformat()
+    })
+    
+    wallet = wallets_col.find_one({"user_id": user_id}, {"_id": 0})
+    
+    return {
+        "success": True,
+        "message": f"Du hast {new_user_bonus} Coins erhalten!",
+        "bonus": new_user_bonus,
+        "new_balance": wallet.get("coins", 0) if wallet else new_user_bonus
+    }
+
+# ======================== MINING POOL STATS ========================
+
+@router.get("/pool/stats")
+async def get_pool_stats():
+    """Get global mining pool statistics"""
+    
+    # Calculate total hashrate from all miners
+    pipeline = [
+        {"$unwind": "$miners"},
+        {"$group": {
+            "_id": None,
+            "total_miners": {"$sum": 1},
+            "total_users": {"$addToSet": "$user_id"}
+        }}
+    ]
+    
+    result = list(miners_col.aggregate(pipeline))
+    
+    total_miners = 0
+    total_users = 0
+    
+    if result:
+        total_miners = result[0].get("total_miners", 0)
+        total_users = len(result[0].get("total_users", []))
+    
+    # Calculate estimated total hashrate
+    all_miners_data = list(miners_col.find({}, {"miners": 1}))
+    total_hashrate = 0
+    for user_data in all_miners_data:
+        for miner in user_data.get("miners", []):
+            miner_type = MINER_TYPES.get(miner.get("type_id"))
+            if miner_type:
+                level = miner.get("level", 1)
+                multiplier = 1 + (level - 1) * 0.1
+                total_hashrate += miner_type["hashrate"] * multiplier
+    
+    # Simulate block info
+    block_height = 850000 + random.randint(0, 1000)
+    next_block_reward = round(3.125 + random.random() * 0.5, 4)
+    pool_luck = random.randint(90, 110)
+    
+    return {
+        "total_hashrate": round(total_hashrate, 2),
+        "total_miners": total_miners,
+        "total_users": total_users,
+        "block_height": block_height,
+        "next_block_reward": next_block_reward,
+        "pool_luck": pool_luck,
+        "pool_fee": 1.0,
+        "estimated_daily_btc": round(total_hashrate * 0.00000001, 8)
+    }
