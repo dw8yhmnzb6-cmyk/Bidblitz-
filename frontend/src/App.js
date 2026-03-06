@@ -1093,6 +1093,11 @@ function AppContent() {
           <Route path="/app-profile" element={<AppProfile />} />
           <Route path="/app-vip" element={<AppVIP />} />
           <Route path="/vip" element={<AppVIP />} />
+          <Route path="/app-statistics" element={<AppStatistics />} />
+          <Route path="/stats" element={<AppStatistics />} />
+          <Route path="/taxi" element={<AppTaxi />} />
+          <Route path="/scooter" element={<AppScooter />} />
+          <Route path="/vip-games" element={<AppVIPGames />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
