@@ -167,6 +167,10 @@ import AppAdminPanel from "./pages/AppAdminPanel";
 import AppLeaderboard from "./pages/AppLeaderboard";
 import AppProfile from "./pages/AppProfile";
 import AppVIP from "./pages/AppVIP";
+import AppStatistics from "./pages/AppStatistics";
+import AppTaxi from "./pages/AppTaxi";
+import AppScooter from "./pages/AppScooter";
+import AppVIPGames from "./pages/AppVIPGames";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
