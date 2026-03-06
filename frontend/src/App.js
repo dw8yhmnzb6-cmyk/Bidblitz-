@@ -155,6 +155,11 @@ import PopupManager from "./components/PopupManager";
 import MinerDashboard from "./pages/MinerDashboard";
 import MinerMarket from "./pages/MinerMarket";
 
+// Super App Minimal + New Pages
+import SuperAppMinimal from "./pages/SuperAppMinimal";
+import GamesHub from "./pages/GamesHub";
+import AppWallet from "./pages/AppWallet";
+
 // New Feature Components
 import Watchlist from "./components/Watchlist";
 import AutoBid from "./components/AutoBid";
