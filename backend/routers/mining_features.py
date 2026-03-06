@@ -1128,3 +1128,121 @@ async def get_pool_stats():
         "pool_fee": 1.0,
         "estimated_daily_btc": round(total_hashrate * 0.00000001, 8)
     }
+
+
+# ======================== LEADERBOARD ========================
+
+@router.get("/leaderboard/miners")
+async def get_top_miners(limit: int = 10):
+    """Get top miners by hashrate"""
+    
+    # Get all users with their total hashrate
+    all_users = list(miners_col.find({}, {"_id": 0, "user_id": 1, "miners": 1}))
+    
+    leaderboard = []
+    for user_data in all_users:
+        user_id = user_data.get("user_id", "Unknown")
+        total_hashrate = 0
+        
+        for miner in user_data.get("miners", []):
+            miner_type = MINER_TYPES.get(miner.get("type_id"))
+            if miner_type:
+                level = miner.get("level", 1)
+                multiplier = 1 + (level - 1) * 0.1
+                total_hashrate += miner_type["hashrate"] * multiplier
+        
+        if total_hashrate > 0:
+            leaderboard.append({
+                "name": f"User_{user_id[:6]}",
+                "hashrate": round(total_hashrate, 2),
+                "miners": len(user_data.get("miners", []))
+            })
+    
+    # Add mock data if empty
+    if len(leaderboard) < 4:
+        mock_data = [
+            {"name": "Alex", "hashrate": 500, "miners": 12},
+            {"name": "Maria", "hashrate": 420, "miners": 10},
+            {"name": "Leon", "hashrate": 390, "miners": 9},
+            {"name": "Sara", "hashrate": 350, "miners": 8},
+        ]
+        for m in mock_data:
+            if len(leaderboard) < limit:
+                leaderboard.append(m)
+    
+    # Sort by hashrate
+    leaderboard.sort(key=lambda x: x["hashrate"], reverse=True)
+    
+    return {"leaderboard": leaderboard[:limit]}
+
+@router.get("/leaderboard/players")
+async def get_top_players(limit: int = 10):
+    """Get top players by coins"""
+    
+    # Get all wallets
+    all_wallets = list(wallets_col.find({}, {"_id": 0, "user_id": 1, "coins": 1, "total_earned": 1}))
+    
+    leaderboard = []
+    for wallet in all_wallets:
+        user_id = wallet.get("user_id", "Unknown")
+        coins = wallet.get("coins", 0)
+        
+        if coins > 0:
+            leaderboard.append({
+                "name": f"User_{user_id[:6]}",
+                "coins": coins,
+                "total_earned": wallet.get("total_earned", 0)
+            })
+    
+    # Add mock data if empty
+    if len(leaderboard) < 4:
+        mock_data = [
+            {"name": "Max", "coins": 12000, "total_earned": 15000},
+            {"name": "Anna", "coins": 10400, "total_earned": 13000},
+            {"name": "David", "coins": 9800, "total_earned": 12500},
+            {"name": "Lisa", "coins": 9200, "total_earned": 11000},
+        ]
+        for m in mock_data:
+            if len(leaderboard) < limit:
+                leaderboard.append(m)
+    
+    # Sort by coins
+    leaderboard.sort(key=lambda x: x["coins"], reverse=True)
+    
+    return {"leaderboard": leaderboard[:limit]}
+
+@router.get("/leaderboard/referrals")
+async def get_top_referrals(limit: int = 10):
+    """Get top referrers by friend count"""
+    
+    # Get all referrals
+    all_referrals = list(referral_col.find({}, {"_id": 0, "user_id": 1, "referrals": 1, "total_earnings": 1}))
+    
+    leaderboard = []
+    for ref in all_referrals:
+        user_id = ref.get("user_id", "Unknown")
+        friends = len(ref.get("referrals", []))
+        
+        if friends > 0:
+            leaderboard.append({
+                "name": f"User_{user_id[:6]}",
+                "friends": friends,
+                "earnings": ref.get("total_earnings", 0)
+            })
+    
+    # Add mock data if empty
+    if len(leaderboard) < 4:
+        mock_data = [
+            {"name": "Chris", "friends": 85, "earnings": 8500},
+            {"name": "Julia", "friends": 70, "earnings": 7000},
+            {"name": "Amir", "friends": 55, "earnings": 5500},
+            {"name": "Tom", "friends": 40, "earnings": 4000},
+        ]
+        for m in mock_data:
+            if len(leaderboard) < limit:
+                leaderboard.append(m)
+    
+    # Sort by friends
+    leaderboard.sort(key=lambda x: x["friends"], reverse=True)
+    
+    return {"leaderboard": leaderboard[:limit]}
