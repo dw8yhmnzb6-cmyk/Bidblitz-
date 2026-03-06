@@ -165,6 +165,7 @@ import Referral from "./pages/Referral";
 import TreasureHunt from "./pages/TreasureHunt";
 import AppAdminPanel from "./pages/AppAdminPanel";
 import AppLeaderboard from "./pages/AppLeaderboard";
+import AppProfile from "./pages/AppProfile";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
