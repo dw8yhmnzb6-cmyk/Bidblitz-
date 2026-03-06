@@ -219,6 +219,9 @@ from routers.universal_transfer import router as universal_transfer_router
 # NEW: Deposit Offers & Interest System
 from routers.deposit_offers import router as deposit_offers_router
 
+# NEW: Mining Features (Crypto Mining Simulation Game)
+from routers.mining_features import router as mining_features_router
+
 # NEW: Referral & Notifications System
 from routers.referral_notifications import router as referral_router
 
