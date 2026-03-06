@@ -273,7 +273,7 @@ export default function GamesHub() {
         
         <div className="space-y-3">
           {games.map((game, idx) => (
-            <GameCard key={idx} {...game} onClick={playQuickGame} />
+            <GameCard key={idx} {...game} />
           ))}
         </div>
       </div>
