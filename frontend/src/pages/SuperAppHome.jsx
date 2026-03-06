@@ -12,7 +12,8 @@ import {
   Gavel, Gift, CreditCard, MapPin, Ticket, ShoppingBag,
   Coffee, Plane, Building2, Smartphone, Heart, Trophy,
   Zap, Shield, HelpCircle, Banknote, Globe, Map,
-  Clock, Users, Percent, Crown, Bell, ArrowRight, Sparkles
+  Clock, Users, Percent, Crown, Bell, ArrowRight, Sparkles,
+  Cpu
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
@@ -68,13 +69,13 @@ const CATEGORIES = {
   services: {
     label: 'Services',
     items: [
+      { icon: Cpu, label: 'Mining', to: '/miner', color: 'text-cyan-500', bg: 'bg-cyan-50' },
       { icon: Wallet, label: 'Wallet', to: '/pay', color: 'text-blue-500', bg: 'bg-blue-50' },
       { icon: HelpCircle, label: 'Support', to: '/support-tickets', color: 'text-violet-500', bg: 'bg-violet-50' },
       { icon: Globe, label: 'Übersetzer', to: '#', color: 'text-cyan-500', bg: 'bg-cyan-50' },
       { icon: Smartphone, label: 'Handy aufladen', to: '#', color: 'text-pink-500', bg: 'bg-pink-50' },
       { icon: Banknote, label: 'Währungsrechner', to: '#', color: 'text-green-500', bg: 'bg-green-50' },
       { icon: Shield, label: 'Versicherung', to: '#', color: 'text-amber-500', bg: 'bg-amber-50' },
-      { icon: Plane, label: 'Reise buchen', to: '#', color: 'text-blue-600', bg: 'bg-blue-50' },
       { icon: Building2, label: 'Für Partner', to: '/partner-landing', color: 'text-slate-500', bg: 'bg-slate-50' },
     ]
   },
