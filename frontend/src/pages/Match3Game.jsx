@@ -1,6 +1,5 @@
 /**
- * BidBlitz Match Game - With Gravity Drop-Down
- * Tiles fall down when matched
+ * BidBlitz Match Game - With Combo Multipliers & Gravity
  */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -22,8 +21,11 @@ const GRID_SIZE = 6;
 export default function Match3Game() {
   const [board, setBoard] = useState([]);
   const [score, setScore] = useState(0);
+  const [combo, setCombo] = useState(0);
+  const [maxCombo, setMaxCombo] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [message, setMessage] = useState('');
+  const [lastMatch, setLastMatch] = useState(0);
   
   useEffect(() => {
     createBoard();
@@ -46,36 +48,58 @@ export default function Match3Game() {
     }
     setBoard(newBoard);
     setScore(0);
+    setCombo(0);
+    setMaxCombo(0);
     setGameOver(false);
     setMessage('');
+    setLastMatch(Date.now());
   };
   
   const handleTileClick = (row, col) => {
     if (!board[row][col].visible || gameOver) return;
     
     const clickedColor = board[row][col].color;
-    
-    // Find all connected tiles of same color
     const toRemove = findConnected(row, col, clickedColor);
     
     if (toRemove.size >= 3) {
-      // Remove tiles
       let newBoard = board.map(r => r.map(t => ({ ...t })));
       toRemove.forEach(pos => {
         const [r, c] = pos.split(',').map(Number);
         newBoard[r][c].visible = false;
       });
       
-      // Calculate score
-      const points = toRemove.size * 10;
+      // Check combo timing (within 3 seconds)
+      const now = Date.now();
+      const timeSinceLastMatch = now - lastMatch;
+      
+      let newCombo = 0;
+      if (timeSinceLastMatch < 3000) {
+        newCombo = combo + 1;
+      } else {
+        newCombo = 1;
+      }
+      
+      // Calculate score with multiplier
+      const multiplier = Math.min(newCombo, 5); // Max x5
+      const basePoints = toRemove.size * 10;
+      const points = basePoints * multiplier;
+      
+      setCombo(newCombo);
+      setMaxCombo(Math.max(maxCombo, newCombo));
+      setLastMatch(now);
       setScore(prev => prev + points);
       
-      // Apply gravity - tiles fall down
+      // Show combo message
+      if (newCombo >= 2) {
+        setMessage(`🔥 COMBO x${multiplier}! +${points}`);
+        setTimeout(() => setMessage(''), 1500);
+      }
+      
+      // Apply gravity
       setTimeout(() => {
         newBoard = applyGravity(newBoard);
         setBoard(newBoard);
         
-        // Check if game over
         const hasValidMoves = checkValidMoves(newBoard);
         if (!hasValidMoves) {
           endGame();
@@ -99,12 +123,7 @@ export default function Match3Game() {
       if (!board[row][col].visible || board[row][col].color !== color) continue;
       
       connected.add(key);
-      
-      // Check neighbors
-      queue.push([row - 1, col]); // up
-      queue.push([row + 1, col]); // down
-      queue.push([row, col - 1]); // left
-      queue.push([row, col + 1]); // right
+      queue.push([row - 1, col], [row + 1, col], [row, col - 1], [row, col + 1]);
     }
     
     return connected;
@@ -113,9 +132,7 @@ export default function Match3Game() {
   const applyGravity = (currentBoard) => {
     const newBoard = currentBoard.map(r => r.map(t => ({ ...t })));
     
-    // Process each column
     for (let col = 0; col < GRID_SIZE; col++) {
-      // Collect visible tiles from bottom to top
       const visibleTiles = [];
       for (let row = GRID_SIZE - 1; row >= 0; row--) {
         if (newBoard[row][col].visible) {
@@ -123,24 +140,13 @@ export default function Match3Game() {
         }
       }
       
-      // Fill column from bottom with visible tiles, then new tiles
       for (let row = GRID_SIZE - 1; row >= 0; row--) {
         const tileIndex = GRID_SIZE - 1 - row;
         if (tileIndex < visibleTiles.length) {
-          // Use existing tile
-          newBoard[row][col] = {
-            ...visibleTiles[tileIndex],
-            id: `${row}-${col}`
-          };
+          newBoard[row][col] = { ...visibleTiles[tileIndex], id: `${row}-${col}` };
         } else {
-          // Create new tile
           const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-          newBoard[row][col] = {
-            id: `${row}-${col}`,
-            color: color.name,
-            bg: color.bg,
-            visible: true
-          };
+          newBoard[row][col] = { id: `${row}-${col}`, color: color.name, bg: color.bg, visible: true };
         }
       }
     }
@@ -149,7 +155,6 @@ export default function Match3Game() {
   };
   
   const checkValidMoves = (currentBoard) => {
-    // Check if any 3+ connected tiles exist
     for (let row = 0; row < GRID_SIZE; row++) {
       for (let col = 0; col < GRID_SIZE; col++) {
         if (currentBoard[row][col].visible) {
@@ -160,11 +165,9 @@ export default function Match3Game() {
           while (queue.length > 0) {
             const [r, c] = queue.shift();
             const key = `${r},${c}`;
-            
             if (connected.has(key)) continue;
             if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) continue;
             if (!currentBoard[r][c].visible || currentBoard[r][c].color !== color) continue;
-            
             connected.add(key);
             queue.push([r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]);
           }
@@ -183,15 +186,13 @@ export default function Match3Game() {
       try {
         const token = localStorage.getItem('token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        
         const res = await axios.post(`${API}/app/games/play`, 
           { game_type: 'match_game', score },
           { headers }
         );
-        
-        setMessage(`Game Over! +${res.data.reward} Coins`);
+        setMessage(`Game Over! +${res.data.reward} Coins | Max Combo: x${maxCombo}`);
       } catch (error) {
-        setMessage('Game Over!');
+        setMessage(`Game Over! Max Combo: x${maxCombo}`);
       }
     }
   };
@@ -199,12 +200,35 @@ export default function Match3Game() {
   return (
     <div className="min-h-screen bg-[#0c0f22] text-white pb-20">
       <div className="p-5 text-center">
-        <h2 className="text-2xl font-bold mb-4">BidBlitz Match Game</h2>
+        <h2 className="text-2xl font-bold mb-2">BidBlitz Match Game</h2>
+        
+        {/* Stats Bar */}
+        <div className="flex justify-center gap-4 mb-4">
+          <div className="bg-[#1c213f] px-4 py-2 rounded-lg">
+            <span className="text-slate-400 text-sm">Score</span>
+            <p className="font-bold text-[#6c63ff]">{score}</p>
+          </div>
+          <div className="bg-[#1c213f] px-4 py-2 rounded-lg">
+            <span className="text-slate-400 text-sm">Combo</span>
+            <p className={`font-bold ${combo >= 2 ? 'text-amber-400' : 'text-white'}`}>
+              x{Math.min(combo, 5)}
+            </p>
+          </div>
+          <div className="bg-[#1c213f] px-4 py-2 rounded-lg">
+            <span className="text-slate-400 text-sm">Best</span>
+            <p className="font-bold text-green-400">x{maxCombo}</p>
+          </div>
+        </div>
+        
+        {/* Combo Message */}
+        {message && !gameOver && (
+          <div className="mb-4 py-2 px-4 bg-amber-500/20 rounded-lg text-amber-400 font-bold animate-pulse">
+            {message}
+          </div>
+        )}
         
         {/* Game Board */}
-        <div 
-          className="mx-auto mb-4 bg-[#1c213f] p-3 rounded-xl inline-block"
-        >
+        <div className="mx-auto mb-4 bg-[#1c213f] p-3 rounded-xl inline-block">
           {board.map((row, rowIndex) => (
             <div key={rowIndex} className="flex gap-1">
               {row.map((tile, colIndex) => (
@@ -215,7 +239,6 @@ export default function Match3Game() {
                   style={{
                     backgroundColor: tile.visible ? tile.bg : '#0c0f22',
                     opacity: tile.visible ? 1 : 0.3,
-                    transform: tile.visible ? 'translateY(0)' : 'translateY(-10px)',
                   }}
                 />
               ))}
@@ -223,33 +246,25 @@ export default function Match3Game() {
           ))}
         </div>
         
-        {/* Score */}
-        <p className="text-xl mb-4">Score: <span className="font-bold text-[#6c63ff]">{score}</span></p>
-        
-        {/* Message */}
-        {message && (
+        {/* Game Over Message */}
+        {gameOver && message && (
           <p className="text-lg text-green-400 mb-4">{message}</p>
         )}
         
         {/* Buttons */}
         <div className="flex justify-center gap-3">
-          <button
-            onClick={createBoard}
-            className="px-6 py-2.5 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-lg font-medium"
-          >
+          <button onClick={createBoard} className="px-6 py-2.5 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-lg font-medium">
             New Game
           </button>
-          <Link
-            to="/games"
-            className="px-6 py-2.5 bg-[#1c213f] hover:bg-[#252b4d] rounded-lg font-medium"
-          >
+          <Link to="/games" className="px-6 py-2.5 bg-[#1c213f] hover:bg-[#252b4d] rounded-lg font-medium">
             Back
           </Link>
         </div>
         
         {/* Instructions */}
-        <div className="mt-6 text-sm text-slate-400">
-          <p>Tap 3+ connected tiles to match & drop!</p>
+        <div className="mt-4 text-sm text-slate-400">
+          <p>Match within 3 seconds for combo multiplier!</p>
+          <p className="text-xs mt-1">x2 → x3 → x4 → x5 (max)</p>
         </div>
       </div>
       
