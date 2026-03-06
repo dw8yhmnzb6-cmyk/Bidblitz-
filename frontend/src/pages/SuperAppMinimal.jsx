@@ -1,39 +1,41 @@
 /**
- * BidBlitz Super App Home - Full Featured
- * With Jackpot, VIP Level, Live Activity
+ * BidBlitz Super App Home
+ * With animated 3D spinning coin
  */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import {
-  Cpu, Gamepad2, Car, Wallet, QrCode, CreditCard,
-  Gift, ShoppingBag, Crown, Coins, ChevronRight,
-  Trophy, Sparkles, Activity, Users
-} from 'lucide-react';
 import BottomNav from '../components/BottomNav';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
-// Quick Access Item
-const QuickItem = ({ icon: Icon, label, to, emoji }) => (
-  <Link
-    to={to}
-    className="flex flex-col items-center justify-center p-4 bg-[#1c213f] rounded-xl hover:bg-[#252b4d] transition-colors"
-  >
-    {emoji ? (
-      <span className="text-2xl mb-1">{emoji}</span>
-    ) : (
-      <Icon className="w-6 h-6 mb-1 text-[#6c63ff]" />
-    )}
-    <span className="text-xs text-slate-300">{label}</span>
-  </Link>
+// Animated 3D Coin Component
+const SpinningCoin = () => (
+  <div className="flex justify-center my-6">
+    <div 
+      className="w-20 h-20 rounded-full animate-spin-y"
+      style={{
+        background: 'linear-gradient(135deg, #ffd700, #ffae00)',
+        boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)',
+      }}
+    />
+    <style jsx>{`
+      @keyframes spinY {
+        0% { transform: rotateY(0deg); }
+        100% { transform: rotateY(360deg); }
+      }
+      .animate-spin-y {
+        animation: spinY 4s linear infinite;
+        transform-style: preserve-3d;
+      }
+    `}</style>
+  </div>
 );
 
 export default function SuperAppMinimal() {
   const [balance, setBalance] = useState(0);
   const [jackpot, setJackpot] = useState({ amount: 200, participants: 0 });
-  const [vip, setVip] = useState({ name: 'Bronze', points: 0, level: 1 });
+  const [vip, setVip] = useState({ name: 'Bronze', points: 0 });
   const [liveFeed, setLiveFeed] = useState([]);
   const [dailyReward, setDailyReward] = useState(null);
   const [message, setMessage] = useState('');
@@ -60,7 +62,6 @@ export default function SuperAppMinimal() {
       setJackpot(jackpotRes.data);
       setVip(vipRes.data);
       setDailyReward(dailyRes.data);
-      
       fetchLiveFeed();
     } catch (error) {
       console.log('Data fetch error');
@@ -119,124 +120,85 @@ export default function SuperAppMinimal() {
     }
   };
   
-  const quickItems = [
-    { emoji: '📷', label: 'Scan', to: '/scan' },
-    { emoji: '💳', label: 'Pay', to: '/bidblitz-pay-info' },
-    { emoji: '🚕', label: 'Taxi', to: '/taxi' },
-    { emoji: '🛴', label: 'Scooter', to: '/scooter' },
-    { emoji: '🎮', label: 'Games', to: '/games' },
-    { emoji: '⛏️', label: 'Mining', to: '/miner' },
-    { emoji: '🛍️', label: 'Market', to: '/miner-market' },
-    { emoji: '🎁', label: 'Rewards', to: '/games' },
-  ];
-  
   return (
-    <div className="min-h-screen bg-[#0c0f22] text-white pb-24">
-      {/* Header */}
-      <div className="p-5 pt-6">
-        <h1 className="text-2xl font-bold">BidBlitz</h1>
-      </div>
-      
-      {/* Wallet Card */}
-      <div className="px-5 mb-5">
-        <div className="bg-gradient-to-br from-[#6a5cff] to-[#8b7dff] rounded-2xl p-5 shadow-lg">
-          <p className="text-white/70 text-sm">Wallet Balance</p>
-          <h1 className="text-4xl font-bold flex items-center gap-2">
-            {balance.toLocaleString()}
-            <Coins className="w-8 h-8 text-amber-300" />
-          </h1>
+    <div className="min-h-screen bg-[#0c0f22] text-white pb-20">
+      <div id="screen" className="p-5">
+        {/* Welcome Card with Spinning Coin */}
+        <div className="card bg-[#1c213f] p-5 rounded-2xl mb-4">
+          <h2 className="text-2xl font-bold mb-1">BidBlitz</h2>
+          <p className="text-slate-400">Welcome to the Super App</p>
+          <SpinningCoin />
         </div>
-      </div>
-      
-      {/* Quick Access Grid */}
-      <div className="px-5 mb-5">
-        <div className="grid grid-cols-4 gap-2">
-          {quickItems.map((item, idx) => (
-            <QuickItem key={idx} {...item} />
-          ))}
+        
+        {/* Quick Access */}
+        <div className="card bg-[#1c213f] p-5 rounded-2xl mb-4">
+          <p className="text-slate-400 mb-3">Quick Access</p>
+          <div className="flex flex-wrap gap-2">
+            <Link to="/taxi" className="px-3 py-1.5 bg-[#0c0f22] rounded-lg text-sm hover:bg-[#6c63ff]/20">Taxi</Link>
+            <Link to="/scooter" className="px-3 py-1.5 bg-[#0c0f22] rounded-lg text-sm hover:bg-[#6c63ff]/20">Scooter</Link>
+            <Link to="/auctions" className="px-3 py-1.5 bg-[#0c0f22] rounded-lg text-sm hover:bg-[#6c63ff]/20">Auctions</Link>
+            <Link to="/games" className="px-3 py-1.5 bg-[#0c0f22] rounded-lg text-sm hover:bg-[#6c63ff]/20">Games</Link>
+          </div>
         </div>
-      </div>
-      
-      {/* Message */}
-      {message && (
-        <div className="mx-5 mb-4 p-3 bg-[#6c63ff]/20 rounded-xl text-center text-sm">
-          {message}
-        </div>
-      )}
-      
-      {/* Cards Section */}
-      <div className="px-5 space-y-4">
+        
+        {/* Message */}
+        {message && (
+          <div className="mb-4 p-3 bg-[#6c63ff]/20 rounded-xl text-center text-sm">
+            {message}
+          </div>
+        )}
+        
         {/* Daily Reward */}
-        <div className="bg-[#1c213f] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 flex items-center gap-2">
-            <Gift className="w-5 h-5 text-amber-400" />
-            Daily Reward
-          </h3>
+        <div className="card bg-[#1c213f] p-5 rounded-2xl mb-4">
+          <h3 className="font-semibold mb-3">Daily Reward</h3>
           <button
             onClick={claimDaily}
             disabled={!dailyReward?.can_claim}
-            className={`w-full py-2.5 rounded-lg font-medium text-sm ${
+            className={`w-full py-2.5 rounded-lg font-medium ${
               dailyReward?.can_claim
                 ? 'bg-[#6c63ff] hover:bg-[#5a52e0]'
                 : 'bg-slate-700 cursor-not-allowed text-slate-400'
             }`}
           >
-            {dailyReward?.can_claim ? 'Claim Reward' : 'Bereits abgeholt'}
+            {dailyReward?.can_claim ? 'Claim Reward' : 'Already Claimed'}
           </button>
         </div>
         
         {/* Jackpot */}
-        <div className="bg-[#1c213f] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-amber-400" />
-            Jackpot
-          </h3>
-          <p className="text-2xl font-bold text-amber-400 mb-1">{jackpot.amount} Coins</p>
-          <p className="text-xs text-slate-400 mb-3">{jackpot.participants} Teilnehmer</p>
+        <div className="card bg-[#1c213f] p-5 rounded-2xl mb-4">
+          <h3 className="font-semibold mb-2">Jackpot</h3>
+          <p className="text-2xl font-bold text-amber-400 mb-3">{jackpot.amount} Coins</p>
           <button
             onClick={joinJackpot}
-            className="w-full py-2.5 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-lg font-medium text-sm"
+            className="w-full py-2.5 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-lg font-medium"
           >
-            Join (5 Coins)
+            Join
           </button>
         </div>
         
         {/* VIP Level */}
-        <div className="bg-[#1c213f] rounded-xl p-5">
-          <h3 className="font-semibold mb-2 flex items-center gap-2">
-            <Crown className="w-5 h-5 text-amber-400" />
-            VIP Level
-          </h3>
-          <p className="text-2xl font-bold text-[#6c63ff] mb-1">{vip.name}</p>
-          <p className="text-xs text-slate-400 mb-3">{vip.points} Punkte • +{vip.bonus || 0}% Bonus</p>
+        <div className="card bg-[#1c213f] p-5 rounded-2xl mb-4">
+          <h3 className="font-semibold mb-2">VIP Level</h3>
+          <p className="text-2xl font-bold text-[#6c63ff] mb-3">{vip.name}</p>
           <button
             onClick={increaseVip}
-            className="w-full py-2.5 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-lg font-medium text-sm"
+            className="w-full py-2.5 bg-[#6c63ff] hover:bg-[#5a52e0] rounded-lg font-medium"
           >
-            Increase Level (+10 Punkte)
+            Increase Level
           </button>
         </div>
         
-        {/* Live Activity */}
-        <div className="bg-[#1c213f] rounded-xl p-5">
-          <h3 className="font-semibold mb-3 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-green-400" />
-            Live Activity
-          </h3>
-          <div className="space-y-2 max-h-40 overflow-y-auto">
+        {/* Live Feed */}
+        <div className="card bg-[#1c213f] p-5 rounded-2xl">
+          <h3 className="font-semibold mb-3">Live Activity</h3>
+          <div className="space-y-2">
             {liveFeed.length === 0 ? (
-              <p className="text-slate-500 text-sm">Keine Aktivitäten</p>
+              <p className="text-slate-500 text-sm">No activity</p>
             ) : (
-              liveFeed.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 py-1.5 border-b border-slate-700/50 last:border-0">
-                  <div className={`w-2 h-2 rounded-full ${
-                    item.type === 'game_win' ? 'bg-green-400' :
-                    item.type === 'jackpot' ? 'bg-amber-400' :
-                    item.type === 'spin_win' ? 'bg-purple-400' :
-                    'bg-cyan-400'
-                  }`} />
-                  <p className="text-sm text-slate-300">{item.action}</p>
-                </div>
+              liveFeed.slice(0, 5).map((item, idx) => (
+                <p key={idx} className="text-sm text-slate-300 py-1 border-b border-slate-700/50 last:border-0">
+                  {item.action}
+                </p>
               ))
             )}
           </div>
