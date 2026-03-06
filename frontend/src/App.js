@@ -1076,6 +1076,14 @@ function AppContent() {
           <Route path="/gluecksrad" element={<SpinWheel />} />
           <Route path="/app-referral" element={<Referral />} />
           <Route path="/invite-friends" element={<Referral />} />
+          <Route path="/treasure-hunt" element={<TreasureHunt />} />
+          <Route path="/schatzsuche" element={<TreasureHunt />} />
+          <Route path="/app-admin" element={
+            <ProtectedRoute requireAdmin>
+              <AppAdminPanel />
+            </ProtectedRoute>
+          } />
+          <Route path="/app-leaderboard" element={<AppLeaderboard />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
