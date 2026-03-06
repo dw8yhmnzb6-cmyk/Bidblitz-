@@ -1,42 +1,82 @@
-# BidBlitz Super-App - PRD (Final)
+# BidBlitz Super-App - PRD
 
-## 50+ Pages, 90+ Routers — Enterprise Super-App
+## Übersicht
+BidBlitz ist eine Super-App mit über 50 Seiten und 90+ Routern - eine Enterprise-Grade Plattform für Auktionen, Zahlungen, Transport, Shopping und Services.
 
-### New: Spin & Win + Social Feed + Analytics Control
+## Neue Features (März 2026)
 
-#### Spin & Win (/spin)
-- 8 Prizes: 10P, 25P, 50P, 0.50/1/2 EUR, 5% Rabatt, Niete
-- Weighted random, 1x/Tag, wallet credit for EUR prizes
-- Animated wheel with SVG segments
+### Mining-System (GoMining-Style)
+- **MinerDashboard** (`/miner`): Professionelles dark-theme Dashboard
+  - Animierte Coin-Counter
+  - Stats-Grid (Coins, Hashrate, Power, Daily Reward)
+  - Mining Farm Übersicht mit Miner-Karten
+  - VIP-Level System basierend auf Hashrate
+  - Belohnungen sammeln (24h Cooldown)
+  
+- **MinerMarket** (`/miner-market`): Shop für Miner
+  - 5 Miner-Tiers: Bronze, Silver, Gold, Platinum, Diamond
+  - Spezielle Deals und Bundles
+  - ROI-Berechnung
+  - Test-Coins für Entwicklung
 
-#### Social Feed (/social)
-- Posts (text + images + video), likes (toggle), comments
-- Stories (24h expiry), post types (deal/promotion/story/normal)
-- User avatars + timestamps
+- **Backend-Endpoints:**
+  - `GET /api/app/wallet/balance` - Coin-Guthaben
+  - `POST /api/app/wallet/add-coins` - Test-Coins hinzufügen
+  - `GET /api/app/miners/catalog` - Alle verfügbaren Miner
+  - `GET /api/app/miners/my` - Eigene Miner
+  - `POST /api/app/miner/buy` - Miner kaufen
+  - `POST /api/app/miner/upgrade` - Miner upgraden
+  - `GET /api/app/miner/claim` - Belohnungen sammeln
+  - `GET /api/app/mining/stats` - Mining-Statistiken
+  - `GET /api/app/market/miners` - Markt-Miner
+  - `GET /api/app/market/deals` - Aktuelle Deals
 
-#### Analytics Control (/admin/control)
-- Users: total, active today, new 7d/30d
-- Revenue: gross + fees by module
-- Transactions: today + total
-- Services: Taxi, Hotels, Marketplace, Deals, Merchants counts
+## Bestehende Module
 
-## Complete Stack:
-- Hotels (55 listings, reviews, verification, dynamic pricing, loyalty)
-- Taxi (rider + driver app, nearby drivers)
-- Marketplace (products, cars, real estate, services)
-- Games (Match-3 with levels + leaderboard)
-- Monetization (boosts, featured, subscriptions)
-- Genius Loyalty (3 levels, auto level-up)
-- Chat (guest-host, admin escalation)
-- Support (KI-chatbot, AI assistant)
-- Push (VAPID, PWA, service worker)
-- Multi-Tenant SaaS (white-label)
-- KYC + Risk Control
-- Growth Engine (daily rewards, campaigns)
-- Merchant Ecosystem
-- Revenue Engine (fees, ledger, payouts, invoices)
-- Deals & Ads
-- Referrals 2.0 (tiers)
+### Core Features
+- Hotels (55 Listings, Reviews, Verifizierung, dynamische Preise, Loyalty)
+- Taxi (Rider + Driver App, Nearby Drivers)
+- Marketplace (Produkte, Autos, Immobilien, Services)
+- Games (Match-3 mit Levels + Leaderboard)
+
+### Monetarisierung
+- Boosts, Featured Listings, Subscriptions
+- Genius Loyalty (3 Level, Auto Level-up)
+- BidBlitz Plus Abonnement
+
+### Engagement
+- Chat (Guest-Host, Admin Escalation)
+- Push (VAPID, PWA, Service Worker)
+- Daily Rewards, Missions, Weekly Leagues
 - Social Feed + Stories
 - Spin & Win
-- Insurance + Parking
+
+### Admin & Sicherheit
+- KYC + Risk Control
+- Multi-Tenant SaaS (White-Label)
+- Revenue Engine (Fees, Ledger, Payouts, Invoices)
+
+## Tech Stack
+- **Frontend:** React, TailwindCSS, Lucide Icons
+- **Backend:** FastAPI, Python
+- **Database:** MongoDB
+- **Hosting:** Emergent Preview / IONOS Production
+
+## Datenbank-Schema
+
+### Mining Collections
+- `app_wallets`: `{user_id, coins, total_earned, total_spent}`
+- `app_miners`: `{user_id, miners: [{id, type_id, level, is_active, last_claim, total_mined}]}`
+- `mining_history`: `{user_id, amount, miners_claimed, claimed_at}`
+
+## Bekannte Probleme
+1. **KRITISCH:** Einige ältere Features nutzen in-memory Dicts statt MongoDB
+2. Veraltete Router-Dateien sollten entfernt werden
+3. Fehlende MongoDB-Indexes für `genius` und `genius_events`
+
+## Nächste Schritte
+- [ ] Mining-Verlauf Seite implementieren
+- [ ] VIP-Bonusberechnung verfeinern
+- [ ] Match-3 Spiel UI/UX verbessern
+- [ ] White-Label Demo für Multi-Tenant
+- [ ] In-Memory Daten auf MongoDB migrieren
