@@ -751,3 +751,230 @@ async def get_mining_chart_data(days: int = 7, authorization: str = Header(None)
         "total_week": sum(data)
     }
 
+# ======================== SPIN WHEEL ========================
+
+spin_history_col = db["spin_history"]
+
+@router.get("/spin/status")
+async def get_spin_status(authorization: str = Header(None)):
+    """Check if user can spin today"""
+    user_id = get_user_id_from_token(authorization)
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    
+    last_spin = spin_history_col.find_one(
+        {"user_id": user_id, "date": today}
+    )
+    
+    return {
+        "can_spin": last_spin is None,
+        "last_spin": last_spin.get("timestamp") if last_spin else None
+    }
+
+@router.post("/spin/claim")
+async def claim_spin_prize(coins: int = 0, authorization: str = Header(None)):
+    """Claim spin wheel prize"""
+    user_id = get_user_id_from_token(authorization)
+    now = datetime.now(timezone.utc)
+    today = now.strftime("%Y-%m-%d")
+    
+    # Check if already spun today
+    existing = spin_history_col.find_one({"user_id": user_id, "date": today})
+    if existing:
+        raise HTTPException(status_code=400, detail="Bereits heute gedreht!")
+    
+    # Record spin
+    spin_history_col.insert_one({
+        "user_id": user_id,
+        "date": today,
+        "coins": coins,
+        "timestamp": now.isoformat()
+    })
+    
+    # Add coins if won
+    if coins > 0:
+        wallets_col.update_one(
+            {"user_id": user_id},
+            {
+                "$inc": {"coins": coins, "total_earned": coins},
+                "$setOnInsert": {"created_at": now.isoformat()}
+            },
+            upsert=True
+        )
+        
+        # Add to live feed
+        live_feed_col.insert_one({
+            "user_id": user_id,
+            "action": f"Glücksrad: +{coins} Coins",
+            "type": "spin_win",
+            "timestamp": now.isoformat()
+        })
+    
+    wallet = wallets_col.find_one({"user_id": user_id}, {"_id": 0})
+    
+    return {
+        "success": True,
+        "coins": coins,
+        "message": f"+{coins} Coins gewonnen!" if coins > 0 else "Leider nichts gewonnen",
+        "new_balance": wallet.get("coins", 0) if wallet else coins
+    }
+
+# ======================== JACKPOT SYSTEM ========================
+
+jackpot_col = db["jackpot"]
+jackpot_entries_col = db["jackpot_entries"]
+
+@router.get("/jackpot/current")
+async def get_current_jackpot():
+    """Get current jackpot amount"""
+    jackpot = jackpot_col.find_one({"active": True})
+    
+    if not jackpot:
+        # Create new jackpot
+        jackpot_col.insert_one({
+            "amount": 200,
+            "participants": 0,
+            "active": True,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        return {"amount": 200, "participants": 0}
+    
+    return {
+        "amount": jackpot.get("amount", 200),
+        "participants": jackpot.get("participants", 0)
+    }
+
+@router.post("/jackpot/join")
+async def join_jackpot(authorization: str = Header(None)):
+    """Join the jackpot (costs 5 coins)"""
+    user_id = get_user_id_from_token(authorization)
+    now = datetime.now(timezone.utc)
+    entry_cost = 5
+    
+    # Check wallet
+    wallet = wallets_col.find_one({"user_id": user_id})
+    if not wallet or wallet.get("coins", 0) < entry_cost:
+        raise HTTPException(status_code=400, detail="Nicht genug Coins (5 benötigt)")
+    
+    # Deduct coins
+    wallets_col.update_one(
+        {"user_id": user_id},
+        {"$inc": {"coins": -entry_cost, "total_spent": entry_cost}}
+    )
+    
+    # Add to jackpot
+    jackpot_col.update_one(
+        {"active": True},
+        {
+            "$inc": {"amount": entry_cost, "participants": 1},
+            "$setOnInsert": {"created_at": now.isoformat()}
+        },
+        upsert=True
+    )
+    
+    # Record entry
+    jackpot_entries_col.insert_one({
+        "user_id": user_id,
+        "timestamp": now.isoformat()
+    })
+    
+    # Add to live feed
+    live_feed_col.insert_one({
+        "user_id": user_id,
+        "action": "User joined Jackpot",
+        "type": "jackpot",
+        "timestamp": now.isoformat()
+    })
+    
+    jackpot = jackpot_col.find_one({"active": True})
+    wallet = wallets_col.find_one({"user_id": user_id}, {"_id": 0})
+    
+    return {
+        "success": True,
+        "message": "Jackpot beigetreten!",
+        "jackpot_amount": jackpot.get("amount", 200),
+        "participants": jackpot.get("participants", 0),
+        "new_balance": wallet.get("coins", 0)
+    }
+
+# ======================== VIP LEVEL SYSTEM ========================
+
+vip_col = db["vip_levels"]
+
+VIP_LEVELS = [
+    {"level": 1, "name": "Bronze", "min_points": 0, "bonus": 0},
+    {"level": 2, "name": "Silver", "min_points": 100, "bonus": 5},
+    {"level": 3, "name": "Gold", "min_points": 300, "bonus": 10},
+    {"level": 4, "name": "Platinum", "min_points": 700, "bonus": 15},
+    {"level": 5, "name": "Diamond", "min_points": 1500, "bonus": 25},
+]
+
+@router.get("/vip/status")
+async def get_vip_status(authorization: str = Header(None)):
+    """Get user's VIP status"""
+    user_id = get_user_id_from_token(authorization)
+    
+    vip_data = vip_col.find_one({"user_id": user_id})
+    
+    if not vip_data:
+        return {
+            "level": 1,
+            "name": "Bronze",
+            "points": 0,
+            "bonus": 0,
+            "next_level": VIP_LEVELS[1] if len(VIP_LEVELS) > 1 else None,
+            "levels": VIP_LEVELS
+        }
+    
+    points = vip_data.get("points", 0)
+    
+    # Determine current level
+    current_level = VIP_LEVELS[0]
+    next_level = None
+    for i, level in enumerate(VIP_LEVELS):
+        if points >= level["min_points"]:
+            current_level = level
+            next_level = VIP_LEVELS[i + 1] if i + 1 < len(VIP_LEVELS) else None
+    
+    return {
+        "level": current_level["level"],
+        "name": current_level["name"],
+        "points": points,
+        "bonus": current_level["bonus"],
+        "next_level": next_level,
+        "levels": VIP_LEVELS
+    }
+
+@router.post("/vip/add-points")
+async def add_vip_points(points: int = 10, authorization: str = Header(None)):
+    """Add VIP points (called after actions)"""
+    user_id = get_user_id_from_token(authorization)
+    now = datetime.now(timezone.utc)
+    
+    vip_col.update_one(
+        {"user_id": user_id},
+        {
+            "$inc": {"points": points},
+            "$set": {"updated_at": now.isoformat()},
+            "$setOnInsert": {"created_at": now.isoformat()}
+        },
+        upsert=True
+    )
+    
+    # Get updated status
+    vip_data = vip_col.find_one({"user_id": user_id}, {"_id": 0})
+    total_points = vip_data.get("points", 0)
+    
+    # Determine level
+    current_level = VIP_LEVELS[0]
+    for level in VIP_LEVELS:
+        if total_points >= level["min_points"]:
+            current_level = level
+    
+    return {
+        "success": True,
+        "points_added": points,
+        "total_points": total_points,
+        "level": current_level["level"],
+        "name": current_level["name"],
+        "bonus": current_level["bonus"]
+    }
