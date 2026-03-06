@@ -151,6 +151,10 @@ import PartnerLanding from "./pages/PartnerLanding";
 import PartnerDirectory from "./pages/PartnerDirectory";
 import PopupManager from "./components/PopupManager";
 
+// Mining Features
+import MinerDashboard from "./pages/MinerDashboard";
+import MinerMarket from "./pages/MinerMarket";
+
 // New Feature Components
 import Watchlist from "./components/Watchlist";
 import AutoBid from "./components/AutoBid";
