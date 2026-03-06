@@ -111,7 +111,16 @@ export default function MinerDashboard() {
   return (
     <div className="min-h-screen bg-[#0c0f22] text-white pb-20">
       <div className="p-5">
-        <h2 className="text-2xl font-bold mb-5">BidBlitz Mining Farm</h2>
+        <h2 className="text-2xl font-bold mb-2">BidBlitz Mining Farm</h2>
+        
+        {/* VIP Bonus Badge */}
+        {vipBonus > 0 && (
+          <div className="bg-gradient-to-r from-amber-500/20 to-amber-700/20 border border-amber-500/30 p-2 rounded-lg mb-4 text-center">
+            <p className="text-amber-400 text-sm font-medium">
+              ✨ VIP {vipLevel} Bonus: +{vipBonus}% Mining Profit
+            </p>
+          </div>
+        )}
         
         {/* Overview */}
         <div className="grid grid-cols-3 gap-3 mb-5">
