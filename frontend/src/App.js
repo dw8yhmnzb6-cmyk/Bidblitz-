@@ -1067,6 +1067,9 @@ function AppContent() {
           <Route path="/spiele" element={<GamesHub />} />
           <Route path="/app-wallet" element={<AppWallet />} />
           <Route path="/coins" element={<AppWallet />} />
+          <Route path="/match3" element={<Match3Game />} />
+          <Route path="/spin-wheel" element={<SpinWheel />} />
+          <Route path="/gluecksrad" element={<SpinWheel />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
