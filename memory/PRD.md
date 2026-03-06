@@ -1,95 +1,91 @@
 # BidBlitz Super-App - PRD
 
 ## Übersicht
-BidBlitz ist eine Super-App mit über 50 Seiten und 90+ Routern - eine Enterprise-Grade Plattform für Auktionen, Zahlungen, Transport, Shopping, Mining und Games.
+BidBlitz ist eine Super-App mit Auktionen, Mining, Games, und vielen Services.
 
-## Neue Features (März 2026)
+## Design System (März 2026)
 
-### Match-3 Puzzle Game (NEU!)
-- 8x8 Grid mit bunten Kugeln
-- Tausche benachbarte Kugeln um 3+ zu matchen
-- 20 Züge pro Spiel
-- Combo-System (x1, x2, x3...)
-- Score wird in Coins umgewandelt
+### Farben
+- **Background:** `#0c0f22`
+- **Cards:** `#1c213f`
+- **Accent:** `#6c63ff`
+- **Gold Coin:** `linear-gradient(135deg, #ffd700, #ffae00)`
 
-### Glücksrad / Spin Wheel (NEU!)
-- Animiertes Canvas-basiertes Rad
-- 8 Segmente: 5, 10, 15, 25, 50, 100, 200, X (nichts)
-- Einmal pro Tag drehen
-- Smooth Easing-Animation (4 Sekunden)
-- Gewinn wird automatisch gutgeschrieben
+### Bottom Navigation (Emoji)
+| Tab | Emoji | Route |
+|-----|-------|-------|
+| Home | 🏠 | `/super-app` |
+| Wallet | 💰 | `/app-wallet` |
+| Games | 🎮 | `/games` |
+| Mining | ⛏️ | `/miner` |
+| Market | 🛒 | `/miner-market` |
 
-### Jackpot System (NEU!)
-- Wachsender Pot (startet bei 200 Coins)
-- Teilnahme kostet 5 Coins
-- Coins werden zum Pot hinzugefügt
-- Live-Teilnehmer-Anzeige
-
-### VIP Level System (NEU!)
-- 5 Level: Bronze → Silver → Gold → Platinum → Diamond
-- Punkte für Aktionen sammeln
-- Bonus-Prozent pro Level (0% bis 25%)
-- Level-Schwellen: 0, 100, 300, 700, 1500 Punkte
-
-### Super App Home
-- Gradient Wallet Card mit Balance
-- 8 Quick Access Items (Emoji-Icons)
-- Daily Reward Card
-- Jackpot Card mit Live-Pot
-- VIP Level Card mit Punktestand
-- Live Activity Feed
+### Animierte 3D-Münze
+```css
+@keyframes spinY {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+animation: spinY 4s linear infinite;
+```
 
 ## Seiten
 
-| Route | Seite | Beschreibung |
-|-------|-------|--------------|
-| `/super-app` | SuperAppMinimal | Home mit Jackpot/VIP |
-| `/miner` | MinerDashboard | Mining Dashboard |
-| `/miner-market` | MinerMarket | Miner Shop |
-| `/games` | GamesHub | Games Übersicht |
-| `/match3` | Match3Game | Match-3 Puzzle |
-| `/spin-wheel` | SpinWheel | Glücksrad |
-| `/app-wallet` | AppWallet | Wallet + Chart |
+### Home (`/super-app`)
+- BidBlitz Welcome Card mit animierter 3D-Münze
+- Quick Access: Taxi, Scooter, Auctions, Games
+- Daily Reward Card
+- Jackpot Card (205+ Coins)
+- VIP Level Card (Bronze → Diamond)
+- Live Activity Feed
 
-## Backend-Endpoints
+### Wallet (`/app-wallet`)
+- Balance groß angezeigt
+- "Add Coins" Button
+
+### Games (`/games`)
+- Quick Play Button
+- Game Links: Match-3, Glücksrad, Slot Machine, Schatzsuche
+
+### Mining (`/miner`)
+- Power: X TH (cyan)
+- Reward: X Coins/day (grün)
+- Your Miners Liste mit Upgrade Buttons
+- "Buy Miners" Link
+
+### Market (`/miner-market`)
+- Balance Anzeige
+- Alle 5 Miner mit Preisen:
+  - Nano Miner S1 — 100 Coins
+  - Basic Miner B1 — 500 Coins
+  - Pro Miner P1 — 2000 Coins
+  - Elite Miner E1 — 8000 Coins
+  - Ultra Miner U1 — 25000 Coins
+
+## Features
 
 ### Games
-- `POST /api/app/games/play` - Spiel spielen
+- Match-3 Puzzle (`/match3`)
+- Glücksrad (`/spin-wheel`)
+- Quick Play (10-50 Coins)
 
-### Spin Wheel
-- `GET /api/app/spin/status` - Kann heute drehen?
-- `POST /api/app/spin/claim` - Gewinn abholen
+### Mining
+- 5 Miner-Tiers
+- 10 Upgrade-Level pro Miner
+- Daily Claim (24h Cooldown)
+- VIP Bonus
 
-### Jackpot
-- `GET /api/app/jackpot/current` - Aktueller Pot
-- `POST /api/app/jackpot/join` - Teilnehmen (5 Coins)
-
-### VIP
-- `GET /api/app/vip/status` - VIP Status
-- `POST /api/app/vip/add-points` - Punkte hinzufügen
-
-## Datenbank-Collections
-
-- `spin_history`: Glücksrad-Verlauf
-- `jackpot`: Aktueller Jackpot
-- `jackpot_entries`: Teilnehmer
-- `vip_levels`: VIP Punkte pro User
+### Economy
+- Jackpot System (wachsender Pot)
+- VIP Levels (5 Stufen)
+- Daily Rewards (7-Tage Streak)
 
 ## Tech Stack
-- **Frontend:** React, TailwindCSS, Canvas API
-- **Backend:** FastAPI, Python, MongoDB
-- **Design:** Dark theme (#0c0f22), mobile-first
-
-## Getestet
-- ✅ Match-3 Grid rendert und ist spielbar
-- ✅ Glücksrad dreht sich mit Animation
-- ✅ Spin Win: +200 Coins gewonnen
-- ✅ Jackpot: Join funktioniert, Pot wächst
-- ✅ VIP: Bronze Level, Punkte sammeln
-- ✅ Live Activity zeigt echte Aktivitäten
+- React + TailwindCSS
+- FastAPI + MongoDB
+- Canvas API für Animationen
 
 ## Nächste Schritte
-- [ ] Schatzsuche Mini-Game
+- [ ] Schatzsuche Game
 - [ ] Slot Machine
-- [ ] Jackpot Gewinner-Ziehung
-- [ ] VIP Bonus bei Mining anwenden
+- [ ] Referral System
