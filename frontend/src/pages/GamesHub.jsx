@@ -185,8 +185,22 @@ export default function GamesHub() {
             >
               🎡 Spin Wheel
             </Link>
+            <Link 
+              to="/treasure-hunt" 
+              className="block py-3 px-4 bg-[#0c0f22] rounded-lg hover:bg-[#6c63ff]/20 transition-colors"
+            >
+              🗺️ Schatzsuche
+            </Link>
           </div>
         </div>
+        
+        {/* Leaderboard Link */}
+        <Link 
+          to="/app-leaderboard"
+          className="block mt-4 py-3 px-4 bg-[#1c213f] rounded-xl hover:bg-[#252b4d] transition-colors text-center"
+        >
+          🏆 Rangliste anzeigen
+        </Link>
       </div>
       
       <BottomNav />
