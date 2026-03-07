@@ -14,6 +14,9 @@ export default function SuperAppMinimal() {
   const [notifications, setNotifications] = useState(0);
   const [userName, setUserName] = useState('User');
   const [adIndex, setAdIndex] = useState(0);
+  const [dailyStatus, setDailyStatus] = useState(null);
+  const [claiming, setClaiming] = useState(false);
+  const [stats, setStats] = useState(null);
   
   const ads = [
     { text: "🍽️ Restaurant Promotion - 20% Discount", color: "from-orange-500/20 to-red-500/10", border: "border-orange-500/30" },
