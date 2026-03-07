@@ -628,6 +628,12 @@ app.include_router(devices_router, prefix="/api")
 app.include_router(tickets_router, prefix="/api")
 app.include_router(loans_router, prefix="/api")
 
+# NEW: Refactored Routers (Shop, VIP, Referral, Admin)
+app.include_router(shop_router, prefix="/api/app")
+app.include_router(vip_router_new, prefix="/api/app")
+app.include_router(referral_router_new, prefix="/api/app")
+app.include_router(admin_router_new, prefix="/api/app")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
