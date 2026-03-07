@@ -1,7 +1,7 @@
 # BidBlitz Super-App - PRD
 
 ## Übersicht
-BidBlitz ist eine Super-App mit Auktionen, Mining, Games, Mobilität und vielen Services.
+BidBlitz ist eine Super-App mit Auktionen, Mining, Games, Mobilität, Chat und vielen Services.
 
 ## Implementierte Features (März 2026)
 
@@ -19,39 +19,30 @@ BidBlitz ist eine Super-App mit Auktionen, Mining, Games, Mobilität und vielen 
 - **VIP 2+:** +10% Mining Profit
 - **VIP 3+:** +20% Mining Profit
 
-### ✅ Games (10 Spiele!)
-- **Lucky Wheel** - bis zu 100 Coins
-- **Slot Machine** - -50 bis +150 Coins
-- **Reaction Game** - bis zu 20 Coins
-- **Daily Bonus** - 50 Coins
-- **Dice** - bis zu 60 Coins
-- **Coin Flip** - +30 oder -10 Coins
-- **Bomb Game** - +100 oder -50 Coins
-- **Jackpot** - bis zu 500 Coins
-- **Puzzle** - 20 Coins
-- **Boost Game** - bis zu 150 Coins
-- **Match-3 Puzzle** (`/match3`)
-- **Glücksrad** (`/spin-wheel`)
-- **Schatzsuche** (`/treasure-hunt`)
+### ✅ Games (10+ Spiele!)
+| Spiel | Route | Gewinn |
+|-------|-------|--------|
+| Lucky Wheel | /games | 0-100 Coins |
+| Slot Machine | /games | -50 bis +150 |
+| Reaction | /games | 0-20 Coins |
+| Daily Bonus | /games | 50 Coins |
+| Dice | /games | 0-60 Coins |
+| Coin Flip | /games | +30 oder -10 |
+| Bomb Game | /games | +100 oder -50 |
+| Jackpot | /games | 0-500 Coins |
+| Puzzle | /games | 20 Coins |
+| Boost Game | /games | 0-150 Coins |
+| Match-3 | /match3 | Variable |
+| Schatzsuche | /treasure-hunt | 50-200 Coins |
 
 ### ✅ VIP Exclusive Games (`/vip-games`)
 - **VIP 5 erforderlich** (20.000+ Coins)
-- **Diamond Rush** - 500-1500 Coins
-- **Gold Strike** - 300-1100 Coins
-- **Crown Jackpot** - 0-2000 Coins
-- **VIP Slots** - 10x Multiplikator
+- Diamond Rush, Gold Strike, Crown Jackpot, VIP Slots
+- 10x höhere Gewinne als normale Spiele
 
-### ✅ Mobilität (NEU!)
-- **🚕 Taxi** (`/taxi`) - Buchung mit Coins
-  - Abholort & Ziel eingeben
-  - Kostenvoranschlag
-  - Fahrer-Details bei Buchung
-  - 80% Erstattung bei Stornierung
-- **🛴 E-Scooter** (`/scooter`) - Mieten mit Coins
-  - Verfügbare Scooter in der Nähe
-  - Batterie-Anzeige
-  - Entsperrung: 5 Coins
-  - Pro Minute: 2 Coins
+### ✅ Mobilität
+- **🚕 Taxi** (`/taxi`) - Buchung mit Coins, Fahrer-Details
+- **🛴 E-Scooter** (`/scooter`) - Mieten, Batterie-Anzeige, Live-Kosten
 
 ### ✅ VIP System (`/app-vip`)
 | Level | Coins | Benefit |
@@ -62,25 +53,50 @@ BidBlitz ist eine Super-App mit Auktionen, Mining, Games, Mobilität und vielen 
 | VIP 4 | 10.001-20.000 | -10% Marketplace Fees |
 | VIP 5 | 20.001+ | Exclusive Games |
 
-### ✅ Platform Statistics (`/app-statistics`)
-- Total Users
-- Online Users
-- Total Coins
-- Mining Power
-- Games Played
-- Marketplace Volume
-- "Generate Activity" Simulation
+### ✅ Achievements System (`/app-achievements`) - NEU!
+- 16 Achievements in 5 Kategorien:
+  - Coins (Erste 100, 1k, 10k, 100k)
+  - Games (1, 10, 100, 1000 Spiele)
+  - Mining (1, 5, 10 Miner)
+  - Referrals (1, 5, 20 Freunde)
+  - Special (VIP 5, 7-Tage Streak)
+- Fortschrittsbalken für nicht freigeschaltete
+- Punkte-System
 
-### ✅ Profile (`/app-profile`)
-- User Stats Card (Coins, Miners, Games, Referrals)
-- Level System (Bronze → Platinum)
-- XP Progress Bar
-- Quick Actions
+### ✅ Notifications (`/app-notifications`) - NEU!
+- Mining Reward bereit
+- Jackpot Updates
+- Referral Benachrichtigungen
+- Einstellungen für Benachrichtigungstypen
+- Ungelesen-Zähler
 
-### ✅ Social Features
-- **Referral System** (`/app-referral`)
-- **Leaderboard** (`/app-leaderboard`)
-- **Admin Panel** (`/app-admin`)
+### ✅ Chat System (`/app-chat`) - NEU!
+- Echtzeit-Chat zwischen Spielern
+- System-Nachrichten (Jackpot-Gewinne, Pool-Updates)
+- Quick-Messages (👋 Hi!, 🎉 GG!, etc.)
+- Online-Nutzer Anzeige
+- Auto-Scroll zu neuen Nachrichten
+
+### ✅ Marketplace (`/market`) - NEU!
+- Miner, Boosts, Items kaufen/verkaufen
+- VIP 4+ Rabatt: 10% auf alle Käufe
+- 5% Verkaufsgebühr
+- Verkäufer-Info und Preishistorie
+
+### ✅ Sound-Effekte (`/sound-settings`) - NEU!
+- 9 verschiedene Sound-Effekte:
+  - Coin, Gewinn, Verlust, Klick
+  - Achievement, Benachrichtigung
+  - Spin, Mining, Level Up
+- Lautstärke-Regler (0-100%)
+- Ein/Aus Toggle
+- Web Audio API (keine externen Dateien)
+
+### ✅ Weitere Features
+- **Profile** (`/app-profile`) - Stats, Level-System, XP
+- **Statistics** (`/app-statistics`) - Platform-wide Stats
+- **Leaderboard** (`/app-leaderboard`) - Top Miner, Spieler, Werber
+- **Referral** (`/app-referral`) - Invite Codes, Bonus-System
 
 ## Navigation
 
@@ -100,45 +116,56 @@ BidBlitz ist eine Super-App mit Auktionen, Mining, Games, Mobilität und vielen 
 | Scooter | 🛴 | `/scooter` |
 | Games | 🎮 | `/games` |
 | Mining | ⛏️ | `/miner` |
-| Marketplace | 🛍️ | `/miner-market` |
+| Marketplace | 🛍️ | `/market` |
 | Rewards | 🎁 | `/daily` |
 | Referral | 👥 | `/app-referral` |
 | Settings | ⚙️ | `/app-profile` |
 
-## API Endpoints
+## Alle Routen
 
-### Neue Endpoints
-- `GET /api/app/platform/stats` - Platform-Statistiken
-- `POST /api/app/taxi/book` - Taxi buchen
-- `POST /api/app/scooter/rent` - Scooter mieten
-- `POST /api/app/scooter/end` - Fahrt beenden
+### Super-App Seiten
+- `/super-app` - Home
+- `/games` - Game Center (10 Spiele)
+- `/miner` - Mining Dashboard
+- `/miner-market` - Miner kaufen
+- `/app-wallet` - Wallet
+- `/app-profile` - Profile
+- `/app-vip` - VIP Status
+- `/vip-games` - VIP Exclusive Games
+- `/taxi` - Taxi Buchung
+- `/scooter` - E-Scooter
+- `/app-referral` - Referral System
+- `/app-leaderboard` - Ranglisten
+- `/app-achievements` - Achievements
+- `/app-notifications` - Benachrichtigungen
+- `/app-chat` - Chat
+- `/market` - Marketplace
+- `/app-statistics` - Platform Stats
+- `/sound-settings` - Sound-Einstellungen
+- `/match3` - Match-3 Spiel
+- `/treasure-hunt` - Schatzsuche
+- `/spin-wheel` - Glücksrad
 
 ## Changelog
 
+### 2026-03-07 (Update 3)
+- ✅ Achievements System (16 Badges, Punkte)
+- ✅ Notifications Center
+- ✅ Chat System (Echtzeit)
+- ✅ Marketplace (Kaufen/Verkaufen)
+- ✅ Sound-Effekte (9 Sounds, Web Audio API)
+
 ### 2026-03-06 (Update 2)
-- ✅ Taxi Buchung implementiert
-- ✅ E-Scooter Rental implementiert
-- ✅ VIP Benefits in Mining integriert (+10%/+20% Bonus)
-- ✅ VIP Exclusive Games (nur VIP 5)
-- ✅ Platform Statistics Seite
-- ✅ 10 Mini-Games im Game Center
+- ✅ Taxi & Scooter Buchung
+- ✅ VIP Benefits in Mining
+- ✅ VIP Exclusive Games
+- ✅ Platform Statistics
 
 ### 2026-03-06 (Update 1)
-- ✅ Referral-Link in Bottom Navigation
-- ✅ Schatzsuche Mini-Game
-- ✅ Admin Panel
-- ✅ Leaderboard
-- ✅ Profile Seite mit Level System
-- ✅ VIP Status Seite
-
-## Nächste Schritte (Backlog)
-- [ ] Push-Benachrichtigungen
-- [ ] Sound-Effekte für Games
-- [ ] Achievements/Badges System
-- [ ] Chat-System zwischen Usern
-- [ ] Marketplace mit Auktionen
+- ✅ Home Redesign, Game Center, Profile, VIP
 
 ## Tech Stack
 - React + TailwindCSS (Frontend)
 - FastAPI + Python (Backend)
 - MongoDB Atlas (Database)
+- Web Audio API (Sounds)
