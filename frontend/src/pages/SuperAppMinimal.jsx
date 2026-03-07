@@ -294,32 +294,34 @@ export default function SuperAppMinimal() {
         
         {/* Quick Actions Cards */}
         <div className="grid grid-cols-2 gap-3 mb-6">
-          <Link 
-            to="/app-referral"
-            className="group relative overflow-hidden bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 p-5 rounded-2xl flex items-center gap-4 hover:from-emerald-500/30 hover:to-emerald-600/20 transition-all border border-emerald-500/20"
+          <button 
+            type="button"
+            onClick={() => navigate('/app-referral')}
+            className="group relative overflow-hidden bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 p-5 rounded-2xl flex items-center gap-4 hover:from-emerald-500/30 hover:to-emerald-600/20 transition-all border border-emerald-500/20 text-left active:scale-98"
             data-testid="invite-friends-btn"
           >
-            <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-2xl">
               👥
             </div>
             <div>
               <p className="font-bold text-white">Freunde einladen</p>
               <p className="text-xs text-emerald-400/80">+100 Coins pro Einladung</p>
             </div>
-          </Link>
-          <Link 
-            to="/app-vip"
-            className="group relative overflow-hidden bg-gradient-to-br from-amber-500/20 to-amber-600/10 p-5 rounded-2xl flex items-center gap-4 hover:from-amber-500/30 hover:to-amber-600/20 transition-all border border-amber-500/20"
+          </button>
+          <button 
+            type="button"
+            onClick={() => navigate('/app-vip')}
+            className="group relative overflow-hidden bg-gradient-to-br from-amber-500/20 to-amber-600/10 p-5 rounded-2xl flex items-center gap-4 hover:from-amber-500/30 hover:to-amber-600/20 transition-all border border-amber-500/20 text-left active:scale-98"
             data-testid="vip-btn"
           >
-            <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-2xl">
               ⭐
             </div>
             <div>
               <p className="font-bold text-white">VIP Status</p>
               <p className="text-xs text-amber-400/80">Level up für Bonus!</p>
             </div>
-          </Link>
+          </button>
         </div>
         
         {/* More Features */}
@@ -330,14 +332,15 @@ export default function SuperAppMinimal() {
           </div>
           <div className="grid grid-cols-3 gap-2">
             {quickLinks.map((link) => (
-              <Link 
+              <button 
                 key={link.label}
-                to={link.path} 
-                className="p-3 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl transition-all group"
+                type="button"
+                onClick={() => navigate(link.path)}
+                className="p-3 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl transition-all active:bg-[#6c63ff]/30"
               >
-                <span className="text-lg group-hover:scale-110 inline-block transition-transform">{link.icon}</span>
+                <span className="text-lg inline-block">{link.icon}</span>
                 <p className="text-xs text-slate-400 mt-1">{link.label}</p>
-              </Link>
+              </button>
             ))}
           </div>
         </div>
