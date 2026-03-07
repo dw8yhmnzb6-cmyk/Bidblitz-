@@ -66,30 +66,31 @@ export default function GamesHub() {
     
     setLoading(gameKey);
     
-    // Random reward
-    const reward = Math.floor(Math.random() * (game.max - game.min + 1)) + game.min;
-    
-    // Simulate game delay
-    await new Promise(r => setTimeout(r, 1000));
-    
-    // Update state
-    const newPlays = { ...dailyPlays, [gameKey]: currentPlays + 1 };
-    setDailyPlays(newPlays);
-    saveDailyPlays(newPlays);
-    setCoins(prev => prev + reward);
-    
-    // Try backend
+    // Try backend first
     try {
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      await axios.post(`${API}/app/games/play`, { game: gameKey }, { headers });
+      const res = await axios.post(`${API}/app/core/games/play`, { game: gameKey }, { headers });
+      
+      setCoins(res.data.new_balance);
+      const newPlays = { ...dailyPlays, [gameKey]: currentPlays + 1 };
+      setDailyPlays(newPlays);
+      saveDailyPlays(newPlays);
+      
+      setResult({ type: 'win', game: gameKey, amount: res.data.reward });
     } catch (error) {
-      // Continue with local
+      // Fallback to local
+      const reward = Math.floor(Math.random() * (game.max - game.min + 1)) + game.min;
+      
+      const newPlays = { ...dailyPlays, [gameKey]: currentPlays + 1 };
+      setDailyPlays(newPlays);
+      saveDailyPlays(newPlays);
+      setCoins(prev => prev + reward);
+      
+      setResult({ type: 'win', game: gameKey, amount: reward });
     }
     
-    setResult({ type: 'win', game: gameKey, amount: reward });
     setLoading('');
-    
     setTimeout(() => setResult(''), 3000);
   };
   
