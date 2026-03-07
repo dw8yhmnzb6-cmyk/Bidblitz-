@@ -96,10 +96,6 @@ def spawn_coins(center_lat: float = DEFAULT_LAT, center_lng: float = DEFAULT_LNG
     if len(coins_cache) > 100:
         coins_cache = coins_cache[-100:]
     
-    # Also save to DB (for persistence)
-    if new_coins:
-        coins_map_col.insert_many(new_coins)
-    
     return coins_cache
 
 
