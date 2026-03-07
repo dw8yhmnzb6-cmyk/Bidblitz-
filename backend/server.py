@@ -252,6 +252,9 @@ from routers.bidblitz_games_sqlite import router as bidblitz_sqlite_router
 # NEW: BidBlitz Game System (Simple 15 Games)
 from routers.bidblitz_gamesystem import router as games_router
 
+# NEW: BidBlitz Game Hub (20 Games)
+from routers.bidblitz_game_hub import router as hub_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended, notify_payment_received
 
