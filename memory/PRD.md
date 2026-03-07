@@ -246,16 +246,39 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ### P1 - Hoch Priorität
 - Routing-Konflikte in App.js bereinigen (Legacy Routes entfernen)
-- Backend mining_features.py aufteilen (>1700 Zeilen)
+- Backend mining_features.py aufteilen (>2300 Zeilen)
 
 ### P2 - Mittel Priorität
 - VIP Benefits vollständig in Backend integrieren
-- Mock-Logik im Frontend durch echte API-Calls ersetzen
 - Echtzeit-Fahrtverfolgung auf Map
 - Fahrerbewertungs-System
 - Lieblings-Routen speichern
 
 ### P3 - Niedrig Priorität
-- Tägliche Limits/Cooldowns für Spiele
 - Sound-Effekte für Events
 - Push-Notifications (PWA)
+
+---
+
+## Changelog - Update 13 (2026-03-07)
+
+### ✅ VOLLSTÄNDIGE BACKEND-INTEGRATION
+Alle Frontend-Mock-Features wurden mit echten Backend-APIs verbunden:
+
+**Neue Endpoints hinzugefügt:**
+| Feature | Endpoints | Status |
+|---------|-----------|--------|
+| Friends | `/api/app/friends/add`, `/send-coins`, `/list` | ✅ |
+| Events | `/api/app/events/join`, `/list` | ✅ |
+| Store | `/api/app/store/buy` | ✅ |
+| Loans | `/api/app/loans/request`, `/repay`, `/active` | ✅ |
+| Merchant | `/api/app/merchant/register`, `/receive`, `/status` | ✅ |
+| Auction | `/api/app/auction/bid`, `/active` | ✅ |
+| VIP | `/api/app/vip/upgrade` | ✅ |
+| Coin Hunt | `/api/app/coins/collect`, `/collected` | ✅ |
+| Marketplace | `/api/app/marketplace/create` | ✅ |
+
+**Test Results:**
+- Backend: 21/21 Tests bestanden (100%)
+- Frontend: 9/9 Seiten getestet (100%)
+- Siehe `/app/test_reports/iteration_117.json`
