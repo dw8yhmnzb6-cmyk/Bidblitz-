@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BidBlitz Match Game</title>
+
+<style>
+
+body{
+background:#0f172a;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+font-family:sans-serif;
+color:white;
+flex-direction:column;
+}
+
+#score{
+font-size:24px;
+margin-bottom:20px;
+}
+
+#board{
+display:grid;
+grid-template-columns:repeat(8,70px);
+grid-gap:5px;
+}
+
+.tile{
+width:70px;
+height:70px;
+border-radius:12px;
+cursor:pointer;
+transition:transform 0.1s;
+}
+
+.tile:hover{
+transform:scale(1.05);
+}
+
+.tile:active{
+transform:scale(0.95);
+}
+
+.red{background:#ff4d4d}
+.blue{background:#4da6ff}
+.green{background:#4dff88}
+.yellow{background:#ffd24d}
+.purple{background:#b84dff}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="score">Score: 0</div>
+
+<div id="board"></div>
+
+<script>
+
+const width=8
+const colors=["red","blue","green","yellow","purple"]
+
+let board=[]
+let score=0
+
+const gameBoard=document.getElementById("board")
+
+function createBoard(){
+
+for(let i=0;i<width*width;i++){
+
+let tile=document.createElement("div")
+
+tile.classList.add("tile")
+
+let color=colors[Math.floor(Math.random()*colors.length)]
+
+tile.classList.add(color)
+
+tile.setAttribute("id",i)
+
+tile.addEventListener("click",swapTile)
+
+gameBoard.appendChild(tile)
+
+board.push(tile)
+
+}
+
+}
+
+createBoard()
+
+let first=null
+
+function swapTile(){
+
+if(first==null){
+
+first=this
+this.style.border="3px solid white"
+
+return
+
+}
+
+let second=this
+
+let temp=first.className
+
+first.className=second.className
+
+second.className=temp
+
+first.style.border=""
+
+checkMatches()
+
+first=null
+
+}
+
+function checkMatches(){
+
+for(let i=0;i<board.length;i++){
+
+if(i%8<6){
+
+let a=board[i]
+let b=board[i+1]
+let c=board[i+2]
+
+if(a.className==b.className && b.className==c.className){
+
+a.className="tile"
+b.className="tile"
+c.className="tile"
+
+score+=10
+
+document.getElementById("score").innerText="Score: "+score
+
+setTimeout(()=>{
+a.classList.add(colors[Math.floor(Math.random()*colors.length)])
+b.classList.add(colors[Math.floor(Math.random()*colors.length)])
+c.classList.add(colors[Math.floor(Math.random()*colors.length)])
+},300)
+
+}
+
+}
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

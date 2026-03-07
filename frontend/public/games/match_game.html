@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BidBlitz Match Game</title>
+
+<style>
+
+body{
+background:#1b1b2f;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+font-family:sans-serif;
+}
+
+#game{
+display:grid;
+grid-template-columns:repeat(8,60px);
+grid-gap:5px;
+}
+
+.cell{
+width:60px;
+height:60px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.red{background:#ff4d4d}
+.blue{background:#4da6ff}
+.green{background:#4dff88}
+.yellow{background:#ffd24d}
+.purple{background:#b84dff}
+
+</style>
+</head>
+
+<body>
+
+<div id="game"></div>
+
+<script>
+
+const width = 8
+const colors = ["red","blue","green","yellow","purple"]
+
+const board = document.getElementById("game")
+
+let squares = []
+
+function createBoard(){
+
+for(let i=0;i<width*width;i++){
+
+let square=document.createElement("div")
+
+square.setAttribute("draggable",true)
+
+let color=colors[Math.floor(Math.random()*colors.length)]
+
+square.classList.add("cell",color)
+
+square.setAttribute("id",i)
+
+board.appendChild(square)
+
+squares.push(square)
+
+}
+
+}
+
+createBoard()
+
+</script>
+
+</body>
+</html>
