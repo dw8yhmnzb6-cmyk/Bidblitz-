@@ -673,8 +673,8 @@ app.include_router(bidblitz_sqlite_router, prefix="/api")
 # NEW: BidBlitz Game System (Simple 15 Games)
 app.include_router(games_router, prefix="/api")
 
-# NEW: BidBlitz Game System (Simple 15 Games)
-app.include_router(games_router, prefix="/api")
+# NEW: BidBlitz Game Hub (20 Games)
+app.include_router(hub_router, prefix="/api")
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
