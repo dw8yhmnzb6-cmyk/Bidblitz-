@@ -1,17 +1,27 @@
 """
 BidBlitz Game System - Simple & Fast
 15 Games, Wallet, Leaderboard
+MongoDB-persistent storage
 """
 from fastapi import APIRouter
+from datetime import datetime, timezone
+from pymongo import MongoClient
 import random
-import time
+import os
 
 router = APIRouter(prefix="/games", tags=["BidBlitz Games"])
 
-wallets = {}
-game_history = {}
+# MongoDB Connection
+mongo_url = os.environ.get("MONGO_URL")
+db_name = os.environ.get("DB_NAME", "bidblitz")
+client = MongoClient(mongo_url)
+db = client[db_name]
 
-games = [
+# Collections
+wallets_col = db["wallets"]
+game_history_col = db["simple_game_history"]
+
+GAMES = [
     {"id": 1, "name": "Puzzle Blocks", "icon": "🧩", "reward": 5},
     {"id": 2, "name": "Car Jam", "icon": "🚗", "reward": 6},
     {"id": 3, "name": "Idle Miner", "icon": "⛏", "reward": 10},
@@ -30,61 +40,93 @@ games = [
 ]
 
 
+def get_or_create_wallet(user_id: str) -> dict:
+    """Get or create a wallet for user"""
+    wallet = wallets_col.find_one({"user_id": user_id}, {"_id": 0})
+    if not wallet:
+        now = datetime.now(timezone.utc)
+        wallet = {
+            "user_id": user_id,
+            "coins": 50,
+            "created_at": now.isoformat()
+        }
+        wallets_col.insert_one(wallet)
+    return wallet
+
+
 # Wallet erstellen
 @router.post("/wallet/create")
 def create_wallet(user_id: str):
-    if user_id not in wallets:
-        wallets[user_id] = 50
-    return {"coins": wallets[user_id]}
+    wallet = get_or_create_wallet(user_id)
+    return {"coins": wallet.get("coins", 0)}
 
 
 # Wallet anzeigen
 @router.get("/wallet")
 def wallet(user_id: str):
-    return {"coins": wallets.get(user_id, 0)}
+    wallet_doc = wallets_col.find_one({"user_id": user_id}, {"_id": 0})
+    return {"coins": wallet_doc.get("coins", 0) if wallet_doc else 0}
 
 
 # Spieleliste
 @router.get("/list")
 def list_games():
-    return games
+    return GAMES
 
 
 # Spiel starten
 @router.post("/play")
 def play(user_id: str, game_id: int):
-    game = next((g for g in games if g["id"] == game_id), None)
+    game = next((g for g in GAMES if g["id"] == game_id), None)
     
     if not game:
         return {"error": "game not found"}
     
+    # Ensure wallet exists
+    get_or_create_wallet(user_id)
+    
     reward = game["reward"] + random.randint(1, 5)
+    now = datetime.now(timezone.utc)
     
-    wallets[user_id] = wallets.get(user_id, 0) + reward
+    # Update wallet
+    wallets_col.update_one(
+        {"user_id": user_id},
+        {"$inc": {"coins": reward}}
+    )
     
-    game_history[user_id] = {
-        "game": game["name"],
-        "icon": game["icon"],
+    # Log game play
+    game_history_col.insert_one({
+        "user_id": user_id,
+        "game_name": game["name"],
+        "game_icon": game["icon"],
+        "game_id": game_id,
         "reward": reward,
-        "time": time.time()
-    }
+        "timestamp": now.isoformat()
+    })
+    
+    wallet_doc = wallets_col.find_one({"user_id": user_id}, {"_id": 0})
     
     return {
         "game": game["name"],
         "icon": game["icon"],
         "reward": reward,
-        "wallet": wallets[user_id]
+        "wallet": wallet_doc.get("coins", 0)
     }
 
 
 # Ranking
 @router.get("/leaderboard")
 def leaderboard():
-    ranking = sorted(wallets.items(), key=lambda x: x[1], reverse=True)
-    return ranking[:10]
+    top_users = list(wallets_col.find({}, {"_id": 0, "user_id": 1, "coins": 1}).sort("coins", -1).limit(10))
+    return [[u["user_id"], u.get("coins", 0)] for u in top_users]
 
 
 # User History
 @router.get("/history")
 def history(user_id: str):
-    return game_history.get(user_id, {})
+    hist = game_history_col.find_one(
+        {"user_id": user_id},
+        {"_id": 0},
+        sort=[("timestamp", -1)]
+    )
+    return hist or {}
