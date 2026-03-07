@@ -76,8 +76,27 @@ export default function SuperAppMinimal() {
   const cards = [
     { id: 'scan', icon: '📷', label: 'Scan', desc: 'QR scannen', path: '/scooter', gradient: 'from-cyan-500 to-cyan-600' },
     { id: 'pay', icon: '💳', label: 'Pay', desc: 'Auszahlen', path: '/withdraw', gradient: 'from-emerald-500 to-emerald-600' },
-    { id: 'taxi', icon: '🚕', label: 'Taxi', desc: 'Buchen', path: '/taxi', gradient: 'from-amber-500 to-orange-500' },
-    { id: 'scooter', icon: '🛴', label: 'Scooter', desc: 'Mieten', path: '/scooter', gradient: 'from-teal-500 to-teal-600' },
+    { id: 'mining', icon: '⛏️', label: 'Mining', desc: 'BBZ verdienen', path: '/miner', gradient: 'from-purple-500 to-purple-600' },
+    { id: 'wallet', icon: '👛', label: 'Wallet', desc: 'Mein Geld', path: '/app-wallet', gradient: 'from-pink-500 to-pink-600' },
+    { id: 'market', icon: '🛒', label: 'Market', desc: 'Kaufen', path: '/marketplace', gradient: 'from-blue-500 to-blue-600' },
+    { id: 'games', icon: '🎮', label: 'Games', desc: 'Spielen', path: '/games', gradient: 'from-red-500 to-red-600' },
+  ];
+  
+  const engagementCards = [
+    { id: 'referral', icon: '👥', label: 'Referral', path: '/referral' },
+    { id: 'daily', icon: '🎁', label: 'Daily Reward', path: '/missions' },
+    { id: 'treasure', icon: '🗺️', label: 'Treasure', path: '/map' },
+    { id: 'leaderboard', icon: '🏆', label: 'Leaderboard', path: '/app-leaderboard' },
+  ];
+
+  const categoryTabs = [
+    { id: 'auktionen', label: 'Auktionen', icon: '📍' },
+    { id: 'mobility', label: 'Mobility', icon: '🚗' },
+    { id: 'essen', label: 'Essen', icon: '🍔' },
+    { id: 'shopping', label: 'Shopping', icon: '🛍️' },
+  ];
+  
+  const [activeCategory, setActiveCategory] = useState('auktionen');
     { id: 'games', icon: '🎮', label: 'Games', desc: '10+ Spiele', path: '/games', gradient: 'from-purple-500 to-purple-600' },
     { id: 'mining', icon: '⛏️', label: 'Mining', desc: 'Coins sammeln', path: '/miner', gradient: 'from-blue-500 to-blue-600' },
     { id: 'marketplace', icon: '🛒', label: 'Market', desc: 'Handeln', path: '/market', gradient: 'from-pink-500 to-pink-600' },
