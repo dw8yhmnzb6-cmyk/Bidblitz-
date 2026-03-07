@@ -189,6 +189,7 @@ import Store from "./pages/Store";
 import Merchant from "./pages/Merchant";
 import Loans from "./pages/Loans";
 import Assistant from "./pages/Assistant";
+import Missions from "./pages/Missions";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
