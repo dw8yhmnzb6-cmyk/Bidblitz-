@@ -139,10 +139,11 @@ export default function BBZWallet() {
   };
 
   const tabs = [
-    { id: 'wallet', label: 'Wallet', icon: '💎' },
-    { id: 'withdraw', label: 'Auszahlen', icon: '💸' },
+    { id: 'balance', label: 'Balance', icon: '💰' },
     { id: 'send', label: 'Senden', icon: '📤' },
-    { id: 'history', label: 'Historie', icon: '📋' },
+    { id: 'receive', label: 'Empfangen', icon: '📥' },
+    { id: 'swap', label: 'Swap', icon: '🔄' },
+    { id: 'history', label: 'Transaktionen', icon: '📋' },
   ];
 
   return (
