@@ -1107,6 +1107,8 @@ function AppContent() {
           } />
           <Route path="/app-leaderboard" element={<AppLeaderboard />} />
           <Route path="/app-profile" element={<AppProfile />} />
+          <Route path="/friends" element={<Friends />} />
+          <Route path="/events" element={<LiveEvents />} />
           <Route path="/app-vip" element={<AppVIP />} />
           <Route path="/vip" element={<AppVIP />} />
           <Route path="/app-statistics" element={<AppStatistics />} />
