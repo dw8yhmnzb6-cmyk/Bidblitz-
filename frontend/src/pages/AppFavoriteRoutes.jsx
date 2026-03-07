@@ -6,7 +6,6 @@ import React, { useState, useEffect } from 'react';
 import BottomNav from '../components/BottomNav';
 
 export default function AppFavoriteRoutes() {
-  const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newRoute, setNewRoute] = useState({ name: '', pickup: '', destination: '' });
