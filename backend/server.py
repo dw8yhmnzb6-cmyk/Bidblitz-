@@ -697,6 +697,9 @@ app.include_router(ai_router, prefix="/api")
 # NEW: BidBlitz Miner Dashboard
 app.include_router(miner_dashboard_router, prefix="/api")
 
+# NEW: BidBlitz BBZ Wallet
+app.include_router(bbz_wallet_router, prefix="/api")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
