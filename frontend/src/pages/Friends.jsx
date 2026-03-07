@@ -258,7 +258,7 @@ export default function Friends() {
             <span className="text-sm">Chat öffnen</span>
           </Link>
           <Link 
-            to="/events"
+            to="/live-events"
             className="bg-white/5 p-4 rounded-xl flex items-center gap-3 hover:bg-white/10 transition-all border border-white/5"
           >
             <span className="text-2xl">🎉</span>
