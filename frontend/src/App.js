@@ -183,6 +183,8 @@ import AppRideTracking from "./pages/AppRideTracking";
 import AppFavoriteRoutes from "./pages/AppFavoriteRoutes";
 import AppDriverRatings from "./pages/AppDriverRatings";
 import LiveAuction from "./pages/LiveAuction";
+import Friends from "./pages/Friends";
+import LiveEvents from "./pages/LiveEvents";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
