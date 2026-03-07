@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scratch Card - BidBlitz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #d97706, #92400e);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+        h1 { font-size: 28px; margin-bottom: 20px; text-align: center; }
+        .cards-left {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .scratch-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .prize-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .prize-emoji { font-size: 60px; margin-bottom: 10px; }
+        .prize-text { font-size: 32px; font-weight: bold; color: #92400e; }
+        .prize-coins { font-size: 18px; color: #78350f; }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+        }
+        .btn {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #92400e;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+        .instructions {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>💳 Scratch Card</h1>
+    <div class="cards-left">Karten heute: <span id="cards">3</span>/3</div>
+    
+    <div class="scratch-container">
+        <div class="prize-layer">
+            <div class="prize-emoji" id="emoji">🎁</div>
+            <div class="prize-text" id="prize">???</div>
+            <div class="prize-coins" id="coins"></div>
+        </div>
+        <canvas id="scratch" width="300" height="200"></canvas>
+    </div>
+    
+    <div class="result" id="result"></div>
+    
+    <button class="btn" id="newCard" onclick="newCard()">Neue Karte</button>
+    
+    <p class="instructions">Kratze die graue Fläche frei!</p>
+
+    <script>
+        const prizes = [
+            { emoji: '💰', text: '50 Coins!', coins: 50, weight: 5 },
+            { emoji: '💎', text: '100 Coins!', coins: 100, weight: 3 },
+            { emoji: '🎁', text: '25 Coins', coins: 25, weight: 10 },
+            { emoji: '⭐', text: '75 Coins!', coins: 75, weight: 4 },
+            { emoji: '🏆', text: '200 Coins!!', coins: 200, weight: 1 },
+            { emoji: '😢', text: 'Nichts...', coins: 0, weight: 7 },
+            { emoji: '🍀', text: '10 Coins', coins: 10, weight: 15 },
+            { emoji: '🎰', text: '150 Coins!', coins: 150, weight: 2 }
+        ];
+        
+        let cardsLeft = 3;
+        let isScratching = false;
+        let scratchedPercent = 0;
+        let currentPrize = null;
+        
+        const canvas = document.getElementById('scratch');
+        const ctx = canvas.getContext('2d');
+        
+        function getRandomPrize() {
+            const totalWeight = prizes.reduce((sum, p) => sum + p.weight, 0);
+            let random = Math.random() * totalWeight;
+            for (const prize of prizes) {
+                random -= prize.weight;
+                if (random <= 0) return prize;
+            }
+            return prizes[0];
+        }
+        
+        function initCard() {
+            currentPrize = getRandomPrize();
+            document.getElementById('emoji').textContent = currentPrize.emoji;
+            document.getElementById('prize').textContent = currentPrize.text;
+            document.getElementById('coins').textContent = currentPrize.coins > 0 ? `+${currentPrize.coins} Coins` : '';
+            
+            // Draw scratch layer
+            ctx.fillStyle = '#666';
+            ctx.fillRect(0, 0, 300, 200);
+            
+            // Add texture
+            ctx.fillStyle = '#555';
+            for (let i = 0; i < 50; i++) {
+                ctx.fillRect(Math.random() * 300, Math.random() * 200, 20, 2);
+            }
+            
+            // Add text
+            ctx.fillStyle = '#888';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Hier kratzen!', 150, 105);
+            
+            scratchedPercent = 0;
+            document.getElementById('result').textContent = '';
+        }
+        
+        function scratch(x, y) {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.beginPath();
+            ctx.arc(x, y, 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Calculate scratched percentage
+            const imageData = ctx.getImageData(0, 0, 300, 200);
+            let transparent = 0;
+            for (let i = 3; i < imageData.data.length; i += 4) {
+                if (imageData.data[i] === 0) transparent++;
+            }
+            scratchedPercent = (transparent / (300 * 200)) * 100;
+            
+            if (scratchedPercent > 50 && currentPrize) {
+                revealPrize();
+            }
+        }
+        
+        function revealPrize() {
+            ctx.clearRect(0, 0, 300, 200);
+            if (currentPrize.coins > 0) {
+                document.getElementById('result').textContent = `🎉 +${currentPrize.coins} Coins gewonnen!`;
+            } else {
+                document.getElementById('result').textContent = 'Leider nichts gewonnen...';
+            }
+            currentPrize = null;
+        }
+        
+        function newCard() {
+            if (cardsLeft <= 0) {
+                document.getElementById('result').textContent = 'Keine Karten mehr heute!';
+                return;
+            }
+            cardsLeft--;
+            document.getElementById('cards').textContent = cardsLeft;
+            if (cardsLeft <= 0) {
+                document.getElementById('newCard').disabled = true;
+            }
+            initCard();
+        }
+        
+        // Mouse events
+        canvas.addEventListener('mousedown', (e) => { isScratching = true; });
+        canvas.addEventListener('mouseup', () => { isScratching = false; });
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isScratching) return;
+            const rect = canvas.getBoundingClientRect();
+            scratch(e.clientX - rect.left, e.clientY - rect.top);
+        });
+        
+        // Touch events
+        canvas.addEventListener('touchstart', (e) => { 
+            isScratching = true; 
+            e.preventDefault();
+        });
+        canvas.addEventListener('touchend', () => { isScratching = false; });
+        canvas.addEventListener('touchmove', (e) => {
+            if (!isScratching) return;
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            scratch(touch.clientX - rect.left, touch.clientY - rect.top);
+            e.preventDefault();
+        });
+        
+        initCard();
+    </script>
+</body>
+</html>

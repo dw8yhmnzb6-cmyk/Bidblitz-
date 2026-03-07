@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Quiz - BidBlitz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #2563eb, #1e3a8a);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .score-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .score-item { text-align: center; }
+        .score-value { font-size: 24px; font-weight: bold; color: #fbbf24; }
+        .score-label { font-size: 12px; opacity: 0.8; }
+        .question-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .question-number {
+            font-size: 14px;
+            color: #93c5fd;
+            margin-bottom: 10px;
+        }
+        .question-text {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid transparent;
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        .option:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateX(5px);
+        }
+        .option.correct {
+            background: rgba(34, 197, 94, 0.4);
+            border-color: #22c55e;
+        }
+        .option.wrong {
+            background: rgba(239, 68, 68, 0.4);
+            border-color: #ef4444;
+        }
+        .option.disabled { pointer-events: none; }
+        .result {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+        }
+        .result h2 { font-size: 32px; margin-bottom: 10px; }
+        .result p { font-size: 18px; margin-bottom: 20px; }
+        .btn {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1e3a8a;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .timer {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>❓ Daily Quiz</h1>
+        
+        <div class="score-bar">
+            <div class="score-item">
+                <div class="score-value" id="score">0</div>
+                <div class="score-label">Punkte</div>
+            </div>
+            <div class="score-item">
+                <div class="score-value" id="streak">0</div>
+                <div class="score-label">Streak</div>
+            </div>
+            <div class="score-item">
+                <div class="score-value" id="question">1/5</div>
+                <div class="score-label">Frage</div>
+            </div>
+        </div>
+        
+        <div class="timer" id="timer">15</div>
+        
+        <div id="game-area"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Was ist die Hauptstadt von Deutschland?",
+                options: ["München", "Berlin", "Hamburg", "Köln"],
+                correct: 1
+            },
+            {
+                q: "Welcher Planet ist der größte im Sonnensystem?",
+                options: ["Mars", "Saturn", "Jupiter", "Neptun"],
+                correct: 2
+            },
+            {
+                q: "Wie viele Kontinente gibt es?",
+                options: ["5", "6", "7", "8"],
+                correct: 2
+            },
+            {
+                q: "Wer malte die Mona Lisa?",
+                options: ["Van Gogh", "Picasso", "Da Vinci", "Rembrandt"],
+                correct: 2
+            },
+            {
+                q: "Was ist H2O?",
+                options: ["Sauerstoff", "Wasserstoff", "Wasser", "Kohlenstoff"],
+                correct: 2
+            }
+        ];
+        
+        let currentQuestion = 0;
+        let score = 0;
+        let streak = 0;
+        let timer = 15;
+        let timerInterval;
+        
+        function startTimer() {
+            timer = 15;
+            document.getElementById('timer').textContent = timer;
+            timerInterval = setInterval(() => {
+                timer--;
+                document.getElementById('timer').textContent = timer;
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    handleAnswer(-1);
+                }
+            }, 1000);
+        }
+        
+        function showQuestion() {
+            if (currentQuestion >= questions.length) {
+                showResult();
+                return;
+            }
+            
+            const q = questions[currentQuestion];
+            document.getElementById('question').textContent = `${currentQuestion + 1}/${questions.length}`;
+            
+            let html = `
+                <div class="question-card">
+                    <div class="question-number">Frage ${currentQuestion + 1}</div>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <div class="option" onclick="handleAnswer(${i})">${opt}</div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('game-area').innerHTML = html;
+            startTimer();
+        }
+        
+        function handleAnswer(selected) {
+            clearInterval(timerInterval);
+            const q = questions[currentQuestion];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((opt, i) => {
+                opt.classList.add('disabled');
+                if (i === q.correct) opt.classList.add('correct');
+                if (i === selected && selected !== q.correct) opt.classList.add('wrong');
+            });
+            
+            if (selected === q.correct) {
+                score += 10 + (timer * 2);
+                streak++;
+            } else {
+                streak = 0;
+            }
+            
+            document.getElementById('score').textContent = score;
+            document.getElementById('streak').textContent = streak;
+            
+            setTimeout(() => {
+                currentQuestion++;
+                showQuestion();
+            }, 1500);
+        }
+        
+        function showResult() {
+            let reward = Math.floor(score / 10);
+            document.getElementById('game-area').innerHTML = `
+                <div class="result">
+                    <h2>🎉 Fertig!</h2>
+                    <p>Du hast ${score} Punkte erreicht!</p>
+                    <p style="color: #fbbf24; font-size: 24px;">+${reward} Coins</p>
+                    <button class="btn" onclick="restart()">Nochmal spielen</button>
+                </div>
+            `;
+            document.getElementById('timer').textContent = '✓';
+        }
+        
+        function restart() {
+            currentQuestion = 0;
+            score = 0;
+            streak = 0;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('streak').textContent = '0';
+            showQuestion();
+        }
+        
+        showQuestion();
+    </script>
+</body>
+</html>
