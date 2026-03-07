@@ -110,6 +110,18 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ## Changelog
 
+### 2026-03-07 (Update 11) - Finanz-Features
+- ✅ **Merchant System** (`/merchant`)
+  - Händler registrieren
+  - Zahlungen empfangen
+  - Transaktions-Historie
+  - QR-Code Generator
+- ✅ **Loan System** (`/loans`)
+  - Kredit aufnehmen (bis 10.000 Coins)
+  - **Einstellbarer Zinssatz (5%-50%)**
+  - Kredit zurückzahlen
+  - Kredit-Historie
+
 ### 2026-03-07 (Update 10) - E-Commerce Features
 - ✅ **Store** (`/store`)
   - 6 kaufbare Items: Mystery Box, VIP Pass, Auction Ticket, Coin Booster, Lucky Charm, Miner Upgrade
