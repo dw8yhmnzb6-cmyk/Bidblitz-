@@ -270,6 +270,9 @@ from routers.bidblitz_bbz_wallet import router as bbz_wallet_router
 # NEW: BidBlitz Weekly League & Missions
 from routers.bidblitz_league import router as league_router
 
+# NEW: BidBlitz Transport & Taxi
+from routers.bidblitz_transport import router as transport_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended, notify_payment_received
 
