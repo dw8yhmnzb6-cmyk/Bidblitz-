@@ -184,6 +184,73 @@ export default function SuperAppMinimal() {
             ))}
           </div>
         </div>
+
+        {/* Daily Reward Card */}
+        {dailyStatus && (
+          <div className="mb-6 bg-gradient-to-br from-amber-500/20 to-orange-500/10 p-5 rounded-2xl border border-amber-500/30" data-testid="daily-reward-card">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <span className="text-3xl">🔥</span>
+                <div>
+                  <p className="font-bold text-white">Tägliche Belohnung</p>
+                  <p className="text-xs text-amber-400/80">Streak: {dailyStatus.streak || 0} Tage</p>
+                </div>
+              </div>
+              <button
+                onClick={claimDaily}
+                disabled={dailyStatus.claimed_today || claiming}
+                className={`px-5 py-2.5 rounded-xl font-semibold transition-all ${
+                  dailyStatus.claimed_today 
+                    ? 'bg-white/10 text-slate-400 cursor-not-allowed' 
+                    : 'bg-amber-500 hover:bg-amber-600 text-white'
+                }`}
+                data-testid="claim-daily-btn"
+              >
+                {claiming ? '...' : dailyStatus.claimed_today ? '✓ Abgeholt' : `+${dailyStatus.next_reward} Coins`}
+              </button>
+            </div>
+            <div className="flex gap-1">
+              {dailyStatus.rewards?.map((reward, idx) => (
+                <div 
+                  key={idx}
+                  className={`flex-1 py-2 rounded-lg text-center text-xs font-medium ${
+                    idx < (dailyStatus.day || 0) 
+                      ? 'bg-amber-500/40 text-amber-200' 
+                      : idx === (dailyStatus.day || 0) && !dailyStatus.claimed_today
+                        ? 'bg-amber-500 text-white animate-pulse'
+                        : 'bg-white/5 text-slate-500'
+                  }`}
+                >
+                  {reward}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Quick Actions Row */}
+        <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
+          <Link to="/scooter" className="flex-none px-5 py-3 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-xl text-center transition-all border border-cyan-500/30">
+            <span className="text-lg">📷</span>
+            <p className="text-xs text-cyan-400 mt-1">Scan</p>
+          </Link>
+          <Link to="/withdraw" className="flex-none px-5 py-3 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-xl text-center transition-all border border-emerald-500/30">
+            <span className="text-lg">💳</span>
+            <p className="text-xs text-emerald-400 mt-1">Pay</p>
+          </Link>
+          <Link to="/taxi" className="flex-none px-5 py-3 bg-amber-500/20 hover:bg-amber-500/30 rounded-xl text-center transition-all border border-amber-500/30">
+            <span className="text-lg">🚕</span>
+            <p className="text-xs text-amber-400 mt-1">Ride</p>
+          </Link>
+          <Link to="/friends" className="flex-none px-5 py-3 bg-pink-500/20 hover:bg-pink-500/30 rounded-xl text-center transition-all border border-pink-500/30">
+            <span className="text-lg">💸</span>
+            <p className="text-xs text-pink-400 mt-1">Send</p>
+          </Link>
+          <Link to="/store" className="flex-none px-5 py-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-xl text-center transition-all border border-purple-500/30">
+            <span className="text-lg">🛍️</span>
+            <p className="text-xs text-purple-400 mt-1">Shop</p>
+          </Link>
+        </div>
         
         {/* 8-Card Grid */}
         <div className="mb-6">
