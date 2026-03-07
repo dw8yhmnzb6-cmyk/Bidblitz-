@@ -1,90 +1,135 @@
 /**
- * BidBlitz Scooter Booking
- * Rent an e-scooter with coins
+ * BidBlitz Scooter with QR Scanner
+ * Scan QR code to unlock scooter
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import BottomNav from '../components/BottomNav';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
 export default function AppScooter() {
-  const [coins, setCoins] = useState(0);
-  const [scooters, setScooters] = useState([
-    { id: 'SC001', distance: '50m', battery: 85, price: 5 },
-    { id: 'SC002', distance: '120m', battery: 62, price: 5 },
-    { id: 'SC003', distance: '200m', battery: 91, price: 5 },
-    { id: 'SC004', distance: '350m', battery: 44, price: 4 },
-  ]);
-  const [activeRide, setActiveRide] = useState(null);
+  const [wallet, setWallet] = useState(500);
+  const [status, setStatus] = useState('');
+  const [rideActive, setRideActive] = useState(false);
   const [rideTime, setRideTime] = useState(0);
-  const [message, setMessage] = useState('');
+  const [scannedId, setScannedId] = useState('');
+  const [scannerReady, setScannerReady] = useState(false);
+  const scannerRef = useRef(null);
+  const readerRef = useRef(null);
+  
+  const UNLOCK_PRICE = 5;
+  const PRICE_PER_MINUTE = 2;
   
   useEffect(() => {
-    fetchCoins();
+    fetchWallet();
+    loadQRScanner();
+    
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.clear().catch(() => {});
+      }
+    };
   }, []);
   
   useEffect(() => {
     let interval;
-    if (activeRide) {
+    if (rideActive) {
       interval = setInterval(() => {
         setRideTime(prev => prev + 1);
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [activeRide]);
+  }, [rideActive]);
   
-  const fetchCoins = async () => {
+  const fetchWallet = async () => {
     try {
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const res = await axios.get(`${API}/app/wallet/balance`, { headers });
-      setCoins(res.data.coins || 0);
+      setWallet(res.data.coins || 0);
     } catch (error) {
-      console.log('Coins error');
+      console.log('Wallet error');
     }
   };
   
-  const rentScooter = async (scooter) => {
-    if (coins < scooter.price) {
-      setMessage('Nicht genug Coins!');
-      setTimeout(() => setMessage(''), 2000);
+  const loadQRScanner = () => {
+    if (window.Html5QrcodeScanner) {
+      initScanner();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/html5-qrcode';
+      script.onload = initScanner;
+      document.head.appendChild(script);
+    }
+  };
+  
+  const initScanner = () => {
+    if (!readerRef.current || scannerRef.current) return;
+    
+    setTimeout(() => {
+      try {
+        scannerRef.current = new window.Html5QrcodeScanner(
+          "qr-reader",
+          { fps: 10, qrbox: { width: 250, height: 250 } }
+        );
+        
+        scannerRef.current.render(onScanSuccess, onScanError);
+        setScannerReady(true);
+      } catch (error) {
+        console.log('Scanner init error');
+      }
+    }, 500);
+  };
+  
+  const onScanSuccess = (decodedText) => {
+    if (rideActive) return;
+    
+    // Unlock scooter
+    if (wallet < UNLOCK_PRICE) {
+      setStatus('Not enough coins to unlock');
       return;
     }
     
-    try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      
-      await axios.post(`${API}/app/scooter/rent`, {
-        scooter_id: scooter.id,
-        price: scooter.price
-      }, { headers });
-    } catch (error) {
-      console.log('Rent error');
-    }
-    
-    setActiveRide(scooter);
-    setCoins(prev => prev - scooter.price);
+    setScannedId(decodedText);
+    setWallet(prev => prev - UNLOCK_PRICE);
+    setRideActive(true);
     setRideTime(0);
+    setStatus(`Scooter ${decodedText} started`);
+    
+    // Stop scanner
+    if (scannerRef.current) {
+      scannerRef.current.clear().catch(() => {});
+    }
   };
   
-  const endRide = async () => {
-    const costPerMinute = 2;
-    const totalMinutes = Math.ceil(rideTime / 60);
-    const rideCost = totalMinutes * costPerMinute;
-    
-    // Check if user has enough coins for the ride
-    if (coins < rideCost) {
-      setMessage('Nicht genug Coins für die Fahrt! Fahrt wird kostenlos beendet.');
-    } else {
-      setCoins(prev => prev - rideCost);
-      setMessage(`Fahrt beendet! ${rideCost} Coins für ${totalMinutes} Min.`);
+  const onScanError = (error) => {
+    // Ignore scan errors
+  };
+  
+  const simulateScan = () => {
+    const fakeId = `SC00${Math.floor(Math.random() * 9) + 1}`;
+    onScanSuccess(fakeId);
+  };
+  
+  const stopRide = async () => {
+    if (!rideActive) {
+      setStatus('No active ride');
+      return;
     }
     
-    setActiveRide(null);
-    setRideTime(0);
-    setTimeout(() => setMessage(''), 3000);
+    const minutes = Math.max(1, Math.ceil(rideTime / 60));
+    const rideCost = minutes * PRICE_PER_MINUTE;
+    
+    setWallet(prev => Math.max(0, prev - rideCost));
+    setStatus(`Ride finished. Cost: ${rideCost + UNLOCK_PRICE} coins (${UNLOCK_PRICE} unlock + ${rideCost} for ${minutes} min)`);
+    setRideActive(false);
+    setScannedId('');
+    
+    // Reinitialize scanner
+    setTimeout(() => {
+      initScanner();
+    }, 1000);
   };
   
   const formatTime = (seconds) => {
@@ -93,92 +138,83 @@ export default function AppScooter() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
   
-  const getBatteryColor = (battery) => {
-    if (battery > 60) return 'text-green-400';
-    if (battery > 30) return 'text-amber-400';
-    return 'text-red-400';
-  };
-  
   return (
     <div className="min-h-screen bg-[#0b0e24] text-white pb-20">
       <div className="p-5">
-        <h2 className="text-2xl font-bold mb-2">🛴 E-Scooter</h2>
-        <p className="text-slate-400 mb-5">Coins: <span className="text-amber-400 font-bold">{coins.toLocaleString()}</span></p>
+        <h2 className="text-2xl font-bold mb-2">🛴 BidBlitz Scooter</h2>
+        <p className="text-slate-400 mb-5">
+          Wallet: <span className="text-amber-400 font-bold">{wallet.toLocaleString()}</span> Coins
+        </p>
         
-        {message && (
-          <div className="mb-4 p-3 bg-amber-500/20 border border-amber-500/30 rounded-xl text-center text-amber-400">
-            {message}
-          </div>
-        )}
-        
-        {!activeRide ? (
+        {!rideActive ? (
           <>
-            {/* Available Scooters */}
-            <h3 className="font-semibold mb-3">Verfügbare Scooter in der Nähe</h3>
-            <div className="space-y-3" data-testid="scooter-list">
-              {scooters.map((scooter) => (
-                <div 
-                  key={scooter.id}
-                  className="bg-[#171a3a] p-4 rounded-2xl flex items-center justify-between"
-                  data-testid={`scooter-${scooter.id}`}
-                >
-                  <div>
-                    <p className="font-semibold">🛴 {scooter.id}</p>
-                    <p className="text-xs text-slate-400">{scooter.distance} entfernt</p>
-                  </div>
-                  <div className="text-center">
-                    <p className={`font-bold ${getBatteryColor(scooter.battery)}`}>
-                      🔋 {scooter.battery}%
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => rentScooter(scooter)}
-                    className="px-4 py-2 bg-[#6c63ff] hover:bg-[#8b6dff] rounded-xl text-sm font-medium"
-                    data-testid={`rent-btn-${scooter.id}`}
-                  >
-                    {scooter.price} 💰
-                  </button>
-                </div>
-              ))}
+            {/* QR Scanner */}
+            <div className="bg-[#171a3a] p-4 rounded-2xl mb-4">
+              <h3 className="font-semibold mb-3 text-center">📷 Scan QR Code to Unlock</h3>
+              <div 
+                id="qr-reader" 
+                ref={readerRef}
+                className="mx-auto rounded-xl overflow-hidden"
+                style={{ maxWidth: '300px' }}
+              />
+              
+              {/* Simulate Button for Testing */}
+              <button
+                onClick={simulateScan}
+                className="w-full mt-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm"
+              >
+                🔧 Simulate Scan (Test)
+              </button>
             </div>
             
             {/* Pricing Info */}
-            <div className="mt-5 bg-[#171a3a] p-4 rounded-xl text-sm text-slate-400">
-              <h4 className="font-semibold text-white mb-2">Preise:</h4>
-              <p>Entsperrung: 5 Coins</p>
-              <p>Pro Minute: 2 Coins</p>
+            <div className="bg-[#171a3a] p-4 rounded-xl text-sm">
+              <h4 className="font-semibold mb-2">Preise:</h4>
+              <p className="text-slate-400">• Entsperrung: {UNLOCK_PRICE} Coins</p>
+              <p className="text-slate-400">• Pro Minute: {PRICE_PER_MINUTE} Coins</p>
             </div>
           </>
         ) : (
           <>
             {/* Active Ride */}
-            <div className="bg-gradient-to-br from-green-600/20 to-green-900/20 border border-green-500/30 p-5 rounded-2xl mb-4">
+            <div className="bg-gradient-to-br from-cyan-600/20 to-cyan-900/20 border border-cyan-500/30 p-6 rounded-2xl mb-4">
               <div className="text-center">
-                <p className="text-green-400 font-semibold mb-2">🛴 Fahrt aktiv</p>
-                <p className="text-4xl font-bold mb-2">{formatTime(rideTime)}</p>
-                <p className="text-slate-400 text-sm">Scooter: {activeRide.id}</p>
+                <p className="text-5xl mb-3">🛴</p>
+                <p className="text-cyan-400 font-semibold mb-1">Ride Active</p>
+                <p className="text-sm text-slate-400 mb-4">Scooter: {scannedId}</p>
+                
+                <div className="text-5xl font-bold mb-4" data-testid="ride-timer">
+                  {formatTime(rideTime)}
+                </div>
+                
+                <div className="bg-[#0b0e24] p-3 rounded-xl">
+                  <p className="text-sm text-slate-400">Current Cost</p>
+                  <p className="text-2xl font-bold text-amber-400">
+                    {UNLOCK_PRICE + Math.max(1, Math.ceil(rideTime / 60)) * PRICE_PER_MINUTE} Coins
+                  </p>
+                </div>
               </div>
             </div>
             
-            {/* Live Cost */}
-            <div className="bg-[#171a3a] p-4 rounded-2xl mb-4 text-center">
-              <p className="text-slate-400 text-sm">Aktuelle Kosten</p>
-              <p className="text-2xl font-bold text-amber-400">
-                {Math.ceil(rideTime / 60) * 2} Coins
-              </p>
-              <p className="text-xs text-slate-500">+ 5 Coins Entsperrung</p>
-            </div>
-            
-            {/* End Ride Button */}
             <button
-              onClick={endRide}
-              className="w-full py-4 bg-red-600 hover:bg-red-700 rounded-xl font-bold text-lg
-                         transition-colors"
-              data-testid="end-ride-btn"
+              onClick={stopRide}
+              className="w-full py-4 bg-red-600 hover:bg-red-700 rounded-xl font-bold text-lg"
+              data-testid="stop-btn"
             >
-              Fahrt beenden
+              Stop Ride
             </button>
           </>
+        )}
+        
+        {/* Status Message */}
+        {status && (
+          <p className={`mt-4 p-3 rounded-xl text-center ${
+            status.includes('finished') ? 'bg-green-500/20 text-green-400' :
+            status.includes('Not enough') || status.includes('No active') ? 'bg-red-500/20 text-red-400' :
+            'bg-cyan-500/20 text-cyan-400'
+          }`} data-testid="status-message">
+            {status}
+          </p>
         )}
       </div>
       
