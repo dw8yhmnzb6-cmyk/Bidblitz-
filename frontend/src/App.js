@@ -1087,6 +1087,8 @@ function AppContent() {
           <Route path="/app-home" element={<SuperAppMinimal />} />
           <Route path="/games" element={<GamesHub />} />
           <Route path="/spiele" element={<GamesHub />} />
+          <Route path="/live-auction" element={<LiveAuction />} />
+          <Route path="/auctions" element={<LiveAuction />} />
           <Route path="/app-wallet" element={<AppWallet />} />
           <Route path="/coins" element={<AppWallet />} />
           <Route path="/match3" element={<Match3Game />} />
