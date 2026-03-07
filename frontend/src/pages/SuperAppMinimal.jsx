@@ -242,27 +242,31 @@ export default function SuperAppMinimal() {
           </div>
         )}
 
-        {/* Quick Actions Row */}
-        <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
-          <Link to="/scooter" className="flex-none px-5 py-3 bg-cyan-500/20 hover:bg-cyan-500/30 rounded-xl text-center transition-all border border-cyan-500/30">
-            <span className="text-lg">📷</span>
+        {/* Quick Actions Row - Mobile Scrollable */}
+        <div className="flex gap-3 mb-6 overflow-x-auto pb-2 -mx-5 px-5 scrollbar-hide">
+          <Link to="/scooter" className="flex-none w-16 py-3 bg-cyan-500/20 hover:bg-cyan-500/30 active:bg-cyan-500/40 rounded-xl text-center transition-all border border-cyan-500/30 touch-manipulation">
+            <span className="text-2xl">📷</span>
             <p className="text-xs text-cyan-400 mt-1">Scan</p>
           </Link>
-          <Link to="/withdraw" className="flex-none px-5 py-3 bg-emerald-500/20 hover:bg-emerald-500/30 rounded-xl text-center transition-all border border-emerald-500/30">
-            <span className="text-lg">💳</span>
+          <Link to="/withdraw" className="flex-none w-16 py-3 bg-emerald-500/20 hover:bg-emerald-500/30 active:bg-emerald-500/40 rounded-xl text-center transition-all border border-emerald-500/30 touch-manipulation">
+            <span className="text-2xl">💳</span>
             <p className="text-xs text-emerald-400 mt-1">Pay</p>
           </Link>
-          <Link to="/taxi" className="flex-none px-5 py-3 bg-amber-500/20 hover:bg-amber-500/30 rounded-xl text-center transition-all border border-amber-500/30">
-            <span className="text-lg">🚕</span>
+          <Link to="/miner" className="flex-none w-16 py-3 bg-purple-500/20 hover:bg-purple-500/30 active:bg-purple-500/40 rounded-xl text-center transition-all border border-purple-500/30 touch-manipulation">
+            <span className="text-2xl">⛏️</span>
+            <p className="text-xs text-purple-400 mt-1">Mining</p>
+          </Link>
+          <Link to="/taxi" className="flex-none w-16 py-3 bg-amber-500/20 hover:bg-amber-500/30 active:bg-amber-500/40 rounded-xl text-center transition-all border border-amber-500/30 touch-manipulation">
+            <span className="text-2xl">🚕</span>
             <p className="text-xs text-amber-400 mt-1">Ride</p>
           </Link>
-          <Link to="/friends" className="flex-none px-5 py-3 bg-pink-500/20 hover:bg-pink-500/30 rounded-xl text-center transition-all border border-pink-500/30">
-            <span className="text-lg">💸</span>
+          <Link to="/friends" className="flex-none w-16 py-3 bg-pink-500/20 hover:bg-pink-500/30 active:bg-pink-500/40 rounded-xl text-center transition-all border border-pink-500/30 touch-manipulation">
+            <span className="text-2xl">💸</span>
             <p className="text-xs text-pink-400 mt-1">Send</p>
           </Link>
-          <Link to="/store" className="flex-none px-5 py-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-xl text-center transition-all border border-purple-500/30">
-            <span className="text-lg">🛍️</span>
-            <p className="text-xs text-purple-400 mt-1">Shop</p>
+          <Link to="/store" className="flex-none w-16 py-3 bg-blue-500/20 hover:bg-blue-500/30 active:bg-blue-500/40 rounded-xl text-center transition-all border border-blue-500/30 touch-manipulation">
+            <span className="text-2xl">🛍️</span>
+            <p className="text-xs text-blue-400 mt-1">Shop</p>
           </Link>
         </div>
         
