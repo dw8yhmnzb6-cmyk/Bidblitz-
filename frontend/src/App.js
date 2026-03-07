@@ -190,6 +190,7 @@ import Merchant from "./pages/Merchant";
 import Loans from "./pages/Loans";
 import Assistant from "./pages/Assistant";
 import Missions from "./pages/Missions";
+import BBZWallet from "./pages/BBZWallet";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
