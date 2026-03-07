@@ -128,7 +128,7 @@ export default function AppProfile() {
   const quickActions = [
     { icon: '🎮', label: 'Games', path: '/games' },
     { icon: '👥', label: 'Friends', path: '/friends' },
-    { icon: '🎉', label: 'Events', path: '/events' },
+    { icon: '🎉', label: 'Events', path: '/live-events' },
     { icon: '💬', label: 'Chat', path: '/app-chat' },
   ];
   
