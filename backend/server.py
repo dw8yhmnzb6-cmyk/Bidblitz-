@@ -643,6 +643,9 @@ app.include_router(admin_router_new, prefix="/api/system")
 # NEW: Core Game System
 app.include_router(core_game_router, prefix="/api/app")
 
+# NEW: BBZ Token System
+app.include_router(bbz_router, prefix="/api/app")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
