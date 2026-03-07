@@ -85,12 +85,12 @@ export default function SuperAppMinimal() {
   ];
 
   const quickLinks = [
+    { icon: '🎯', label: 'Missionen', path: '/missions' },
     { icon: '🗺️', label: 'Map', path: '/map' },
     { icon: '📍', label: 'Routen', path: '/favorite-routes' },
     { icon: '⭐', label: 'Ratings', path: '/driver-ratings' },
     { icon: '🏆', label: 'Ranking', path: '/app-leaderboard' },
     { icon: '🎖️', label: 'Badges', path: '/app-achievements' },
-    { icon: '🔊', label: 'Sound', path: '/sound-settings' },
   ];
   
   return (
