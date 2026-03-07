@@ -73,6 +73,12 @@ export default function MinerDashboard() {
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       
+      // Pool stats first (no auth required)
+      const poolRes = await axios.get(`${API}/app/pool/stats`).catch(() => null);
+      if (poolRes?.data) {
+        setPoolStats(poolRes.data);
+      }
+      
       const results = await Promise.allSettled([
         axios.get(`${API}/app/mining/stats`, { headers }),
         axios.get(`${API}/app/miners/my`, { headers }),
