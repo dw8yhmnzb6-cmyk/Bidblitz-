@@ -1495,3 +1495,190 @@ async def end_scooter_ride(cost: int = 0, authorization: str = Header(None)):
         "cost": cost,
         "new_balance": wallet.get("coins", 0) if wallet else 0
     }
+
+
+
+# ======================== CHAT SYSTEM ========================
+
+# In-memory chat messages (for demo - would use MongoDB in production)
+chat_messages = []
+
+class ChatMessageRequest(BaseModel):
+    message: str
+
+@router.get("/chat/messages")
+async def get_chat_messages():
+    """Get recent chat messages"""
+    global chat_messages
+    
+    # Return last 50 messages
+    return {
+        "messages": chat_messages[-50:],
+        "online_users": random.randint(30, 80)
+    }
+
+@router.post("/chat/send")
+async def send_chat_message(request: ChatMessageRequest, authorization: str = Header(None)):
+    """Send a chat message"""
+    global chat_messages
+    
+    user_id = get_user_id_from_token(authorization)
+    username = user_id.replace("user_", "").replace("_", " ").title()[:10]
+    
+    message = {
+        "id": len(chat_messages) + 1,
+        "user": username,
+        "message": request.message[:200],  # Limit message length
+        "time": datetime.now(timezone.utc).strftime("%H:%M"),
+        "isSystem": False
+    }
+    
+    chat_messages.append(message)
+    
+    # Keep only last 100 messages
+    if len(chat_messages) > 100:
+        chat_messages = chat_messages[-100:]
+    
+    return {"success": True, "message_id": message["id"]}
+
+# ======================== NOTIFICATIONS ========================
+
+@router.get("/notifications")
+async def get_notifications(authorization: str = Header(None)):
+    """Get user notifications"""
+    user_id = get_user_id_from_token(authorization)
+    
+    # Generate contextual notifications based on user state
+    notifications = []
+    
+    # Check mining status
+    miners_data = miners_col.find_one({"user_id": user_id})
+    if miners_data and len(miners_data.get("miners", [])) > 0:
+        notifications.append({
+            "id": 1,
+            "type": "mining",
+            "title": "⛏️ Mining Reward bereit!",
+            "message": "Dein täglicher Mining-Reward wartet auf dich.",
+            "time": "2 Min",
+            "read": False
+        })
+    
+    # Add system notifications
+    notifications.extend([
+        {"id": 2, "type": "game", "title": "🎰 Jackpot Update", "message": "Der Jackpot ist auf 5.000 Coins gestiegen!", "time": "15 Min", "read": False},
+        {"id": 3, "type": "system", "title": "🎁 Täglicher Bonus", "message": "Vergiss nicht, deinen täglichen Bonus abzuholen!", "time": "1 Std", "read": True},
+    ])
+    
+    unread_count = len([n for n in notifications if not n["read"]])
+    
+    return {
+        "notifications": notifications,
+        "unread_count": unread_count
+    }
+
+@router.post("/notifications/read/{notification_id}")
+async def mark_notification_read(notification_id: int, authorization: str = Header(None)):
+    """Mark a notification as read"""
+    return {"success": True, "notification_id": notification_id}
+
+@router.post("/notifications/read-all")
+async def mark_all_notifications_read(authorization: str = Header(None)):
+    """Mark all notifications as read"""
+    return {"success": True}
+
+# ======================== MARKETPLACE ========================
+
+# In-memory listings (for demo)
+marketplace_listings = [
+    {"id": 1, "seller": "Max", "seller_id": "user_max", "type": "miner", "name": "Gold Miner Lv.5", "price": 2500, "originalPrice": 3000},
+    {"id": 2, "seller": "Anna", "seller_id": "user_anna", "type": "miner", "name": "Silver Miner Lv.3", "price": 800, "originalPrice": 1000},
+    {"id": 3, "seller": "Tom", "seller_id": "user_tom", "type": "boost", "name": "2x Mining Boost (24h)", "price": 500, "originalPrice": 500},
+    {"id": 4, "seller": "Lisa", "seller_id": "user_lisa", "type": "miner", "name": "Platinum Miner Lv.2", "price": 5000, "originalPrice": 6500},
+]
+
+@router.get("/marketplace/listings")
+async def get_marketplace_listings(authorization: str = Header(None)):
+    """Get marketplace listings"""
+    user_id = get_user_id_from_token(authorization) if authorization else None
+    
+    # Filter out user's own listings
+    listings = [l for l in marketplace_listings if l.get("seller_id") != user_id]
+    my_listings = [l for l in marketplace_listings if l.get("seller_id") == user_id]
+    
+    return {
+        "listings": listings,
+        "my_listings": my_listings
+    }
+
+class MarketplaceBuyRequest(BaseModel):
+    listing_id: int
+    price: int
+
+@router.post("/marketplace/buy")
+async def buy_marketplace_item(request: MarketplaceBuyRequest, authorization: str = Header(None)):
+    """Buy an item from marketplace"""
+    global marketplace_listings
+    
+    user_id = get_user_id_from_token(authorization)
+    
+    # Find listing
+    listing = next((l for l in marketplace_listings if l["id"] == request.listing_id), None)
+    if not listing:
+        raise HTTPException(status_code=404, detail="Angebot nicht gefunden")
+    
+    # Check balance
+    wallet = wallets_col.find_one({"user_id": user_id})
+    current_coins = wallet.get("coins", 0) if wallet else 0
+    
+    if current_coins < request.price:
+        raise HTTPException(status_code=400, detail="Nicht genug Coins")
+    
+    # Deduct coins from buyer
+    wallets_col.update_one(
+        {"user_id": user_id},
+        {"$inc": {"coins": -request.price, "total_spent": request.price}}
+    )
+    
+    # Add coins to seller (minus 5% fee)
+    seller_amount = int(request.price * 0.95)
+    wallets_col.update_one(
+        {"user_id": listing["seller_id"]},
+        {"$inc": {"coins": seller_amount, "total_earned": seller_amount}},
+        upsert=True
+    )
+    
+    # Remove listing
+    marketplace_listings = [l for l in marketplace_listings if l["id"] != request.listing_id]
+    
+    return {
+        "success": True,
+        "item": listing["name"],
+        "new_balance": current_coins - request.price
+    }
+
+class MarketplaceListRequest(BaseModel):
+    item_type: str
+    item_name: str
+    price: int
+
+@router.post("/marketplace/list")
+async def list_marketplace_item(request: MarketplaceListRequest, authorization: str = Header(None)):
+    """List an item for sale"""
+    global marketplace_listings
+    
+    user_id = get_user_id_from_token(authorization)
+    username = user_id.replace("user_", "").replace("_", " ").title()[:10]
+    
+    new_listing = {
+        "id": len(marketplace_listings) + 100,
+        "seller": username,
+        "seller_id": user_id,
+        "type": request.item_type,
+        "name": request.item_name,
+        "price": request.price,
+        "originalPrice": request.price
+    }
+    
+    marketplace_listings.append(new_listing)
+    
+    return {"success": True, "listing_id": new_listing["id"]}
