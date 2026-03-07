@@ -456,8 +456,50 @@ Admin Panel erweitert mit neuem Miner-Tab:
 - Alle Core Game APIs: ✅ Getestet und funktionsfähig
 - BBZ Token System: ✅ Phase 1 aktiv
 
+---
+
+## Changelog - 7. März 2026 (Update 20) - KRITISCHES BACKEND-FIX
+
+### ✅ P0 KRITISCH: In-Memory Router auf MongoDB migriert
+
+**Problem:** 7 Backend-Router verwendeten In-Memory Python-Dictionaries statt MongoDB, was zu Datenverlust bei jedem Server-Neustart führte.
+
+**Gelöste Dateien:**
+| Datei | Vorher | Nachher |
+|-------|--------|---------|
+| `bidblitz_ai.py` | In-Memory `activity_log[]` | MongoDB `ai_activity_log`, `ai_feature_usage` |
+| `bidblitz_bbz_wallet.py` | In-Memory `bbz_wallets{}` | MongoDB `wallets`, `bbz_simple_transactions` |
+| `bidblitz_dashboard.py` | In-Memory `dashboard[]` | Statische Konfiguration (keine Persistenz nötig) |
+| `bidblitz_game_hub.py` | In-Memory `wallets{}`, `history{}` | MongoDB `wallets`, `hub_game_history` |
+| `bidblitz_gamesystem.py` | In-Memory `wallets{}`, `game_history{}` | MongoDB `wallets`, `simple_game_history` |
+| `bidblitz_miner_dashboard.py` | In-Memory `miners{}`, `wallets{}` | MongoDB `wallets`, `user_miners_simple` |
+| `bidblitz_games_sqlite.py` | SQLite `bidblitz_games.db` | MongoDB `bbz_lite_users`, `bbz_lite_games` |
+
+**Entfernt:**
+- SQLite-Datenbank `/app/backend/bidblitz_games.db`
+
+### ✅ Verifizierte Persistenz
+
+Getestete Collections mit bestätigter Datenspeicherung:
+- `ai_activity_log`: ✅ 
+- `ai_feature_usage`: ✅
+- `wallets`: ✅
+- `hub_game_history`: ✅
+- `user_miners_simple`: ✅
+- `bbz_lite_games`: ✅
+
+### ✅ API-Endpunkte funktionsfähig
+- `/api/ai/log`, `/api/ai/popular`, `/api/ai/active-users`: ✅
+- `/api/bbz/create`, `/api/bbz/balance`, `/api/bbz/send`: ✅
+- `/api/dashboard`, `/api/dashboard/categories`: ✅
+- `/api/hub/wallet/create`, `/api/hub/games/play`: ✅
+- `/api/miner/types`, `/api/miner/buy`, `/api/miner/claim`: ✅
+- `/api/games/list`, `/api/games/play`, `/api/games/leaderboard`: ✅
+- `/api/bbz-lite/games`, `/api/bbz-lite/wallet`: ✅
+
 ### Nächste Schritte
 1. Sound-Effekte für Münzsammlung implementieren
 2. Push-Notification-System
 3. Link zu "Missions" in BottomNav hinzufügen
 4. Smart Contract auf Testnet deployen
+5. Frontend-Validierung der neuen persistenten Backend-Endpoints
