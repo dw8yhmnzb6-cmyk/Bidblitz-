@@ -276,21 +276,18 @@ export default function SuperAppMinimal() {
           <h3 className="text-lg font-semibold mb-4 text-slate-300">Quick Actions</h3>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
             {cards.map((card) => (
-              <Link
+              <button
                 key={card.id}
-                to={card.path}
-                className="group relative bg-white/5 backdrop-blur-sm p-4 rounded-2xl text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/10 border border-white/5 hover:border-white/20 active:scale-95"
+                type="button"
+                onClick={() => navigate(card.path)}
+                className="group relative bg-white/5 backdrop-blur-sm p-4 rounded-2xl text-center cursor-pointer transition-all duration-200 hover:scale-105 hover:bg-white/10 border border-white/5 hover:border-white/20 active:scale-95 active:bg-white/15 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
                 data-testid={`card-${card.id}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  console.log('Navigating to:', card.path);
-                }}
               >
                 <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} rounded-2xl opacity-0 group-hover:opacity-20 group-active:opacity-30 transition-opacity pointer-events-none`}></div>
-                <p className="text-3xl sm:text-4xl mb-2 group-hover:scale-110 group-active:scale-95 transition-transform pointer-events-none">{card.icon}</p>
+                <p className="text-3xl sm:text-4xl mb-2 transition-transform pointer-events-none">{card.icon}</p>
                 <p className="text-sm font-semibold text-white/90 pointer-events-none">{card.label}</p>
                 <p className="text-xs text-slate-500 mt-0.5 hidden sm:block pointer-events-none">{card.desc}</p>
-              </Link>
+              </button>
             ))}
           </div>
         </div>
