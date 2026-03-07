@@ -439,6 +439,146 @@ export default function BBZWallet() {
           </div>
         )}
 
+        {/* Receive Tab */}
+        {activeTab === 'receive' && (
+          <div className="space-y-4">
+            <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">📥</span>
+                <h3 className="font-semibold">BBZ empfangen</h3>
+              </div>
+
+              {walletStatus?.blockchain_wallet?.connected ? (
+                <div className="space-y-4">
+                  {/* QR Code Placeholder */}
+                  <div className="bg-white p-4 rounded-2xl mx-auto w-fit">
+                    <div className="w-48 h-48 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center">
+                      <div className="text-center">
+                        <span className="text-6xl block mb-2">📱</span>
+                        <p className="text-xs text-slate-500">QR Code</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Wallet Address */}
+                  <div className="bg-black/20 p-4 rounded-xl">
+                    <p className="text-xs text-slate-400 mb-2">Deine Wallet-Adresse</p>
+                    <p className="font-mono text-sm break-all text-amber-400">
+                      {walletStatus.blockchain_wallet.address}
+                    </p>
+                  </div>
+
+                  {/* Copy Button */}
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(walletStatus.blockchain_wallet.address);
+                      setResult({ type: 'success', message: 'Adresse kopiert! 📋' });
+                      setTimeout(() => setResult(''), 2000);
+                    }}
+                    className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 rounded-xl font-semibold transition-all"
+                  >
+                    📋 Adresse kopieren
+                  </button>
+
+                  <p className="text-xs text-center text-slate-400">
+                    Sende nur BBZ oder BNB an diese Adresse!
+                  </p>
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <span className="text-4xl mb-4 block">🔗</span>
+                  <p className="text-slate-400 mb-4">Bitte zuerst eine Wallet verbinden</p>
+                  <button
+                    onClick={() => setActiveTab('balance')}
+                    className="px-6 py-2 bg-amber-500 hover:bg-amber-600 rounded-xl font-medium transition-all"
+                  >
+                    Wallet verbinden
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Swap Tab */}
+        {activeTab === 'swap' && (
+          <div className="space-y-4">
+            <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xl">🔄</span>
+                <h3 className="font-semibold">Token Swap</h3>
+              </div>
+
+              <div className="space-y-4">
+                {/* From */}
+                <div className="bg-black/20 p-4 rounded-xl">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-xs text-slate-400">Von</span>
+                    <span className="text-xs text-slate-400">
+                      Balance: {walletStatus?.app_wallet?.coins?.toLocaleString() || 0}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="number"
+                      placeholder="0.0"
+                      className="flex-1 bg-transparent text-2xl font-bold focus:outline-none"
+                    />
+                    <div className="bg-amber-500/20 px-3 py-2 rounded-lg flex items-center gap-2">
+                      <span>💎</span>
+                      <span className="font-medium">BBZ</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Swap Arrow */}
+                <div className="flex justify-center">
+                  <button className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center hover:bg-white/20 transition-all">
+                    ⬇️
+                  </button>
+                </div>
+
+                {/* To */}
+                <div className="bg-black/20 p-4 rounded-xl">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-xs text-slate-400">Zu</span>
+                    <span className="text-xs text-slate-400">Balance: 0</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="number"
+                      placeholder="0.0"
+                      className="flex-1 bg-transparent text-2xl font-bold focus:outline-none"
+                      readOnly
+                    />
+                    <div className="bg-yellow-500/20 px-3 py-2 rounded-lg flex items-center gap-2">
+                      <span>🟡</span>
+                      <span className="font-medium">BNB</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Swap Rate */}
+                <div className="bg-amber-500/10 p-3 rounded-xl border border-amber-500/20">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Rate</span>
+                    <span>1 BBZ = 0.00001 BNB</span>
+                  </div>
+                </div>
+
+                {/* Swap Button */}
+                <button className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-xl font-semibold transition-all">
+                  🔄 Swap (Coming Soon)
+                </button>
+
+                <p className="text-xs text-center text-slate-400">
+                  Powered by PancakeSwap • Phase 2
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* History Tab */}
         {activeTab === 'history' && (
           <div className="space-y-4">
