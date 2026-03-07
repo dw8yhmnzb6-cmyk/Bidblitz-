@@ -185,6 +185,7 @@ import AppDriverRatings from "./pages/AppDriverRatings";
 import LiveAuction from "./pages/LiveAuction";
 import Friends from "./pages/Friends";
 import LiveEvents from "./pages/LiveEvents";
+import Store from "./pages/Store";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
