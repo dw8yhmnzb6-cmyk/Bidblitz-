@@ -176,23 +176,30 @@ export default function AppMap() {
   const collectCoin = async (coin) => {
     if (coin.collected) return;
     
-    // Update local state
-    setCoins(prev => prev.map(c => 
-      c.id === coin.id ? { ...c, collected: true } : c
-    ));
-    setCollectedCoins(prev => prev + coin.value);
-    setTotalCoinsFound(prev => prev + 1);
-    
-    // Try to update backend
+    // Try to collect via backend first
     try {
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      await axios.post(`${API}/app/coins/collect`, { 
+      const res = await axios.post(`${API}/app/games-v2/coin-hunt/collect`, { 
         coin_id: coin.id, 
-        value: coin.value 
+        lat: coin.lat,
+        lng: coin.lng 
       }, { headers });
+      
+      setCollectedCoins(prev => prev + res.data.reward);
+      setTotalCoinsFound(prev => prev + 1);
+      
+      // Update local state
+      setCoins(prev => prev.map(c => 
+        c.id === coin.id ? { ...c, collected: true } : c
+      ));
     } catch (error) {
-      console.log('Coin collect API error - local only');
+      // Fallback to local
+      setCoins(prev => prev.map(c => 
+        c.id === coin.id ? { ...c, collected: true } : c
+      ));
+      setCollectedCoins(prev => prev + coin.value);
+      setTotalCoinsFound(prev => prev + 1);
     }
     
     // Show success animation/toast
