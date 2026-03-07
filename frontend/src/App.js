@@ -1103,6 +1103,11 @@ function AppContent() {
           <Route path="/taxi" element={<AppTaxi />} />
           <Route path="/scooter" element={<AppScooter />} />
           <Route path="/vip-games" element={<AppVIPGames />} />
+          <Route path="/achievements" element={<AppAchievements />} />
+          <Route path="/notifications" element={<AppNotifications />} />
+          <Route path="/chat" element={<AppChat />} />
+          <Route path="/marketplace" element={<AppMarketplace />} />
+          <Route path="/sound-settings" element={<AppSoundSettings />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
