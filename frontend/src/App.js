@@ -179,6 +179,9 @@ import AppSoundSettings from "./pages/AppSoundSettings";
 import AppAnalytics from "./pages/AppAnalytics";
 import AppWithdraw from "./pages/AppWithdraw";
 import AppMap from "./pages/AppMap";
+import AppRideTracking from "./pages/AppRideTracking";
+import AppFavoriteRoutes from "./pages/AppFavoriteRoutes";
+import AppDriverRatings from "./pages/AppDriverRatings";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
