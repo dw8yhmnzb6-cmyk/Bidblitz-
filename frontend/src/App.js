@@ -176,6 +176,8 @@ import AppNotifications from "./pages/AppNotifications";
 import AppChat from "./pages/AppChat";
 import AppMarketplace from "./pages/AppMarketplace";
 import AppSoundSettings from "./pages/AppSoundSettings";
+import AppAnalytics from "./pages/AppAnalytics";
+import AppWithdraw from "./pages/AppWithdraw";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
