@@ -110,6 +110,17 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ## Changelog
 
+### 2026-03-07 (Update 6) - Neue Features
+- ✅ **Sponsored Ads Banner** auf Dashboard
+  - 4 rotierende Anzeigen (Restaurant, Taxi, Games, VIP)
+  - Auto-Rotate alle 5 Sekunden
+  - "Nächste" Button + Pagination Dots
+- ✅ **Admin Dashboard** komplett überarbeitet
+  - 6 Stats-Karten im 3x2 Grid (Users, Coins, Rides, Games, Sales, Revenue)
+  - Live Activity Feed mit Echtzeit-Updates (alle 3 Sekunden)
+  - Coin Management Formular
+  - Moderne Glassmorphism UI
+
 ### 2026-03-07 (Update 5) - UI Redesign
 - ✅ **Dashboard (SuperAppMinimal)** - Modernes Glassmorphism Design
   - 8-Karten Quick Actions Grid mit Hover-Effekten
