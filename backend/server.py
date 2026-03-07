@@ -637,6 +637,9 @@ app.include_router(vip_router_new, prefix="/api/app")
 app.include_router(referral_router_new, prefix="/api/app")
 app.include_router(admin_router_new, prefix="/api/system")
 
+# NEW: Core Game System
+app.include_router(core_game_router, prefix="/api/app")
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
