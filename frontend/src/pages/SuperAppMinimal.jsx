@@ -1,6 +1,6 @@
 /**
  * BidBlitz Super App Dashboard
- * 8-card grid with all main features
+ * Modern 8-card grid with glassmorphism design
  */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,7 @@ const API = process.env.REACT_APP_BACKEND_URL + '/api';
 export default function SuperAppMinimal() {
   const [balance, setBalance] = useState(0);
   const [notifications, setNotifications] = useState(0);
+  const [userName, setUserName] = useState('User');
   
   useEffect(() => {
     fetchData();
@@ -24,35 +25,57 @@ export default function SuperAppMinimal() {
       
       const res = await axios.get(`${API}/app/wallet/balance`, { headers });
       setBalance(res.data.coins || 0);
+      setUserName(res.data.username || 'User');
     } catch (error) {
       console.log('Data error');
     }
   };
   
   const cards = [
-    { id: 'scan', emoji: '📷', label: 'Scan', path: '/scooter', color: 'hover:bg-cyan-600' },
-    { id: 'pay', emoji: '💳', label: 'Pay', path: '/withdraw', color: 'hover:bg-green-600' },
-    { id: 'taxi', emoji: '🚕', label: 'Taxi', path: '/taxi', color: 'hover:bg-amber-600' },
-    { id: 'scooter', emoji: '🛴', label: 'Scooter', path: '/scooter', color: 'hover:bg-teal-600' },
-    { id: 'games', emoji: '🎮', label: 'Games', path: '/games', color: 'hover:bg-purple-600' },
-    { id: 'mining', emoji: '⛏️', label: 'Mining', path: '/miner', color: 'hover:bg-blue-600' },
-    { id: 'marketplace', emoji: '🛒', label: 'Marketplace', path: '/market', color: 'hover:bg-pink-600' },
-    { id: 'auctions', emoji: '🔨', label: 'Auctions', path: '/auctions', color: 'hover:bg-red-600' },
+    { id: 'scan', icon: '📷', label: 'Scan', desc: 'QR scannen', path: '/scooter', gradient: 'from-cyan-500 to-cyan-600' },
+    { id: 'pay', icon: '💳', label: 'Pay', desc: 'Auszahlen', path: '/withdraw', gradient: 'from-emerald-500 to-emerald-600' },
+    { id: 'taxi', icon: '🚕', label: 'Taxi', desc: 'Buchen', path: '/taxi', gradient: 'from-amber-500 to-orange-500' },
+    { id: 'scooter', icon: '🛴', label: 'Scooter', desc: 'Mieten', path: '/scooter', gradient: 'from-teal-500 to-teal-600' },
+    { id: 'games', icon: '🎮', label: 'Games', desc: '10+ Spiele', path: '/games', gradient: 'from-purple-500 to-purple-600' },
+    { id: 'mining', icon: '⛏️', label: 'Mining', desc: 'Coins sammeln', path: '/miner', gradient: 'from-blue-500 to-blue-600' },
+    { id: 'marketplace', icon: '🛒', label: 'Market', desc: 'Handeln', path: '/market', gradient: 'from-pink-500 to-pink-600' },
+    { id: 'auctions', icon: '🔨', label: 'Auctions', desc: 'Bieten', path: '/auctions', gradient: 'from-red-500 to-red-600' },
+  ];
+
+  const quickLinks = [
+    { icon: '🗺️', label: 'Map', path: '/map' },
+    { icon: '📍', label: 'Routen', path: '/favorite-routes' },
+    { icon: '⭐', label: 'Ratings', path: '/driver-ratings' },
+    { icon: '🏆', label: 'Ranking', path: '/app-leaderboard' },
+    { icon: '🎖️', label: 'Badges', path: '/app-achievements' },
+    { icon: '🔊', label: 'Sound', path: '/sound-settings' },
   ];
   
   return (
-    <div className="min-h-screen bg-[#0b0e24] text-white pb-20">
-      <div className="p-5">
+    <div className="min-h-screen bg-gradient-to-b from-[#0b0e24] via-[#0f1332] to-[#0b0e24] text-white pb-24">
+      {/* Animated Background Orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 -left-20 w-72 h-72 bg-purple-500/20 rounded-full blur-[100px] animate-pulse"></div>
+        <div className="absolute bottom-40 -right-20 w-72 h-72 bg-cyan-500/20 rounded-full blur-[100px] animate-pulse delay-1000"></div>
+      </div>
+      
+      <div className="relative p-5">
         {/* Header */}
-        <div className="flex justify-between items-center mb-5">
-          <h2 className="text-2xl font-bold">BidBlitz Super App</h2>
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <p className="text-slate-400 text-sm">Willkommen zurück 👋</p>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+              {userName}
+            </h2>
+          </div>
           <Link 
             to="/app-notifications"
-            className="relative p-2"
+            className="relative p-3 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:bg-white/10 transition-all"
+            data-testid="notifications-btn"
           >
             <span className="text-xl">🔔</span>
             {notifications > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center font-bold animate-pulse">
                 {notifications}
               </span>
             )}
@@ -60,74 +83,103 @@ export default function SuperAppMinimal() {
         </div>
         
         {/* Balance Card */}
-        <div className="bg-gradient-to-r from-[#6c63ff] to-[#8b6dff] p-5 rounded-2xl mb-5">
-          <p className="text-white/80 text-sm">Wallet Balance</p>
-          <p className="text-3xl font-bold">{balance.toLocaleString()} Coins</p>
-          <div className="flex gap-2 mt-3">
-            <Link 
-              to="/withdraw"
-              className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm"
-            >
-              Withdraw
-            </Link>
-            <Link 
-              to="/analytics"
-              className="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm"
-            >
-              Analytics
-            </Link>
+        <div className="relative overflow-hidden bg-gradient-to-br from-[#6c63ff] via-[#8b6dff] to-[#a78bfa] p-6 rounded-3xl mb-6 shadow-2xl shadow-purple-500/20">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-10 translate-x-10"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full blur-xl translate-y-10 -translate-x-10"></div>
+          
+          <div className="relative">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-2xl">💰</span>
+              <p className="text-white/80 text-sm font-medium">Wallet Balance</p>
+            </div>
+            <p className="text-4xl font-bold mb-4 tracking-tight">{balance.toLocaleString()} <span className="text-xl font-normal opacity-80">Coins</span></p>
+            
+            <div className="flex gap-3">
+              <Link 
+                to="/withdraw"
+                className="flex-1 py-3 px-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl text-sm font-medium text-center transition-all border border-white/20"
+                data-testid="withdraw-btn"
+              >
+                💸 Auszahlen
+              </Link>
+              <Link 
+                to="/analytics"
+                className="flex-1 py-3 px-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl text-sm font-medium text-center transition-all border border-white/20"
+                data-testid="analytics-btn"
+              >
+                📊 Analytics
+              </Link>
+            </div>
           </div>
         </div>
         
         {/* 8-Card Grid */}
-        <div className="grid grid-cols-4 gap-4 mb-5">
-          {cards.map((card) => (
-            <Link
-              key={card.id}
-              to={card.path}
-              className={`bg-[#171a3a] p-4 rounded-2xl text-center cursor-pointer transition-all duration-200 ${card.color} active:scale-95`}
-              data-testid={`card-${card.id}`}
-            >
-              <p className="text-2xl mb-1">{card.emoji}</p>
-              <p className="text-xs">{card.label}</p>
-            </Link>
-          ))}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold mb-4 text-slate-300">Quick Actions</h3>
+          <div className="grid grid-cols-4 gap-3">
+            {cards.map((card) => (
+              <Link
+                key={card.id}
+                to={card.path}
+                className="group relative bg-white/5 backdrop-blur-sm p-4 rounded-2xl text-center cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-white/10 border border-white/5 hover:border-white/20 active:scale-95"
+                data-testid={`card-${card.id}`}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity`}></div>
+                <p className="text-3xl mb-2 group-hover:scale-110 transition-transform">{card.icon}</p>
+                <p className="text-xs font-semibold text-white/90">{card.label}</p>
+                <p className="text-[10px] text-slate-500 mt-0.5">{card.desc}</p>
+              </Link>
+            ))}
+          </div>
         </div>
         
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 mb-5">
+        {/* Quick Actions Cards */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
           <Link 
             to="/app-referral"
-            className="bg-[#171a3a] p-4 rounded-2xl flex items-center gap-3 hover:bg-[#252b4d]"
+            className="group relative overflow-hidden bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 p-5 rounded-2xl flex items-center gap-4 hover:from-emerald-500/30 hover:to-emerald-600/20 transition-all border border-emerald-500/20"
+            data-testid="invite-friends-btn"
           >
-            <span className="text-2xl">👥</span>
+            <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              👥
+            </div>
             <div>
-              <p className="font-semibold">Invite Friends</p>
-              <p className="text-xs text-slate-400">Earn 100 Coins</p>
+              <p className="font-bold text-white">Freunde einladen</p>
+              <p className="text-xs text-emerald-400/80">+100 Coins pro Einladung</p>
             </div>
           </Link>
           <Link 
             to="/app-vip"
-            className="bg-[#171a3a] p-4 rounded-2xl flex items-center gap-3 hover:bg-[#252b4d]"
+            className="group relative overflow-hidden bg-gradient-to-br from-amber-500/20 to-amber-600/10 p-5 rounded-2xl flex items-center gap-4 hover:from-amber-500/30 hover:to-amber-600/20 transition-all border border-amber-500/20"
+            data-testid="vip-btn"
           >
-            <span className="text-2xl">⭐</span>
+            <div className="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              ⭐
+            </div>
             <div>
-              <p className="font-semibold">VIP Level</p>
-              <p className="text-xs text-slate-400">Level Up!</p>
+              <p className="font-bold text-white">VIP Status</p>
+              <p className="text-xs text-amber-400/80">Level up für Bonus!</p>
             </div>
           </Link>
         </div>
         
-        {/* More Links */}
-        <div className="bg-[#171a3a] p-4 rounded-2xl">
-          <h3 className="font-semibold mb-3">More Features</h3>
+        {/* More Features */}
+        <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-lg">✨</span>
+            <h3 className="font-semibold text-white">Mehr Features</h3>
+          </div>
           <div className="grid grid-cols-3 gap-2">
-            <Link to="/map" className="p-2 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl">🗺️ Map</Link>
-            <Link to="/favorite-routes" className="p-2 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl">📍 Routes</Link>
-            <Link to="/driver-ratings" className="p-2 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl">⭐ Ratings</Link>
-            <Link to="/app-leaderboard" className="p-2 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl">🏆 Ranking</Link>
-            <Link to="/app-achievements" className="p-2 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl">🎖️ Badges</Link>
-            <Link to="/sound-settings" className="p-2 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl">🔊 Sound</Link>
+            {quickLinks.map((link) => (
+              <Link 
+                key={link.label}
+                to={link.path} 
+                className="p-3 text-center text-sm hover:bg-[#6c63ff]/20 rounded-xl transition-all group"
+              >
+                <span className="text-lg group-hover:scale-110 inline-block transition-transform">{link.icon}</span>
+                <p className="text-xs text-slate-400 mt-1">{link.label}</p>
+              </Link>
+            ))}
           </div>
         </div>
       </div>
