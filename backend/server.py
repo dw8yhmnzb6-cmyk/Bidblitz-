@@ -243,6 +243,9 @@ from routers.bbz_token import router as bbz_router
 # NEW: Games V2 (Pokemon GO Style Coin Hunt)
 from routers.games_v2 import router as games_v2_router
 
+# NEW: BidBlitz Games System (Simplified & Persistent)
+from routers.bidblitz_games_system import router as bidblitz_games_router
+
 # WebSocket manager
 from services.websocket import ws_manager, broadcast_bid_update, broadcast_auction_ended, notify_payment_received
 
