@@ -1,6 +1,6 @@
 /**
  * BidBlitz Super App Dashboard
- * Modern 8-card grid with glassmorphism design
+ * Modern 8-card grid with glassmorphism design + Sponsored Ads
  */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -13,9 +13,22 @@ export default function SuperAppMinimal() {
   const [balance, setBalance] = useState(0);
   const [notifications, setNotifications] = useState(0);
   const [userName, setUserName] = useState('User');
+  const [adIndex, setAdIndex] = useState(0);
+  
+  const ads = [
+    { text: "🍽️ Restaurant Promotion - 20% Discount", color: "from-orange-500/20 to-red-500/10", border: "border-orange-500/30" },
+    { text: "🚕 Taxi Bonus Ride - 10 Coins Cashback", color: "from-amber-500/20 to-yellow-500/10", border: "border-amber-500/30" },
+    { text: "🎮 BidBlitz Games Tournament - Join Now!", color: "from-purple-500/20 to-pink-500/10", border: "border-purple-500/30" },
+    { text: "⭐ VIP Membership Offer - 50% Off!", color: "from-cyan-500/20 to-blue-500/10", border: "border-cyan-500/30" },
+  ];
   
   useEffect(() => {
     fetchData();
+    // Auto-rotate ads every 5 seconds
+    const adInterval = setInterval(() => {
+      setAdIndex(prev => (prev + 1) % ads.length);
+    }, 5000);
+    return () => clearInterval(adInterval);
   }, []);
   
   const fetchData = async () => {
@@ -29,6 +42,10 @@ export default function SuperAppMinimal() {
     } catch (error) {
       console.log('Data error');
     }
+  };
+
+  const nextAd = () => {
+    setAdIndex(prev => (prev + 1) % ads.length);
   };
   
   const cards = [
@@ -110,6 +127,36 @@ export default function SuperAppMinimal() {
                 📊 Analytics
               </Link>
             </div>
+          </div>
+        </div>
+
+        {/* Sponsored Ads Banner */}
+        <div className="mb-6" data-testid="sponsored-ads">
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs text-slate-500 uppercase tracking-wider">Sponsored</p>
+            <button 
+              onClick={nextAd}
+              className="text-xs text-[#6c63ff] hover:text-[#8b6dff] transition-colors"
+              data-testid="next-ad-btn"
+            >
+              Nächste →
+            </button>
+          </div>
+          <div 
+            className={`bg-gradient-to-r ${ads[adIndex].color} p-5 rounded-2xl border ${ads[adIndex].border} transition-all duration-500`}
+          >
+            <p className="text-center text-lg font-medium">{ads[adIndex].text}</p>
+          </div>
+          <div className="flex justify-center gap-1.5 mt-3">
+            {ads.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setAdIndex(idx)}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  idx === adIndex ? 'bg-[#6c63ff] w-6' : 'bg-white/20 hover:bg-white/40'
+                }`}
+              />
+            ))}
           </div>
         </div>
         
