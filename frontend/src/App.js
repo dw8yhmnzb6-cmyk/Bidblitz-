@@ -1122,6 +1122,9 @@ function AppContent() {
           <Route path="/withdraw" element={<AppWithdraw />} />
           <Route path="/map" element={<AppMap />} />
           <Route path="/live-map" element={<AppMap />} />
+          <Route path="/ride-tracking" element={<AppRideTracking />} />
+          <Route path="/favorite-routes" element={<AppFavoriteRoutes />} />
+          <Route path="/driver-ratings" element={<AppDriverRatings />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
