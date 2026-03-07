@@ -74,13 +74,8 @@ export default function AppFavoriteRoutes() {
     );
     saveFavorites(updated);
     
-    // Navigate to taxi with pre-filled route
-    navigate('/taxi', { 
-      state: { 
-        pickup: fav.pickup, 
-        destination: fav.destination 
-      } 
-    });
+    // Navigate to taxi with pre-filled route - using window.location for simplicity
+    window.location.href = `/taxi?pickup=${encodeURIComponent(fav.pickup)}&destination=${encodeURIComponent(fav.destination)}`;
   };
   
   return (
