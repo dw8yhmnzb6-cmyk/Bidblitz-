@@ -326,3 +326,29 @@ Admin Panel erweitert mit neuem Miner-Tab:
 - Level-Auswahl (1-10)
 - Schnellaktionen für Demo-User
 - Alle Miner Liste mit Upgrade/Remove Buttons
+
+---
+
+## Changelog - Update 16 (2026-03-07)
+
+### ✅ KOMPLETTE ÜBERARBEITUNG - Core Game System
+
+**Neue Backend-Datei:** `/app/backend/routers/core_game.py`
+
+**Implementierte Features:**
+
+| Feature | Endpoints | Beschreibung |
+|---------|-----------|--------------|
+| **Daily Login** | `/core/daily/status`, `/claim` | 7-Tage Streak System [5,10,15,20,30,40,100 Coins] |
+| **Missions** | `/core/missions/list`, `/complete` | 5 tägliche Missionen mit Belohnungen |
+| **Challenges** | `/core/challenges/list`, `/complete` | Permanente Challenges |
+| **Games** | `/core/games/list`, `/play` | 6 Spiele mit Daily Limits |
+| **Tournament** | `/core/tournament/status`, `/end-week` | Wöchentliches Turnier mit Preisen |
+| **Stats** | `/core/stats/overview` | Komplette User-Statistiken |
+
+**Frontend Updates:**
+- **Dashboard:** Daily Rewards Card + Quick Actions Row (Scan, Pay, Ride, Send, Shop)
+- **Missions Page:** 3 Tabs (Missionen, Challenges, Turnier)
+- **Games Hub:** Verbunden mit Backend `/core/games/play`
+
+**Neue Route:** `/missions` und `/challenges`
