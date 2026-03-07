@@ -1,6 +1,6 @@
 """
 BidBlitz Games System - SQLite Version
-Wallet, Games, Leaderboard
+Wallet, Games (from DB), Leaderboard
 """
 from fastapi import APIRouter
 import sqlite3
@@ -25,6 +25,16 @@ CREATE TABLE IF NOT EXISTS users(
 """)
 
 cursor.execute("""
+CREATE TABLE IF NOT EXISTS games(
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    category TEXT,
+    reward INTEGER,
+    url TEXT
+)
+""")
+
+cursor.execute("""
 CREATE TABLE IF NOT EXISTS daily_rewards(
     user_id TEXT PRIMARY KEY,
     last_claim INTEGER
@@ -43,19 +53,24 @@ CREATE TABLE IF NOT EXISTS game_plays(
 
 conn.commit()
 
-# Spieleliste (10 Games)
-games = [
-    {"id": 1, "name": "Puzzle Blocks", "reward": 5, "icon": "🧩"},
-    {"id": 2, "name": "Car Traffic Jam", "reward": 6, "icon": "🚗"},
-    {"id": 3, "name": "Idle Miner Tycoon", "reward": 10, "icon": "⛏️"},
-    {"id": 4, "name": "Space Battle", "reward": 12, "icon": "🚀"},
-    {"id": 5, "name": "Treasure Hunter", "reward": 8, "icon": "💎"},
-    {"id": 6, "name": "Fruit Match", "reward": 7, "icon": "🍎"},
-    {"id": 7, "name": "Speed Racer", "reward": 9, "icon": "🏎️"},
-    {"id": 8, "name": "City Builder", "reward": 15, "icon": "🏙️"},
-    {"id": 9, "name": "Zombie Attack", "reward": 11, "icon": "🧟"},
-    {"id": 10, "name": "Dragon Quest", "reward": 20, "icon": "🐉"}
-]
+# Spiele in DB einfügen (nur wenn leer)
+cursor.execute("SELECT COUNT(*) FROM games")
+if cursor.fetchone()[0] == 0:
+    cursor.executemany("""
+        INSERT INTO games(name, category, reward, url) VALUES (?, ?, ?, ?)
+    """, [
+        ("Puzzle Blocks", "Puzzle", 5, "https://play.famobi.com/puzzle-block"),
+        ("Idle Miner", "Tycoon", 10, "https://play.famobi.com/idle-mining"),
+        ("Car Traffic Jam", "Puzzle", 6, "https://play.famobi.com/parking-fury-3d"),
+        ("Space Battle", "Action", 12, "https://play.famobi.com/alien-attack"),
+        ("Fruit Match", "Puzzle", 7, "https://play.famobi.com/fruits-link"),
+        ("Treasure Hunter", "Adventure", 8, "https://play.famobi.com/treasure-hunter"),
+        ("Speed Racer", "Racing", 9, "https://play.famobi.com/road-racer"),
+        ("City Builder", "Tycoon", 15, "https://play.famobi.com/building-rush"),
+        ("Zombie Attack", "Action", 11, "https://play.famobi.com/zombie-hunter"),
+        ("Dragon Quest", "RPG", 20, "https://play.famobi.com/knight-hero")
+    ])
+    conn.commit()
 
 
 # -------------------------
@@ -65,9 +80,10 @@ games = [
 @router.post("/wallet/create")
 def create_wallet(user_id: str):
     """Create wallet with 50 coins"""
-    cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
-    if cursor.fetchone():
-        return {"message": "wallet exists"}
+    cursor.execute("SELECT coins FROM users WHERE user_id=?", (user_id,))
+    row = cursor.fetchone()
+    if row:
+        return {"message": "wallet exists", "coins": row[0]}
     
     cursor.execute("INSERT INTO users VALUES (?,?)", (user_id, 50))
     conn.commit()
@@ -87,65 +103,94 @@ def wallet(user_id: str):
     return {"coins": row[0]}
 
 
-# Alias für Kompatibilität
 @router.get("/wallet/balance")
 def wallet_balance(user_id: str):
     return wallet(user_id)
 
 
 # -------------------------
-# GAMES
+# GAMES (from Database)
 # -------------------------
 
 @router.get("/games")
-def list_games():
-    """Get all games"""
+def get_games():
+    """Get all games from database"""
+    cursor.execute("SELECT * FROM games")
+    rows = cursor.fetchall()
+    
+    games = []
+    for r in rows:
+        games.append({
+            "id": r[0],
+            "name": r[1],
+            "category": r[2],
+            "reward": r[3],
+            "url": r[4]
+        })
+    
     return {"games": games}
 
 
-@router.post("/games/play")
-def play_game(user_id: str, game_id: int):
-    """Play a game and earn coins"""
-    now = int(time.time())
-    
-    # Ensure user exists
-    cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
-    if not cursor.fetchone():
-        cursor.execute("INSERT INTO users VALUES (?,?)", (user_id, 0))
-    
-    # Random reward 5-20
-    reward = random.randint(5, 20)
-    
+@router.get("/games/play")
+def play_game(game_id: int, user_id: str = None):
+    """Get game info and play URL"""
     cursor.execute(
-        "UPDATE users SET coins = coins + ? WHERE user_id=?",
-        (reward, user_id)
+        "SELECT name, reward, url, category FROM games WHERE id=?",
+        (game_id,)
     )
     
-    # Record play
-    cursor.execute(
-        "INSERT INTO game_plays (user_id, game_id, reward, played_at) VALUES (?,?,?,?)",
-        (user_id, game_id, reward, now)
-    )
+    game = cursor.fetchone()
     
-    conn.commit()
+    if not game:
+        return {"error": "game not found"}
     
-    # Get game name
-    game_name = "Unknown"
-    for g in games:
-        if g["id"] == game_id:
-            game_name = g["name"]
-            break
-    
-    # Get new balance
-    cursor.execute("SELECT coins FROM users WHERE user_id=?", (user_id,))
-    balance = cursor.fetchone()[0]
+    # If user_id provided, add reward
+    if user_id:
+        now = int(time.time())
+        reward = random.randint(max(1, game[1] - 3), game[1] + 3)
+        
+        # Ensure user exists
+        cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
+        if not cursor.fetchone():
+            cursor.execute("INSERT INTO users VALUES (?,?)", (user_id, 0))
+        
+        cursor.execute(
+            "UPDATE users SET coins = coins + ? WHERE user_id=?",
+            (reward, user_id)
+        )
+        
+        cursor.execute(
+            "INSERT INTO game_plays (user_id, game_id, reward, played_at) VALUES (?,?,?,?)",
+            (user_id, game_id, reward, now)
+        )
+        
+        conn.commit()
+        
+        cursor.execute("SELECT coins FROM users WHERE user_id=?", (user_id,))
+        balance = cursor.fetchone()[0]
+        
+        return {
+            "game": game[0],
+            "category": game[3],
+            "reward": reward,
+            "balance": balance,
+            "play_url": game[2]
+        }
     
     return {
-        "game_id": game_id,
-        "game": game_name,
-        "reward": reward,
-        "balance": balance
+        "game": game[0],
+        "category": game[3],
+        "reward": game[1],
+        "play_url": game[2]
     }
+
+
+@router.get("/games/categories")
+def get_categories():
+    """Get all game categories"""
+    cursor.execute("SELECT DISTINCT category FROM games")
+    rows = cursor.fetchall()
+    return {"categories": [r[0] for r in rows]}
 
 
 # -------------------------
@@ -157,12 +202,10 @@ def daily_reward(user_id: str):
     """Claim daily reward"""
     now = int(time.time())
     
-    # Ensure user exists
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     if not cursor.fetchone():
         cursor.execute("INSERT INTO users VALUES (?,?)", (user_id, 0))
     
-    # Check last claim
     cursor.execute("SELECT last_claim FROM daily_rewards WHERE user_id=?", (user_id,))
     row = cursor.fetchone()
     
@@ -171,11 +214,7 @@ def daily_reward(user_id: str):
     
     reward = random.choice([10, 15, 20, 25, 50])
     
-    cursor.execute(
-        "UPDATE users SET coins = coins + ? WHERE user_id=?",
-        (reward, user_id)
-    )
-    
+    cursor.execute("UPDATE users SET coins = coins + ? WHERE user_id=?", (reward, user_id))
     cursor.execute("DELETE FROM daily_rewards WHERE user_id=?", (user_id,))
     cursor.execute("INSERT INTO daily_rewards VALUES (?,?)", (user_id, now))
     
@@ -194,10 +233,7 @@ def daily_reward(user_id: str):
 @router.get("/leaderboard")
 def leaderboard():
     """Get top 10 players"""
-    cursor.execute(
-        "SELECT user_id, coins FROM users ORDER BY coins DESC LIMIT 10"
-    )
-    
+    cursor.execute("SELECT user_id, coins FROM users ORDER BY coins DESC LIMIT 10")
     rows = cursor.fetchall()
     
     return {
@@ -226,3 +262,19 @@ def stats(user_id: str):
         "coins": row[0],
         "games_played": games_played
     }
+
+
+# -------------------------
+# ADMIN: Add Game
+# -------------------------
+
+@router.post("/admin/games/add")
+def add_game(name: str, category: str, reward: int, url: str):
+    """Admin: Add a new game"""
+    cursor.execute(
+        "INSERT INTO games(name, category, reward, url) VALUES (?,?,?,?)",
+        (name, category, reward, url)
+    )
+    conn.commit()
+    
+    return {"success": True, "message": f"Game '{name}' added"}
