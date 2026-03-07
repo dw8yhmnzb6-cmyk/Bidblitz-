@@ -261,11 +261,11 @@ def stats(user_id: str):
 # -------------------------
 
 @router.post("/admin/games/add")
-def add_game(name: str, category: str, reward: int, url: str):
+def add_game(name: str, image: str, url: str, reward: int):
     """Admin: Add a new game"""
     cursor.execute(
-        "INSERT INTO games(name, category, reward, url) VALUES (?,?,?,?)",
-        (name, category, reward, url)
+        "INSERT INTO game_portal(name, image, url, reward) VALUES (?,?,?,?)",
+        (name, image, url, reward)
     )
     conn.commit()
     
