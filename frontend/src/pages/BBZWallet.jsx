@@ -221,9 +221,43 @@ export default function BBZWallet() {
           ))}
         </div>
 
-        {/* Wallet Tab */}
-        {activeTab === 'wallet' && (
+        {/* Balance Tab */}
+        {activeTab === 'balance' && (
           <div className="space-y-4">
+            {/* Token Balance Card */}
+            <div className="bg-gradient-to-br from-amber-500/20 to-orange-500/10 p-6 rounded-2xl border border-amber-500/30 text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                💎
+              </div>
+              <p className="text-4xl font-bold text-white mb-1">
+                {walletStatus?.app_wallet?.coins?.toLocaleString() || 0}
+              </p>
+              <p className="text-sm text-amber-400">BBZ Token</p>
+              <p className="text-xs text-slate-400 mt-2">
+                ≈ ${((walletStatus?.app_wallet?.coins || 0) * 0.01).toFixed(2)} USD
+              </p>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-4 gap-3">
+              <button onClick={() => setActiveTab('send')} className="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                <span className="text-2xl block mb-1">📤</span>
+                <p className="text-xs text-slate-400">Senden</p>
+              </button>
+              <button onClick={() => setActiveTab('receive')} className="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                <span className="text-2xl block mb-1">📥</span>
+                <p className="text-xs text-slate-400">Empfangen</p>
+              </button>
+              <button onClick={() => setActiveTab('swap')} className="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                <span className="text-2xl block mb-1">🔄</span>
+                <p className="text-xs text-slate-400">Swap</p>
+              </button>
+              <Link to="/store" className="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition-all">
+                <span className="text-2xl block mb-1">🛒</span>
+                <p className="text-xs text-slate-400">Kaufen</p>
+              </Link>
+            </div>
+
             {/* Token Info */}
             <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
               <div className="flex items-center gap-3 mb-4">
@@ -247,7 +281,7 @@ export default function BBZWallet() {
               </div>
             </div>
 
-            {/* Connect Wallet */}
+            {/* Wallet Connection */}
             <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
               <div className="flex items-center gap-2 mb-4">
                 <span className="text-xl">🔗</span>
@@ -286,34 +320,6 @@ export default function BBZWallet() {
                   </button>
                 </div>
               )}
-            </div>
-
-            {/* Roadmap */}
-            <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
-              <h3 className="font-semibold mb-4">🗺️ Roadmap</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-sm">✓</div>
-                  <div>
-                    <p className="font-medium">Phase 1: In-App Coin</p>
-                    <p className="text-xs text-slate-400">Games, Mining, Rewards</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-amber-500/50 rounded-full flex items-center justify-center text-sm animate-pulse">2</div>
-                  <div>
-                    <p className="font-medium">Phase 2: Blockchain Token</p>
-                    <p className="text-xs text-slate-400">BNB Smart Chain Deployment</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-sm">3</div>
-                  <div>
-                    <p className="font-medium text-slate-400">Phase 3: Exchange Listing</p>
-                    <p className="text-xs text-slate-500">DEX & CEX Trading</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         )}
