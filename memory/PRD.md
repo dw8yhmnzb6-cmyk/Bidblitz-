@@ -574,6 +574,43 @@ Getestete Collections mit bestätigter Datenspeicherung:
 - Klick auf League führt zu Missions-Seite
 
 ### Nächste Schritte
-1. Smart Contract auf Testnet deployen
-2. Transport-Feature erweitern (Tracking, Bewertungen)
-3. App.js Routing aufräumen
+1. App.js Routing aufräumen
+2. Frontend für Transport-Tracking UI verbessern
+3. Smart Contract auf BSC Mainnet deployen
+
+---
+
+## Changelog - 7. März 2026 (Update 23) - P2 TRANSPORT & CONTRACT
+
+### ✅ Transport/Taxi Backend implementiert
+- `/app/backend/routers/bidblitz_transport.py`
+- MongoDB Collections: `transport_rides`, `transport_drivers`, `transport_ratings`, `transport_saved_routes`
+
+**API Endpoints:**
+| Endpoint | Beschreibung |
+|----------|-------------|
+| `GET /api/transport/estimate` | Preisschätzung (Standard/Comfort/Premium) |
+| `POST /api/transport/ride/request` | Fahrt anfordern |
+| `GET /api/transport/ride/{id}` | Fahrt-Details |
+| `GET /api/transport/ride/{id}/track` | Echtzeit-GPS-Tracking |
+| `POST /api/transport/ride/{id}/start` | Fahrt starten |
+| `POST /api/transport/ride/{id}/complete` | Fahrt abschließen |
+| `POST /api/transport/ride/{id}/rate` | Bewertung + Trinkgeld |
+| `GET /api/transport/rides/history` | Fahrt-Historie |
+| `POST /api/transport/routes/save` | Route speichern |
+| `GET /api/transport/routes/saved` | Gespeicherte Routen |
+| `GET /api/transport/stats` | User-Statistiken |
+
+**Features:**
+- Haversine-Distanzberechnung
+- 3 Fahrzeugklassen mit unterschiedlichen Preisen
+- Simulierter Fahrer mit Fahrzeugdaten
+- GPS-Tracking während der Fahrt
+- 5-Sterne Bewertungssystem mit Kommentaren
+- Trinkgeld-Funktion
+- CO2-Ersparnis-Tracking
+
+### ✅ Smart Contract Dokumentation
+- `/app/contracts/DEPLOYMENT.md` - Deployment-Anleitung für BSC Testnet
+- Contract bereits vorhanden: `/app/contracts/BidBlitzToken.sol`
+- Ready for Remix IDE Deployment
