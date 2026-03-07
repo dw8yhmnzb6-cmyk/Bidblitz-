@@ -125,7 +125,15 @@ export default function AppFavoriteRoutes() {
                 </div>
                 
                 <button
-                  onClick={() => useFavorite(fav)}
+                  onClick={() => {
+                    // Update usage count
+                    const updated = favorites.map(f => 
+                      f.id === fav.id ? { ...f, usageCount: f.usageCount + 1 } : f
+                    );
+                    saveFavorites(updated);
+                    // Navigate to taxi with pre-filled route
+                    window.location.href = `/taxi?pickup=${encodeURIComponent(fav.pickup)}&destination=${encodeURIComponent(fav.destination)}`;
+                  }}
                   className="w-full py-2 bg-[#6c63ff] hover:bg-[#8b6dff] rounded-xl font-medium text-sm"
                 >
                   Route verwenden
