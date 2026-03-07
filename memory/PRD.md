@@ -385,3 +385,31 @@ Admin Panel erweitert mit neuem Miner-Tab:
 - Withdraw Fee: 2% (min. 10 Coins)
 
 **Frontend:** Neue Seite `/bbz` mit 4 Tabs (Wallet, Auszahlen, Senden, Historie)
+
+---
+
+## Changelog - Update 18 (2026-03-07)
+
+### ✅ GAMES V2 - Pokemon GO Style Coin Hunt
+
+**Neue Backend-Datei:** `/app/backend/routers/games_v2.py`
+
+| Feature | Endpoint | Tägliches Limit |
+|---------|----------|-----------------|
+| **Coin Hunt Map** | `GET /games-v2/coin-hunt/map` | Unbegrenzt |
+| **Coin Collect** | `POST /games-v2/coin-hunt/collect` | Unbegrenzt |
+| **Lucky Wheel** | `POST /games-v2/lucky-wheel/spin` | 5x |
+| **Scratch Card** | `POST /games-v2/scratch/reveal` | 10x |
+| **Reaction Game** | `POST /games-v2/reaction/submit` | 20x |
+| **Tap Rush** | `POST /games-v2/tap-rush/submit` | 10x |
+| **Dice** | `POST /games-v2/dice/roll` | 10x |
+
+**Coin Hunt Features:**
+- Auto-Spawn alle 60 Sekunden
+- 10 Coins pro Spawn
+- Rewards: 5, 10, 20, 50 Coins
+- Coin Types: Gold, Silver, Bronze
+- Distance Check (~100m Radius)
+- Leaderboard für Coin Collectors
+
+**Frontend:** Map Seite (`/map`) mit interaktiver Coin Hunt
