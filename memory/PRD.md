@@ -110,6 +110,21 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ## Changelog
 
+### 2026-03-07 (Update 12) - Games System & AI Assistant
+- ✅ **Games Hub V2** mit Daily Limits
+  - 5 Spiele: Spin Wheel, Scratch Card, Reaction Game, Tap Rush, Coin Hunt
+  - Tägliche Limits pro Spiel (3/5/10/20 Plays)
+  - Zufällige Rewards (Min-Max Range)
+- ✅ **AI Assistant** (`/assistant`)
+  - Keyword-Erkennung (taxi, coins, spiel, markt...)
+  - Automatische Navigation zu Features
+  - Chat-Interface mit Vorschlägen
+- ✅ **Store Update**
+  - 3 Tabs: Items, Coins, VIP
+  - Coin Pakete: 100=1€, 1000=8€, 5000=30€
+  - VIP Game Pass: 9,99€/Monat
+  - Werbung schauen = +5 Coins
+
 ### 2026-03-07 (Update 11) - Finanz-Features
 - ✅ **Merchant System** (`/merchant`)
   - Händler registrieren
