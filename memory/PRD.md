@@ -110,6 +110,19 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ## Changelog
 
+### 2026-03-07 (Update 10) - E-Commerce Features
+- ✅ **Store** (`/store`)
+  - 6 kaufbare Items: Mystery Box, VIP Pass, Auction Ticket, Coin Booster, Lucky Charm, Miner Upgrade
+  - Inventar-Anzeige nach Kauf
+- ✅ **VIP System Update** (`/app-vip`)
+  - VIP 1/2/3 kaufen (Bronze 200, Silver 500, Gold 1000 Coins)
+  - Vorteile-Liste pro Level
+  - "✓ Aktiv" Badge für aktives Level
+- ✅ **Marketplace Update** (`/market`)
+  - 3 Tabs: Durchsuchen, Verkaufen, Meine Items
+  - Items erstellen mit Name & Preis
+  - Items kaufen von anderen Spielern
+
 ### 2026-03-07 (Update 9) - Social Features
 - ✅ **Profile Enhancement**
   - "Earn Coins (+50)" Button
