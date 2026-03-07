@@ -110,6 +110,22 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ## Changelog
 
+### 2026-03-07 (Update 5) - UI Redesign
+- ✅ **Dashboard (SuperAppMinimal)** - Modernes Glassmorphism Design
+  - 8-Karten Quick Actions Grid mit Hover-Effekten
+  - Gradient Wallet Balance Card mit Auszahlen/Analytics Buttons
+  - Freunde einladen & VIP Status Karten
+  - Animierte Hintergrund-Orbs
+- ✅ **Notifications** - Komplett überarbeitetes Design
+  - Filter-Tabs (Alle/Mining/Games/Referral)
+  - Moderne Benachrichtigungskarten mit Icons
+  - Settings-Toggles für Benachrichtigungstypen
+- ✅ **Referral System** - Neues Design
+  - Stats-Karten (Einladungen, Verdient)
+  - Code-Display mit Kopieren/Teilen Buttons
+  - Belohnungs-Stufen System (Level 1/2/3)
+  - Code einlösen Funktion
+
 ### 2026-03-07 (Update 4)
 - ✅ Analytics Dashboard mit Chart.js
 - ✅ Withdraw/Auszahlung System
@@ -127,3 +143,21 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 - FastAPI + MongoDB
 - Chart.js (Analytics)
 - Web Audio API (Sounds)
+
+## Backlog / Zukünftige Aufgaben
+
+### P1 - Hoch Priorität
+- Routing-Konflikte in App.js bereinigen (Legacy Routes entfernen)
+- Backend mining_features.py aufteilen (>1700 Zeilen)
+
+### P2 - Mittel Priorität
+- VIP Benefits vollständig in Backend integrieren
+- Mock-Logik im Frontend durch echte API-Calls ersetzen
+- Echtzeit-Fahrtverfolgung auf Map
+- Fahrerbewertungs-System
+- Lieblings-Routen speichern
+
+### P3 - Niedrig Priorität
+- Tägliche Limits/Cooldowns für Spiele
+- Sound-Effekte für Events
+- Push-Notifications (PWA)
