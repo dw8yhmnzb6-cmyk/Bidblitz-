@@ -247,6 +247,15 @@ def leaderboard():
     }
 
 
+@router.get("/games/leaderboard")
+def games_leaderboard():
+    """Alias: Get top 10 players"""
+    cursor.execute("SELECT user_id, coins FROM users ORDER BY coins DESC LIMIT 10")
+    rows = cursor.fetchall()
+    
+    return [[r[0], r[1]] for r in rows]
+
+
 # -------------------------
 # STATS
 # -------------------------
