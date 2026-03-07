@@ -283,7 +283,3 @@ export default function AppRideTracking() {
     </div>
   );
 }
-
-// Import axios at the top level
-const axios = require('axios').default || { post: () => Promise.resolve() };
-const API = process.env.REACT_APP_BACKEND_URL + '/api';
