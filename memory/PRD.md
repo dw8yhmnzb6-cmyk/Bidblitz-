@@ -303,3 +303,26 @@ Backend wurde refactored mit neuen separaten Router-Dateien:
 - **VIP Tiers:** Bronze, Silver, Gold, Platinum mit 30-Tage Laufzeit
 - **Referral Tiers:** Starter → Promoter → Ambassador → Elite
 - **Admin:** User-Liste, Coins hinzufügen/entfernen, System-Statistiken, Ban/Unban
+
+---
+
+## Changelog - Update 15 (2026-03-07)
+
+### ✅ ADMIN MINER FUNKTIONEN
+Admin Panel erweitert mit neuem Miner-Tab:
+
+**Neue Admin Miner Endpoints:**
+| Endpoint | Funktion |
+|----------|----------|
+| `GET /api/app/admin/miners/list` | Alle Miner aller User anzeigen |
+| `POST /api/app/admin/miners/give` | Miner an User vergeben (gratis) |
+| `POST /api/app/admin/miners/upgrade` | Miner upgraden (gratis) |
+| `POST /api/app/admin/miners/remove` | Miner entfernen |
+| `POST /api/app/admin/miners/set-level` | Miner Level direkt setzen |
+
+**Admin Panel UI Updates:**
+- 3 Tabs: Übersicht, Coins, ⛏️ Miner
+- Miner vergeben mit Typ-Auswahl (Starter bis Ultra)
+- Level-Auswahl (1-10)
+- Schnellaktionen für Demo-User
+- Alle Miner Liste mit Upgrade/Remove Buttons
