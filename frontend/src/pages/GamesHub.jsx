@@ -1,259 +1,234 @@
 /**
- * BidBlitz Games Hub V2
- * All games with daily limits, rewards, and new mini-games
- * Connected to Games V2 API
+ * BidBlitz Games Kingdom - King.com Style
+ * Bunte, verspielte Spieleseite
  */
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 import BottomNav from '../components/BottomNav';
 
-const API = process.env.REACT_APP_BACKEND_URL + '/api';
+const GAMES = [
+  { id: 1, name: 'Candy Match', icon: '🍬', color: '#ff6b9d', gradient: 'from-pink-500 to-rose-500', reward: 15, category: 'Match-3', url: '/games/bbz_match3.html', players: '2.4M' },
+  { id: 2, name: 'Lucky Spin', icon: '🎡', color: '#ffd93d', gradient: 'from-yellow-400 to-orange-500', reward: 25, category: 'Casino', url: '/games/lucky_spin.html', players: '1.8M' },
+  { id: 3, name: 'Fruit Slots', icon: '🍒', color: '#ff4757', gradient: 'from-red-500 to-pink-600', reward: 20, category: 'Casino', url: '/games/slots.html', players: '3.1M' },
+  { id: 4, name: 'Memory Magic', icon: '🧠', color: '#5f27cd', gradient: 'from-purple-600 to-indigo-600', reward: 15, category: 'Puzzle', url: '/games/memory.html', players: '1.2M' },
+  { id: 5, name: 'Speed Tap', icon: '👆', color: '#00d2d3', gradient: 'from-cyan-400 to-teal-500', reward: 12, category: 'Arcade', url: '/games/speed_tap.html', players: '890K' },
+  { id: 6, name: 'Reaction Rush', icon: '⚡', color: '#ffa502', gradient: 'from-amber-400 to-orange-500', reward: 10, category: 'Arcade', url: '/games/reaction.html', players: '1.5M' },
+  { id: 7, name: 'Dice Master', icon: '🎲', color: '#1dd1a1', gradient: 'from-emerald-400 to-green-500', reward: 8, category: 'Casino', url: '/games/dice.html', players: '670K' },
+  { id: 8, name: 'Puzzle Blocks', icon: '🧩', color: '#54a0ff', gradient: 'from-blue-400 to-indigo-500', reward: 10, category: 'Puzzle', url: '/games/match_game.html', players: '980K' },
+  { id: 9, name: 'Treasure Hunt', icon: '💎', color: '#ff9ff3', gradient: 'from-pink-400 to-purple-500', reward: 18, category: 'Adventure', url: '/games/bbz_match3.html', players: '2.1M' },
+  { id: 10, name: 'Gold Rush', icon: '💰', color: '#ffd700', gradient: 'from-yellow-400 to-amber-500', reward: 22, category: 'Adventure', url: '/games/slots.html', players: '1.6M' },
+  { id: 11, name: 'Dragon Quest', icon: '🐉', color: '#ff6348', gradient: 'from-orange-500 to-red-600', reward: 25, category: 'RPG', url: '/games/bbz_match3.html', players: '750K' },
+  { id: 12, name: 'Space Battle', icon: '🚀', color: '#3742fa', gradient: 'from-indigo-500 to-purple-600', reward: 15, category: 'Action', url: '/games/reaction.html', players: '1.1M' },
+];
+
+const CATEGORIES = ['Alle', 'Match-3', 'Casino', 'Puzzle', 'Arcade', 'Adventure', 'Action'];
+
+// Floating Candies Animation
+const FloatingCandy = ({ emoji, delay, left }) => (
+  <div 
+    className="absolute text-4xl animate-bounce opacity-20 pointer-events-none"
+    style={{ 
+      left: `${left}%`, 
+      top: `${Math.random() * 30}%`,
+      animationDelay: `${delay}s`,
+      animationDuration: `${2 + Math.random() * 2}s`
+    }}
+  >
+    {emoji}
+  </div>
+);
+
+// Game Card Component
+const GameCard = ({ game, onPlay }) => (
+  <div 
+    className="relative group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:-translate-y-2"
+    onClick={() => onPlay(game)}
+  >
+    <div 
+      className={`relative bg-gradient-to-br ${game.gradient} rounded-3xl p-4 shadow-xl overflow-hidden`}
+      style={{ boxShadow: `0 15px 35px ${game.color}40` }}
+    >
+      {/* Shine Effect */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      {/* Sparkle */}
+      <div className="absolute top-2 right-2 text-white/50 group-hover:text-white transition-colors">✨</div>
+      
+      {/* Icon */}
+      <div className="text-center mb-2">
+        <span className="text-5xl drop-shadow-lg group-hover:scale-110 inline-block transition-transform duration-300">
+          {game.icon}
+        </span>
+      </div>
+      
+      {/* Name */}
+      <h3 className="text-white font-bold text-center text-sm mb-1 drop-shadow">{game.name}</h3>
+      
+      {/* Category Badge */}
+      <div className="flex justify-center mb-2">
+        <span className="bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-0.5 rounded-full">
+          {game.category}
+        </span>
+      </div>
+      
+      {/* Stats Row */}
+      <div className="flex justify-between items-center text-white/80 text-xs">
+        <span>🏆 {game.reward}P</span>
+        <span>👥 {game.players}</span>
+      </div>
+      
+      {/* Play Button */}
+      <div className="mt-3">
+        <button className="w-full py-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl text-white font-bold text-sm transition-all active:scale-95">
+          ▶️ SPIELEN
+        </button>
+      </div>
+    </div>
+  </div>
+);
 
 export default function GamesHub() {
-  const navigate = useNavigate();
-  const [coins, setCoins] = useState(500);
-  const [result, setResult] = useState('');
-  const [loading, setLoading] = useState('');
-  const [gamesStatus, setGamesStatus] = useState([]);
-  const [coinsOnMap, setCoinsOnMap] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState('Alle');
+  const [balance, setBalance] = useState(1250);
+  const [showGame, setShowGame] = useState(null);
   
-  // Games with daily limits and reward ranges
-  const games = {
-    wheel: { name: 'Lucky Wheel', icon: '🎡', endpoint: 'lucky-wheel/spin', min: 5, max: 100, limit: 5, color: 'from-purple-500/20 to-pink-500/10', border: 'border-purple-500/30' },
-    scratch: { name: 'Scratch Card', icon: '🪙', endpoint: 'scratch/reveal', min: 0, max: 50, limit: 10, color: 'from-amber-500/20 to-orange-500/10', border: 'border-amber-500/30' },
-    reaction: { name: 'Reaction', icon: '⚡', endpoint: 'reaction/submit', min: 3, max: 20, limit: 20, color: 'from-cyan-500/20 to-blue-500/10', border: 'border-cyan-500/30' },
-    tap: { name: 'Tap Rush', icon: '👆', endpoint: 'tap-rush/submit', min: 5, max: 50, limit: 10, color: 'from-emerald-500/20 to-green-500/10', border: 'border-emerald-500/30' },
-    dice: { name: 'Dice', icon: '🎲', endpoint: 'dice/roll', min: 0, max: 30, limit: 10, color: 'from-red-500/20 to-orange-500/10', border: 'border-red-500/30' },
+  const filteredGames = selectedCategory === 'Alle' 
+    ? GAMES 
+    : GAMES.filter(g => g.category === selectedCategory);
+  
+  const playGame = (game) => {
+    setShowGame(game);
   };
   
-  useEffect(() => {
-    fetchData();
-  }, []);
-  
-  const fetchData = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      
-      const [walletRes, statusRes] = await Promise.all([
-        axios.get(`${API}/app/wallet/balance`, { headers }),
-        axios.get(`${API}/app/games-v2/status`, { headers })
-      ]);
-      
-      setCoins(walletRes.data.coins || 0);
-      setGamesStatus(statusRes.data.games || []);
-      setCoinsOnMap(statusRes.data.coins_on_map || 0);
-    } catch (error) {
-      console.log('Fetch error');
+  const closeGame = () => {
+    // Add reward
+    if (showGame) {
+      setBalance(prev => prev + showGame.reward);
     }
+    setShowGame(null);
   };
-
-  const getPlaysLeft = (gameId) => {
-    const status = gamesStatus.find(g => g.id === gameId);
-    return status ? status.plays_left : games[gameId]?.limit || 0;
-  };
-  
-  const playGame = async (gameKey) => {
-    const game = games[gameKey];
-    const playsLeft = getPlaysLeft(gameKey);
-    
-    if (playsLeft <= 0) {
-      setResult({ type: 'limit', game: gameKey, message: 'Tageslimit erreicht!' });
-      setTimeout(() => setResult(''), 3000);
-      return;
-    }
-    
-    setLoading(gameKey);
-    
-    try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      
-      let body = {};
-      if (gameKey === 'reaction') {
-        body = { reaction_time_ms: Math.floor(Math.random() * 300) + 150 };
-      } else if (gameKey === 'tap') {
-        body = { taps: Math.floor(Math.random() * 50) + 30, duration_seconds: 10 };
-      } else if (gameKey === 'dice') {
-        body = { bet_high: Math.random() > 0.5 };
-      }
-      
-      const res = await axios.post(`${API}/app/games-v2/${game.endpoint}`, body, { headers });
-      
-      setCoins(res.data.balance);
-      setResult({ type: 'win', game: gameKey, amount: res.data.reward, message: res.data.message || res.data.rating });
-      
-      // Refresh status
-      fetchData();
-    } catch (error) {
-      // Fallback to local
-      const reward = Math.floor(Math.random() * (game.max - game.min + 1)) + game.min;
-      setCoins(prev => prev + reward);
-      setResult({ type: 'win', game: gameKey, amount: reward });
-    }
-    
-    setLoading('');
-    setTimeout(() => setResult(''), 3000);
-  };
-
-  // Quick games (no limits)
-  const quickGames = [
-    { id: 'slots', icon: '🎰', name: 'Slots' },
-    { id: 'flip', icon: '🪙', name: 'Flip' },
-  ];
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0b0e24] via-[#0f1332] to-[#0b0e24] text-white pb-24">
-      {/* Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 -left-20 w-60 h-60 bg-purple-500/10 rounded-full blur-[80px]"></div>
-        <div className="absolute bottom-40 -right-20 w-60 h-60 bg-cyan-500/10 rounded-full blur-[80px]"></div>
+    <div className="min-h-screen bg-gradient-to-b from-[#1a0a2e] via-[#16082a] to-[#0d0618] text-white pb-24 overflow-hidden">
+      
+      {/* Floating Background Elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <FloatingCandy emoji="🍬" delay={0} left={5} />
+        <FloatingCandy emoji="🍭" delay={0.5} left={15} />
+        <FloatingCandy emoji="⭐" delay={1} left={25} />
+        <FloatingCandy emoji="💎" delay={1.5} left={75} />
+        <FloatingCandy emoji="🎁" delay={2} left={85} />
+        <FloatingCandy emoji="🍩" delay={0.3} left={95} />
       </div>
-
-      <div className="relative p-5">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+      
+      {/* Header */}
+      <div className="relative px-5 pt-6 pb-4">
+        <div className="flex justify-between items-center mb-4">
           <div>
-            <h2 className="text-2xl font-bold">🎮 BidBlitz Games</h2>
-            <p className="text-xs text-slate-400">Spiele & verdiene Coins!</p>
+            <h1 className="text-3xl font-black bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+              BidBlitz Games
+            </h1>
+            <p className="text-purple-300/60 text-sm">Spiele & gewinne Coins! 🎮</p>
           </div>
-          <div className="bg-amber-500/20 px-4 py-2 rounded-xl border border-amber-500/30">
-            <span className="text-amber-400 font-bold" data-testid="coins-display">
-              {coins.toLocaleString()} 💰
-            </span>
+          <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-4 py-2 rounded-2xl shadow-lg">
+            <span className="text-white font-bold">💰 {balance.toLocaleString()}</span>
           </div>
         </div>
-
-        {/* Result Toast */}
-        {result && (
-          <div className={`mb-4 p-4 rounded-2xl text-center font-bold animate-bounce ${
-            result.type === 'win'
-              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-              : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-          }`} data-testid="game-result">
-            {result.type === 'win' ? `+${result.amount} Coins! 🎉` : result.message}
-          </div>
-        )}
         
-        {/* Main Games with Limits */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm text-slate-400 uppercase tracking-wider">Tägliche Spiele</h3>
-            <span className="text-xs text-slate-500">Mit Limits</span>
-          </div>
-          <div className="grid grid-cols-2 gap-4" data-testid="games-grid">
-            {Object.entries(games).map(([key, game]) => {
-              const remaining = getPlaysLeft(key);
-              const isLimitReached = remaining <= 0;
-              
-              return (
-                <div 
-                  key={key}
-                  className={`bg-gradient-to-br ${game.color} p-5 rounded-2xl border ${game.border} transition-all ${isLimitReached ? 'opacity-50' : ''}`}
-                  data-testid={`game-${key}`}
-                >
-                  <span className="text-4xl block mb-2">{game.icon}</span>
-                  <h4 className="font-semibold mb-1">{game.name}</h4>
-                  <p className="text-xs text-slate-400 mb-1">{game.min}-{game.max} Coins</p>
-                  <p className={`text-xs mb-3 ${isLimitReached ? 'text-red-400' : 'text-emerald-400'}`}>
-                    {remaining}/{game.limit} übrig
-                  </p>
-                  <button
-                    onClick={() => playGame(key)}
-                    disabled={loading === key || isLimitReached}
-                    className={`w-full py-2.5 rounded-xl font-medium text-sm transition-all ${
-                      isLimitReached
-                        ? 'bg-slate-600 cursor-not-allowed'
-                        : loading === key
-                          ? 'bg-emerald-500 cursor-wait'
-                          : 'bg-[#6c63ff] hover:bg-[#8b6dff]'
-                    }`}
-                    data-testid={`btn-${key}`}
-                  >
-                    {loading === key ? '⏳' : isLimitReached ? 'Limit' : 'Spielen'}
-                  </button>
-                </div>
-              );
-            })}
+        {/* Featured Banner */}
+        <div className="relative bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-3xl p-5 mb-5 overflow-hidden">
+          <div className="absolute inset-0 bg-[url('data:image/svg+xml,...')] opacity-10" />
+          <div className="absolute -top-10 -right-10 text-8xl opacity-30">🎰</div>
+          <div className="relative z-10">
+            <h2 className="text-2xl font-black text-white mb-1">🔥 Hot Games!</h2>
+            <p className="text-white/80 text-sm mb-3">Täglich neue Belohnungen</p>
+            <div className="flex gap-2">
+              <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-sm">+50% Bonus</span>
+              <span className="bg-white/20 backdrop-blur px-3 py-1 rounded-full text-sm">12 Spiele</span>
+            </div>
           </div>
         </div>
-
-        {/* Coin Hunt Card */}
-        <Link 
-          to="/map"
-          className="block mb-6 bg-gradient-to-br from-yellow-500/20 to-amber-500/10 p-5 rounded-2xl border border-yellow-500/30 transition-all hover:scale-[1.01]"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-4xl">🗺️</span>
-              <div>
-                <h3 className="font-bold text-lg">Coin Hunt</h3>
-                <p className="text-sm text-yellow-400">{coinsOnMap} Coins auf der Map!</p>
-              </div>
-            </div>
-            <span className="text-2xl">→</span>
-          </div>
-        </Link>
-
-        {/* Live Auction Card */}
-        <Link 
-          to="/live-auction"
-          className="block mb-6 bg-gradient-to-br from-red-500/20 to-orange-500/10 p-5 rounded-2xl border border-red-500/30 transition-all hover:scale-[1.01]"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-4xl">🔥</span>
-              <div>
-                <h4 className="font-bold text-lg">Live Auction</h4>
-                <p className="text-xs text-slate-400">Biete & gewinne Produkte!</p>
-              </div>
-            </div>
-            <span className="px-4 py-2 bg-[#6c63ff] rounded-xl font-medium">Bieten</span>
-          </div>
-        </Link>
         
-        {/* Quick Games */}
-        <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10 mb-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <span>⚡</span> Quick Games
-          </h3>
-          <div className="grid grid-cols-3 gap-3">
-            {quickGames.map((game) => (
-              <button
-                key={game.id}
-                onClick={() => playGame(game.id)}
-                disabled={loading === game.id}
-                className="bg-black/20 p-4 rounded-xl text-center hover:bg-[#6c63ff]/20 transition-all"
-                data-testid={`btn-${game.id}`}
-              >
-                <span className="text-2xl block mb-1">{game.icon}</span>
-                <span className="text-xs">{game.name}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Links */}
-        <div className="grid grid-cols-2 gap-3">
-          <Link 
-            to="/app-leaderboard"
-            className="bg-white/5 p-4 rounded-xl flex items-center gap-3 hover:bg-white/10 transition-all border border-white/5"
-          >
-            <span className="text-2xl">🏆</span>
-            <span className="text-sm">Leaderboard</span>
-          </Link>
-          <Link 
-            to="/map"
-            className="bg-white/5 p-4 rounded-xl flex items-center gap-3 hover:bg-white/10 transition-all border border-white/5"
-          >
-            <span className="text-2xl">🗺️</span>
-            <span className="text-sm">Coin Hunt Map</span>
-          </Link>
+        {/* Category Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide -mx-5 px-5">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`flex-none px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+                selectedCategory === cat
+                  ? 'bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg'
+                  : 'bg-white/10 text-white/70 hover:bg-white/20'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
       
+      {/* Games Grid */}
+      <div className="px-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filteredGames.map(game => (
+            <GameCard key={game.id} game={game} onPlay={playGame} />
+          ))}
+        </div>
+      </div>
+      
+      {/* Daily Bonus Section */}
+      <div className="px-5 mt-6">
+        <div className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/30 rounded-2xl p-4">
+          <div className="flex items-center gap-4">
+            <div className="text-4xl">🎁</div>
+            <div className="flex-1">
+              <h3 className="font-bold text-emerald-400">Täglicher Bonus</h3>
+              <p className="text-sm text-emerald-300/60">Spiele 3 Games für extra Coins!</p>
+            </div>
+            <div className="bg-emerald-500/20 px-3 py-1 rounded-full text-emerald-400 text-sm font-bold">
+              0/3
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Game Modal */}
+      {showGame && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex flex-col">
+          <div className="flex justify-between items-center p-4 bg-gradient-to-r from-purple-900 to-indigo-900">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl">{showGame.icon}</span>
+              <div>
+                <h3 className="font-bold text-white">{showGame.name}</h3>
+                <p className="text-purple-300 text-sm">🏆 +{showGame.reward} Coins</p>
+              </div>
+            </div>
+            <button 
+              onClick={closeGame}
+              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-xl text-white font-bold transition-all"
+            >
+              ✕ Schließen (+{showGame.reward}P)
+            </button>
+          </div>
+          <iframe 
+            src={showGame.url} 
+            className="flex-1 w-full border-none"
+            title={showGame.name}
+          />
+        </div>
+      )}
+      
       <BottomNav />
+      
+      <style>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
