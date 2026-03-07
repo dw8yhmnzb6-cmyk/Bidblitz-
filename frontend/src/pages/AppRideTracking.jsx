@@ -4,7 +4,10 @@
  */
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import BottomNav from '../components/BottomNav';
+
+const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
 export default function AppRideTracking() {
   const navigate = useNavigate();
