@@ -110,6 +110,18 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ## Changelog
 
+### 2026-03-07 (Update 7) - Coin Hunt & Transport
+- ✅ **Coin Hunt auf Map** (`/map`)
+  - 7 sammelbare Coins auf der Karte (10-100 Wert)
+  - Klickbare 💰 Marker mit Puls-Animation
+  - Coin Hunt Stats (Verfügbar, Gefunden, Wert)
+  - Leaflet.js Integration
+- ✅ **Bottom Navigation Update**
+  - Neuer "Transport" Tab (ersetzt Mining)
+  - Links zu Map, Taxi, Scooter
+- ✅ **Filter-System auf Map**
+  - Alle, Coins, Taxis, Scooter Filter
+
 ### 2026-03-07 (Update 6) - Neue Features
 - ✅ **Sponsored Ads Banner** auf Dashboard
   - 4 rotierende Anzeigen (Restaurant, Taxi, Games, VIP)
