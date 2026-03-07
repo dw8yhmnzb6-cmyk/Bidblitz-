@@ -1,6 +1,6 @@
 /**
  * BidBlitz Taxi Booking
- * Book a taxi ride with coins
+ * Book a taxi ride with car type selection
  */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -9,47 +9,50 @@ import BottomNav from '../components/BottomNav';
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
 export default function AppTaxi() {
-  const [coins, setCoins] = useState(0);
+  const [wallet, setWallet] = useState(600);
   const [pickup, setPickup] = useState('');
   const [destination, setDestination] = useState('');
-  const [estimatedCost, setEstimatedCost] = useState(0);
-  const [booking, setBooking] = useState(null);
+  const [carType, setCarType] = useState('50');
+  const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [booking, setBooking] = useState(null);
+  
+  const carOptions = [
+    { value: '50', label: 'Standard', price: 50, icon: '🚗' },
+    { value: '80', label: 'Premium', price: 80, icon: '🚙' },
+    { value: '120', label: 'Van', price: 120, icon: '🚐' },
+  ];
   
   useEffect(() => {
-    fetchCoins();
+    fetchWallet();
   }, []);
   
-  useEffect(() => {
-    // Calculate estimated cost based on input
-    if (pickup && destination) {
-      const cost = Math.floor(Math.random() * 100) + 50; // 50-150 coins
-      setEstimatedCost(cost);
-    } else {
-      setEstimatedCost(0);
-    }
-  }, [pickup, destination]);
-  
-  const fetchCoins = async () => {
+  const fetchWallet = async () => {
     try {
       const token = localStorage.getItem('token');
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const res = await axios.get(`${API}/app/wallet/balance`, { headers });
-      setCoins(res.data.coins || 0);
+      setWallet(res.data.coins || 0);
     } catch (error) {
-      console.log('Coins error');
+      console.log('Wallet error');
     }
   };
   
-  const bookTaxi = async () => {
-    if (!pickup || !destination) {
-      setMessage('Bitte Abholort und Ziel eingeben');
+  const bookRide = async () => {
+    const price = parseInt(carType);
+    
+    if (!pickup.trim()) {
+      setResult('Bitte Abholort eingeben');
       return;
     }
     
-    if (coins < estimatedCost) {
-      setMessage('Nicht genug Coins!');
+    if (!destination.trim()) {
+      setResult('Bitte Ziel eingeben');
+      return;
+    }
+    
+    if (price > wallet) {
+      setResult('Not enough coins');
       return;
     }
     
@@ -62,113 +65,148 @@ export default function AppTaxi() {
       const res = await axios.post(`${API}/app/taxi/book`, {
         pickup,
         destination,
-        cost: estimatedCost
+        cost: price,
+        car_type: carOptions.find(c => c.value === carType)?.label
       }, { headers });
       
+      setWallet(res.data.new_balance || wallet - price);
       setBooking({
-        id: res.data.booking_id || `TX${Date.now()}`,
-        driver: res.data.driver || 'Max M.',
-        car: res.data.car || 'BMW 3er',
-        plate: res.data.plate || 'B-TX 123',
-        eta: res.data.eta || '3 Min'
+        id: res.data.booking_id,
+        driver: res.data.driver,
+        car: res.data.car,
+        plate: res.data.plate,
+        eta: res.data.eta,
+        carType: carOptions.find(c => c.value === carType)
       });
-      
-      setCoins(res.data.new_balance || coins - estimatedCost);
-      setMessage('');
+      setResult(`Taxi booked from ${pickup} to ${destination}`);
     } catch (error) {
-      // Simulate booking
+      setWallet(prev => prev - price);
       setBooking({
         id: `TX${Date.now()}`,
         driver: 'Max M.',
-        car: 'BMW 3er',
+        car: carOptions.find(c => c.value === carType)?.label,
         plate: 'B-TX 123',
-        eta: '3 Min'
+        eta: '3 Min',
+        carType: carOptions.find(c => c.value === carType)
       });
-      setCoins(prev => prev - estimatedCost);
+      setResult(`Taxi booked from ${pickup} to ${destination}`);
     } finally {
       setLoading(false);
     }
   };
   
   const cancelBooking = () => {
+    const price = parseInt(carType);
+    const refund = Math.floor(price * 0.8);
+    setWallet(prev => prev + refund);
     setBooking(null);
-    setCoins(prev => prev + Math.floor(estimatedCost * 0.8)); // 80% refund
     setPickup('');
     setDestination('');
-    setMessage('Buchung storniert. 80% erstattet.');
-    setTimeout(() => setMessage(''), 3000);
+    setResult(`Buchung storniert. ${refund} Coins erstattet.`);
+    setTimeout(() => setResult(''), 3000);
   };
+  
+  const selectedCar = carOptions.find(c => c.value === carType);
   
   return (
     <div className="min-h-screen bg-[#0b0e24] text-white pb-20">
       <div className="p-5">
-        <h2 className="text-2xl font-bold mb-2">🚕 Taxi buchen</h2>
-        <p className="text-slate-400 mb-5">Coins: <span className="text-amber-400 font-bold">{coins.toLocaleString()}</span></p>
-        
-        {message && (
-          <div className={`mb-4 p-3 rounded-xl text-center ${
-            message.includes('storniert') ? 'bg-amber-500/20 text-amber-400' : 'bg-red-500/20 text-red-400'
-          }`}>
-            {message}
-          </div>
-        )}
+        <h2 className="text-2xl font-bold mb-2">🚕 BidBlitz Taxi</h2>
+        <p className="text-slate-400 mb-5">
+          Wallet Balance: <span className="text-amber-400 font-bold" data-testid="wallet-balance">{wallet.toLocaleString()}</span> Coins
+        </p>
         
         {!booking ? (
           <>
             {/* Booking Form */}
-            <div className="bg-[#171a3a] p-5 rounded-2xl mb-4">
+            <div className="bg-[#171a3a] p-5 rounded-2xl">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm text-slate-400 mb-1">📍 Abholort</label>
                   <input
                     type="text"
                     value={pickup}
                     onChange={(e) => setPickup(e.target.value)}
-                    placeholder="z.B. Alexanderplatz"
-                    className="w-full p-3 rounded-xl bg-[#0b0e24] border border-slate-700 text-white"
+                    placeholder="Pickup Location"
+                    className="w-full p-3 rounded-xl bg-[#0b0e24] border border-slate-700 text-white placeholder-slate-500"
                     data-testid="pickup-input"
                   />
                 </div>
+                
                 <div>
-                  <label className="block text-sm text-slate-400 mb-1">🎯 Ziel</label>
                   <input
                     type="text"
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
-                    placeholder="z.B. Hauptbahnhof"
-                    className="w-full p-3 rounded-xl bg-[#0b0e24] border border-slate-700 text-white"
+                    placeholder="Destination"
+                    className="w-full p-3 rounded-xl bg-[#0b0e24] border border-slate-700 text-white placeholder-slate-500"
                     data-testid="destination-input"
                   />
                 </div>
+                
+                <div>
+                  <select
+                    value={carType}
+                    onChange={(e) => setCarType(e.target.value)}
+                    className="w-full p-3 rounded-xl bg-[#0b0e24] border border-slate-700 text-white"
+                    data-testid="car-select"
+                  >
+                    {carOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.icon} {option.label} – {option.price} Coins
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <button
+                  onClick={bookRide}
+                  disabled={loading}
+                  className="w-full py-3 bg-[#6c63ff] hover:bg-[#8b6dff] rounded-xl font-semibold
+                             disabled:opacity-50 transition-colors"
+                  data-testid="book-btn"
+                >
+                  {loading ? 'Booking...' : 'Book Ride'}
+                </button>
               </div>
+              
+              {result && !booking && (
+                <p className={`mt-4 text-center ${
+                  result.includes('Not enough') || result.includes('Bitte') 
+                    ? 'text-red-400' 
+                    : 'text-green-400'
+                }`} data-testid="result-message">
+                  {result}
+                </p>
+              )}
             </div>
             
-            {/* Cost Estimate */}
-            {estimatedCost > 0 && (
-              <div className="bg-[#171a3a] p-4 rounded-2xl mb-4 text-center">
-                <p className="text-slate-400 text-sm">Geschätzte Kosten</p>
-                <p className="text-2xl font-bold text-amber-400">{estimatedCost} Coins</p>
-              </div>
-            )}
-            
-            {/* Book Button */}
-            <button
-              onClick={bookTaxi}
-              disabled={loading || !pickup || !destination}
-              className="w-full py-3 bg-[#6c63ff] hover:bg-[#8b6dff] rounded-xl font-semibold
-                         disabled:opacity-50 transition-colors"
-              data-testid="book-btn"
-            >
-              {loading ? 'Wird gebucht...' : 'Taxi buchen'}
-            </button>
+            {/* Car Type Info */}
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              {carOptions.map((option) => (
+                <div 
+                  key={option.value}
+                  onClick={() => setCarType(option.value)}
+                  className={`p-4 rounded-xl text-center cursor-pointer transition-all ${
+                    carType === option.value 
+                      ? 'bg-[#6c63ff]/20 border-2 border-[#6c63ff]' 
+                      : 'bg-[#171a3a] border-2 border-transparent'
+                  }`}
+                >
+                  <p className="text-2xl mb-1">{option.icon}</p>
+                  <p className="text-sm font-medium">{option.label}</p>
+                  <p className="text-xs text-amber-400">{option.price} 💰</p>
+                </div>
+              ))}
+            </div>
           </>
         ) : (
           <>
             {/* Booking Confirmation */}
             <div className="bg-gradient-to-br from-green-600/20 to-green-900/20 border border-green-500/30 p-5 rounded-2xl mb-4">
               <div className="text-center mb-4">
-                <p className="text-green-400 font-semibold">✓ Taxi gebucht!</p>
-                <p className="text-xs text-slate-400">Buchungs-ID: {booking.id}</p>
+                <p className="text-4xl mb-2">{booking.carType?.icon}</p>
+                <p className="text-green-400 font-semibold">✓ Taxi booked!</p>
+                <p className="text-xs text-slate-400">Booking ID: {booking.id}</p>
               </div>
               
               <div className="space-y-3 text-sm">
@@ -178,7 +216,7 @@ export default function AppTaxi() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Fahrzeug:</span>
-                  <span>{booking.car}</span>
+                  <span>{booking.carType?.label}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400">Kennzeichen:</span>
@@ -214,7 +252,7 @@ export default function AppTaxi() {
                          text-red-400 rounded-xl font-semibold transition-colors"
               data-testid="cancel-btn"
             >
-              Buchung stornieren
+              Cancel Booking
             </button>
           </>
         )}
