@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BidBlitz Runner</title>
+<style>
+body {
+  margin: 0;
+  background: #1e1b4b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+h1 {
+  margin-bottom: 20px;
+}
+canvas {
+  border: 2px solid #7c3aed;
+  border-radius: 10px;
+  background: #0f0a1e;
+}
+p {
+  margin-top: 15px;
+  opacity: 0.7;
+}
+</style>
+</head>
+<body>
+
+<h1>🏃 BidBlitz Runner</h1>
+
+<canvas id="game" width="400" height="200"></canvas>
+
+<p>Press SPACE to jump</p>
+
+<script>
+
+let canvas = document.getElementById("game")
+let ctx = canvas.getContext("2d")
+
+let player = {x:50,y:150,w:20,h:20}
+let obstacle = {x:400,y:150,w:20,h:20}
+let score = 0
+
+function draw(){
+
+ctx.clearRect(0,0,400,200)
+
+// Ground
+ctx.fillStyle="#333"
+ctx.fillRect(0,175,400,25)
+
+// Player
+ctx.fillStyle="#3b82f6"
+ctx.fillRect(player.x,player.y,player.w,player.h)
+
+// Obstacle
+ctx.fillStyle="#ef4444"
+ctx.fillRect(obstacle.x,obstacle.y,obstacle.w,obstacle.h)
+
+obstacle.x -= 5
+
+if(obstacle.x < 0){
+obstacle.x = 400
+score++
+}
+
+// Collision
+if(
+player.x < obstacle.x + obstacle.w &&
+player.x + player.w > obstacle.x &&
+player.y < obstacle.y + obstacle.h &&
+player.h + player.y > obstacle.y
+){
+alert("Game Over! Score: " + score)
+score = 0
+obstacle.x = 400
+}
+
+// Score
+ctx.fillStyle = "white"
+ctx.font = "16px Arial"
+ctx.fillText("Score: " + score, 10, 25)
+
+requestAnimationFrame(draw)
+
+}
+
+document.addEventListener("keydown", function(e){
+if(e.code === "Space"){
+player.y = 100
+setTimeout(() => player.y = 150, 300)
+}
+})
+
+// Touch support for mobile
+document.addEventListener("touchstart", function(){
+player.y = 100
+setTimeout(() => player.y = 150, 300)
+})
+
+draw()
+
+</script>
+
+</body>
+</html>
