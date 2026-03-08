@@ -184,6 +184,7 @@ import AppMap from "./pages/AppMap";
 import AppRideTracking from "./pages/AppRideTracking";
 import AppFavoriteRoutes from "./pages/AppFavoriteRoutes";
 import AppDriverRatings from "./pages/AppDriverRatings";
+import SuperAppHome from "./pages/SuperAppHome";
 
 // New Clean Pages - Consolidated
 import Ride from "./pages/Ride";
