@@ -267,7 +267,12 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 
 ## Backlog / Zukünftige Aufgaben
 
+### P0 - Kritisch
+- Übersetzungssystem für alle Seiten vervollständigen (AppProfile, AppWallet, etc.)
+
 ### P1 - Hoch Priorität
+- Neue Miner-Seite nach User-Mockup erstellen
+- Kunden-Video-Werbung System im Admin Panel
 - Routing-Konflikte in App.js bereinigen (Legacy Routes entfernen)
 - Backend mining_features.py aufteilen (>2300 Zeilen)
 
