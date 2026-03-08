@@ -1162,6 +1162,13 @@ function AppContent() {
           <Route path="/favorite-routes" element={<AppFavoriteRoutes />} />
           <Route path="/driver-ratings" element={<AppDriverRatings />} />
           
+          {/* New Clean Routes */}
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/wallet-new" element={<Wallet />} />
+          <Route path="/auctions-new" element={<Auctions />} />
+          <Route path="/ride" element={<Ride />} />
+          <Route path="/profile-new" element={<Profile />} />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
