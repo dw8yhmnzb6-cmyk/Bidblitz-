@@ -1,5 +1,5 @@
 /**
- * BidBlitz Lucky Wheel - Glücksrad Spiel
+ * BidBlitz Lucky Wheel - Mit Einsatz
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,8 +7,18 @@ import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
-const REWARDS = [5, 10, 20, 50, 100];
-const WHEEL_COLORS = ['#ef4444', '#f59e0b', '#22c55e', '#3b82f6', '#8b5cf6'];
+const REWARDS = [
+  { value: 0, label: '💀', color: '#374151' },
+  { value: 5, label: '5', color: '#ef4444' },
+  { value: 10, label: '10', color: '#f59e0b' },
+  { value: 0, label: '💀', color: '#374151' },
+  { value: 20, label: '20', color: '#22c55e' },
+  { value: 50, label: '50', color: '#3b82f6' },
+  { value: 0, label: '💀', color: '#374151' },
+  { value: 100, label: '💎', color: '#8b5cf6' },
+];
+
+const BET_COST = 10;
 
 export default function LuckyWheel() {
   const navigate = useNavigate();
@@ -16,6 +26,8 @@ export default function LuckyWheel() {
   const [spinning, setSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const [lastWin, setLastWin] = useState(null);
+  const [message, setMessage] = useState('');
+  const [spinsToday, setSpinsToday] = useState(0);
 
   const userId = localStorage.getItem('userId') || 'guest_' + Math.random().toString(36).substr(2, 9);
 
@@ -41,39 +53,84 @@ export default function LuckyWheel() {
     }
   };
 
-  const saveCoins = async (amount) => {
+  const spendCoins = async (amount, source) => {
     try {
-      await axios.post(`${API}/bbz/coins/earn`, {
+      const res = await axios.post(`${API}/bbz/coins/spend`, {
         user_id: userId,
         amount: amount,
-        source: 'lucky_wheel'
+        source: source
       });
+      return { success: true, balance: res.data.new_balance };
     } catch (error) {
-      console.log('Could not save coins');
+      return { success: false, error: error.response?.data?.detail || 'Error' };
     }
   };
 
-  const spin = () => {
+  const earnCoins = async (amount, source) => {
+    try {
+      const res = await axios.post(`${API}/bbz/coins/earn`, {
+        user_id: userId,
+        amount: amount,
+        source: source
+      });
+      return res.data.new_balance;
+    } catch (error) {
+      return coins + amount;
+    }
+  };
+
+  const spin = async () => {
     if (spinning) return;
     
+    if (coins < BET_COST) {
+      setMessage(`❌ Du brauchst ${BET_COST} Coins!`);
+      return;
+    }
+
+    // Einsatz abziehen
+    const spendResult = await spendCoins(BET_COST, 'lucky_wheel_bet');
+    if (!spendResult.success) {
+      setMessage(spendResult.error);
+      return;
+    }
+    
+    setCoins(spendResult.balance);
     setSpinning(true);
     setLastWin(null);
+    setMessage(`🎡 Spinning... -${BET_COST} Coins`);
     
-    // Random reward
-    const winIndex = Math.floor(Math.random() * REWARDS.length);
-    const win = REWARDS[winIndex];
+    // Weighted random - more likely to lose or get small wins
+    const rand = Math.random();
+    let winIndex;
     
-    // Calculate rotation (5 full spins + position)
+    if (rand < 0.35) winIndex = 0;      // 35% - Loss
+    else if (rand < 0.55) winIndex = 3; // 20% - Loss
+    else if (rand < 0.70) winIndex = 6; // 15% - Loss
+    else if (rand < 0.85) winIndex = 1; // 15% - 5 coins
+    else if (rand < 0.93) winIndex = 2; // 8% - 10 coins
+    else if (rand < 0.97) winIndex = 4; // 4% - 20 coins
+    else if (rand < 0.99) winIndex = 5; // 2% - 50 coins
+    else winIndex = 7;                   // 1% - 100 coins JACKPOT
+    
+    const win = REWARDS[winIndex].value;
+    
+    // Calculate rotation
     const segmentAngle = 360 / REWARDS.length;
     const newRotation = rotation + 1800 + (winIndex * segmentAngle) + (segmentAngle / 2);
     
     setRotation(newRotation);
     
-    setTimeout(() => {
-      setCoins(prev => prev + win);
-      setLastWin(win);
+    setTimeout(async () => {
+      if (win > 0) {
+        const newBalance = await earnCoins(win, 'lucky_wheel_win');
+        setCoins(newBalance);
+        setLastWin(win);
+        setMessage(`🎉 Gewonnen! +${win} Coins!`);
+      } else {
+        setMessage('💀 Kein Gewinn. Versuche es nochmal!');
+      }
       setSpinning(false);
-      saveCoins(win);
+      setSpinsToday(prev => prev + 1);
     }, 3000);
   };
 
@@ -83,7 +140,7 @@ export default function LuckyWheel() {
         .wheel-game {
           text-align: center;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          background: #0f172a;
+          background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%);
           color: white;
           min-height: 100vh;
           padding: 20px;
@@ -99,7 +156,7 @@ export default function LuckyWheel() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 30px;
+          margin-bottom: 20px;
         }
         .wheel-back {
           background: none;
@@ -113,83 +170,105 @@ export default function LuckyWheel() {
           font-weight: bold;
         }
         .wheel-coins {
-          background: #7c3aed;
+          background: linear-gradient(135deg, #7c3aed, #a855f7);
           padding: 8px 14px;
           border-radius: 10px;
           font-size: 16px;
+          font-weight: bold;
+        }
+        .wheel-message {
+          padding: 10px 20px;
+          border-radius: 10px;
+          margin: 10px auto;
+          max-width: 350px;
+          background: rgba(124, 58, 237, 0.3);
+          font-weight: 500;
         }
         .wheel-container {
           position: relative;
-          width: 250px;
-          height: 250px;
-          margin: 40px auto;
+          width: 280px;
+          height: 280px;
+          margin: 30px auto;
         }
         .wheel {
-          width: 250px;
-          height: 250px;
+          width: 100%;
+          height: 100%;
           border-radius: 50%;
-          border: 12px solid #7c3aed;
-          background: conic-gradient(
-            #ef4444 0deg 72deg,
-            #f59e0b 72deg 144deg,
-            #22c55e 144deg 216deg,
-            #3b82f6 216deg 288deg,
-            #8b5cf6 288deg 360deg
-          );
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          position: relative;
           transition: transform 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
           box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
         }
-        .wheel-inner {
-          width: 80px;
-          height: 80px;
-          background: #1f2937;
+        .wheel-segment {
+          position: absolute;
+          width: 50%;
+          height: 50%;
+          top: 0;
+          left: 50%;
+          transform-origin: 0% 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          clip-path: polygon(0% 100%, 100% 0%, 100% 100%);
+        }
+        .wheel-segment span {
+          transform: rotate(22.5deg) translateX(30px);
+          font-size: 20px;
+          font-weight: bold;
+        }
+        .wheel-pointer {
+          position: absolute;
+          top: -15px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 0;
+          border-left: 15px solid transparent;
+          border-right: 15px solid transparent;
+          border-top: 25px solid #fbbf24;
+          z-index: 10;
+          filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+        }
+        .wheel-center {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 50px;
+          height: 50px;
+          background: linear-gradient(135deg, #fbbf24, #f59e0b);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 40px;
-          border: 4px solid #7c3aed;
+          font-size: 24px;
+          box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+          z-index: 5;
         }
-        .wheel-pointer {
-          position: absolute;
-          top: -20px;
-          left: 50%;
-          transform: translateX(-50%);
-          font-size: 30px;
-          filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
-        }
-        .spin-btn {
-          padding: 15px 50px;
+        .wheel-spin-btn {
+          margin-top: 30px;
+          padding: 18px 50px;
           font-size: 20px;
           font-weight: bold;
-          background: #7c3aed;
+          background: linear-gradient(135deg, #7c3aed, #a855f7);
           border: none;
           border-radius: 15px;
           color: white;
           cursor: pointer;
           transition: all 0.2s ease;
-          margin: 30px 0;
         }
-        .spin-btn:hover:not(:disabled) {
-          background: #6d28d9;
+        .wheel-spin-btn:hover:not(:disabled) {
           transform: scale(1.05);
+          box-shadow: 0 5px 25px rgba(124, 58, 237, 0.5);
         }
-        .spin-btn:disabled {
-          opacity: 0.5;
+        .wheel-spin-btn:disabled {
+          opacity: 0.6;
           cursor: not-allowed;
         }
-        .wheel-score {
-          font-size: 28px;
-          margin: 20px 0;
-        }
-        .win-popup {
-          background: #22c55e;
+        .wheel-win {
+          background: linear-gradient(135deg, #22c55e, #10b981);
           padding: 20px 40px;
           border-radius: 15px;
-          font-size: 24px;
+          font-size: 28px;
           font-weight: bold;
           margin: 20px auto;
           display: inline-block;
@@ -199,17 +278,9 @@ export default function LuckyWheel() {
           0% { transform: scale(0); }
           100% { transform: scale(1); }
         }
-        .rewards-list {
-          display: flex;
-          justify-content: center;
-          gap: 10px;
-          margin-top: 30px;
-          flex-wrap: wrap;
-        }
-        .reward-item {
-          padding: 8px 16px;
-          background: #1f2937;
-          border-radius: 10px;
+        .wheel-stats {
+          margin-top: 20px;
+          color: #94a3b8;
           font-size: 14px;
         }
       `}</style>
@@ -222,49 +293,57 @@ export default function LuckyWheel() {
           <div className="wheel-coins">💰 {coins}</div>
         </div>
 
+        {/* Message */}
+        {message && <div className="wheel-message">{message}</div>}
+
         {/* Wheel */}
         <div className="wheel-container">
-          <div className="wheel-pointer">▼</div>
+          <div className="wheel-pointer" />
           <div 
             className="wheel"
-            style={{ transform: `rotate(${rotation}deg)` }}
+            style={{ 
+              transform: `rotate(${rotation}deg)`,
+              background: `conic-gradient(${REWARDS.map((r, i) => 
+                `${r.color} ${i * 45}deg ${(i + 1) * 45}deg`
+              ).join(', ')})`
+            }}
           >
-            <div className="wheel-inner">🎡</div>
+            {REWARDS.map((reward, i) => (
+              <div 
+                key={i}
+                className="wheel-segment"
+                style={{ 
+                  transform: `rotate(${i * 45 + 22.5}deg)`,
+                }}
+              >
+                <span style={{ color: 'white', textShadow: '0 1px 3px rgba(0,0,0,0.5)' }}>
+                  {reward.label}
+                </span>
+              </div>
+            ))}
           </div>
+          <div className="wheel-center">🎡</div>
         </div>
 
-        {/* Spin Button */}
-        <button 
-          className="spin-btn" 
-          onClick={spin}
-          disabled={spinning}
-        >
-          {spinning ? '⏳ SPINNING...' : '🎰 SPIN'}
-        </button>
-
-        {/* Win Popup */}
+        {/* Win */}
         {lastWin && (
-          <div className="win-popup">
+          <div className="wheel-win">
             🎉 +{lastWin} Coins!
           </div>
         )}
 
-        {/* Score */}
-        <div className="wheel-score">
-          Coins: <strong>{coins}</strong>
-        </div>
+        {/* Spin Button */}
+        <button 
+          className="wheel-spin-btn" 
+          onClick={spin}
+          disabled={spinning || coins < BET_COST}
+        >
+          {spinning ? '⏳ Spinning...' : `🎡 Drehen (${BET_COST} Coins)`}
+        </button>
 
-        {/* Rewards */}
-        <div className="rewards-list">
-          {REWARDS.map((reward, i) => (
-            <div 
-              key={i} 
-              className="reward-item"
-              style={{ borderLeft: `4px solid ${WHEEL_COLORS[i]}` }}
-            >
-              {reward} 💰
-            </div>
-          ))}
+        {/* Stats */}
+        <div className="wheel-stats">
+          Spins heute: {spinsToday}
         </div>
       </div>
     </>
