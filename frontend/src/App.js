@@ -1163,11 +1163,11 @@ function AppContent() {
           <Route path="/driver-ratings" element={<AppDriverRatings />} />
           
           {/* New Clean Routes */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/wallet-new" element={<Wallet />} />
-          <Route path="/auctions-new" element={<Auctions />} />
+          <Route path="/dashboard" element={<NewDashboard />} />
+          <Route path="/wallet-new" element={<NewWallet />} />
+          <Route path="/auctions-new" element={<NewAuctions />} />
           <Route path="/ride" element={<Ride />} />
-          <Route path="/profile-new" element={<Profile />} />
+          <Route path="/profile-new" element={<NewProfile />} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
