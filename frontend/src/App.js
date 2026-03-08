@@ -1183,28 +1183,7 @@ function AppContent() {
           <Route path="/favorite-routes" element={<AppFavoriteRoutes />} />
           <Route path="/driver-ratings" element={<AppDriverRatings />} />
           
-          {/* New Clean Routes */}
-          <Route path="/dashboard" element={<NewDashboard />} />
-          <Route path="/wallet-new" element={<NewWallet />} />
-          <Route path="/auctions-new" element={<NewAuctions />} />
-          <Route path="/ride" element={<Ride />} />
-          <Route path="/profile-new" element={<NewProfile />} />
-          
-          {/* BidBlitz App Routes */}
-          <Route path="/home" element={<BidBlitzApp />} />
-          <Route path="/bbz-games" element={<BidBlitzGames />} />
-          <Route path="/gaming" element={<GamingHome />} />
-          <Route path="/game-lobby" element={<GameLobby />} />
-          <Route path="/candy" element={<CandyGame />} />
-          <Route path="/build" element={<BuildGame />} />
-          <Route path="/rewards" element={<RewardSystem />} />
-          <Route path="/ride-module" element={<RideModule />} />
-          <Route path="/mining" element={<MiningPage />} />
-          <Route path="/wallet-page" element={<WalletPage />} />
-          <Route path="/profile-page" element={<ProfilePage />} />
-          <Route path="/admin-full" element={<AdminPanelFull />} />
-          <Route path="/super-home" element={<SuperAppHome />} />
-          <Route path="/bbz-home" element={<BidBlitzHome />} />
+          {/* Consolidated Routes - Removed duplicates */}
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
