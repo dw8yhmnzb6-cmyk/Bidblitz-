@@ -513,7 +513,7 @@ export default function MinerDashboard() {
                 {miners.map((miner) => (
                   <div key={miner.id} className="bg-white rounded-xl p-4 shadow-sm">
                     <div className="flex items-center gap-4">
-                      <MinerVisual tier={miner.tier} level={miner.level} size="normal" />
+                      <MinerVisual tier={miner.tier} level={miner.level} size="normal" isBonus={miner.is_bonus} />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span className="text-xs bg-gray-100 px-2 py-1 rounded">⚡ {miner.hashrate} TH</span>
