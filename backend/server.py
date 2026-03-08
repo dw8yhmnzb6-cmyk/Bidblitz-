@@ -148,6 +148,9 @@ from routers.partner_social import router as partner_social_router
 from routers.staff_cards import router as staff_cards_router
 from routers.partner_transfer import router as partner_transfer_router
 
+# BidBlitz Games & Economy
+from routers.bidblitz_api import router as bidblitz_api_router
+
 # NEW: BidBlitz Pay Security
 from routers.security import router as security_router
 
