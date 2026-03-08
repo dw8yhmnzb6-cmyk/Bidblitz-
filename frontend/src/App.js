@@ -216,6 +216,7 @@ import WalletPage from "./pages/WalletPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPanelFull from "./pages/AdminPanelFull";
 import SuperAppHome from "./pages/SuperAppHome";
+import BidBlitzHome from "./pages/BidBlitzHome";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
