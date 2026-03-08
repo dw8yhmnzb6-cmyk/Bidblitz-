@@ -1,5 +1,5 @@
 /**
- * BidBlitz Games Hub - Mit Header und 2x4 Grid
+ * BidBlitz Games Hub - Gradient Header Design
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,14 +7,14 @@ import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
-// 8 Games mit Emojis
+// 8 Games
 const GAMES = [
   { id: 1, name: 'Candy Match', emoji: '🍬', route: '/candy-match' },
   { id: 2, name: 'Slot Machine', emoji: '🎰', route: '/slot-machine' },
   { id: 3, name: 'Lucky Wheel', emoji: '🎡', route: '/lucky-wheel' },
-  { id: 4, name: 'Memory Game', emoji: '🧠', route: '/candy-match' },
-  { id: 5, name: 'Reaction', emoji: '⚡', route: '/reaction-game' },
-  { id: 6, name: 'Runner', emoji: '🏃', route: '/runner-game' },
+  { id: 4, name: 'Reaction Game', emoji: '⚡', route: '/reaction-game' },
+  { id: 5, name: 'Runner', emoji: '🏃', route: '/runner-game' },
+  { id: 6, name: 'Memory Game', emoji: '🧠', route: '/candy-match' },
   { id: 7, name: 'Coin Tap', emoji: '🪙', route: '/coin-tap' },
   { id: 8, name: 'Dice Game', emoji: '🎲', route: '/games/dice.html' },
 ];
@@ -73,21 +73,12 @@ export default function GamesHub() {
           z-index: 999;
         }
         .games-header {
-          padding: 20px;
+          background: linear-gradient(90deg, #7c3aed, #9333ea);
+          padding: 22px;
           font-size: 28px;
           font-weight: bold;
-          background: #7c3aed;
           text-align: center;
-        }
-        .games-coins {
-          position: absolute;
-          right: 20px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: rgba(255,255,255,0.2);
-          padding: 6px 12px;
-          border-radius: 8px;
-          font-size: 16px;
+          position: relative;
         }
         .games-back {
           position: absolute;
@@ -100,15 +91,25 @@ export default function GamesHub() {
           font-size: 24px;
           cursor: pointer;
         }
+        .games-coins {
+          position: absolute;
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(255,255,255,0.2);
+          padding: 6px 12px;
+          border-radius: 8px;
+          font-size: 16px;
+        }
         .games-grid {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
+          gap: 18px;
           padding: 20px;
         }
         .game-card {
           background: #1f2937;
-          border-radius: 16px;
+          border-radius: 18px;
           padding: 30px 20px;
           text-align: center;
           cursor: pointer;
@@ -118,30 +119,30 @@ export default function GamesHub() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 12px;
         }
         .game-card:hover {
-          background: #7c3aed;
           transform: scale(1.05);
+          background: #7c3aed;
         }
         .game-card:active {
           transform: scale(0.95);
         }
         .game-icon {
-          font-size: 45px;
+          font-size: 42px;
+          margin-bottom: 12px;
           line-height: 1;
         }
-        .game-name {
-          font-size: 18px;
+        .game-title {
+          font-size: 20px;
           font-weight: 600;
         }
       `}</style>
       
       <div className="games-hub" data-testid="games-hub">
-        {/* Header */}
-        <div className="games-header" style={{ position: 'relative' }}>
+        {/* Gradient Header */}
+        <div className="games-header">
           <button className="games-back" onClick={() => navigate('/super-home')}>←</button>
-          🎮 BidBlitz Gaming
+          🎮 BidBlitz Games
           <div className="games-coins">💰 {coins}</div>
         </div>
 
@@ -154,8 +155,8 @@ export default function GamesHub() {
               className="game-card"
               data-testid={`game-${game.id}`}
             >
-              <span className="game-icon">{game.emoji}</span>
-              <span className="game-name">{game.name}</span>
+              <div className="game-icon">{game.emoji}</div>
+              <div className="game-title">{game.name}</div>
             </button>
           ))}
         </div>
