@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BidBlitz Games Hub</title>
+<style>
+body{margin:0;background:linear-gradient(to bottom,#7c3aed,#0f0a1e);min-height:100vh;font-family:Arial;color:#fff;padding:20px}
+h1{text-align:center;margin-bottom:30px}
+.categories{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;max-width:500px;margin:0 auto}
+.cat{background:rgba(255,255,255,0.1);padding:25px;border-radius:15px;text-align:center;cursor:pointer;transition:all 0.3s}
+.cat:hover{background:rgba(255,255,255,0.2);transform:scale(1.05)}
+.cat .icon{font-size:40px;margin-bottom:10px}
+.cat .title{font-size:18px;font-weight:bold}
+.cat .count{font-size:12px;opacity:0.7;margin-top:5px}
+#stats{position:fixed;bottom:20px;right:20px;background:rgba(0,0,0,0.5);padding:15px;border-radius:10px;font-size:14px}
+#hint{position:fixed;bottom:20px;left:20px;background:rgba(139,92,246,0.8);padding:15px;border-radius:10px;font-size:14px}
+</style>
+</head>
+<body>
+
+<h1>🎮 BidBlitz Games</h1>
+
+<div class="categories">
+
+<div class="cat" onclick="location.href='match.html'">
+<div class="icon">🎮</div>
+<div class="title">2D Games</div>
+<div class="count">6 Spiele</div>
+</div>
+
+<div class="cat" onclick="location.href='game3d.html'">
+<div class="icon">🎲</div>
+<div class="title">3D Games</div>
+<div class="count">3 Spiele</div>
+</div>
+
+<div class="cat" onclick="location.href='puzzle.html'">
+<div class="icon">🧩</div>
+<div class="title">Puzzle Games</div>
+<div class="count">4 Spiele</div>
+</div>
+
+<div class="cat" onclick="location.href='runner.html'">
+<div class="icon">🏎️</div>
+<div class="title">Racing Games</div>
+<div class="count">2 Spiele</div>
+</div>
+
+</div>
+
+<div id="stats">
+⏱️ Zeit: <span id="time">0</span>s
+</div>
+
+<div id="hint">
+Press SPACE to jump!
+</div>
+
+<script>
+
+// Jump Event
+document.addEventListener("keydown",e=>{
+if(e.code==="Space"){
+alert("Jump!")
+}
+})
+
+// Timer
+let speed=0
+
+setInterval(()=>{
+speed+=1
+document.getElementById("time").innerText=speed
+console.log("Speed:",speed)
+},1000)
+
+</script>
+
+</body>
+</html>
