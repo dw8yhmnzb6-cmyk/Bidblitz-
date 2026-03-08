@@ -183,6 +183,13 @@ import AppMap from "./pages/AppMap";
 import AppRideTracking from "./pages/AppRideTracking";
 import AppFavoriteRoutes from "./pages/AppFavoriteRoutes";
 import AppDriverRatings from "./pages/AppDriverRatings";
+
+// New Clean Pages
+import Dashboard from "./pages/Dashboard";
+import Wallet from "./pages/Wallet";
+import Auctions from "./pages/Auctions";
+import Ride from "./pages/Ride";
+import Profile from "./pages/Profile";
 import LiveAuction from "./pages/LiveAuction";
 import Friends from "./pages/Friends";
 import LiveEvents from "./pages/LiveEvents";
