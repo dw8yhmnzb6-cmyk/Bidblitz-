@@ -378,6 +378,17 @@ function AppContent() {
               <Admin />
             </ProtectedRoute>
           } />
+          {/* New Admin Panel with Grid Design */}
+          <Route path="/admin-panel" element={
+            <ProtectedRoute requireAdmin>
+              <AdminPanelNew />
+            </ProtectedRoute>
+          } />
+          <Route path="/verwaltung" element={
+            <ProtectedRoute requireAdmin>
+              <AdminPanelNew />
+            </ProtectedRoute>
+          } />
           {/* Public Legal Pages */}
           <Route path="/impressum" element={<Impressum />} />
           <Route path="/datenschutz" element={<Datenschutz />} />
