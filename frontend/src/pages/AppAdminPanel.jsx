@@ -240,6 +240,7 @@ export default function AppAdminPanel() {
 
   const tabs = [
     { id: 'overview', label: 'Übersicht', icon: '📊' },
+    { id: 'users', label: 'Benutzer', icon: '👥' },
     { id: 'coins', label: 'Coins', icon: '💰' },
     { id: 'miners', label: 'Miner', icon: '⛏️' },
   ];
