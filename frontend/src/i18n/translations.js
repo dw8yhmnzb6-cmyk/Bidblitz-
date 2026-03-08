@@ -660,6 +660,42 @@ export const translations = {
       backToHome: "Back to Homepage",
       fillAllFields: "Please fill in all required fields",
       submitError: "Error submitting application"
+    },
+    games: {
+      title: "Games",
+      weeklyLeague: "Weekly League",
+      rank: "Rank",
+      points: "Points",
+      gamesPass: "Games Pass Active",
+      dailyBonus: "+20% Daily",
+      leagueBonus: "+10% League",
+      play: "Play",
+      bidblitzMatch: "BidBlitz Match",
+      luckySpin: "Lucky Spin",
+      dailyQuiz: "Daily Quiz",
+      wordDaily: "Word Daily",
+      scratchCard: "Scratch Card",
+      memory: "Memory",
+      reactionTest: "Reaction Test",
+      speedTap: "Speed Tap",
+      treasureHunt: "Treasure Hunt",
+      slots: "Slots",
+      diceRoll: "Dice Roll",
+      coinDrop: "Coin Drop",
+      closeGame: "Close Game",
+      loading: "Loading..."
+    },
+    admin: {
+      users: "Users",
+      manageUsers: "Manage Users",
+      searchUsers: "Search Users",
+      noUsersFound: "No users found",
+      noUsers: "No users available",
+      totalUsers: "Total Users",
+      totalCoins: "Total Coins",
+      activeMiners: "Active Miners",
+      avgCoins: "Avg. Coins",
+      userStats: "User Statistics"
     }
   },
   us: {
