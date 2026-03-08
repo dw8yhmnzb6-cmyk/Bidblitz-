@@ -574,6 +574,10 @@ function AppContent() {
           <Route path="/lucky-wheel" element={<LuckyWheel />} />
           {/* Coin Tap Game */}
           <Route path="/coin-tap" element={<CoinTap />} />
+          {/* Reaction Game */}
+          <Route path="/reaction-game" element={<ReactionGame />} />
+          {/* Runner Game */}
+          <Route path="/runner-game" element={<RunnerGame />} />
           {/* Beginner Auctions */}
           <Route path="/beginner-auctions" element={
             <ProtectedRoute>
