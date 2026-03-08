@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BidBlitz Match</title>
+<style>
+body {
+  margin: 0;
+  background: #1e1b4b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  color: white;
+}
+h1 {
+  margin-bottom: 10px;
+}
+#score {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+#board {
+  display: grid;
+  grid-template-columns: repeat(6, 60px);
+  gap: 5px;
+}
+.tile {
+  width: 60px;
+  height: 60px;
+  background: #6ee7b7;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+.tile:hover {
+  transform: scale(1.1);
+}
+.tile.selected {
+  background: gold;
+  box-shadow: 0 0 10px gold;
+}
+.tile.matched {
+  background: #a855f7;
+  animation: pop 0.3s;
+}
+@keyframes pop {
+  50% { transform: scale(1.2); }
+}
+</style>
+</head>
+<body>
+
+<h1>🍬 BidBlitz Match</h1>
+<div id="score">Score: 0</div>
+<div id="board"></div>
+
+<script>
+
+let board = document.getElementById("board")
+let scoreEl = document.getElementById("score")
+let score = 0
+
+let icons = ["🍎", "🌸", "🍀", "🍋", "🍇", "🍊"]
+let selected = null
+let tiles = []
+
+// Create board
+for(let i = 0; i < 36; i++){
+
+  let tile = document.createElement("div")
+  tile.className = "tile"
+  tile.dataset.index = i
+  tile.innerText = icons[Math.floor(Math.random() * icons.length)]
+
+  tile.onclick = function(){
+    
+    if(selected === null){
+      selected = tile
+      tile.classList.add("selected")
+    } else {
+      
+      // Check if adjacent
+      let idx1 = parseInt(selected.dataset.index)
+      let idx2 = parseInt(tile.dataset.index)
+      
+      let row1 = Math.floor(idx1 / 6)
+      let col1 = idx1 % 6
+      let row2 = Math.floor(idx2 / 6)
+      let col2 = idx2 % 6
+      
+      let isAdjacent = (Math.abs(row1-row2) + Math.abs(col1-col2)) === 1
+      
+      if(isAdjacent){
+        // Swap
+        let temp = selected.innerText
+        selected.innerText = tile.innerText
+        tile.innerText = temp
+        
+        // Check matches
+        checkMatches()
+      }
+      
+      selected.classList.remove("selected")
+      selected = null
+    }
+  }
+
+  board.appendChild(tile)
+  tiles.push(tile)
+}
+
+function checkMatches(){
+  
+  let matched = new Set()
+  
+  // Check rows
+  for(let row = 0; row < 6; row++){
+    for(let col = 0; col < 4; col++){
+      let idx = row * 6 + col
+      let icon = tiles[idx].innerText
+      if(icon === tiles[idx+1].innerText && icon === tiles[idx+2].innerText){
+        matched.add(idx)
+        matched.add(idx+1)
+        matched.add(idx+2)
+      }
+    }
+  }
+  
+  // Check columns
+  for(let col = 0; col < 6; col++){
+    for(let row = 0; row < 4; row++){
+      let idx = row * 6 + col
+      let icon = tiles[idx].innerText
+      if(icon === tiles[idx+6].innerText && icon === tiles[idx+12].innerText){
+        matched.add(idx)
+        matched.add(idx+6)
+        matched.add(idx+12)
+      }
+    }
+  }
+  
+  // Apply matches
+  if(matched.size > 0){
+    score += matched.size * 10
+    scoreEl.innerText = "Score: " + score
+    
+    matched.forEach(idx => {
+      tiles[idx].classList.add("matched")
+      setTimeout(() => {
+        tiles[idx].innerText = icons[Math.floor(Math.random() * icons.length)]
+        tiles[idx].classList.remove("matched")
+      }, 300)
+    })
+  }
+}
+
+</script>
+
+</body>
+</html>
