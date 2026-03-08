@@ -167,6 +167,10 @@ import CandyMatch from "./pages/CandyMatch";
 import LuckyWheel from "./pages/LuckyWheel";
 import CoinTap from "./pages/CoinTap";
 
+// Reaction & Runner Games
+import ReactionGame from "./pages/ReactionGame";
+import RunnerGame from "./pages/RunnerGame";
+
 // Super App Minimal + New Pages
 import SuperAppMinimal from "./pages/SuperAppMinimal";
 import GamesHub from "./pages/GamesHub";
