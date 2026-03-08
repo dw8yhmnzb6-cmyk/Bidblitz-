@@ -326,7 +326,7 @@ export default function SuperAppMinimal() {
         </div>
         
         {/* More Features */}
-        <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
+        <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <span className="text-lg">✨</span>
             <h3 className="font-semibold text-white">Mehr Features</h3>
@@ -344,6 +344,11 @@ export default function SuperAppMinimal() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Ride Services */}
+        <div className="mb-6">
+          <RideServices />
         </div>
       </div>
       
