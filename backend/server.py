@@ -714,6 +714,7 @@ app.include_router(league_router, prefix="/api")
 
 # NEW: BidBlitz Transport & Taxi
 app.include_router(transport_router, prefix="/api")
+app.include_router(bidblitz_api_router)
 
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
