@@ -349,8 +349,10 @@ function AppContent() {
       
       <main className="flex-grow">
         <Routes>
-          {/* Startseite = Auktionen (nur ansehen ohne Login) */}
-          <Route path="/" element={<Auctions />} />
+          {/* Startseite = Modern Home */}
+          <Route path="/" element={<HomeModern />} />
+          <Route path="/home" element={<HomeModern />} />
+          <Route path="/classic" element={<Auctions />} />
           <Route path="/auctions" element={<Auctions />} />
           <Route path="/auctions/:id" element={<AuctionDetail />} />
           <Route path="/mystery-box/:id" element={<MysteryBoxDetail />} />
