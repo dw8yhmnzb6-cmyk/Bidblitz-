@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BidBlitz Mini Match</title>
+<style>
+body{margin:0;background:#1e1b4b;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial;color:#fff}
+h1{margin-bottom:20px}
+#g{display:grid;grid-template-columns:repeat(6,60px);gap:5px}
+.c{width:60px;height:60px;background:#8b5cf6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;border-radius:10px;cursor:pointer;transition:all 0.2s}
+.c:hover{transform:scale(1.1)}
+</style>
+</head>
+<body>
+<h1>🍬 Mini Match</h1>
+<div id="g"></div>
+<script>
+let e=["🍎","🌸","🍀","🍋"],g=document.getElementById("g")
+for(let i=0;i<36;i++){
+let d=document.createElement("div")
+d.className="c"
+d.innerText=e[Math.random()*4|0]
+d.onclick=()=>{d.style.background="gold"}
+g.appendChild(d)
+}
+</script>
+</body>
+</html>

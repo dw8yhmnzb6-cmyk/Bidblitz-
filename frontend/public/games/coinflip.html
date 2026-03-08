@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BidBlitz Coin Flip</title>
+<style>
+body{margin:0;background:#1e1b4b;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:Arial;color:#fff}
+.coin{width:150px;height:150px;background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:60px;margin:30px;box-shadow:0 10px 30px rgba(0,0,0,0.3);transition:transform 0.5s}
+.coin.flip{animation:flip 0.5s}
+@keyframes flip{50%{transform:rotateY(180deg) scale(1.2)}}
+button{background:#8b5cf6;color:#fff;border:none;padding:15px 40px;font-size:18px;border-radius:10px;cursor:pointer;margin:10px}
+button:hover{background:#7c3aed}
+#result{font-size:24px;margin-top:20px;min-height:30px}
+#score{margin-top:10px;opacity:0.7}
+</style>
+</head>
+<body>
+<h1>🪙 Coin Flip</h1>
+<div class="coin" id="coin">🪙</div>
+<div>
+<button onclick="flip('heads')">Kopf</button>
+<button onclick="flip('tails')">Zahl</button>
+</div>
+<div id="result"></div>
+<div id="score">Coins: 0</div>
+<script>
+let coins=0
+function flip(choice){
+let coin=document.getElementById("coin")
+coin.classList.add("flip")
+setTimeout(()=>{
+let result=Math.random()>0.5?"heads":"tails"
+coin.innerText=result==="heads"?"👑":"🔢"
+if(choice===result){
+coins+=20
+document.getElementById("result").innerHTML="<span style='color:#22c55e'>Gewonnen! +20</span>"
+}else{
+document.getElementById("result").innerHTML="<span style='color:#ef4444'>Verloren!</span>"
+}
+document.getElementById("score").innerText="Coins: "+coins
+coin.classList.remove("flip")
+},500)
+}
+</script>
+</body>
+</html>
