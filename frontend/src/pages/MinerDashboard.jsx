@@ -257,35 +257,70 @@ export default function MinerDashboard() {
           </div>
         )}
         
+        {/* Coin Balance Banner */}
+        <div className="bg-gradient-to-r from-amber-500/20 to-yellow-600/20 border border-amber-500/40 p-3 rounded-xl mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">🪙</span>
+            <div>
+              <p className="text-xs text-slate-400">Dein Guthaben</p>
+              <p className="text-xl font-bold text-amber-400">{stats.coins.toLocaleString()} Coins</p>
+            </div>
+          </div>
+          <Link to="/wallet" className="px-3 py-2 bg-amber-500/30 hover:bg-amber-500/50 rounded-lg text-sm font-medium text-amber-300 transition-all">
+            + Aufladen
+          </Link>
+        </div>
+
         {/* Miners Grid */}
         <div className="grid grid-cols-2 gap-3 mb-5">
           {miners.map((miner) => {
             const currentLevel = miner.level || 1;
             const upgradeCost = currentLevel * 50;
             const canAfford = stats.coins >= upgradeCost;
+            const nextHashrate = (miner.hashrate + 0.5).toFixed(2);
             
             return (
               <div 
                 key={miner.id} 
-                className="bg-[#14183a] p-4 rounded-xl text-center"
+                className="bg-[#14183a] p-4 rounded-xl text-center relative overflow-hidden"
                 style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
               >
+                {/* Level Badge */}
+                <div className="absolute top-2 right-2 bg-purple-600/80 px-2 py-0.5 rounded-full text-xs font-bold">
+                  Lv.{currentLevel}
+                </div>
+                
                 <Machine tier={miner.tier} />
                 <h3 className="font-semibold mt-2 text-sm">{miner.name}</h3>
                 <p className="text-xs text-cyan-400 mb-1">{miner.hashrate} TH</p>
-                <p className="text-xs text-slate-500 mb-2">Level {currentLevel}</p>
+                
+                {/* Upgrade Info */}
+                {miner.level < 10 && (
+                  <div className="bg-black/30 rounded-lg p-2 mb-2 text-xs">
+                    <p className="text-slate-400">Upgrade → {nextHashrate} TH</p>
+                    <p className={`font-bold ${canAfford ? 'text-green-400' : 'text-red-400'}`}>
+                      Kosten: {upgradeCost} 🪙
+                    </p>
+                  </div>
+                )}
+                
                 <button
                   onClick={() => upgradeMiner(miner.id)}
                   disabled={miner.level >= 10}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`w-full px-3 py-2 rounded-lg text-sm font-bold transition-all ${
                     miner.level >= 10
                       ? 'bg-slate-700 text-slate-500'
                       : canAfford
-                        ? 'bg-[#6c63ff] hover:bg-[#5a52e0] active:scale-95'
-                        : 'bg-red-900/50 text-red-400'
+                        ? 'bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 active:scale-95 shadow-lg shadow-purple-500/30'
+                        : 'bg-red-900/50 text-red-400 border border-red-500/30'
                   }`}
                 >
-                  {miner.level >= 10 ? 'Max Level' : `⬆️ ${upgradeCost} Coins`}
+                  {miner.level >= 10 
+                    ? '🏆 Max Level' 
+                    : canAfford 
+                      ? `⬆️ Upgrade (${upgradeCost} 🪙)` 
+                      : `❌ ${upgradeCost} 🪙 nötig`
+                  }
                 </button>
               </div>
             );
