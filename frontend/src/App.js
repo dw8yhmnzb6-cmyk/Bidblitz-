@@ -163,6 +163,10 @@ import AdminPanelNew from "./pages/AdminPanelNew";
 // Candy Match Game
 import CandyMatch from "./pages/CandyMatch";
 
+// Lucky Wheel & Coin Tap Games
+import LuckyWheel from "./pages/LuckyWheel";
+import CoinTap from "./pages/CoinTap";
+
 // Super App Minimal + New Pages
 import SuperAppMinimal from "./pages/SuperAppMinimal";
 import GamesHub from "./pages/GamesHub";
