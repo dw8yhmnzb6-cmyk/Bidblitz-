@@ -202,6 +202,19 @@ import Assistant from "./pages/Assistant";
 import Missions from "./pages/Missions";
 import BBZWallet from "./pages/BBZWallet";
 
+// New BidBlitz Pages
+import BidBlitzApp from "./pages/BidBlitzApp";
+import BidBlitzGames from "./pages/BidBlitzGames";
+import GamingHome from "./pages/GamingHome";
+import GameLobby from "./pages/GameLobby";
+import CandyGame from "./pages/CandyGame";
+import BuildGame from "./pages/BuildGame";
+import RewardSystem from "./pages/RewardSystem";
+import RideModule from "./pages/RideModule";
+import MiningPage from "./pages/MiningPage";
+import WalletPage from "./pages/WalletPage";
+import ProfilePage from "./pages/ProfilePage";
+
 // New Feature Components
 import Watchlist from "./components/Watchlist";
 import AutoBid from "./components/AutoBid";
