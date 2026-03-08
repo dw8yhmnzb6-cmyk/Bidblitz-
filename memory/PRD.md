@@ -13,6 +13,19 @@ BidBlitz ist eine vollständige Super-App mit Mining, Games, Mobilität, Chat, M
 - ✅ 50 neue Auktionen erstellt (über 6 Tage gemischt/verteilt)
 - ✅ Kategorien: Smartphones, Laptops, Tablets, Wearables, Gaming, TV, Audio, Smart Home, Kameras, E-Mobilität, Haushalt, Beauty
 
+### 08.03.2026 - Frontend-Konsolidierung & Game Economy
+**Erledigt:**
+- ✅ **App.js bereinigt**: 326 → 305 Routen (21 doppelte Routen entfernt)
+- ✅ Unbenutzte Imports entfernt
+- ✅ Doppelte `/dashboard`, `/mining`, `/admin`, `/auctions` Routen bereinigt
+- ✅ **Game Economy API komplett überarbeitet** (`/api/bbz/*`):
+  - MongoDB-Persistenz statt In-Memory
+  - Coins verdienen/ausgeben mit Transaction-History
+  - Game Rewards mit Score-basierten Belohnungen (12 Spiele)
+  - Leaderboard (global + pro Spiel)
+  - Daily Bonus mit 7-Tage-Streak-System
+  - Ride Payments (Taxi: 50, Scooter: 20, Bike: 10, Premium: 100)
+
 **Neue 2026 Produkte:**
 - Smartphones: iPhone 17 Pro Max, iPhone 17 Pro, iPhone 17, Samsung Galaxy S26 Ultra, Samsung Galaxy S26+, Samsung Galaxy Z Fold 6, Google Pixel 10 Pro, OnePlus 14 Pro, Xiaomi 16 Ultra, Huawei Mate 70 Pro
 - Laptops: MacBook Pro 16 M5 Max (€4.299), MacBook Pro 14 M5 Pro, MacBook Air 15 M5, Dell XPS 15 2026, Lenovo ThinkPad X1 Carbon 2026, ASUS ROG Zephyrus G16 2026, HP Spectre x360 2026
