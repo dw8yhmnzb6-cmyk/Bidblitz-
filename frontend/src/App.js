@@ -333,8 +333,8 @@ function AppContent() {
       
       <main className="flex-grow">
         <Routes>
-          {/* Startseite = Auctions mit allen Funktionen (Filter, Badges, Grid) */}
-          <Route path="/" element={<Auctions />} />
+          {/* Startseite = Super-App Dashboard */}
+          <Route path="/" element={<Navigate to="/super-app" replace />} />
           <Route path="/auctions" element={<Auctions />} />
           <Route path="/auctions/:id" element={<AuctionDetail />} />
           <Route path="/mystery-box/:id" element={<MysteryBoxDetail />} />
