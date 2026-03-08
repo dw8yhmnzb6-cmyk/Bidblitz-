@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🧱 Block Breaker</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      padding: 20px;
+    }
+    h1 { margin-bottom: 10px; }
+    .stats {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    .stats span { color: #f59e0b; font-weight: bold; }
+    #canvas {
+      border: 3px solid #6366f1;
+      border-radius: 10px;
+      background: #111827;
+      touch-action: none;
+    }
+    #message {
+      margin-top: 20px;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      display: none;
+    }
+    .win { background: #10b981; }
+    .lose { background: #ef4444; }
+    button {
+      margin-top: 15px;
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #8b5cf6;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background: #a78bfa; }
+    p { margin-top: 10px; color: #94a3b8; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h1>🧱 Block Breaker</h1>
+  <div class="stats">
+    <div>Score: <span id="score">0</span></div>
+    <div>Lives: <span id="lives">3</span></div>
+  </div>
+  
+  <canvas id="canvas" width="350" height="400"></canvas>
+  
+  <div id="message"></div>
+  <button onclick="startGame()">▶️ Start</button>
+  <p>← → oder Touch zum Bewegen</p>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const message = document.getElementById('message');
+    
+    // Game objects
+    let paddle = { x: 150, y: 370, w: 80, h: 12 };
+    let ball = { x: 175, y: 300, dx: 3, dy: -3, r: 8 };
+    let blocks = [];
+    let score = 0;
+    let lives = 3;
+    let gameRunning = false;
+    let animFrame;
+    
+    const colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6'];
+    
+    function createBlocks() {
+      blocks = [];
+      for (let row = 0; row < 5; row++) {
+        for (let col = 0; col < 7; col++) {
+          blocks.push({
+            x: col * 48 + 8,
+            y: row * 25 + 30,
+            w: 44,
+            h: 20,
+            color: colors[row],
+            alive: true
+          });
+        }
+      }
+    }
+    
+    function startGame() {
+      score = 0;
+      lives = 3;
+      paddle.x = 135;
+      ball = { x: 175, y: 300, dx: 3, dy: -3, r: 8 };
+      document.getElementById('score').textContent = '0';
+      document.getElementById('lives').textContent = '3';
+      message.style.display = 'none';
+      createBlocks();
+      gameRunning = true;
+      if (animFrame) cancelAnimationFrame(animFrame);
+      gameLoop();
+    }
+    
+    function gameLoop() {
+      if (!gameRunning) return;
+      
+      update();
+      draw();
+      animFrame = requestAnimationFrame(gameLoop);
+    }
+    
+    function update() {
+      // Move ball
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+      
+      // Wall collision
+      if (ball.x <= ball.r || ball.x >= canvas.width - ball.r) ball.dx *= -1;
+      if (ball.y <= ball.r) ball.dy *= -1;
+      
+      // Bottom - lose life
+      if (ball.y >= canvas.height - ball.r) {
+        lives--;
+        document.getElementById('lives').textContent = lives;
+        if (lives <= 0) {
+          endGame(false);
+        } else {
+          ball = { x: paddle.x + 40, y: 300, dx: 3, dy: -3, r: 8 };
+        }
+      }
+      
+      // Paddle collision
+      if (
+        ball.y + ball.r >= paddle.y &&
+        ball.x >= paddle.x &&
+        ball.x <= paddle.x + paddle.w
+      ) {
+        ball.dy = -Math.abs(ball.dy);
+        // Add angle based on hit position
+        const hitPos = (ball.x - paddle.x) / paddle.w;
+        ball.dx = (hitPos - 0.5) * 8;
+      }
+      
+      // Block collision
+      for (let block of blocks) {
+        if (!block.alive) continue;
+        if (
+          ball.x >= block.x &&
+          ball.x <= block.x + block.w &&
+          ball.y >= block.y &&
+          ball.y <= block.y + block.h
+        ) {
+          block.alive = false;
+          ball.dy *= -1;
+          score += 10;
+          document.getElementById('score').textContent = score;
+          
+          // Check win
+          if (blocks.every(b => !b.alive)) {
+            endGame(true);
+          }
+        }
+      }
+    }
+    
+    function draw() {
+      // Clear
+      ctx.fillStyle = '#111827';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw blocks
+      for (let block of blocks) {
+        if (!block.alive) continue;
+        ctx.fillStyle = block.color;
+        ctx.fillRect(block.x, block.y, block.w, block.h);
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(block.x, block.y, block.w, block.h);
+      }
+      
+      // Draw paddle
+      ctx.fillStyle = '#6366f1';
+      ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+      
+      // Draw ball
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    function endGame(won) {
+      gameRunning = false;
+      cancelAnimationFrame(animFrame);
+      
+      message.textContent = won 
+        ? `🏆 Gewonnen! Score: ${score} | +${Math.floor(score/5)} Coins`
+        : `💀 Game Over! Score: ${score}`;
+      message.className = won ? 'win' : 'lose';
+      message.style.display = 'block';
+    }
+    
+    // Controls
+    document.addEventListener('keydown', e => {
+      if (!gameRunning) return;
+      if (e.key === 'ArrowLeft') paddle.x = Math.max(0, paddle.x - 20);
+      if (e.key === 'ArrowRight') paddle.x = Math.min(canvas.width - paddle.w, paddle.x + 20);
+    });
+    
+    canvas.addEventListener('touchmove', e => {
+      if (!gameRunning) return;
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      paddle.x = e.touches[0].clientX - rect.left - paddle.w / 2;
+      paddle.x = Math.max(0, Math.min(canvas.width - paddle.w, paddle.x));
+    });
+    
+    canvas.addEventListener('mousemove', e => {
+      if (!gameRunning) return;
+      const rect = canvas.getBoundingClientRect();
+      paddle.x = e.clientX - rect.left - paddle.w / 2;
+      paddle.x = Math.max(0, Math.min(canvas.width - paddle.w, paddle.x));
+    });
+    
+    // Initial draw
+    createBlocks();
+    draw();
+  </script>
+</body>
+</html>

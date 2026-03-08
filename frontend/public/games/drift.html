@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏎 Drift Racing</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: linear-gradient(180deg, #0f172a, #1e293b);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    .header {
+      width: 100%;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.3);
+    }
+    .stat { font-size: 18px; font-weight: bold; }
+    .stat span { color: #f59e0b; }
+    #game {
+      flex: 1;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      overflow: hidden;
+      background: #374151;
+    }
+    .road {
+      position: absolute;
+      width: 60%;
+      left: 20%;
+      height: 100%;
+      background: #1f2937;
+      border-left: 5px dashed #fbbf24;
+      border-right: 5px dashed #fbbf24;
+    }
+    .car {
+      position: absolute;
+      bottom: 80px;
+      width: 50px;
+      height: 80px;
+      font-size: 50px;
+      text-align: center;
+      transition: left 0.1s;
+    }
+    .obstacle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      font-size: 40px;
+      text-align: center;
+    }
+    .controls {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+      background: rgba(0,0,0,0.5);
+    }
+    .controls button {
+      flex: 1;
+      padding: 20px;
+      font-size: 24px;
+      border: none;
+      border-radius: 15px;
+      background: #6366f1;
+      color: white;
+      cursor: pointer;
+    }
+    .controls button:active { background: #818cf8; transform: scale(0.95); }
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    #overlay h2 { font-size: 28px; }
+    #overlay p { font-size: 20px; color: #10b981; }
+    #overlay button {
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #8b5cf6;
+      color: white;
+      cursor: pointer;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="stat">Score: <span id="score">0</span></div>
+    <div class="stat">Speed: <span id="speed">1</span>x</div>
+    <div class="stat">Best: <span id="best">0</span></div>
+  </div>
+  
+  <div id="game">
+    <div class="road"></div>
+    <div class="car" id="car">🚗</div>
+    <div id="overlay">
+      <h2>🏎 Drift Racing</h2>
+      <p>Weiche den Hindernissen aus!</p>
+      <button onclick="startGame()">▶️ Start</button>
+    </div>
+  </div>
+  
+  <div class="controls">
+    <button onmousedown="moveLeft()" ontouchstart="moveLeft()">⬅️ Links</button>
+    <button onmousedown="moveRight()" ontouchstart="moveRight()">➡️ Rechts</button>
+  </div>
+
+  <script>
+    const game = document.getElementById('game');
+    const car = document.getElementById('car');
+    const overlay = document.getElementById('overlay');
+    const scoreEl = document.getElementById('score');
+    const speedEl = document.getElementById('speed');
+    const bestEl = document.getElementById('best');
+    
+    let carX = 50;
+    let score = 0;
+    let speed = 1;
+    let obstacles = [];
+    let gameRunning = false;
+    let animFrame;
+    let lastObstacle = 0;
+    let best = localStorage.getItem('driftBest') || 0;
+    
+    bestEl.textContent = best;
+    
+    const obstacleTypes = ['🚧', '🛢️', '🪨', '🚗', '🚕'];
+    
+    function startGame() {
+      score = 0;
+      speed = 1;
+      carX = 50;
+      obstacles.forEach(o => o.el.remove());
+      obstacles = [];
+      gameRunning = true;
+      overlay.classList.add('hidden');
+      car.style.left = carX + '%';
+      lastObstacle = Date.now();
+      scoreEl.textContent = '0';
+      speedEl.textContent = '1';
+      animFrame = requestAnimationFrame(gameLoop);
+    }
+    
+    function moveLeft() {
+      if (!gameRunning) return;
+      carX = Math.max(22, carX - 8);
+      car.style.left = carX + '%';
+    }
+    
+    function moveRight() {
+      if (!gameRunning) return;
+      carX = Math.min(72, carX + 8);
+      car.style.left = carX + '%';
+    }
+    
+    function spawnObstacle() {
+      const el = document.createElement('div');
+      el.className = 'obstacle';
+      el.textContent = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+      el.style.top = '-50px';
+      el.style.left = (22 + Math.random() * 50) + '%';
+      game.appendChild(el);
+      obstacles.push({ el, y: -50 });
+    }
+    
+    function gameLoop() {
+      if (!gameRunning) return;
+      
+      // Spawn obstacles
+      if (Date.now() - lastObstacle > 1500 / speed) {
+        spawnObstacle();
+        lastObstacle = Date.now();
+      }
+      
+      // Move obstacles
+      const gameHeight = game.clientHeight;
+      const carRect = car.getBoundingClientRect();
+      
+      obstacles.forEach((obs, i) => {
+        obs.y += 3 * speed;
+        obs.el.style.top = obs.y + 'px';
+        
+        // Check collision
+        const obsRect = obs.el.getBoundingClientRect();
+        if (
+          obsRect.left < carRect.right - 10 &&
+          obsRect.right > carRect.left + 10 &&
+          obsRect.top < carRect.bottom - 10 &&
+          obsRect.bottom > carRect.top + 10
+        ) {
+          endGame();
+          return;
+        }
+        
+        // Remove if off screen
+        if (obs.y > gameHeight) {
+          obs.el.remove();
+          obstacles.splice(i, 1);
+          score += 10;
+          scoreEl.textContent = score;
+          
+          // Increase speed
+          if (score % 100 === 0) {
+            speed = Math.min(3, speed + 0.2);
+            speedEl.textContent = speed.toFixed(1);
+          }
+        }
+      });
+      
+      animFrame = requestAnimationFrame(gameLoop);
+    }
+    
+    function endGame() {
+      gameRunning = false;
+      cancelAnimationFrame(animFrame);
+      
+      if (score > best) {
+        best = score;
+        localStorage.setItem('driftBest', best);
+        bestEl.textContent = best;
+      }
+      
+      overlay.innerHTML = `
+        <h2>${score >= 100 ? '🏆 Super!' : '💥 Crash!'}</h2>
+        <p>Score: ${score}</p>
+        <p style="color: #fbbf24">+${Math.floor(score/10)} Coins</p>
+        <button onclick="startGame()">🔄 Nochmal</button>
+      `;
+      overlay.classList.remove('hidden');
+    }
+    
+    // Keyboard
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') moveLeft();
+      if (e.key === 'ArrowRight') moveRight();
+      if (e.key === ' ' && !gameRunning) startGame();
+    });
+  </script>
+</body>
+</html>
