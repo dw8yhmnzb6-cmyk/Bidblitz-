@@ -190,6 +190,8 @@ import NewWallet from "./pages/Wallet";
 import NewAuctions from "./pages/Auctions";
 import Ride from "./pages/Ride";
 import NewProfile from "./pages/Profile";
+import TaxiRide from "./pages/TaxiRide";
+import BikeRental from "./pages/BikeRental";
 import LiveAuction from "./pages/LiveAuction";
 import Friends from "./pages/Friends";
 import LiveEvents from "./pages/LiveEvents";
