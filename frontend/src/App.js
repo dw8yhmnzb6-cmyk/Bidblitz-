@@ -185,11 +185,11 @@ import AppFavoriteRoutes from "./pages/AppFavoriteRoutes";
 import AppDriverRatings from "./pages/AppDriverRatings";
 
 // New Clean Pages
-import Dashboard from "./pages/Dashboard";
-import Wallet from "./pages/Wallet";
-import Auctions from "./pages/Auctions";
+import NewDashboard from "./pages/Dashboard";
+import NewWallet from "./pages/Wallet";
+import NewAuctions from "./pages/Auctions";
 import Ride from "./pages/Ride";
-import Profile from "./pages/Profile";
+import NewProfile from "./pages/Profile";
 import LiveAuction from "./pages/LiveAuction";
 import Friends from "./pages/Friends";
 import LiveEvents from "./pages/LiveEvents";
