@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BidBlitz 3D</title>
+<style>
+body{margin:0;overflow:hidden;background:#0f0a1e}
+#c{display:block}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
+
+<script>
+
+let scene=new THREE.Scene()
+let camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000)
+let renderer=new THREE.WebGLRenderer({canvas:document.getElementById("c")})
+renderer.setSize(window.innerWidth,window.innerHeight)
+
+let geo=new THREE.BoxGeometry()
+let mat=new THREE.MeshBasicMaterial({color:0x8b5cf6})
+let cube=new THREE.Mesh(geo,mat)
+
+scene.add(cube)
+
+camera.position.z=5
+
+function animate(){
+requestAnimationFrame(animate)
+cube.rotation.x+=0.01
+cube.rotation.y+=0.01
+renderer.render(scene,camera)
+}
+
+animate()
+
+window.addEventListener("resize",()=>{
+camera.aspect=window.innerWidth/window.innerHeight
+camera.updateProjectionMatrix()
+renderer.setSize(window.innerWidth,window.innerHeight)
+})
+
+</script>
+
+</body>
+</html>

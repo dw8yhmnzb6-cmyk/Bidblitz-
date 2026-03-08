@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>BidBlitz 3D Game</title>
+<style>
+body{margin:0;background:#0f0a1e;font-family:Arial;color:#fff}
+#ui{position:fixed;top:20px;left:20px;z-index:100}
+#ui h1{margin:0 0 10px}
+#score{background:rgba(139,92,246,0.8);padding:10px 20px;border-radius:10px;margin-bottom:10px}
+#grid{position:fixed;bottom:20px;left:20px;z-index:100}
+#g{display:grid;grid-template-columns:repeat(6,50px);gap:4px}
+.c{width:50px;height:50px;background:#8b5cf6;display:flex;align-items:center;justify-content:center;font-size:22px;border-radius:8px;cursor:pointer;transition:all 0.2s}
+.c:hover{transform:scale(1.1)}
+#c{display:block}
+</style>
+</head>
+<body>
+
+<div id="ui">
+<h1>🎮 BidBlitz 3D</h1>
+<div id="score">Score: <span id="pts">0</span></div>
+</div>
+
+<div id="grid">
+<div id="g"></div>
+</div>
+
+<canvas id="c"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
+
+<script>
+
+// Match Game
+let e=["🍎","🌸","🍀","🍋"],g=document.getElementById("g"),score=0
+for(let i=0;i<36;i++){
+let d=document.createElement("div")
+d.className="c"
+d.innerText=e[Math.random()*4|0]
+d.onclick=()=>{
+d.style.background="gold"
+score+=10
+document.getElementById("pts").innerText=score
+}
+g.appendChild(d)
+}
+
+// 3D Scene
+let scene=new THREE.Scene()
+let camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000)
+let renderer=new THREE.WebGLRenderer({canvas:document.getElementById("c"),alpha:true})
+renderer.setSize(window.innerWidth,window.innerHeight)
+renderer.setClearColor(0x0f0a1e)
+
+// Multiple cubes
+let cubes=[]
+let colors=[0x8b5cf6,0xec4899,0x22c55e,0xf59e0b,0x3b82f6]
+
+for(let i=0;i<5;i++){
+let geo=new THREE.BoxGeometry()
+let mat=new THREE.MeshBasicMaterial({color:colors[i],wireframe:true})
+let cube=new THREE.Mesh(geo,mat)
+cube.position.x=(i-2)*2
+cubes.push(cube)
+scene.add(cube)
+}
+
+camera.position.z=8
+
+function animate(){
+requestAnimationFrame(animate)
+cubes.forEach((c,i)=>{
+c.rotation.x+=0.01+i*0.002
+c.rotation.y+=0.01+i*0.002
+})
+renderer.render(scene,camera)
+}
+
+animate()
+
+window.addEventListener("resize",()=>{
+camera.aspect=window.innerWidth/window.innerHeight
+camera.updateProjectionMatrix()
+renderer.setSize(window.innerWidth,window.innerHeight)
+})
+
+</script>
+
+</body>
+</html>
