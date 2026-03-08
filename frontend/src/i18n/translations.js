@@ -410,6 +410,28 @@ export const translations = {
       activeMiners: "Aktive Miner",
       avgCoins: "Durchschn. Coins",
       userStats: "Benutzer-Statistiken"
+    },
+    rides: {
+      title: "Fahrdienste",
+      taxi: "Taxi",
+      scooter: "E-Scooter",
+      bike: "E-Bike",
+      from: "ab",
+      taxiDesc: "Schnell & bequem",
+      scooterDesc: "Flexibel & günstig",
+      bikeDesc: "Umweltfreundlich",
+      available: "Verfügbar",
+      fastBooking: "Schnelle Buchung",
+      payWithCoins: "Mit Coins bezahlen"
+    },
+    common: {
+      viewAll: "Alle anzeigen",
+      loading: "Lädt...",
+      error: "Fehler",
+      success: "Erfolg",
+      save: "Speichern",
+      cancel: "Abbrechen",
+      back: "Zurück"
     }
   },
   en: {
