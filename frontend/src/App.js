@@ -184,12 +184,8 @@ import AppRideTracking from "./pages/AppRideTracking";
 import AppFavoriteRoutes from "./pages/AppFavoriteRoutes";
 import AppDriverRatings from "./pages/AppDriverRatings";
 
-// New Clean Pages
-import NewDashboard from "./pages/Dashboard";
-import NewWallet from "./pages/Wallet";
-import NewAuctions from "./pages/Auctions";
+// New Clean Pages - Consolidated
 import Ride from "./pages/Ride";
-import NewProfile from "./pages/Profile";
 import TaxiRide from "./pages/TaxiRide";
 import BikeRental from "./pages/BikeRental";
 import LiveAuction from "./pages/LiveAuction";
@@ -202,21 +198,9 @@ import Assistant from "./pages/Assistant";
 import Missions from "./pages/Missions";
 import BBZWallet from "./pages/BBZWallet";
 
-// New BidBlitz Pages
+// BidBlitz Pages - Keep essential ones
 import BidBlitzApp from "./pages/BidBlitzApp";
-import BidBlitzGames from "./pages/BidBlitzGames";
-import GamingHome from "./pages/GamingHome";
-import GameLobby from "./pages/GameLobby";
 import CandyGame from "./pages/CandyGame";
-import BuildGame from "./pages/BuildGame";
-import RewardSystem from "./pages/RewardSystem";
-import RideModule from "./pages/RideModule";
-import MiningPage from "./pages/MiningPage";
-import WalletPage from "./pages/WalletPage";
-import ProfilePage from "./pages/ProfilePage";
-import AdminPanelFull from "./pages/AdminPanelFull";
-import SuperAppHome from "./pages/SuperAppHome";
-import BidBlitzHome from "./pages/BidBlitzHome";
 
 // New Feature Components
 import Watchlist from "./components/Watchlist";
