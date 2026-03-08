@@ -26,6 +26,8 @@ const TABS = [
   { id: 'overview', label: 'Übersicht', icon: BarChart3 },
   { id: 'users', label: 'Benutzer', icon: Users },
   { id: 'auctions', label: 'Auktionen', icon: Gavel },
+  { id: 'games', label: 'Spiele', icon: Gamepad2 },
+  { id: 'mobility', label: 'Mobility', icon: Car },
   { id: 'vouchers', label: 'Gutscheine', icon: Ticket },
   { id: 'finance', label: 'Finanzen', icon: DollarSign },
   { id: 'marketing', label: 'Marketing', icon: Zap },
