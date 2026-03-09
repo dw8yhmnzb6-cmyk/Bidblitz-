@@ -1154,6 +1154,8 @@ function AppContent() {
           <Route path="/mining-dashboard" element={<MinerDashboard />} />
           <Route path="/miner-market" element={<MinerMarket />} />
           <Route path="/miner-markt" element={<MinerMarket />} />
+          <Route path="/simple" element={<BidBlitzSimple />} />
+          <Route path="/bidblitz-simple" element={<BidBlitzSimple />} />
           
           {/* Super App Minimal & New Pages - Nur mit Login */}
           <Route path="/super-app" element={
