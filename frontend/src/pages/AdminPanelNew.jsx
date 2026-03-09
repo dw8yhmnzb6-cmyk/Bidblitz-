@@ -238,15 +238,11 @@ export default function AdminPanelNew() {
   };
 
   const handleTabClick = (tabId) => {
-    if (tabId === 'overview') {
-      setActiveTab('overview');
-    } else {
-      navigate(`/admin?tab=${tabId}`);
-    }
+    setActiveTab(tabId);
   };
 
   const handleItemClick = (tab) => {
-    navigate(`/admin?tab=${tab}`);
+    setActiveTab(tab);
   };
 
   // Filter categories based on search
