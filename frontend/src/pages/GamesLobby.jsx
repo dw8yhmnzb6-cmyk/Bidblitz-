@@ -73,6 +73,7 @@ const styles = {
     right: 0,
     bottom: 0,
     overflowY: 'auto',
+    zIndex: 100,
   },
   header: {
     background: '#020617',
