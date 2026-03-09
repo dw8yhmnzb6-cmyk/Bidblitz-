@@ -84,3 +84,5 @@ Build a "Super App" called BidBlitz that consolidates auctions, games, mobility 
   - Wallet Balance display connected to backend API
   - Win Alert animation when earning coins
   - Bottom navigation bar (Home, Games, Wallet, Profile)
+- **[FIXED] Admin Panel Users/Auktionen Tabs**: Fixed critical bug where Benutzer and Auktionen tabs showed no data. Root cause: AdminUsers component was making its own API requests that got blocked by browser connection limits. Solution: AdminUsers now uses `propUsers` from Admin.js when available.
+- **[FIXED] Backend /api/admin/stats/detailed**: Fixed datetime comparison TypeError by using naive datetime instead of timezone-aware datetime.
