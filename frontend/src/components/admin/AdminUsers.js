@@ -24,12 +24,20 @@ export default function AdminUsers({
 
   useEffect(() => {
     mounted.current = true;
-    loadUsers();
+    
+    // Use propUsers if available (passed from Admin.js)
+    if (propUsers && propUsers.length > 0) {
+      console.log('AdminUsers: Using propUsers', propUsers.length);
+      setUsers(propUsers);
+      setLoading(false);
+    } else {
+      loadUsers();
+    }
     
     return () => {
       mounted.current = false;
     };
-  }, []);
+  }, [propUsers]);
 
   const loadUsers = async () => {
     console.log('AdminUsers: Starting to load users...');
