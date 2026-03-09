@@ -79,7 +79,7 @@ async def get_admin_stats(admin: dict = Depends(get_admin_user)):
 @router.get("/stats/detailed")
 async def get_detailed_stats(admin: dict = Depends(get_admin_user)):
     """Get detailed statistics for charts and reports."""
-    now = datetime.now(timezone.utc)
+    now = datetime.utcnow()  # Use naive datetime for comparison
     
     # Revenue and transactions - use transactions collection
     payments = await db.transactions.find({"status": "completed"}, {"_id": 0}).to_list(1000)
