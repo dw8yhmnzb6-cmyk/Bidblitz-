@@ -290,8 +290,14 @@ export default function MinerDashboard() {
   const upgradeMiner = async (minerId, currentLevel) => {
     const cost = currentLevel * 50;
     
-    // Frontend validation
-    if (coins < cost) {
+    // Prevent multiple clicks
+    if (upgrading) {
+      showMessage('⏳ Bitte warten...', 'error');
+      return;
+    }
+    
+    // Strict frontend validation
+    if (typeof coins !== 'number' || coins < cost) {
       showMessage(`❌ Nicht genug Coins! Du brauchst ${cost} Coins, du hast nur ${coins}.`, 'error');
       return;
     }
@@ -299,6 +305,8 @@ export default function MinerDashboard() {
     if (!window.confirm(`Miner auf Level ${currentLevel + 1} upgraden?\n\nKosten: ${cost} Coins\nDein Guthaben: ${coins} Coins`)) {
       return;
     }
+    
+    setUpgrading(true);
     
     try {
       const res = await axios.post(`${API}/bbz/miners/upgrade`, {
@@ -310,15 +318,18 @@ export default function MinerDashboard() {
       if (res.data.success && res.data.new_balance !== undefined) {
         setCoins(res.data.new_balance);
         showMessage(`✅ Miner upgraded! -${res.data.cost} Coins. Neues Guthaben: ${res.data.new_balance}`, 'success');
-        fetchData(); // Refresh miner data
+        await fetchData(); // Refresh all data
       } else {
-        showMessage('Upgrade fehlgeschlagen - Server Fehler', 'error');
+        showMessage('❌ Upgrade fehlgeschlagen - Server Fehler', 'error');
+        await fetchData(); // Refresh to sync
       }
     } catch (error) {
       const errorMsg = error.response?.data?.detail || 'Upgrade fehlgeschlagen';
       showMessage(`❌ ${errorMsg}`, 'error');
-      // Refresh coins to ensure UI is in sync
-      fetchData();
+      // Refresh data to ensure UI is in sync
+      await fetchData();
+    } finally {
+      setUpgrading(false);
     }
   };
   
