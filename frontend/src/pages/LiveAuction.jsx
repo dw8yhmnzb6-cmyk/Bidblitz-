@@ -1,288 +1,453 @@
 /**
- * BidBlitz Live Auction
- * Real-time bidding with countdown timer
+ * BidBlitz Live Auction - Mit Admin Panel
+ * Gebühr: 0.50€ pro Gebot
+ * Preiserhöhung: 0.01€ pro Gebot
  */
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import BottomNav from '../components/BottomNav';
 
 const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
+const BID_COST = 0.50; // €0.50 pro Gebot
+
 export default function LiveAuction() {
+  const navigate = useNavigate();
   const [coins, setCoins] = useState(0);
-  const [currentBid, setCurrentBid] = useState(10);
-  const [timeLeft, setTimeLeft] = useState(20);
-  const [isActive, setIsActive] = useState(true);
-  const [winner, setWinner] = useState(null);
-  const [bidHistory, setBidHistory] = useState([]);
-  const [username, setUsername] = useState('Du');
-  const timerRef = useRef(null);
-
-  // Sample auction items
-  const [currentItem, setCurrentItem] = useState({
-    id: 1,
-    name: 'AirPods Pro',
-    image: '🎧',
-    startPrice: 10,
-    description: 'Apple AirPods Pro 2. Generation'
-  });
-
-  const auctionItems = [
-    { id: 1, name: 'AirPods Pro', image: '🎧', startPrice: 10, description: 'Apple AirPods Pro 2. Generation' },
-    { id: 2, name: 'PlayStation 5', image: '🎮', startPrice: 50, description: 'Sony PlayStation 5 Digital Edition' },
-    { id: 3, name: 'iPhone 15', image: '📱', startPrice: 100, description: 'Apple iPhone 15 128GB' },
-    { id: 4, name: 'MacBook Air', image: '💻', startPrice: 200, description: 'Apple MacBook Air M2' },
-    { id: 5, name: '€500 Gutschein', image: '🎁', startPrice: 25, description: 'Amazon Geschenkgutschein' },
-  ];
-
+  
+  // Auction State
+  const [productName, setProductName] = useState('iPhone 15 Pro');
+  const [productValue, setProductValue] = useState(999);
+  const [price, setPrice] = useState(0.00);
+  const [timer, setTimer] = useState(10);
+  const [bids, setBids] = useState(0);
+  const [minRevenue, setMinRevenue] = useState(200);
+  const [auctionEnded, setAuctionEnded] = useState(false);
+  const [lastBidder, setLastBidder] = useState('');
+  
+  // Admin inputs
+  const [adminProduct, setAdminProduct] = useState('');
+  const [adminValue, setAdminValue] = useState('');
+  const [adminMinRevenue, setAdminMinRevenue] = useState('');
+  
+  const userId = localStorage.getItem('userId') || 'guest_' + Math.random().toString(36).substr(2, 9);
+  const timerRef = useRef(timer);
+  
   useEffect(() => {
+    if (!localStorage.getItem('userId')) localStorage.setItem('userId', userId);
     fetchCoins();
-    startTimer();
+    
+    const header = document.querySelector('header');
+    if (header) header.style.display = 'none';
+    
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      const header = document.querySelector('header');
+      if (header) header.style.display = '';
     };
   }, []);
-
+  
+  // Timer countdown
   useEffect(() => {
-    if (timeLeft <= 0 && isActive) {
-      endAuction();
-    }
-  }, [timeLeft]);
-
-  const fetchCoins = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await axios.get(`${API}/app/wallet/balance`, { headers });
-      setCoins(res.data.coins || 0);
-      
-      const user = localStorage.getItem('user');
-      if (user) {
-        const userData = JSON.parse(user);
-        setUsername(userData.username || userData.name || 'Du');
-      }
-    } catch (error) {
-      console.log('Coins error');
-    }
-  };
-
-  const startTimer = () => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    
-    timerRef.current = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev <= 1) {
-          return 0;
+    const interval = setInterval(() => {
+      setTimer(prev => {
+        if (prev <= 0) {
+          // Check if auction should end
+          const revenue = bids * BID_COST;
+          if (revenue >= minRevenue) {
+            setAuctionEnded(true);
+            return 0;
+          } else {
+            // Extend timer
+            return 5;
+          }
         }
         return prev - 1;
       });
     }, 1000);
-  };
-
-  const placeBid = async () => {
-    if (!isActive || coins < 1) return;
-
-    const newBid = currentBid + 1;
-    setCurrentBid(newBid);
-    setTimeLeft(20); // Reset timer
     
-    // Add to bid history
-    const newBidEntry = {
-      id: Date.now(),
-      user: username,
-      amount: newBid,
-      time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-    };
-    setBidHistory(prev => [newBidEntry, ...prev].slice(0, 10));
-
-    // Deduct 1 coin for bidding
+    return () => clearInterval(interval);
+  }, [bids, minRevenue]);
+  
+  const fetchCoins = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      await axios.post(`${API}/app/auction/bid`, {
-        item_id: currentItem.id,
-        bid_amount: newBid
-      }, { headers });
-      setCoins(prev => prev - 1);
-    } catch (error) {
-      setCoins(prev => Math.max(0, prev - 1));
+      const res = await axios.get(`${API}/bbz/coins/${userId}`);
+      setCoins(res.data.coins || 0);
+    } catch {
+      setCoins(0);
     }
   };
-
-  const endAuction = () => {
-    setIsActive(false);
-    if (timerRef.current) clearInterval(timerRef.current);
+  
+  const bid = async () => {
+    if (auctionEnded) return;
     
-    // Last bidder wins
-    const lastBidder = bidHistory[0]?.user || 'Niemand';
-    setWinner({
-      user: lastBidder,
-      amount: currentBid,
-      item: currentItem.name
-    });
+    // Spend 1 coin (equivalent to 0.50€)
+    if (coins > 0) {
+      try {
+        const res = await axios.post(`${API}/bbz/coins/spend`, {
+          user_id: userId,
+          amount: 1,
+          source: 'live_auction_bid'
+        });
+        setCoins(res.data.new_balance);
+      } catch {
+        setCoins(prev => Math.max(0, prev - 1));
+      }
+    } else {
+      alert(`Charge €${BID_COST.toFixed(2)} for bid - Keine Coins!`);
+      return;
+    }
+    
+    // Update auction
+    setBids(prev => prev + 1);
+    setPrice(prev => prev + 0.01);
+    setTimer(10);
+    setLastBidder(userId.slice(0, 8));
   };
-
-  const startNewAuction = () => {
-    // Pick random item
-    const randomItem = auctionItems[Math.floor(Math.random() * auctionItems.length)];
-    setCurrentItem(randomItem);
-    setCurrentBid(randomItem.startPrice);
-    setTimeLeft(20);
-    setIsActive(true);
-    setWinner(null);
-    setBidHistory([]);
-    startTimer();
+  
+  const createAuction = () => {
+    if (!adminProduct) {
+      alert('Bitte Produktname eingeben');
+      return;
+    }
+    
+    setProductName(adminProduct);
+    setProductValue(parseFloat(adminValue) || 0);
+    setMinRevenue(parseFloat(adminMinRevenue) || 200);
+    setPrice(0);
+    setBids(0);
+    setTimer(10);
+    setAuctionEnded(false);
+    setLastBidder('');
+    
+    // Clear inputs
+    setAdminProduct('');
+    setAdminValue('');
+    setAdminMinRevenue('');
   };
-
-  const getTimeColor = () => {
-    if (timeLeft <= 5) return 'text-red-500';
-    if (timeLeft <= 10) return 'text-amber-500';
-    return 'text-green-500';
-  };
-
+  
+  const revenue = bids * BID_COST;
+  const profit = revenue - (auctionEnded ? price : 0);
+  
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0b0e24] via-[#0f1332] to-[#0b0e24] text-white pb-24">
-      {/* Background Effects */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 -left-20 w-60 h-60 bg-red-500/10 rounded-full blur-[80px] animate-pulse"></div>
-        <div className="absolute bottom-40 -right-20 w-60 h-60 bg-purple-500/10 rounded-full blur-[80px] animate-pulse"></div>
-      </div>
-
-      <div className="relative p-5">
+    <>
+      <style>{`
+        .auction-page {
+          font-family: Arial, sans-serif;
+          background: #0f172a;
+          color: white;
+          margin: 0;
+          min-height: 100vh;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          overflow-y: auto;
+          z-index: 999;
+        }
+        
+        .auction-header {
+          background: #020617;
+          padding: 20px;
+          font-size: 22px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .auction-header .back {
+          background: none;
+          border: none;
+          color: white;
+          font-size: 24px;
+          cursor: pointer;
+        }
+        
+        .wallet-badge {
+          background: #7c3aed;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 16px;
+        }
+        
+        .container {
+          padding: 20px;
+          max-width: 600px;
+          margin: 0 auto;
+        }
+        
+        .auction-card {
+          background: #1e293b;
+          padding: 25px;
+          border-radius: 15px;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+        
+        .auction-card h2 {
+          margin: 0 0 15px 0;
+          color: #a855f7;
+          font-size: 24px;
+        }
+        
+        .product-image {
+          width: 150px;
+          height: 150px;
+          background: linear-gradient(135deg, #a855f7, #6366f1);
+          border-radius: 15px;
+          margin: 0 auto 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 60px;
+        }
+        
+        .auction-price {
+          font-size: 42px;
+          font-weight: bold;
+          color: #22c55e;
+          margin: 15px 0;
+        }
+        
+        .auction-stats {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
+          margin: 20px 0;
+        }
+        
+        .stat-box {
+          background: #0f172a;
+          padding: 15px;
+          border-radius: 10px;
+        }
+        
+        .stat-label {
+          font-size: 12px;
+          color: #94a3b8;
+        }
+        
+        .stat-value {
+          font-size: 24px;
+          font-weight: bold;
+        }
+        
+        .stat-value.timer {
+          color: #fbbf24;
+        }
+        
+        .stat-value.timer.urgent {
+          color: #ef4444;
+          animation: pulse 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+        
+        .stat-value.bids {
+          color: #3b82f6;
+        }
+        
+        .stat-value.revenue {
+          color: #22c55e;
+        }
+        
+        .bid-btn {
+          background: linear-gradient(135deg, #a855f7, #7c3aed);
+          border: none;
+          padding: 18px 50px;
+          color: white;
+          border-radius: 15px;
+          font-size: 20px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: 0.3s;
+          width: 100%;
+          margin-top: 15px;
+        }
+        
+        .bid-btn:hover:not(:disabled) {
+          transform: scale(1.02);
+          box-shadow: 0 5px 25px rgba(168, 85, 247, 0.5);
+        }
+        
+        .bid-btn:disabled {
+          background: #4b5563;
+          cursor: not-allowed;
+        }
+        
+        .bid-cost {
+          font-size: 14px;
+          color: #94a3b8;
+          margin-top: 10px;
+        }
+        
+        .last-bidder {
+          margin-top: 15px;
+          padding: 10px;
+          background: #0f172a;
+          border-radius: 10px;
+          font-size: 14px;
+        }
+        
+        .auction-ended {
+          background: linear-gradient(135deg, #22c55e, #10b981);
+          padding: 20px;
+          border-radius: 15px;
+          margin-top: 20px;
+        }
+        
+        .admin-card {
+          background: #1e293b;
+          padding: 20px;
+          border-radius: 15px;
+          margin-top: 20px;
+        }
+        
+        .admin-card h3 {
+          margin: 0 0 15px 0;
+          color: #fbbf24;
+        }
+        
+        .admin-input {
+          width: 100%;
+          padding: 12px;
+          margin: 8px 0;
+          border: none;
+          border-radius: 10px;
+          background: #0f172a;
+          color: white;
+          font-size: 16px;
+          box-sizing: border-box;
+        }
+        
+        .admin-input::placeholder {
+          color: #64748b;
+        }
+        
+        .admin-btn {
+          background: #fbbf24;
+          border: none;
+          padding: 12px 25px;
+          color: #0f172a;
+          border-radius: 10px;
+          font-size: 16px;
+          font-weight: bold;
+          cursor: pointer;
+          width: 100%;
+          margin-top: 10px;
+          transition: 0.3s;
+        }
+        
+        .admin-btn:hover {
+          background: #f59e0b;
+        }
+        
+        .product-value {
+          font-size: 14px;
+          color: #94a3b8;
+          margin-top: 5px;
+        }
+      `}</style>
+      
+      <div className="auction-page">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Link to="/games" className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-all">
-              <span className="text-lg">←</span>
-            </Link>
-            <div>
-              <h2 className="text-2xl font-bold flex items-center gap-2">
-                🔥 Live Auction
-              </h2>
-              <p className="text-xs text-slate-400">Biete und gewinne!</p>
+        <header className="auction-header">
+          <button className="back" onClick={() => navigate('/super-home')}>←</button>
+          <span>⚡ BidBlitz Live Auction</span>
+          <div className="wallet-badge">🪙 {coins}</div>
+        </header>
+        
+        <div className="container">
+          {/* Auction Card */}
+          <div className="auction-card">
+            <h2>{productName}</h2>
+            <p className="product-value">Wert: €{productValue.toFixed(2)}</p>
+            
+            <div className="product-image">📱</div>
+            
+            <div className="auction-price">€{price.toFixed(2)}</div>
+            
+            <div className="auction-stats">
+              <div className="stat-box">
+                <div className="stat-label">Timer</div>
+                <div className={`stat-value timer ${timer <= 3 ? 'urgent' : ''}`}>
+                  {timer}s
+                </div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">Gebote</div>
+                <div className="stat-value bids">{bids}</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">Umsatz</div>
+                <div className="stat-value revenue">€{revenue.toFixed(2)}</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-label">Min. Umsatz</div>
+                <div className="stat-value">€{minRevenue.toFixed(2)}</div>
+              </div>
             </div>
-          </div>
-          <div className="bg-amber-500/20 px-3 py-1.5 rounded-xl border border-amber-500/30">
-            <span className="text-amber-400 font-bold">{coins.toLocaleString()} 💰</span>
-          </div>
-        </div>
-
-        {/* Winner Modal */}
-        {winner && (
-          <div className="mb-6 bg-gradient-to-r from-emerald-500/20 to-green-500/10 p-5 rounded-2xl border border-emerald-500/30 text-center">
-            <span className="text-4xl mb-2 block">🎉</span>
-            <h3 className="text-xl font-bold text-emerald-400 mb-2">Auktion beendet!</h3>
-            <p className="text-lg">
-              <span className="font-bold text-white">{winner.user}</span> hat gewonnen!
-            </p>
-            <p className="text-sm text-slate-400 mt-1">
-              {winner.item} für <span className="text-amber-400 font-bold">{winner.amount} Coins</span>
-            </p>
-            <button
-              onClick={startNewAuction}
-              className="mt-4 px-6 py-3 bg-[#6c63ff] hover:bg-[#8b6dff] rounded-xl font-semibold transition-all"
-              data-testid="new-auction-btn"
+            
+            {lastBidder && (
+              <div className="last-bidder">
+                👤 Höchstbietender: <strong>{lastBidder}</strong>
+              </div>
+            )}
+            
+            <button 
+              className="bid-btn"
+              onClick={bid}
+              disabled={auctionEnded || coins === 0}
             >
-              🔄 Neue Auktion starten
+              {auctionEnded ? '⏰ Auktion beendet' : '🔥 BIETEN'}
             </button>
-          </div>
-        )}
-
-        {/* Current Item Card */}
-        <div className="bg-white/5 backdrop-blur-sm p-6 rounded-3xl border border-white/10 mb-6">
-          <div className="text-center mb-4">
-            <span className="text-6xl mb-3 block">{currentItem.image}</span>
-            <h3 className="text-2xl font-bold">{currentItem.name}</h3>
-            <p className="text-sm text-slate-400">{currentItem.description}</p>
-          </div>
-
-          {/* Current Bid */}
-          <div className="bg-black/30 rounded-2xl p-4 mb-4">
-            <p className="text-sm text-slate-400 mb-1">Aktuelles Gebot</p>
-            <p className="text-4xl font-bold text-amber-400" data-testid="current-bid">
-              {currentBid} <span className="text-xl">Coins</span>
+            
+            <p className="bid-cost">
+              Jedes Gebot kostet €{BID_COST.toFixed(2)} (1 Coin)
             </p>
-          </div>
-
-          {/* Timer */}
-          <div className="bg-black/30 rounded-2xl p-4 mb-4">
-            <p className="text-sm text-slate-400 mb-1">Verbleibende Zeit</p>
-            <p className={`text-4xl font-bold ${getTimeColor()} font-mono`} data-testid="timer">
-              {timeLeft} <span className="text-xl">Sek</span>
-            </p>
-            {timeLeft <= 5 && isActive && (
-              <p className="text-xs text-red-400 animate-pulse mt-1">⚠️ Schnell bieten!</p>
+            
+            {auctionEnded && (
+              <div className="auction-ended">
+                <h3>🎉 Auktion beendet!</h3>
+                <p>Gewinner: {lastBidder || 'Keiner'}</p>
+                <p>Endpreis: €{price.toFixed(2)}</p>
+                <p>Umsatz: €{revenue.toFixed(2)}</p>
+              </div>
             )}
           </div>
-
-          {/* Bid Button */}
-          {isActive && (
-            <button
-              onClick={placeBid}
-              disabled={coins < 1}
-              className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
-                coins < 1 
-                  ? 'bg-slate-600 cursor-not-allowed' 
-                  : 'bg-gradient-to-r from-[#6c63ff] to-[#8b6dff] hover:from-[#8b6dff] hover:to-[#a78bfa] active:scale-[0.98]'
-              }`}
-              data-testid="bid-btn"
-            >
-              {coins < 1 ? '💰 Keine Coins' : '🔥 Gebot +1 Coin'}
-            </button>
-          )}
-        </div>
-
-        {/* Bid History */}
-        <div className="bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold flex items-center gap-2">
-              <span>📜</span> Gebotsverlauf
-            </h3>
-            <span className="text-xs text-slate-400">{bidHistory.length} Gebote</span>
-          </div>
           
-          {bidHistory.length === 0 ? (
-            <p className="text-center text-slate-500 py-4">Noch keine Gebote</p>
-          ) : (
-            <div className="space-y-2 max-h-48 overflow-y-auto">
-              {bidHistory.map((bid, index) => (
-                <div 
-                  key={bid.id}
-                  className={`p-3 rounded-xl flex items-center justify-between ${
-                    index === 0 ? 'bg-[#6c63ff]/20 border border-[#6c63ff]/30' : 'bg-black/20'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    {index === 0 && <span>👑</span>}
-                    <span className={index === 0 ? 'font-bold' : ''}>{bid.user}</span>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-amber-400">{bid.amount} 💰</p>
-                    <p className="text-xs text-slate-500">{bid.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Other Auctions */}
-        <div className="mt-6 bg-white/5 backdrop-blur-sm p-5 rounded-2xl border border-white/10">
-          <h3 className="font-semibold mb-3">Weitere Auktionen</h3>
-          <div className="grid grid-cols-3 gap-2">
-            {auctionItems.filter(item => item.id !== currentItem.id).slice(0, 3).map(item => (
-              <div key={item.id} className="bg-black/20 p-3 rounded-xl text-center">
-                <span className="text-2xl">{item.image}</span>
-                <p className="text-xs mt-1 truncate">{item.name}</p>
-                <p className="text-xs text-amber-400">{item.startPrice}+</p>
-              </div>
-            ))}
+          {/* Admin Panel */}
+          <div className="admin-card">
+            <h3>⚙️ Admin Panel</h3>
+            <input 
+              className="admin-input"
+              placeholder="Produktname"
+              value={adminProduct}
+              onChange={(e) => setAdminProduct(e.target.value)}
+            />
+            <input 
+              className="admin-input"
+              placeholder="Produktwert €"
+              type="number"
+              value={adminValue}
+              onChange={(e) => setAdminValue(e.target.value)}
+            />
+            <input 
+              className="admin-input"
+              placeholder="Minimum Umsatz €"
+              type="number"
+              value={adminMinRevenue}
+              onChange={(e) => setAdminMinRevenue(e.target.value)}
+            />
+            <button className="admin-btn" onClick={createAuction}>
+              🚀 Auktion starten
+            </button>
           </div>
         </div>
       </div>
-
-      <BottomNav />
-    </div>
+    </>
   );
 }
