@@ -156,6 +156,7 @@ import PopupManager from "./components/PopupManager";
 // Mining Features
 import MinerDashboard from "./pages/MinerDashboard";
 import MinerMarket from "./pages/MinerMarket";
+import BidBlitzSimple from "./pages/BidBlitzSimple";
 
 // New Admin Panel with Grid Design
 import AdminPanelNew from "./pages/AdminPanelNew";
