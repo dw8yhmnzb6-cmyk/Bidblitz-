@@ -139,10 +139,25 @@ async def get_detailed_stats(admin: dict = Depends(get_admin_user)):
         day = now - timedelta(days=i)
         day_start = day.replace(hour=0, minute=0, second=0, microsecond=0)
         day_end = day_start + timedelta(days=1)
+        
+        def parse_user_date(created_at):
+            if not created_at:
+                return None
+            if isinstance(created_at, datetime):
+                # Make naive if it has timezone info
+                if created_at.tzinfo is not None:
+                    return created_at.replace(tzinfo=None)
+                return created_at
+            try:
+                dt = datetime.fromisoformat(str(created_at).replace("Z", "+00:00"))
+                return dt.replace(tzinfo=None)
+            except:
+                return None
+        
         new_users = sum(
             1 for u in users 
-            if u.get("created_at") and 
-            day_start <= (u.get("created_at") if isinstance(u.get("created_at"), datetime) else datetime.fromisoformat(str(u.get("created_at")).replace("Z", "+00:00")) if u.get("created_at") else datetime.min) < day_end
+            if parse_user_date(u.get("created_at")) and 
+            day_start <= parse_user_date(u.get("created_at")) < day_end
         )
         users_by_day.append({
             "date": day_start.strftime("%d.%m"),
