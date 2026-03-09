@@ -584,6 +584,8 @@ function AppContent() {
           <Route path="/coin-tap" element={<CoinTap />} />
           {/* Reaction Game */}
           <Route path="/reaction-game" element={<ReactionGame />} />
+          {/* Scratch Card */}
+          <Route path="/scratch-card" element={<ScratchCard />} />
           {/* Runner Game */}
           <Route path="/runner-game" element={<RunnerGame />} />
           {/* Puzzle Game */}
