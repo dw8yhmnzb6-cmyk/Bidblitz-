@@ -211,7 +211,6 @@ import SuperAppHome from "./pages/SuperAppHome";
 import Ride from "./pages/Ride";
 import TaxiRide from "./pages/TaxiRide";
 import BikeRental from "./pages/BikeRental";
-import LiveAuction from "./pages/LiveAuction";
 import Friends from "./pages/Friends";
 import LiveEvents from "./pages/LiveEvents";
 import Store from "./pages/Store";
