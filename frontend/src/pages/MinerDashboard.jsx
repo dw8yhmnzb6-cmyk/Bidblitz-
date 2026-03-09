@@ -525,6 +525,7 @@ export default function MinerDashboard() {
                         {miner.level < 10 && (
                           <button
                             onClick={() => upgradeMiner(miner.id, miner.level)}
+                            disabled={coins < miner.level * 50}
                             className={`mt-3 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                               coins >= miner.level * 50
                                 ? 'bg-purple-500 text-white hover:bg-purple-600'
