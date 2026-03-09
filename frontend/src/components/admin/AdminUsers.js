@@ -2,9 +2,13 @@
 import { Edit, Save, X, Ban, CheckCircle, Crown, Trophy, Plus, Zap, DollarSign, Users, Mail } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const API = process.env.REACT_APP_BACKEND_URL + '/api';
 
 export default function AdminUsers({ 
-  users, 
+  users: propUsers, 
   editingUser, 
   setEditingUser,
   handleUpdateUser, 
@@ -14,6 +18,43 @@ export default function AdminUsers({
   handleAddBids,
   t 
 }) {
+  const [users, setUsers] = useState(propUsers || []);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // If propUsers is passed and has data, use it
+    if (propUsers && propUsers.length > 0) {
+      setUsers(propUsers);
+    } else {
+      // Otherwise, fetch users directly
+      fetchUsers();
+    }
+  }, [propUsers]);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('token');
+      const headers = { Authorization: `Bearer ${token}` };
+      const res = await axios.get(`${API}/admin/users`, { headers });
+      console.log('AdminUsers: Loaded', res.data?.length, 'users');
+      setUsers(res.data || []);
+    } catch (error) {
+      console.error('AdminUsers: Error fetching users', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600"></div>
+        <span className="ml-3 text-slate-600">Lade Benutzer...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -23,7 +64,7 @@ export default function AdminUsers({
         </div>
         <div>
           <h1 className="text-2xl font-bold text-slate-800">{t('admin.manageUsers')}</h1>
-          <p className="text-slate-500 text-sm">{(users || []).length} Benutzer registriert</p>
+          <p className="text-slate-500 text-sm">{users.length} Benutzer registriert</p>
         </div>
       </div>
 
