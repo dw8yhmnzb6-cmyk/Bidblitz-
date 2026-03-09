@@ -1,5 +1,7 @@
 /**
- * BidBlitz Complete - Dashboard + Gaming Lobby + Live Auction
+ * BidBlitz - Penny Auction System
+ * Gebot: 0.50€ / 50 Coins
+ * Preiserhöhung: 0.01€ pro Gebot
  */
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -25,12 +27,21 @@ const GAMES = [
   { name: 'Lucky Wheel', route: '/lucky-wheel' },
 ];
 
+// Auction Configuration
+const BID_COST_EUR = 0.50;  // Gebot kostet 0.50€
+const BID_COST_COINS = 50;   // Oder 50 Coins
+const PRICE_INCREMENT = 0.01; // Preis erhöht sich um 1 Cent
+
 export default function SuperAppHome() {
   const navigate = useNavigate();
   const [coins, setCoins] = useState(100);
-  const [price, setPrice] = useState(0.10);
-  const [timer, setTimer] = useState(10);
+  const [euroBalance, setEuroBalance] = useState(10.00); // Euro Guthaben
+  const [price, setPrice] = useState(0.01); // Startpreis
+  const [timer, setTimer] = useState(15);
   const [bidMessage, setBidMessage] = useState('');
+  const [bidCount, setBidCount] = useState(0);
+  const [lastBidder, setLastBidder] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('coins'); // 'coins' oder 'euro'
   
   const userId = localStorage.getItem('userId') || 'guest_' + Math.random().toString(36).substr(2, 9);
   
@@ -66,35 +77,52 @@ export default function SuperAppHome() {
   };
   
   const bid = async () => {
-    if (coins < 1) {
-      setBidMessage('❌ Not enough coins!');
-      setTimeout(() => setBidMessage(''), 2000);
-      return;
-    }
-    
+    // Check if auction ended
     if (timer <= 0) {
-      setBidMessage('⏰ Auction ended!');
+      setBidMessage('⏰ Auktion beendet!');
       setTimeout(() => setBidMessage(''), 2000);
       return;
     }
     
-    try {
-      // Spend 1 coin for bid
-      const res = await axios.post(`${API}/bbz/coins/spend`, {
-        user_id: userId,
-        amount: 1,
-        source: 'auction_bid'
-      });
+    // Check payment method and balance
+    if (paymentMethod === 'coins') {
+      if (coins < BID_COST_COINS) {
+        setBidMessage(`❌ Nicht genug Coins! Du brauchst ${BID_COST_COINS} Coins (= ${BID_COST_EUR.toFixed(2)}€)`);
+        setTimeout(() => setBidMessage(''), 3000);
+        return;
+      }
       
-      setCoins(res.data.new_balance);
-      setPrice(prev => prev + 0.10);
-      setTimer(10); // Reset timer
-      setBidMessage('✅ Bid placed!');
-      setTimeout(() => setBidMessage(''), 2000);
-    } catch (error) {
-      setBidMessage(error.response?.data?.detail || 'Bid failed');
-      setTimeout(() => setBidMessage(''), 2000);
+      try {
+        // Spend coins for bid
+        const res = await axios.post(`${API}/bbz/coins/spend`, {
+          user_id: userId,
+          amount: BID_COST_COINS,
+          source: 'auction_bid_penny'
+        });
+        
+        setCoins(res.data.new_balance);
+      } catch (error) {
+        setBidMessage(error.response?.data?.detail || 'Gebot fehlgeschlagen');
+        setTimeout(() => setBidMessage(''), 2000);
+        return;
+      }
+    } else {
+      // Euro payment
+      if (euroBalance < BID_COST_EUR) {
+        setBidMessage(`❌ Nicht genug Guthaben! Du brauchst ${BID_COST_EUR.toFixed(2)}€`);
+        setTimeout(() => setBidMessage(''), 3000);
+        return;
+      }
+      setEuroBalance(prev => prev - BID_COST_EUR);
     }
+    
+    // Successful bid - increase price by 1 cent
+    setPrice(prev => prev + PRICE_INCREMENT);
+    setTimer(15); // Reset timer
+    setBidCount(prev => prev + 1);
+    setLastBidder('Du');
+    setBidMessage(`✅ Gebot platziert! -${paymentMethod === 'coins' ? BID_COST_COINS + ' Coins' : BID_COST_EUR.toFixed(2) + '€'}`);
+    setTimeout(() => setBidMessage(''), 2000);
   };
   
   return (
@@ -129,11 +157,25 @@ export default function SuperAppHome() {
           color: #a855f7;
         }
         
+        .wallet-info {
+          display: flex;
+          gap: 10px;
+        }
+        
         .wallet {
           background: #1e293b;
           padding: 10px 20px;
           border-radius: 20px;
           cursor: pointer;
+          font-size: 14px;
+        }
+        
+        .wallet.coins {
+          background: #7c3aed;
+        }
+        
+        .wallet.euro {
+          background: #22c55e;
         }
         
         .dashboard {
@@ -200,14 +242,16 @@ export default function SuperAppHome() {
         
         .auction {
           background: #1e293b;
-          padding: 20px;
+          padding: 25px;
           margin: 20px;
-          border-radius: 15px;
+          border-radius: 20px;
           text-align: center;
+          border: 2px solid #a855f7;
         }
         
         .auction h2 {
           margin: 0 0 15px 0;
+          color: #a855f7;
         }
         
         .auction-image {
@@ -219,18 +263,28 @@ export default function SuperAppHome() {
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 50px;
+          font-size: 60px;
         }
         
         .auction-price {
-          font-size: 24px;
+          font-size: 36px;
           font-weight: bold;
           color: #22c55e;
-          margin: 10px 0;
+          margin: 15px 0;
+        }
+        
+        .auction-info {
+          display: flex;
+          justify-content: center;
+          gap: 30px;
+          margin: 15px 0;
+          font-size: 14px;
+          color: #94a3b8;
         }
         
         .auction-timer {
-          font-size: 20px;
+          font-size: 28px;
+          font-weight: bold;
           margin: 10px 0;
         }
         
@@ -244,36 +298,73 @@ export default function SuperAppHome() {
           50% { opacity: 0.5; }
         }
         
-        .bid-btn {
-          background: #a855f7;
-          border: none;
-          padding: 12px 25px;
+        .payment-toggle {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin: 15px 0;
+        }
+        
+        .payment-btn {
+          padding: 10px 20px;
           border-radius: 10px;
+          border: 2px solid #374151;
+          background: #1e293b;
           color: white;
-          font-size: 16px;
+          cursor: pointer;
+          transition: 0.3s;
+          font-size: 14px;
+        }
+        
+        .payment-btn.active {
+          border-color: #a855f7;
+          background: #7c3aed;
+        }
+        
+        .bid-btn {
+          background: linear-gradient(135deg, #a855f7, #7c3aed);
+          border: none;
+          padding: 15px 40px;
+          border-radius: 15px;
+          color: white;
+          font-size: 18px;
           font-weight: bold;
           cursor: pointer;
           transition: 0.3s;
+          margin-top: 10px;
         }
         
         .bid-btn:hover {
-          background: #9333ea;
           transform: scale(1.05);
+          box-shadow: 0 5px 20px rgba(168, 85, 247, 0.4);
         }
         
         .bid-btn:disabled {
           background: #4b5563;
           cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+        
+        .bid-cost-info {
+          font-size: 12px;
+          color: #94a3b8;
+          margin-top: 10px;
         }
         
         .bid-message {
-          margin-top: 10px;
-          font-size: 14px;
+          margin-top: 15px;
+          font-size: 16px;
           font-weight: bold;
+          padding: 10px;
+          border-radius: 10px;
+          background: rgba(168, 85, 247, 0.2);
         }
         
-        .bottom-spacer {
-          height: 20px;
+        .last-bidder {
+          margin-top: 10px;
+          font-size: 14px;
+          color: #fbbf24;
         }
       `}</style>
       
@@ -281,8 +372,13 @@ export default function SuperAppHome() {
         {/* Header */}
         <header className="bbz-header">
           <div className="logo">⚡ BidBlitz</div>
-          <div className="wallet" onClick={() => navigate('/wallet')}>
-            💰 Coins: {coins}
+          <div className="wallet-info">
+            <div className="wallet coins" onClick={() => navigate('/wallet')}>
+              🪙 {coins} Coins
+            </div>
+            <div className="wallet euro">
+              💶 {euroBalance.toFixed(2)}€
+            </div>
           </div>
         </header>
         
@@ -316,25 +412,57 @@ export default function SuperAppHome() {
           </div>
         </div>
         
-        {/* Live Auction */}
+        {/* Live Auction - Penny Auction System */}
         <div className="auction">
           <h2>🔥 Live Auction</h2>
           <div className="auction-image">📱</div>
-          <p className="auction-price">Preis: {price.toFixed(2)} €</p>
-          <p className={`auction-timer ${timer <= 3 ? 'urgent' : ''}`}>
-            Timer: {timer}s
+          
+          <p className="auction-price">{price.toFixed(2)} €</p>
+          
+          <div className="auction-info">
+            <span>📊 {bidCount} Gebote</span>
+            <span>💰 Gebot: {BID_COST_EUR.toFixed(2)}€</span>
+            <span>📈 +{(PRICE_INCREMENT * 100).toFixed(0)} Cent/Gebot</span>
+          </div>
+          
+          <p className={`auction-timer ${timer <= 5 ? 'urgent' : ''}`}>
+            ⏱️ {timer}s
           </p>
+          
+          {lastBidder && <p className="last-bidder">👤 Höchstbietender: {lastBidder}</p>}
+          
+          {/* Payment Method Toggle */}
+          <div className="payment-toggle">
+            <button 
+              className={`payment-btn ${paymentMethod === 'coins' ? 'active' : ''}`}
+              onClick={() => setPaymentMethod('coins')}
+            >
+              🪙 Coins ({BID_COST_COINS})
+            </button>
+            <button 
+              className={`payment-btn ${paymentMethod === 'euro' ? 'active' : ''}`}
+              onClick={() => setPaymentMethod('euro')}
+            >
+              💶 Euro ({BID_COST_EUR.toFixed(2)}€)
+            </button>
+          </div>
+          
           <button 
             className="bid-btn"
             onClick={bid}
             disabled={timer <= 0}
           >
-            {timer <= 0 ? 'Ended' : 'Bid (1 Coin)'}
+            {timer <= 0 ? '⏰ Auktion beendet' : '🔥 BIETEN'}
           </button>
+          
+          <p className="bid-cost-info">
+            Jedes Gebot kostet {BID_COST_EUR.toFixed(2)}€ = {BID_COST_COINS} Coins
+          </p>
+          
           {bidMessage && <p className="bid-message">{bidMessage}</p>}
         </div>
         
-        <div className="bottom-spacer" />
+        <div style={{ height: '20px' }} />
       </div>
     </>
   );
