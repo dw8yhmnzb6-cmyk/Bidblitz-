@@ -185,7 +185,7 @@ export default function SuperAppHome() {
             <div
               key={index}
               style={styles.game}
-              onClick={() => playGame(game.name, game.reward)}
+              onClick={() => navigate(game.route)}
               data-testid={`game-${game.name.toLowerCase()}`}
             >
               {game.name}
