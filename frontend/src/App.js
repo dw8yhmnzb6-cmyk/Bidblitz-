@@ -371,6 +371,7 @@ function AppContent() {
           <Route path="/home" element={<HomeModern />} />
           <Route path="/classic" element={<Auctions />} />
           <Route path="/auctions" element={<Auctions />} />
+          <Route path="/live-auction" element={<LiveAuction />} />
           <Route path="/auctions/:id" element={<AuctionDetail />} />
           <Route path="/mystery-box/:id" element={<MysteryBoxDetail />} />
           <Route path="/vip-auctions" element={<VIPAuctions />} />
