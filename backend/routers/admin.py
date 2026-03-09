@@ -142,7 +142,7 @@ async def get_detailed_stats(admin: dict = Depends(get_admin_user)):
         new_users = sum(
             1 for u in users 
             if u.get("created_at") and 
-            day_start.isoformat() <= u.get("created_at", "") < day_end.isoformat()
+            day_start <= (u.get("created_at") if isinstance(u.get("created_at"), datetime) else datetime.fromisoformat(str(u.get("created_at")).replace("Z", "+00:00")) if u.get("created_at") else datetime.min) < day_end
         )
         users_by_day.append({
             "date": day_start.strftime("%d.%m"),
