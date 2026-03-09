@@ -339,6 +339,7 @@ export default function Admin() {
   };
 
   const fetchData = async () => {
+    console.log('fetchData called with activeTab:', activeTab, 'isAdmin:', isAdmin);
     setLoading(true);
     try {
       const headers = { Authorization: `Bearer ${token}` };
