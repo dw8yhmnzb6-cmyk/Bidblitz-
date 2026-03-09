@@ -376,9 +376,13 @@ export default function Admin() {
         setAuctions(allAuctionsRes.data);
       } else if (activeTab === 'users') {
         console.log('Fetching users from:', `${API}/admin/users`);
-        const res = await axios.get(`${API}/admin/users`, { headers });
-        console.log('Users response:', res.data?.length, 'users');
-        setUsers(res.data);
+        try {
+          const res = await axios.get(`${API}/admin/users`, { headers });
+          console.log('Users response:', res.data?.length, 'users');
+          setUsers(res.data);
+        } catch (userError) {
+          console.error('Users fetch error:', userError.message, userError.response?.status);
+        }
       } else if (activeTab === 'vouchers') {
         const res = await axios.get(`${API}/admin/vouchers`, { headers });
         setVouchers(res.data);
