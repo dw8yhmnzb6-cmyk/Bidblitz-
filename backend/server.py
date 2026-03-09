@@ -719,6 +719,9 @@ app.include_router(league_router, prefix="/api")
 app.include_router(transport_router, prefix="/api")
 app.include_router(bidblitz_api_router)
 
+# NEW: BidBlitz Game Platform API
+app.include_router(games_api_router)
+
 # ==================== HEALTH & BASIC ENDPOINTS ====================
 
 @app.get("/")
