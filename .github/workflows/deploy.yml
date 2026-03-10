@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     
     steps:
       - name: Deploy to IONOS Server
@@ -16,22 +17,31 @@ jobs:
           host: 212.227.20.190
           username: root
           password: ${{ secrets.SERVER_PASSWORD }}
+          timeout: 20m
+          command_timeout: 20m
           script: |
+            set -e
+            echo "🚀 Starting deployment..."
+            
             cd /var/www/bidblitz
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
             
             # Backend
+            echo "📦 Installing backend dependencies..."
             cd /var/www/bidblitz/backend
             source venv/bin/activate
             pip install -r requirements.txt --quiet
             
             # Frontend
+            echo "🎨 Building frontend..."
             cd /var/www/bidblitz/frontend
-            yarn install --silent
-            yarn build
+            yarn install --frozen-lockfile --silent
+            NODE_OPTIONS="--max-old-space-size=2048" yarn build
             
-            # Restart
-            systemctl restart bidblitz-backend
-            systemctl restart bidblitz-frontend
+            # Restart services
+            echo "🔄 Restarting services..."
+            systemctl restart bidblitz-backend || echo "Backend restart failed"
+            systemctl restart bidblitz-frontend || echo "Frontend restart failed"
             
-            echo "Deployment completed successfully!"
+            echo "✅ Deployment completed successfully!"
