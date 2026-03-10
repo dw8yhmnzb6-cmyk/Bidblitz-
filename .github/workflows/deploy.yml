@@ -40,6 +40,8 @@ jobs:
             cd /var/www/bidblitz/backend
             source venv/bin/activate
             pip install -r requirements.txt --quiet
+            # Install emergentintegrations from private index (optional - skip if fails)
+            pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ --quiet 2>/dev/null || echo "Note: emergentintegrations not available"
             deactivate
             
             # ==================== 3. Frontend Build ====================
