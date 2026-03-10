@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:  # Allow manual trigger
 
 jobs:
   deploy:
@@ -21,27 +22,84 @@ jobs:
           command_timeout: 20m
           script: |
             set -e
-            echo "🚀 Starting deployment..."
+            echo "🚀 Starting BidBlitz Deployment..."
+            echo "📅 $(date)"
             
+            # ==================== 1. Git Pull ====================
+            echo "📥 Pulling latest code..."
             cd /var/www/bidblitz
             git fetch origin main
             git reset --hard origin/main
             
-            # Backend
-            echo "📦 Installing backend dependencies..."
+            # Show last commit
+            echo "📌 Latest commit:"
+            git log -1 --oneline
+            
+            # ==================== 2. Backend Update ====================
+            echo "📦 Updating backend dependencies..."
             cd /var/www/bidblitz/backend
             source venv/bin/activate
             pip install -r requirements.txt --quiet
+            deactivate
             
-            # Frontend
+            # ==================== 3. Frontend Build ====================
             echo "🎨 Building frontend..."
             cd /var/www/bidblitz/frontend
+            
+            # Clear old build
+            rm -rf build
+            
+            # Install dependencies
             yarn install --frozen-lockfile --silent
+            
+            # Build with increased memory
             NODE_OPTIONS="--max-old-space-size=2048" yarn build
             
-            # Restart services
-            echo "🔄 Restarting services..."
-            systemctl restart bidblitz-backend || echo "Backend restart failed"
-            systemctl restart bidblitz-frontend || echo "Frontend restart failed"
+            # Verify build created
+            if [ ! -d "build" ]; then
+                echo "❌ ERROR: Frontend build failed - no build directory!"
+                exit 1
+            fi
             
+            # Show build info
+            echo "📁 Build directory contents:"
+            ls -la build/
+            echo "📊 Build size: $(du -sh build | cut -f1)"
+            
+            # ==================== 4. Clear Nginx Cache ====================
+            echo "🧹 Clearing Nginx cache..."
+            rm -rf /var/cache/nginx/* 2>/dev/null || true
+            
+            # ==================== 5. Restart Services ====================
+            echo "🔄 Restarting services..."
+            
+            # Restart backend
+            systemctl restart bidblitz-backend
+            sleep 2
+            
+            # Test backend health
+            if curl -s http://localhost:8001/api/health | grep -q "healthy"; then
+                echo "✅ Backend is healthy"
+            else
+                echo "⚠️ Backend health check failed"
+                journalctl -u bidblitz-backend -n 20 --no-pager
+            fi
+            
+            # Restart Nginx
+            systemctl reload nginx
+            
+            # ==================== 6. Verification ====================
+            echo "🔍 Verifying deployment..."
+            
+            # Check if index.html has new content
+            echo "📄 Index.html preview:"
+            head -20 /var/www/bidblitz/frontend/build/index.html
+            
+            # Check Nginx status
+            systemctl status nginx --no-pager -l || true
+            
+            # ==================== Done ====================
+            echo ""
             echo "✅ Deployment completed successfully!"
+            echo "📅 $(date)"
+            echo "🌐 Visit https://bidblitz.ae to verify"
