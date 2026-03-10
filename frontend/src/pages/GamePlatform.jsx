@@ -294,15 +294,16 @@ const styles = {
   },
   gamesGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+    gap: '16px',
   },
   gameCard: {
     background: '#1e293b',
     borderRadius: '12px',
-    padding: '12px',
+    padding: '14px',
     cursor: 'pointer',
     textAlign: 'center',
+    transition: 'transform 0.2s, box-shadow 0.2s',
   },
   gameThumb: {
     width: '100%',
