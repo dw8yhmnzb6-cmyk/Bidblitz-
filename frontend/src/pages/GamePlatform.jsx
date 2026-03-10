@@ -331,13 +331,19 @@ const styles = {
     fontSize: '32px',
   },
   gameName: {
-    fontSize: '12px',
+    fontSize: '13px',
     fontWeight: '600',
     marginBottom: '4px',
   },
   gameCategory: {
-    fontSize: '10px',
+    fontSize: '11px',
     color: '#94a3b8',
+  },
+  gameReward: {
+    fontSize: '11px',
+    color: '#22c55e',
+    fontWeight: '600',
+    marginTop: '4px',
   },
   leaderboard: {
     padding: '20px 15px',
