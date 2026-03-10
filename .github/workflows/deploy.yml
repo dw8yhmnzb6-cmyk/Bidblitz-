@@ -39,9 +39,19 @@ jobs:
             echo "📦 Updating backend dependencies..."
             cd /var/www/bidblitz/backend
             source venv/bin/activate
-            pip install -r requirements.txt --quiet
-            # Install emergentintegrations from private index (optional - skip if fails)
-            pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ --quiet 2>/dev/null || echo "Note: emergentintegrations not available"
+            
+            # Remove emergentintegrations from requirements if present (not available on public PyPI)
+            sed -i '/emergentintegrations/d' requirements.txt 2>/dev/null || true
+            
+            # Install dependencies (ignore errors for missing packages)
+            pip install -r requirements.txt --quiet || {
+                echo "⚠️ Some packages failed, trying without problematic ones..."
+                grep -v "emergentintegrations" requirements.txt > requirements_clean.txt
+                pip install -r requirements_clean.txt --quiet
+            }
+            
+            # Install emergentintegrations from private index (optional)
+            pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/ --quiet 2>/dev/null || echo "ℹ️ emergentintegrations skipped (private package)"
             deactivate
             
             # ==================== 3. Frontend Build ====================
