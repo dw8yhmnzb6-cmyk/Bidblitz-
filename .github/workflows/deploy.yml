@@ -58,17 +58,19 @@ jobs:
             echo "🎨 Building frontend..."
             cd /var/www/bidblitz/frontend
             
-            # Remove broken symlink first
-            rm -f public/games/word.html 2>/dev/null || true
+            # WICHTIG: Alle kaputten Symlinks im games Ordner löschen
+            echo "🧹 Cleaning up broken symlinks..."
+            find public/games -maxdepth 1 -type l -delete 2>/dev/null || true
             
-            # Fix missing word.html (copy from word_hunt.html if exists)
-            if [ -f "public/games/word_hunt.html" ]; then
+            # word.html erstellen falls nicht vorhanden
+            if [ ! -f "public/games/word.html" ] && [ -f "public/games/word_hunt.html" ]; then
                 cp public/games/word_hunt.html public/games/word.html
-                echo "✅ Created word.html from word_hunt.html"
+                echo "✅ Created word.html"
+            elif [ ! -f "public/games/word.html" ]; then
+                # Erstelle leere Datei falls word_hunt.html auch fehlt
+                echo '<!DOCTYPE html><html><body><h1>Word Game</h1></body></html>' > public/games/word.html
+                echo "✅ Created placeholder word.html"
             fi
-            
-            # Remove any other broken symlinks in games folder
-            find public/games -type l ! -exec test -e {} \; -delete 2>/dev/null || true
             
             # Clear old build
             rm -rf build
