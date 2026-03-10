@@ -1,109 +1,127 @@
-# BidBlitz Super App - PRD
+# BidBlitz Gaming Platform - PRD
 
 ## Original Problem Statement
-Build a "Super App" called BidBlitz that consolidates auctions, games, mobility services (taxi, scooter, bike), and a coin-based economy into one platform. The app uses React/FastAPI/MongoDB stack.
+Build a complete gaming platform called BidBlitz with games, auctions, mobility services, and a coin-based economy. The user requested migration from MongoDB to PostgreSQL and deployment on IONOS server.
 
 ## User Personas
 - **Gamers**: Play mini-games to earn coins
 - **Auction Users**: Bid on products using coins
-- **Mobility Users**: Use taxi/scooter/bike services
 - **Admins**: Manage platform, users, and economy
-
-## Core Requirements
-1. Super App Home with tab navigation (Home/Games/Wallet/Profile)
-2. Mini-games integrated with coin economy
-3. Auction system with bidding
-4. Mobility services booking
-5. Admin panel for management
 
 ## Tech Stack
 - **Frontend**: React, Tailwind CSS
 - **Backend**: FastAPI, Pydantic
-- **Database**: MongoDB Atlas
-- **Pre-existing**: Stripe, Leaflet.js, Three.js
+- **Database**: MongoDB (current) → PostgreSQL (migration in progress)
+- **Server**: IONOS (212.227.20.190)
 
 ---
 
-## Completed Features
+## ✅ Completed Features
 
-### December 2025
-- [x] SuperAppHome with 4-tab navigation (Home/Games/Wallet/Profile)
-- [x] 8 Service Cards: Games, Mining, Taxi, Scooter, Bike, Market, Casino, Rank
-- [x] 4 Game Cards: Candy Match, Lucky Wheel, Coin Tap, Runner
-- [x] Wallet page with coin balance and actions
-- [x] Profile page with settings menu
-- [x] Backend coin API integration
-- [x] AdminPanelNew with 60+ functions
-- [x] Multiple game components: CandyMatch, LuckyWheel, CoinTap, ReactionGame, RunnerGame, SlotMachine
-- [x] HomeModern as main landing page
-- [x] GamesHub game store
+### March 10, 2025 - Gaming Platform
+- [x] GamePlatform.jsx with 29 games
+- [x] Category filters (Puzzle, Arcade, Tycoon, Strategy, 3D)
+- [x] Games API (`/api/games/*`)
+- [x] Leaderboard system
+- [x] Coin economy integration
+
+### March 10, 2025 - PostgreSQL Preparation
+- [x] SQLAlchemy models (`pg_models.py`)
+- [x] Async database config (`database.py`)
+- [x] Alembic migration setup
+- [x] Migration script (`migrate_to_postgres.py`)
+- [x] Server configuration files
 
 ---
 
-## P0 - Critical (COMPLETED ✅)
-1. ~~**Code Cleanup**: Delete 200+ obsolete files in `/pages` directory~~ - DONE (39 files deleted)
-2. ~~**Connect games to backend economy**: All games use local state, need API integration~~ - DONE (CandyMatch, SlotMachine, LuckyWheel, CoinTap)
-3. ~~**Admin Panel Navigation Bug**: Tabs navigated away from `/admin-panel` to `/admin`~~ - FIXED (March 2026) - Updated `handleTabClick` and `handleItemClick` to use `setActiveTab` instead of `navigate()`
+## 🔴 P0 - Critical (In Progress)
 
-## P1 - High Priority
-4. **Navigation standardization**: Convert remaining vanilla JS onclick to React Router
-5. **Leaderboard consolidation**: Two components exist (Leaderboard.jsx, GameLeaderboard.jsx)
+### IONOS Deployment Fix
+- **Status**: READY TO DEPLOY
+- **Issue**: Live site shows old version
+- **Solution**: Quick fix script created
+- **Files**: `/app/server-config/quick-fix.sh`
 
-## P2 - Medium Priority
-5. **Translations**: Most new components have hardcoded German text
-6. **Game scoring API**: Connect win/loss to `/api/bbz/coins/earn` and `/api/bbz/games/reward`
+### PostgreSQL Migration
+- **Status**: PREPARED
+- **Next Step**: Run on IONOS server
+- **Database**: bidblitz_db
+- **User**: bidblitz
+- **Password**: BidBlitz2024SecureDB!
 
-## P3 - Future/Backlog
-- Customer Video Ads system
-- Weekly League & Games Pass
-- BidBlitzToken.sol Smart Contract deployment
-- Professional Games Backend verification
+---
+
+## 🟠 P1 - High Priority
+
+1. **Run Quick Fix on IONOS**
+   - SSH to server
+   - Execute quick-fix.sh
+   - Clear browser cache
+
+2. **Install PostgreSQL on IONOS**
+   - apt install postgresql
+   - Create database and user
+   - Configure backend .env
+
+3. **Run Data Migration**
+   - MongoDB → PostgreSQL
+   - Verify data integrity
+   - Switch backend to PostgreSQL
+
+---
+
+## 🟡 P2 - Medium Priority
+
+1. **Codebase Cleanup**
+   - Remove ~200 old files from /frontend/src/pages
+   - Consolidate duplicate components
+
+2. **Full i18n Implementation**
+   - Replace hardcoded German text
+   - Add language switcher
 
 ---
 
 ## Key API Endpoints
-- `GET /api/bbz/coins/{user_id}` - Get user coin balance
+
+### Games API
+- `GET /api/games` - List all games
+- `GET /api/games/categories` - Get categories
+- `POST /api/games/score` - Submit score
+- `GET /api/games/leaderboard/global/top` - Leaderboard
+
+### User API
+- `GET /api/bbz/coins/{user_id}` - Get coin balance
 - `POST /api/bbz/coins/earn` - Earn coins
-- `POST /api/bbz/games/reward` - Game reward
-- `GET /api/bbz/leaderboard` - Get leaderboard
+
+---
 
 ## Test Credentials
 - **Admin**: admin@bidblitz.ae / admin123
 - **Customer**: kunde@bidblitz.ae / test123
 
-## Known Issues
-- Game components use client-side coin counters (not connected to backend)
-- GameLeaderboard uses static data
-- Some navigation uses vanilla JS instead of React Router
+---
 
-## Changelog - March 2026
-- **[FIXED] AdminPanelNew Tab Navigation**: Fixed bug where clicking tabs navigated to `/admin?tab=X` instead of staying on `/admin-panel`. Updated `handleTabClick()` and `handleItemClick()` to update state without navigation.
-- **[UPDATED] SuperAppHome Redesign**: Replaced the complex SuperAppHome with a clean, minimal design featuring:
-  - 6 Service Cards (Games, Miner, Live Auctions, VIP Auctions, Taxi, Scooter)
-  - 6 Game Cards with rewards (+5 to +30 coins)
-  - Wallet Balance display connected to backend API
-  - Win Alert animation when earning coins
-  - Bottom navigation bar (Home, Games, Wallet, Profile)
-- **[FIXED] Admin Panel Users/Auktionen Tabs**: Fixed critical bug where Benutzer and Auktionen tabs showed no data. Root cause: AdminUsers component was making its own API requests that got blocked by browser connection limits. Solution: AdminUsers now uses `propUsers` from Admin.js when available.
-- **[FIXED] Backend /api/admin/stats/detailed**: Fixed datetime comparison TypeError by using naive datetime instead of timezone-aware datetime.
+## Server Configuration
 
-### March 10, 2026 - Gaming Platform Complete ✅
-- **[NEW] Game Platform Page** (`/game-platform`):
-  - 29 games organized by category (Puzzle, Arcade, Tycoon, Strategy, 3D Games)
-  - Responsive grid layout with game thumbnails and reward amounts
-  - Category filter buttons
-  - Games open in fullscreen iframe with close button
-  - Global leaderboard showing top players
-  - Bottom navigation for quick access
-- **[NEW] Static HTML Games**:
-  - Snake, Runner, Lucky Wheel, Scratch Card, Reaction (Arcade)
-  - 2048, Puzzle Match, Memory (Puzzle)
-  - Coin Tycoon (Tycoon)
-  - 3D Cube Catch (3D)
-- **[NEW] Games Backend API** (`/api/games/*`):
-  - `GET /api/games` - List all games with category filter
-  - `GET /api/games/categories` - Get category counts
-  - `POST /api/games/score` - Submit score and earn rewards
-  - `GET /api/games/leaderboard/global/top` - Global leaderboard
-  - `GET /api/games/stats/overview` - Game statistics
-- **Test Results**: 100% backend (14/14 tests), 100% frontend verified
+### IONOS Server
+- **IP**: 212.227.20.190
+- **User**: root
+- **Path**: /var/www/bidblitz
+
+### PostgreSQL (To be installed)
+- **Host**: localhost
+- **Port**: 5432
+- **Database**: bidblitz_db
+- **User**: bidblitz
+- **Password**: BidBlitz2024SecureDB!
+
+---
+
+## Changelog
+
+### 2025-03-10
+- Created PostgreSQL migration infrastructure
+- Updated deploy.yml with cache clearing
+- Created server configuration files
+- Created quick-fix.sh for rapid deployment repair
