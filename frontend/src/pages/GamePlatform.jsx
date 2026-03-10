@@ -17,18 +17,18 @@ const CATEGORIES = [
   { id: '3d', name: '3D Games', emoji: '🎲', color: '#f97316' },
 ];
 
-// Built-in games (static HTML)
+// Built-in games (static HTML) with thumbnails
 const BUILTIN_GAMES = [
-  { slug: 'puzzle-match', name: 'Puzzle Match', category: 'puzzle', file: '/games/puzzle/puzzle-match.html' },
-  { slug: '2048', name: '2048', category: 'puzzle', file: '/games/puzzle/2048.html' },
-  { slug: 'memory', name: 'Memory', category: 'puzzle', file: '/games/puzzle/memory.html' },
-  { slug: 'runner', name: 'Runner', category: 'arcade', file: '/games/arcade/runner.html' },
-  { slug: 'lucky-wheel', name: 'Lucky Wheel', category: 'arcade', file: '/games/arcade/lucky-wheel.html' },
-  { slug: 'scratch-card', name: 'Scratch Card', category: 'arcade', file: '/games/arcade/scratch-card.html' },
-  { slug: 'reaction', name: 'Reaction', category: 'arcade', file: '/games/arcade/reaction.html' },
-  { slug: 'snake', name: 'Snake', category: 'arcade', file: '/games/arcade/snake.html' },
-  { slug: 'coin-tycoon', name: 'Coin Tycoon', category: 'tycoon', file: '/games/tycoon/coin-tycoon.html' },
-  { slug: '3d-cube', name: '3D Cube', category: '3d', file: '/games/3d/cube-catch.html' },
+  { slug: 'puzzle-match', name: 'Puzzle Match', category: 'puzzle', file: '/games/puzzle/puzzle-match.html', thumbnail: 'https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=400', description: 'Match puzzle pieces', max_reward: 50 },
+  { slug: '2048', name: '2048', category: 'puzzle', file: '/games/puzzle/2048.html', thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=400', description: 'Combine tiles to reach 2048', max_reward: 100 },
+  { slug: 'memory', name: 'Memory', category: 'puzzle', file: '/games/puzzle/memory.html', thumbnail: 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=400', description: 'Test your memory', max_reward: 40 },
+  { slug: 'runner', name: 'Runner', category: 'arcade', file: '/games/arcade/runner.html', thumbnail: 'https://images.unsplash.com/photo-1551103782-8ab07afd45c1?w=400', description: 'Run and dodge obstacles', max_reward: 80 },
+  { slug: 'lucky-wheel', name: 'Lucky Wheel', category: 'arcade', file: '/games/arcade/lucky-wheel.html', thumbnail: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400', description: 'Spin to win coins', max_reward: 100 },
+  { slug: 'scratch-card', name: 'Scratch Card', category: 'arcade', file: '/games/arcade/scratch-card.html', thumbnail: 'https://images.unsplash.com/photo-1565515636369-57f6e9f5fe15?w=400', description: 'Scratch and reveal prizes', max_reward: 100 },
+  { slug: 'reaction', name: 'Reaction', category: 'arcade', file: '/games/arcade/reaction.html', thumbnail: 'https://images.unsplash.com/photo-1535016120720-40c646be5580?w=400', description: 'Test your reflexes', max_reward: 30 },
+  { slug: 'snake', name: 'Snake', category: 'arcade', file: '/games/arcade/snake.html', thumbnail: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400', description: 'Classic snake game', max_reward: 75 },
+  { slug: 'coin-tycoon', name: 'Coin Tycoon', category: 'tycoon', file: '/games/tycoon/coin-tycoon.html', thumbnail: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=400', description: 'Build your coin empire', max_reward: 120 },
+  { slug: '3d-cube', name: '3D Cube', category: '3d', file: '/games/3d/cube-catch.html', thumbnail: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?w=400', description: 'Catch cubes in 3D', max_reward: 150 },
 ];
 
 export default function GamePlatform() {
