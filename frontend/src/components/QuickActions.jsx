@@ -5,12 +5,12 @@ export default function QuickActions() {
   const navigate = useNavigate();
 
   const actions = [
-    { icon: "🎮", label: "Spiele", path: "/games" },
-    { icon: "⛏️", label: "Mining", path: "/miner" },
-    { icon: "🛒", label: "Shop", path: "/store" },
-    { icon: "👥", label: "Freunde", path: "/friends" },
-    { icon: "🎁", label: "Rewards", path: "/rewards" },
-    { icon: "⚙️", label: "Settings", path: "/settings" },
+    { icon: "📷", label: "Scan", path: "/scan" },
+    { icon: "💳", label: "Pay", path: "/bidblitz-pay" },
+    { icon: "⛏️", label: "Mining", path: "/mining" },
+    { icon: "🚕", label: "Ride", path: "/taxi" },
+    { icon: "💸", label: "Send", path: "/transfer" },
+    { icon: "🛍️", label: "Shop", path: "/shop" },
   ];
 
   return (
@@ -18,15 +18,16 @@ export default function QuickActions() {
       
       <h3 className="text-lg font-bold mb-4">Quick Actions</h3>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-6 gap-2">
         {actions.map((action) => (
           <button
             key={action.label}
             onClick={() => navigate(action.path)}
-            className="bg-slate-700 hover:bg-slate-600 p-4 rounded-xl text-center transition"
+            className="bg-slate-700 hover:bg-slate-600 p-3 rounded-xl text-center transition"
+            data-testid={`quick-action-${action.label.toLowerCase()}`}
           >
-            <div className="text-2xl mb-1">{action.icon}</div>
-            <p className="text-xs">{action.label}</p>
+            <div className="text-xl mb-1">{action.icon}</div>
+            <p className="text-[10px]">{action.label}</p>
           </button>
         ))}
       </div>
